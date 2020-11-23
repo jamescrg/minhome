@@ -10,7 +10,6 @@ use App\Http\Controllers\NotesController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SearchController;
 
-use Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
