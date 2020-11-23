@@ -1,0 +1,81 @@
+#search-form{
+	width: 100%;
+	text-align: center;
+	background: #d4d4d4;
+	}
+
+	.form-control{
+		border: solid 1px #a1a1a1;
+		}
+
+	#searchText{
+		border: none;
+		height: 2em;
+		font-size: 1.1em;
+		}
+
+	#textSearch{
+		margin-top: -1px;
+		padding-left: 30px;
+		padding-right: 30px;
+		height: 2.6em;
+		background-color: #e4e4e4;
+		border: solid 1px #d9d9d9;
+		}
+
+.search-results-title{
+	font-size: 1.5em;
+	padding: 15px;
+	padding-left: 0px;
+	}
+
+.search-results{
+	background: #f4f4f4;
+	padding: 15px;
+	border-radius: 5px;
+	margin-bottom: 40px;
+	}
+
+.borderless td {
+	border: none !important;
+}
+
+.favoriteFolder{
+	width: 250px;
+	}
+
+.favoriteName{
+	width: 250px;
+	}
+
+.favoriteCredentials{
+	text-align: right;
+	}
+
+.contactFolder{
+	width: 250px;
+	}
+
+.contactName{
+	width: 250px;
+	}
+
+.contactPhone1{
+	width: 150px;
+	}
+
+.contactEmail{
+	text-align: right;
+	}
+
+.noteFolder{
+	width: 250px;
+	}
+
+.noteSubject{
+	width: 250px;
+	}
+
+.noteNote{
+	
+	}

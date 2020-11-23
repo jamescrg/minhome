@@ -1,0 +1,159 @@
+
+/*  background and fonts */
+body {
+	background: #d4d4d4;
+	color: #474747;
+	}
+
+/*  links */
+a {
+	color: #0059b3;
+	}
+
+a:hover	{
+	color: green;
+	}
+
+/* misc */
+.list-group-item{
+	background: #f4f4f4;
+	}
+
+/*  icons */
+.glyphicon{
+	color: #8c8c8c;
+	}
+
+.btn-default:hover{
+	color: #0059b3;
+	background: white;
+}
+
+/*  form controls */
+form .btn-default{
+	background: #f9f9f9;
+}
+
+.form-control{
+	background: #ffffff;
+}
+
+.form-control:focus {
+	border-color: #e4e4e4;
+	}
+
+
+/*  header and footer */
+#footer {
+	background: #474747;
+	}
+
+#footer a {
+	color: #e4e4e4;
+}
+
+.navbar {
+	background: #474747;
+	}
+
+.navbar .navbar-nav > li > a,
+.navbar .navbar-nav > li > a:hover,
+.navbar .navbar-nav > li > a:focus {
+	color: #e4e4e4;
+	}
+
+.navbar .navbar-nav > li.active > a,
+.navbar .navbar-nav > li.active > a:hover,
+.navbar .navbar-nav > li.active > a:focus {
+	background: #555555;
+	color: #f4f4f4;
+	}
+
+/* nav button for small screens */
+#navButton {
+	background: #616161;
+	border: solid 1px gray;
+	}
+
+.favoriteMenu ul li{
+    background: #e4e4e4;
+}
+
+.favoriteMenu a {
+    color: #760f13;
+    }
+
+	.folderMenu li {
+		background: #e4e4e4;
+	}
+
+.folderMenu li a {
+	color: #760f13;
+	}
+
+.editFolder input {
+	background: #f8f8f8;
+	}
+
+#home-form{
+	background: #d4d4d4;
+	}
+
+.form-control{
+	border: solid 1px #a1a1a1;
+	}
+
+#googleSearch{
+	background-color: #e4e4e4;
+	border: solid 1px #d9d9d9;
+	}
+
+.glyphicon-retweet{
+	color: #a1a1a1;
+	}
+
+.home-folder-title{
+	color: #474747;
+	background: #e4e4e4;
+	}
+
+.home-folder-title a{
+	color: #474747;
+	}
+
+div.note{
+	background: #f4f4f4;
+}
+
+#search-form{
+	background: #d4d4d4;
+	}
+
+	.form-control{
+		border: solid 1px #a1a1a1;
+		}
+
+	#textSearch{
+		background-color: #e4e4e4;
+		border: solid 1px #d9d9d9;
+		}
+
+#taskText{
+	border: solid 1px #e4e4e4;
+
+}
+
+#btn-tasks-add{
+	background-color: #e4e4e4;
+	/*border: solid 1px #a1a1a1;*/
+}
+
+.task-list-title{
+	background: #e4e4e4;
+}
+
+
+.glyphicon-unchecked,
+.glyphicon-checked {
+	color: #676767;
+}

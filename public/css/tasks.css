@@ -1,0 +1,39 @@
+#tasks{
+	padding-bottom: 20px;
+	}
+
+#tasks-form{
+	/*background: #d4d4d4;*/
+	margin-bottom: 20px;
+	margin-top: 10px;
+	padding: 20px 15px;
+}
+
+#taskText{
+	border: solid 1px #e4e4e4;
+
+}
+
+#btn-tasks-add{
+	background-color: #e4e4e4;
+	/*border: solid 1px #a1a1a1;*/
+}
+
+.task-list-title{
+	background: #e4e4e4;
+	font-weight: 600;
+}
+
+.task-pending{
+	  margin-top: -3px;
+  }
+
+.task-done{
+	margin-top: -3px;
+}
+
+.glyphicon-unchecked,
+.glyphicon-checked {
+	color: #676767;
+	margin-right: 15px;
+}

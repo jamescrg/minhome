@@ -1,0 +1,15 @@
+div#notes{
+	padding-bottom: 20px;
+	}
+
+div.note{
+	background: #f4f4f4;
+	border-radius: 4px;
+	padding: 10px 15px;
+	margin-bottom: 20px;
+	}
+
+textarea.form-control{
+	height: 250px;
+	}
+

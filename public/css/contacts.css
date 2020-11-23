@@ -1,0 +1,25 @@
+div#contacts{
+	padding-bottom: 20px;
+	}
+
+div.contact{
+	background: #f4f4f4;
+	border-radius: 4px;
+	padding: 10px 15px;
+	margin-bottom: 20px;
+	}
+
+.contact-item{
+	margin-top: 10px;
+	}
+
+#phone1_label,
+#phone2_label,
+#phone3_label {
+	max-width: 200px;
+	}
+
+textarea.form-control{
+
+	}
+
