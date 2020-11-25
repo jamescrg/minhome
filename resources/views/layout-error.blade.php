@@ -10,7 +10,8 @@
 		<!-- bootstrap stylesheet -->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<!-- app stylesheets -->
-		<link rel="stylesheet" href="/css/auth.css">
+		<link rel="stylesheet" href="/css/app.css">
+		<link rel="stylesheet" href="/css/layout-error.css">
 		<!-- bootstrap javascript -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -22,18 +23,17 @@
 
 	<body>
 		<div class="container vertical-center">
-            <div class="auth-card">
+            <div class="error-card">
 
-                <div class="auth-title">
+                <div class="error-title">
                     {{ config('app.name') }}
                 </div>
 
-                <div class="auth-subtitle">
-                    @yield('code') |
-                    @yield('message')
+                <div class="error-code">
+                    @yield('code'): @yield('message')
                 </div>
 
-                <div class="auth-subtitle">
+                <div class="contact-message">
                     Please contact the site administrator if the problem persists.
                 </div>
 

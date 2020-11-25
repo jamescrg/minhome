@@ -1,101 +1,76 @@
 
 /*------------------------------------------------
-This style sheet provides formatting for
-the general page layout, including:
-wrapper
-content
-footer
-heater / nav bar
-$note, old color was 51627C
+background and primary font
 ------------------------------------------------*/
 
-/*------------------------------------------------
-wrapper
-used to position the footer at the bottom of the page
-as a minimum position, but to allow the footer
-to flow beyond the bottom of the initial
- view height to remain below all content
-------------------------------------------------*/
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,300,400,600,700);
 
-#wrapper {
-	min-height: 100%;
-	height: auto !important;
-	height: 100%;
-	position: relative;
-	margin: 0 auto;
-	text-align: left;
-	padding: 0;
+html,
+body {
+    height: 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    background: #d4d4d4;
+    color: #474747;
 }
 
-/*------------------------------------------------
-content
-------------------------------------------------*/
-
-#content {
-	padding-top: 70px;
-	padding-bottom: 70px;
-	}
 
 /*------------------------------------------------
-footer
+links
 ------------------------------------------------*/
 
-#footer {
-	position: absolute;
-	bottom: 0px;
-	width: 100%;
-	background: #474747;
-	text-align: right;
-	padding: 15px 0;
-	}
+a {
+    text-decoration: none;
+    color: #0059b3;
+}
 
-#footer ul li {
+a:hover	{
+	text-decoration: none;
+	color: green;
+}
+
+
+/*------------------------------------------------
+typography
+------------------------------------------------*/
+
+.strong {
+	font-weight: bold;
+}
+
+strong{
+    font-weight: bold;
+}
+
+
+/*------------------------------------------------
+lists
+------------------------------------------------*/
+
+li{
 	list-style-type: none;
-	display: inline
 }
 
-#footer ul {
-	padding: 0;
-	margin: 0;
-	}
-
-#footer a {
-	padding-left: 25px;
-	padding-right: 25px;
-	color: #e4e4e4;
+.list-group-item{
+	background: #f4f4f4;
 }
+
 
 /*------------------------------------------------
-header / nav bar
+icons
 ------------------------------------------------*/
 
-.navbar {
-	background: #474747;
-	border-radius: 0;
-	border: none;
-	vertical-align: bottom;
+.glyphicon{
+	color: #8c8c8c;
+	font-size: 0.9em;
 	}
+.glyphicon-folder-close,
+.glyphicon-th-list {
+	/*margin-right: 10px;*/
+}
 
-.navbar .container {
-	}
+.glyphicon-bookmark {
+	font-size: 0.9em;
+}
 
-.navbar .navbar-nav > li > a,
-.navbar .navbar-nav > li > a:hover,
-.navbar .navbar-nav > li > a:focus {
-	padding-left: 25px;
-	padding-right: 25px;
-	color: #e4e4e4;
-	}
 
-.navbar .navbar-nav > li.active > a,
-.navbar .navbar-nav > li.active > a:hover,
-.navbar .navbar-nav > li.active > a:focus {
-	background: #555555;
-	color: #f4f4f4;
-	}
-
-/* nav button for small screens */
-#navButton {
-	background: #616161;
-	border: solid 1px gray;
-	}

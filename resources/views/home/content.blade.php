@@ -1,4 +1,4 @@
-@extends('app')
+@extends('layout-app')
 @section('content')
 
 <form role="form" id="home-form" action="https://{{$searchEngine}}" method="get" class="hidden-xs">

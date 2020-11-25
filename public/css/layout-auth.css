@@ -1,21 +1,4 @@
 
-body {
-	font-family: 'Open Sans', sans-serif;
-	font-size: 1.5em;
-	background: #d4d4d4;
-	color: #474747;
-	}
-
-a {
-	text-decoration: none;
-	color: #0059b3;
-	}
-
-a:hover	{
-	text-decoration: none;
-	color: green;
-	}
-
 .vertical-center {
 	min-height: 80%;  /* Fallback for browsers do NOT support vh unit */
 	min-height: 80vh; /* These two lines are counted as one :-)       */
