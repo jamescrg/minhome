@@ -10,7 +10,6 @@ use App\Models\Favorite;
 use DB;
 use Auth;
 
-
 class FavoritesController extends Controller
 {
 

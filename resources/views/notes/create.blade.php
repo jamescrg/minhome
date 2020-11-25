@@ -30,13 +30,13 @@
 			<label class="control-label col-sm-2" for="subject">Subject</label>
 			<div class="col-sm-10">
 				<input type="text" autofocus="autofocus" name="subject" id="subject" class="form-control"
-				       value="{{$note->subject}}">
+				       value="{{old('subject', $note->subject)}}" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="note">Note</label>
 			<div class="col-sm-10">
-				<textarea name="note" id="note" class="form-control">{{$note->note}}</textarea>
+				<textarea name="note" id="note" class="form-control"i required>{{old('note', $note->note)}}</textarea>
 			</div>
 		</div>
 		<div class="submit"><input type="submit" value="Submit" class="btn btn-default"></div>

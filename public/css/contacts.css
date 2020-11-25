@@ -13,13 +13,33 @@ div.contact{
 	margin-top: 10px;
 	}
 
+textarea.form-control{
+
+	}
+
+
+/* ------------------------------------------------------------------------- */
+/* contacts form */
+/* ------------------------------------------------------------------------- */
+
+#name,
+#email,
+#notes {
+    width: 400px;
+}
+
+#address{
+    width: 400px;
+    height: 100px;
+}
+
+#folder_id,
+#phone1,
+#phone2,
+#phone3,
 #phone1_label,
 #phone2_label,
 #phone3_label {
-	max-width: 200px;
-	}
-
-textarea.form-control{
-
+	width: 250px;
 	}
 

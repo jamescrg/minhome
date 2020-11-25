@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Requests;
-
 use App\Http\Requests\Request;
 
 class CreateContactRequest extends Request
@@ -24,7 +23,12 @@ class CreateContactRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
+            'name' => 'required',
+            'phone1' => 'max:20',
+            'phone2' => 'max:20',
+            'phone3' => 'max:20',
+            'email' => 'email',
+            'notes' => 'max:500'
         ];
     }
 }

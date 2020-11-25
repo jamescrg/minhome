@@ -29,37 +29,37 @@
 			<label class="control-label col-sm-2" for="name">Name</label>
 			<div class="col-sm-10">
 				<input type="text" autofocus="autofocus" name="name" id="name" class="form-control"
-				       value="{{$favorite->name}}">
+				       value="{{old('name', $favorite->name)}}" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="url">Url</label>
 			<div class="col-sm-10">
-				<input type="text" name="url" id="url" class="form-control" value="{{$favorite->url}}">
+				<input type="text" name="url" id="url" class="form-control" value="{{old('url', $favorite->url)}}" required>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="description">Description</label>
 			<div class="col-sm-10">
-				<textarea name="description" id="description" class="form-control">{{$favorite->description}}</textarea>
+				<textarea name="description" id="description" class="form-control">{{old('description', $favorite->description)}}</textarea>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="login">Login</label>
 			<div class="col-sm-10">
-				<input type="text" name="login" id="login" class="form-control" value="{{$favorite->login}}">
+				<input type="text" name="login" id="login" class="form-control" value="{{old('login', $favorite->login)}}">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="root">Root</label>
 			<div class="col-sm-10">
-				<input type="text" name="root" id="root" class="form-control" value="{{$favorite->root}}">
+				<input type="text" name="root" id="root" class="form-control" value="{{old('root', $favorite->root)}}">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="passkey">Key</label>
 			<div class="col-sm-10">
-				<input type="text" name="passkey" id="passkey" class="form-control" value="{{$favorite->passkey}}">
+				<input type="text" name="passkey" id="passkey" class="form-control" value="{{old('passkey', $favorite->passkey)}}">
 			</div>
 		</div>
 		<div class="submit"><input type="submit" value="Submit" class="btn btn-default"></div>

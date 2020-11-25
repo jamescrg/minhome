@@ -24,8 +24,8 @@ class CreateNoteRequest extends Request
     public function rules()
     {
         return [
-            'subject' => 'required|min:3',
-	        'note' => 'required'
+            'subject' => 'required|min:3|max:50',
+	        'note' => 'required|max:2000'
         ];
     }
 }

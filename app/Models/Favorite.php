@@ -21,6 +21,17 @@ class Favorite extends Model
 		'passkey'
 	];
 
+    public function getUrlAttribute($value)
+    {
+        $url = $value;
+        $hasHttp = strpos($url, 'http://');  
+        $hasHttps = strpos($url, 'https://');  
+        if ($hasHttp === false AND $hasHttps === false){
+            $url = 'http://' . $url;
+        }
+        return $url;
+    }
+
 	public function user()
 	{
 		return $this->belongsTo('App\User');

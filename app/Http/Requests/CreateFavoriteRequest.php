@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Requests;
-
 use App\Http\Requests\Request;
 
 class CreateFavoriteRequest extends Request
@@ -24,8 +23,13 @@ class CreateFavoriteRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
-	        'url' => 'required|min:5'
+            'folder_id' => 'integer',
+            'name' => 'required|min:3|max:100',
+	        'url' => 'required|min:5|url|max:500',
+	        'description' => 'max:500',
+	        'login' => 'max:50',
+	        'root' => 'max:50',
+	        'passkey' => 'max:50'
         ];
     }
 }
