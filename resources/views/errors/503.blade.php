@@ -38,11 +38,11 @@
             .title {
 				color: #0059b3;
 				font-weight: 400;
-                font-size: 50px;
+                font-size: 40px;
                 margin-bottom: 30px;
             }
 			.subTitle {
-				font-size: 30px;
+				font-size: 25px;
 			}
         </style>
     </head>
