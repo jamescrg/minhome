@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('google_token');
+            $table->string('theme');
             $table->timestamps();
         });
     }
