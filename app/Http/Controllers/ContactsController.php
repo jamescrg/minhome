@@ -64,19 +64,36 @@ class ContactsController extends Controller
 	public function store(Requests\CreateContactRequest $request)
 	{
 		// validation runs first
+        
+        // capture the input from the user
 		$input = $request->all();
+
+        // add the user's id
 		$input['user_id'] = Auth::user()->id;
+
+        // make the contact that has been submitted the selected contact
 		$input['selected'] = 1;
+
+        // de-select the prior selected contact
 		Contact::where(['user_id' => $input['user_id'], 'selected' => 1])->update(['selected' => 0]);
+
+        // insert the new contact into the database
 		Contact::create($input);
 
 		// if google account is logged in
 		// add to google contacts
-		// capture google_id and store in contacts table
 		if (Auth::user()->google_token) {
+
+            // retrieve the most recent contact id (the one just added above)
 			$contactId = Contact::where('user_id', Auth::user()->id)->max('id');
+
+            // retrieve the contact
 			$contact = Contact::findOrFail($contactId);
+
+            // submit the contact to google and save the google_id as a property of the contact
 			$contact->google_id = GoogleContactHandler::add($contact);
+
+            // save the contact with the google_id
 			$contact->save();
 		}
 
