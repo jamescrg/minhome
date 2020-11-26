@@ -56,3 +56,30 @@ div#favorites{
 		color: #760f13;
 		font-size: 0.85em;
 		}
+
+
+/* ------------------------------------------------------------------------- */
+/* favorites form */
+/* ------------------------------------------------------------------------- */
+
+.form-control{
+	background: #ffffe6;
+}
+
+#folder_id {
+    max-width: 250px;
+}
+
+#description{
+    height: 100px;
+}
+
+#login,
+#root,
+#passkey {
+	max-width: 150px;
+	}
+
+.form-control{
+	background: #ffffe6;
+}

@@ -1,6 +1,9 @@
 <div class="section-title">
 	Tasks
 </div>
+
+<div id="tasks">
+
 @if ($errors->any())
 	<ul class="alert alert-danger">
 		@foreach ($errors->all() as $error)
@@ -28,6 +31,7 @@
 			@endforeach
 		@endif
 	</ul>
+
 @endif
 
 @foreach ( $selectedFolders as $folder )
@@ -52,3 +56,5 @@
 	<a href="tasks/clear/{{$activeFolder->id}}" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span></a>
 </div>
 @endif
+
+</div>

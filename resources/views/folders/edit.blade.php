@@ -2,10 +2,10 @@
 	<a href="javascript:showHideFolder('{{$folder->id}}');">
 		<span class="glyphicon glyphicon-folder-close" style=""></span>
 	</a>
-	<form class="editFolder" action="/folders/update/{{$folder->id}}/{{$page}}" method="post"">
-	<input type="hidden" name="_token" value="{{ csrf_token() }}">
+	<form class="editFolder" action="/folders/update/{{$folder->id}}/{{$page}}" method="post">
+	@csrf
 	<input class="form-horizontal"
-		   autofocus="autofocus"
+		   autofocus
 		   type="text"
 		   name="name"
 		   onchange="submit()"

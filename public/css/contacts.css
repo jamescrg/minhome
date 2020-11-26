@@ -22,14 +22,18 @@ textarea.form-control{
 /* contacts form */
 /* ------------------------------------------------------------------------- */
 
+.form-control{
+	background: #ffffe6;
+}
+
 #name,
 #email,
 #notes {
-    width: 400px;
+    max-width: 400px;
 }
 
 #address{
-    width: 400px;
+    max-width: 400px;
     height: 100px;
 }
 
@@ -40,6 +44,6 @@ textarea.form-control{
 #phone1_label,
 #phone2_label,
 #phone3_label {
-	width: 250px;
+	max-width: 250px;
 	}
 

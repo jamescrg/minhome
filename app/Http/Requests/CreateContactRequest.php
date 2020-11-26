@@ -23,11 +23,11 @@ class CreateContactRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|min:2',
             'phone1' => 'max:20',
             'phone2' => 'max:20',
             'phone3' => 'max:20',
-            'email' => 'email',
+            'email' => 'max:30|email|nullable',
             'notes' => 'max:500'
         ];
     }

@@ -12,13 +12,15 @@
 	@include('form-error')
 
 	<form action="{{$action}}" class="form-horizontal" method="post" role="form">
-		<input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+		@csrf
+
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="folder_id">Folder</label>
 			<div class="col-sm-10">
 				<select class="form-control" name="folder_id" id="folder_id">
 					@foreach ($folders as $folder)
-						<option value="{{$folder->id}}" @if ($note->folder_id == $folder->id) selected="selected" @endif>
+						<option value="{{$folder->id}}" @if ($note->folder_id == $folder->id) selected @endif>
 							{{$folder->name}}
 						</option>
 					@endforeach
@@ -39,6 +41,11 @@
 				<textarea name="note" id="note" class="form-control"i required>{{old('note', $note->note)}}</textarea>
 			</div>
 		</div>
-		<div class="submit"><input type="submit" value="Submit" class="btn btn-default"></div>
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="email"></label>
+			<div class="col-sm-10">
+		        <input type="submit" value="Submit" class="btn btn-default">
+            </div>
+        </div>
 	</form>
 </div>

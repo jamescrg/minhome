@@ -5,7 +5,7 @@
 	<div class="row row-centered">
 		<div class="col-sm-8 col-sm-offset-2">
 			<div class="input-group input-group-md">
-				<input id="searchText" class="form-control" autofocus="autofocus" type="text"  maxLength="255" name="q" >
+				<input id="searchText" class="form-control" autofocus type="text"  maxLength="255" name="q" >
 				<div class="input-group-btn">
 					<button type="submit" class="btn btn-default" id="googleSearch" style=""><span class="glyphicon glyphicon-search"></span></button>
 				</div>

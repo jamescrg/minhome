@@ -10,25 +10,27 @@
 	@include('form-error')
 
 	<form action="{{$action}}" class="form-horizontal" method="post" role="form">
-		<input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+		@csrf
+
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="folder_id">Folder</label>
 			<div class="col-sm-10">
 				<select class="form-control" name="folder_id" id="folder_id">
 					<option value="">
 					@foreach ($folders as $folder)
-						<option value="{{$folder->id}}" @if ($favorite->folder_id == $folder->id) selected="selected" @endif>
+						<option value="{{$folder->id}}" @if ($favorite->folder_id == $folder->id) selected @endif>
 							{{$folder->name}}
 						</option>
 					@endforeach
-					<option value="0" @if ($selectedFolder == null) selected="selected" @endif>Uncategorized</option>
+					<option value="0" @if ($selectedFolder == null) selected @endif>Uncategorized</option>
 				</select>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group"> 
 			<label class="control-label col-sm-2" for="name">Name</label>
 			<div class="col-sm-10">
-				<input type="text" autofocus="autofocus" name="name" id="name" class="form-control"
+				<input type="text" autofocus name="name" id="name" class="form-control"
 				       value="{{old('name', $favorite->name)}}" required>
 			</div>
 		</div>
@@ -62,5 +64,10 @@
 				<input type="text" name="passkey" id="passkey" class="form-control" value="{{old('passkey', $favorite->passkey)}}">
 			</div>
 		</div>
-		<div class="submit"><input type="submit" value="Submit" class="btn btn-default"></div>
+		<div class="form-group">
+			<label class="control-label col-sm-2" for="email"></label>
+			<div class="col-sm-10">
+		        <input type="submit" value="Submit" class="btn btn-default">
+            </div>
+        </div>
 	</form>

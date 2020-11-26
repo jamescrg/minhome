@@ -23,13 +23,13 @@ class CreateFavoriteRequest extends Request
     public function rules()
     {
         return [
-            'folder_id' => 'integer',
+            'folder_id' => 'integer|nullable',
             'name' => 'required|min:3|max:100',
-	        'url' => 'required|min:5|url|max:500',
+	        'url' => 'required|min:5|url|max:500|nullable',
 	        'description' => 'max:500',
-	        'login' => 'max:50',
-	        'root' => 'max:50',
-	        'passkey' => 'max:50'
+	        'login' => 'max:30',
+	        'root' => 'max:20',
+	        'passkey' => 'max:20'
         ];
     }
 }
