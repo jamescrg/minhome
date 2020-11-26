@@ -19,6 +19,7 @@ class CreateContactsTable extends Migration
             $table->bigInteger('folder_id');
             $table->tinyInteger('selected');
             $table->string('name', 100);
+            $table->string('company', 100);
             $table->string('address', 255);
             $table->string('phone1', 50);
             $table->string('phone1_label', 10);
