@@ -16,10 +16,10 @@ class CreateNotesTable extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->bigInteger('folder_id');
-            $table->string('subject', 150);
-            $table->text('note', 150);
-            $table->tinyInteger('selected');
+            $table->bigInteger('folder_id')->nullable($value = true);
+            $table->string('subject', 150)->nullable($value = true);
+            $table->text('note', 150)->nullable($value = true);
+            $table->tinyInteger('selected')->nullable($value = true);
         });
     }
 

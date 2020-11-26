@@ -16,9 +16,9 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->bigInteger('folder_id');
-            $table->string('title', 200);
-            $table->tinyInteger('status');
+            $table->bigInteger('folder_id')->nullable($value = true);
+            $table->string('title', 200)->nullable($value = true);
+            $table->tinyInteger('status')->nullable($value = true);
         });
     }
 

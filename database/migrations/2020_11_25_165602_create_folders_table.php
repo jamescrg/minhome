@@ -18,10 +18,10 @@ class CreateFoldersTable extends Migration
             $table->foreignId('user_id');
             $table->string('page', 50);
             $table->string('name', 50);
-            $table->tinyInteger('home_column');
-            $table->tinyInteger('home_rank');
-            $table->tinyInteger('selected');
-            $table->tinyInteger('active');
+            $table->tinyInteger('home_column')->nullable($value = true);
+            $table->tinyInteger('home_rank')->nullable($value = true);
+            $table->tinyInteger('selected')->nullable($value = true);
+            $table->tinyInteger('active')->nullable($value = true);
         });
     }
 
