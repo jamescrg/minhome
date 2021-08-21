@@ -1,0 +1,3 @@
+tags
+config/settings_local.py
+*.pyc
