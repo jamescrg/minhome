@@ -1,0 +1,49 @@
+div#contacts{
+	padding-bottom: 20px;
+	}
+
+div.contact{
+	background: #f4f4f4;
+	border-radius: 4px;
+	padding: 10px 15px;
+	margin-bottom: 20px;
+	}
+
+.contact-item{
+	margin-top: 10px;
+	}
+
+textarea.form-control{
+
+	}
+
+
+/* ------------------------------------------------------------------------- */
+/* contacts form */
+/* ------------------------------------------------------------------------- */
+
+.form-control{
+	background: #ffffe6;
+}
+
+#name,
+#email,
+#notes {
+    max-width: 400px;
+}
+
+#address{
+    max-width: 400px;
+    height: 100px;
+}
+
+#folder_id,
+#phone1,
+#phone2,
+#phone3,
+#phone1_label,
+#phone2_label,
+#phone3_label {
+	max-width: 250px;
+	}
+
