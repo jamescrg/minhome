@@ -7,11 +7,18 @@ from app import views_contacts
 from app import views_notes
 from app import views_search
 from app import views_settings
+import debug_toolbar
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
-    path('', views_home.index, name='home'),
+    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+
+    path('', views_home.index, name='index'),
     path('home/', views_home.index, name='home'),
+    path('test/', views_home.test, name='test'),
+
     path('favorites/', views_favorites.index, name='favorites'),
     path('tasks/', views_tasks.index, name='tasks'),
     path('contacts/', views_contacts.index, name='contacts'),
