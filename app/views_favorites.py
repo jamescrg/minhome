@@ -5,6 +5,10 @@ from django.http import HttpResponse
 @login_required
 def index(request):
 
+    user_id = request.user.id
+    page = 'favorites'
+    folders = Folder.objects.filter(user_id=user_id, page=page)
+
     context = {
         'page': 'favorites',
     }

@@ -8,11 +8,9 @@
 <ul class="list-group">
 
   {% if folders %}
-	{% for folders as folder %}
+	{% for folder in folders %}
 
-		<!-- ------------------------------------------------------ -.
-		<!-- normal display, show folder -.
-		<!-- ------------------------------------------------------ -.
+
 		<li class="list-group-item" id="folderItem-{{ folder.id }}" style="display:block;">
 			<a href="javascript:showHideFolder('{{ folder.id }}');">
 				{% if page == 'tasks' %}
@@ -29,21 +27,23 @@
 			</a>
 		</li>
 
-		<!-- ------------------------------------------------------ -.
-		<!-- form to edit a folder -.
-		<!-- ------------------------------------------------------ -.
-		{% include 'folders/edit' %}
+    {% include 'folders/edit' %}
 
 	{% endforeach %}
   {% endif %}
 
 	{% if page != 'tasks' %}
+
 		<li class="list-group-item" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+
 			<span class="glyphicon glyphicon-folder-close"></span>
+
 			<a class="folderLink" href="/folders/0/{{ page }}" {% if selectedFolder == null %} style="font-weight: bold;"{% endif %};>
 				Uncategorized
 			</a>
+
 		</li>
+
 	{% endif %}
 
 	{% include 'folders/add' %}
