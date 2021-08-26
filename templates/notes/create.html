@@ -13,18 +13,18 @@
 
 	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
 
-		@csrf
+		{% csrf_token %}
 
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="folder_id">Folder</label>
 			<div class="col-sm-10">
 				<select class="form-control" name="folder_id" id="folder_id">
 					{% for folders as folder %}
-						<option value="{{ folder.id }}" @if (note.folder_id == folder.id) selected {% endif %}>
+						<option value="{{ folder.id }}" {% if note.folder_id == folder.id %} selected {% endif %}>
 							{{ folder.name }}
 						</option>
 					{% endforeach %}
-					<option value="0" @if (selectedFolder == null) selected="selected" {% endif %}>Uncategorized</option>
+					<option value="0" {% if !selectedFolder  %} selected="selected" {% endif %}>Uncategorized</option>
 				</select>
 			</div>
 		</div>

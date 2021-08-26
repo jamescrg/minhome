@@ -13,18 +13,18 @@
 
 	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
 
-        @csrf
+        {% csrf_token %}
 
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="folder_id">Folder</label>
 			<div class="col-sm-10">
 				<select class="form-control" name="folder_id" id="folder_id">
 					{% for folders as folder %}
-						<option value="{{ folder.id }}" @if (contact.folder_id == folder.id) selected {% endif %}>
+						<option value="{{ folder.id }}" {% if contact.folder_id == folder.id %} selected {% endif %}>
 							{{ folder.name }}
 						</option>
           {% endforeach %}
-					<option value="0" @if (selectedFolder == null) selected {% endif %}>Uncategorized</option>
+					<option value="0" {% if selectedFolder == null %} selected {% endif %}>Uncategorized</option>
 				</select>
 			</div>
 		</div>
@@ -52,8 +52,7 @@
 				<select id="phone1_label" name="phone1_label" class="form-control">
 					{% for  phoneLabels as phoneLabel  %}
                         <option	value="{{ phoneLabel }}" 
-                            @if (old('phone1_label') == phoneLabel) selected
-                            {% else %}if (contact.phone1_label == phoneLabel) selected 
+                            {% if contact.phone1_label == phoneLabel %} selected 
                             {% endif %}>
                             {{ phoneLabel }}
                          </option>
@@ -69,8 +68,7 @@
 				<select id="phone2_label" name="phone2_label" class="form-control">
 					{% for  phoneLabels as phoneLabel  %}
                         <option	value="{{ phoneLabel }}" 
-                            @if (old('phone2_label') == phoneLabel) selected
-                            {% else %}if (contact.phone2_label == phoneLabel) selected 
+                            {% if contact.phone2_label == phoneLabel %} selected 
                             {% endif %}>
                             {{ phoneLabel }}
                          </option>
@@ -86,8 +84,7 @@
 				<select id="phone3_label" name="phone3_label" class="form-control">
 					{% for  phoneLabels as phoneLabel  %}
                         <option	value="{{ phoneLabel }}" 
-                            @if (old('phone3_label') == phoneLabel) selected
-                            {% else %}if (contact.phone3_label == phoneLabel) selected 
+                            {% if contact.phone3_label == phoneLabel %} selected 
                             {% endif %}>
                             {{ phoneLabel }}
                          </option>

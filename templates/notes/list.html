@@ -1,12 +1,10 @@
 
 <ul class="list-group">
-	{% if contacts %}
-		{% for contact in contacts %}
-			<li class="list-group-item">
-				<a href="/contacts/{{ contact.id }}" @if ( isset(selectedContact) && selectedContact.id == contact.id ) class="strong" {% endif %};>{{ contact.name }}</a>
-			</li>
-		{% endforeach %}
-	{% endif %}
+	{% for notes as note %}
+		<li class="list-group-item">
+			<a href="/notes/{{ note.id }}" {% if selectedNote and selectedNote.id == note.id %} class="strong" {% endif %};>{{ note.subject }}</a>
+		</li>
+	{% endforeach %}
 </ul>
 
 <div class="page-control">

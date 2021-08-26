@@ -11,7 +11,7 @@
 
 	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
 
-		@csrf
+		{% csrf_token %}
 
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="folder_id">Folder</label>
@@ -19,11 +19,11 @@
 				<select class="form-control" name="folder_id" id="folder_id">
 					<option value="">
 					{% for folders as folder %}
-						<option value="{{ folder.id }}" @if (favorite.folder_id == folder.id) selected {% endif %}>
+						<option value="{{ folder.id }}" {% if favorite.folder_id == folder.id %} selected {% endif %}>
 							{{ folder.name }}
 						</option>
 					{% endforeach %}
-					<option value="0" @if (selectedFolder == null) selected {% endif %}>Uncategorized</option>
+					<option value="0" {% if selectedFolder == null %} selected {% endif %}>Uncategorized</option>
 				</select>
 			</div>
 		</div>

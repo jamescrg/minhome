@@ -10,7 +10,7 @@
 		<li class="list-group-item">
 			<div class="favorite-icon">
 					<a href="javascript:showHide('favoriteMenu-{{ favorite.id }}');">
-						<span class="glyphicon glyphicon-bookmark" @if ( favorite.home_rank > 0 ) style="color: #760f13;" {% endif %}>
+						<span class="glyphicon glyphicon-bookmark" {% if  favorite.home_rank > 0  %} style="color: #760f13;" {% endif %}>
 						</span>
 					</a>
 			</div>
@@ -25,7 +25,7 @@
 					{% include 'favorites/menu' %}
 				</div>
 			</div>
-			{% if  favorite.login != null  %}
+			{% if favorite.login %}
 				<div class="credentials">
 					<div id="credentialHint-{{ favorite.id }}">
 						<a href="javascript:showHideCredentials('{{ favorite.id }}');"><span  class="glyphicon glyphicon-briefcase"></span></a>
@@ -41,5 +41,5 @@
 </ul>
 
 <div class="page-control">
-	<a href="/favorites/create/@if(selectedFolder != null){{ selectedFolder.id }}{% else %}{{0}}{% endif %}"  class="btn btn-default" role="button"><span class="glyphicon glyphicon-plus"></span></a>
+	<a href="/favorites/create/{% if selectedFolder != null %}{{ selectedFolder.id }}{% else %}{{0}}{% endif %}"  class="btn btn-default" role="button"><span class="glyphicon glyphicon-plus"></span></a>
 </div>

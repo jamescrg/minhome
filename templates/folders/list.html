@@ -21,7 +21,7 @@
 					<span class="glyphicon glyphicon-folder-close"></span>
 				{% endif %}
 			</a>
-			<a class="folderLink" href="/folders/{{ folder.id }}/{{ page }}" @if ( folder.selected == 1 ) style="font-weight: bold;"{% endif %};>
+			<a class="folderLink" href="/folders/{{ folder.id }}/{{ page }}" {% if folder.selected == 1 %} style="font-weight: bold;"{% endif %};>
 				{{ folder.name }}
 				{% if  folder.home_column > 0  %}
 					&nbsp;*
@@ -40,7 +40,7 @@
 	{% if page != 'tasks' %}
 		<li class="list-group-item" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
 			<span class="glyphicon glyphicon-folder-close"></span>
-			<a class="folderLink" href="/folders/0/{{ page }}" @if ( selectedFolder == null ) style="font-weight: bold;"{% endif %};>
+			<a class="folderLink" href="/folders/0/{{ page }}" {% if selectedFolder == null %} style="font-weight: bold;"{% endif %};>
 				Uncategorized
 			</a>
 		</li>

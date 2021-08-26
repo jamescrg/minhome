@@ -4,13 +4,6 @@
 
 <div id="tasks">
 
-{% if errors.any() %}
-	<ul class="alert alert-danger">
-		{% for errors.all(  %}as error)
-		<li>{{ error }}</li>
-		{% endforeach %}
-	</ul>
-{% endif %}
 {% if  isset(activeFolder)  %}
 
 	{% include 'tasks/taskform' %}
@@ -26,7 +19,7 @@
 						{% else %}
 						<img class="task-pending" src="/images/icons/task.png">
 						{% endif %}
-					</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" @if (task.status == 1) style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
+					</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
 				</li>
 			{% endforeach %}
 		{% endif %}
@@ -45,7 +38,7 @@
 					{% else %}
 						<img class="task-pending" src="/images/icons/task.png">
 					{% endif %}
-				</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" @if (task.status == 1) style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
+				</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
 			</li>
 		{% endforeach %}
 	</ul>
