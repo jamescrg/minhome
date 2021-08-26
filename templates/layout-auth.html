@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 
 <meta charset="UTF-8"content="">
-<title>cloud-portal.com | {{ page }}</title>
-<link rel="shortcut icon" href="/static/images/icons/portal-dark.ico">
-<link rel="apple-touch-icon" href="/static/images/icons/portal-dark.png" />
+
+<title>cloud-portal.com</title>
+
+<link rel="shortcut icon" href="/images/icons/portal-dark.ico">
+<link rel="apple-touch-icon" href="/images/icons/portal-dark.png" />
 
 <!-- set viewport for mobile devices -->
 <meta name="viewport" content="width = device-width, initial-scale = 1">
@@ -13,31 +15,21 @@
 
 <!-- app stylesheets -->
 <link rel="stylesheet" href="/static/css/app.css">
-<link rel="stylesheet" href="/static/css/layout.html.css">
-<link rel="stylesheet" href="/static/css/forms.css">
-<link rel="stylesheet" href="/static/css/folders.css">
-<link rel="stylesheet" href="/static/css/{{ page }}.css">
-  
+<!-- <link rel="stylesheet" href="/static/css/layout-auth.css"> -->
+<!-- <link rel="stylesheet" href="/static/css/forms.css"> -->
+
 <!-- bootstrap javascript -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="/static/js/javascript.js"></script>
+<script src="/js/javascript.js"></script>
 
-<div id="wrapper">
+</head>
 
-  {% include 'nav.html' %}
+<body>
 
-  <div class="container" id="content">
+<div class="container vertical-center">
 
     {% block content %}
     {% endblock content %}
-
-  </div>
-
-  <div id="footer">
-
-    {% include 'footer.html' %}
-
-  </div>
 
 </div>

@@ -24,3 +24,5 @@ def dump(result):
     else:
         result = 'Input must be a a model instance, queryset, dict, string, int, list, or float.'
     return JsonResponse(result, safe=False)
+
+
