@@ -4,7 +4,7 @@
 		<li class="list-group-item">
 			<a href="/notes/{{ note.id }}" {% if selectedNote and selectedNote.id == note.id %} class="strong" {% endif %};>{{ note.subject }}</a>
 		</li>
-	{% endforeach %}
+	{% endfor %}
 </ul>
 
 <div class="page-control">

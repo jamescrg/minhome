@@ -7,10 +7,10 @@ def index():
     selected_folders = Folder.objects.filter(user_id=user_id, page=page, selected=1, active=0).get()
     active_folder = Folder.objects.filter(user_id=user_id, page=page, active=1).first()
 
-    if activeFolder:
-        active_folder_tasks = Task.objects.filter(folder_id=activeFolder.id)
+    if active_folder:
+        active_folder_tasks = Task.objects.filter(folder_id=active_folder.id)
                 .order_by('status')
-                .order_by('title').get()
+                .order_by('title')
         for folder in selected_folders:
                 selected_folder_tasks[folder.id] = Task.objects.filter('folder_id', folder.id)
                         .order_by('status')

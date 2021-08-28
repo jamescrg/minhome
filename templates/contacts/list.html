@@ -5,7 +5,7 @@
 			<li class="list-group-item">
 				<a href="/contacts/{{ contact.id }}" {% selectedContact and selectedContact.id == contact.id %} class="strong" {% endif %}>{{ contact.name }}</a>
 			</li>
-		{% endforeach %}
+		{% endfor %}
 	{% endif %}
 </ul>
 

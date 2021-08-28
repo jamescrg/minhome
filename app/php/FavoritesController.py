@@ -28,15 +28,6 @@ def create(id):
     return view('favorites/content', context)
 
 
-def update(Requests\CreateFavoriteRequest request):
-
-    # validation runs first
-    input = request.all()
-    input['user_id'] = request.user.id
-    Favorite::create(input)
-    return redirect('/favorites')
-
-
 def edit(id):
     user_id = request.user.id
     page = 'favorites'

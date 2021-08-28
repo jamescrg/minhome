@@ -4,15 +4,20 @@
 <div class="row">
 
 	<div id="favorites" class="col-sm-9">
+
 		{% if edit  %}
-			{% include 'tasks/create' %}
+
+			{% include 'tasks/create.html' %}
+
 		{% else %}
-			{% include 'tasks/tasks' %}
+
+			{% include 'tasks/tasks.html' %}
+
 		{% endif %}
 	</div>
 
 	<div id="lists" class="col-sm-3">
-		{% include 'folders/list' %}
+		{% include 'folders/list.html' %}
 	</div>
 
 </div>

@@ -23,7 +23,7 @@
 						<option value="{{ folder.id }}" {% if note.folder_id == folder.id %} selected {% endif %}>
 							{{ folder.name }}
 						</option>
-					{% endforeach %}
+					{% endfor %}
 					<option value="0" {% if !selectedFolder  %} selected="selected" {% endif %}>Uncategorized</option>
 				</select>
 			</div>

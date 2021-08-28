@@ -1,7 +1,7 @@
 
 <form role="form" id="tasks-form" method="post" action="/tasks" >
-	<input type="hidden" name="_token" value="{{ csrf_token() }}">
-	<input type="hidden" name="folder_id" value="{{ activeFolder.id }}">
+  {% csrf_token %}
+	<input type="hidden" name="folder_id" value="{{ active_folder.id }}">
 	<div class="input-group input-group-md">
 		<input id="focal" class="form-control" type="text"  maxLength="255" name="title" autofocus>
 		<div class="input-group-btn">

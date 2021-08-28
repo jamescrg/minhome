@@ -16,6 +16,7 @@ def index(request):
         folders = folders.order_by('home_rank')
         for folder in folders:
             favorites = Favorite.objects.filter(folder_id = folder.id, home_rank__gt = 0)
+            favorites = favorites.order_by('home_rank')
             folder.favorites = favorites
         columns.append(folders)
 
@@ -66,7 +67,7 @@ def folder(request, id, direction):
             displaced_folder = Folder.objects.filter(user_id=user_id, 
                     home_column=origin_column, home_rank=destination_rank).get() 
         except Folder.DoesNotExist:
-            raise Http404('No Folder matches the given query.')
+            raise Http404('No folder matches the given query.')
 
         # if a folder is being displaced, move it and the original folder
         # otherwise, we are at the end of the column, make no changes
@@ -102,13 +103,15 @@ def folder(request, id, direction):
 @login_required
 def favorite(request, id, direction):
 
+    user_id = request.user.id
+
     # get the favorite to be moved
-    origin_favorite = get_model_or_404(Favorite, pk=id)
+    origin_favorite = get_object_or_404(Favorite, pk=id)
     folder_id = origin_favorite.folder_id
 
     # make sure the favorites are sequential and adjacent
-    favorites = Favorites.objects.filter(user_id=user_id, folder_id=folder_id,home_rank__gt=0)
-    favorites = favorites.orderBy('home_rank')
+    favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id, home_rank__gt=0)
+    favorites = favorites.order_by('home_rank')
 
     count = 1
     for favorite in favorites:
@@ -116,15 +119,18 @@ def favorite(request, id, direction):
         favorite.save()
         count += 1
 
+    favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id,home_rank__gt=0)
+    favorites = favorites.order_by('home_rank')
+
     # identify the origin rank as modified by the sequence operation
-    origin_favorite = get_model_or_404(Favorite, pk=id)
+    origin_favorite = get_object_or_404(Favorite, pk=id)
     origin_rank = origin_favorite.home_rank
 
     # identify the destination rank
     if direction == 'up':
-        destination_rank = originRank - 1
+        destination_rank = origin_rank - 1
     if direction == 'down':
-        destination_rank = originRank + 1
+        destination_rank = origin_rank + 1
 
     # identify the favorite to be displaced
     displaced_favorite = Favorite.objects.filter(user_id=user_id, 

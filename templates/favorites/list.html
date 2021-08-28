@@ -1,19 +1,30 @@
 <div class="section-title">
-	{% if  selectedFolder != null  %}
-		{{ selectedFolder.name }}
+
+	{% if  selected_folder_id %}
+
+		{{ selected_folder.name }}
+
 	{% else %}
+
 		Uncategorized
+
 	{% endif %}
+
 </div>
+
 <ul class="list-group">
-	{% for favorites as favorite %}
+
+	{% for favorite in favorites %}
+
 		<li class="list-group-item">
+
 			<div class="favorite-icon">
 					<a href="javascript:showHide('favoriteMenu-{{ favorite.id }}');">
 						<span class="glyphicon glyphicon-bookmark" {% if  favorite.home_rank > 0  %} style="color: #760f13;" {% endif %}>
 						</span>
 					</a>
 			</div>
+
 			<div class="favorite-text">
 				<div class="link">
 					<a href="{{ favorite.url }}">{{ favorite.name }}</a>
@@ -22,10 +33,12 @@
 					{{ favorite.description }}
 				</div>
 				<div id="favoriteMenu-{{ favorite.id }}" class="favoriteMenu" style="display: none;">
-					{% include 'favorites/menu' %}
+					{% include 'favorites/menu.html' %}
 				</div>
 			</div>
+
 			{% if favorite.login %}
+
 				<div class="credentials">
 					<div id="credentialHint-{{ favorite.id }}">
 						<a href="javascript:showHideCredentials('{{ favorite.id }}');"><span  class="glyphicon glyphicon-briefcase"></span></a>
@@ -34,12 +47,17 @@
 						{{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
 					</div>
 				</div>
+
 			{% endif %}
+
 			<div style="clear:both"></div>
+
 		</li>
-	{% endforeach %}
+
+	{% endfor %}
+
 </ul>
 
 <div class="page-control">
-	<a href="/favorites/create/{% if selectedFolder != null %}{{ selectedFolder.id }}{% else %}{{0}}{% endif %}"  class="btn btn-default" role="button"><span class="glyphicon glyphicon-plus"></span></a>
+	<a href="/favorites/create/{% if selected_folder_id %}{{ selected_folder_id }}{% else %}{{0}}{% endif %}"  class="btn btn-default" role="button"><span class="glyphicon glyphicon-plus"></span></a>
 </div>

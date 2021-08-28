@@ -16,26 +16,26 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # folders
-    # path('folders/home/<int:id>/<str:page>', views_folders.home, name='folder-home')
-    # path('folders/delete/<int:id>/<str:page>', views_folders.delete, name='folder-delete')
-    # path('folders/<int:id>/<str:page>', views_folders.select, name='folder-select')
-    # path('folders/create/<str:page>', views_folders.insert, name='folder-insert')
-    # path('folders/update/<int:id>/<str:page>', views_folders.update, name='folder-update')
+    path('folders/home/<int:id>/<str:page>', views_folders.home, name='folder-home'),
+    path('folders/<int:id>/<str:page>', views_folders.select, name='folder-select'),
+    path('folders/create/<str:page>', views_folders.insert, name='folder-insert'),
+    path('folders/update/<int:id>/<str:page>', views_folders.update, name='folder-update'),
+    path('folders/delete/<int:id>/<str:page>', views_folders.delete, name='folder-delete'),
 
     # home
-    path('', views_home.index, name='index'),
+    path('', views_home.index, name='home-index'),
     path('home/', views_home.index, name='home'),
-    path('home/folder/<int:id>/<str:direction>/', views_home.folder),
-    # path('home/favorite/<int:id>/<str:direction>/', views_home.favorite),
+    path('home/folder/<int:id>/<str:direction>/', views_home.folder, name='home-folder'),
+    path('home/favorite/<int:id>/<str:direction>/', views_home.favorite, name='home-favorite'),
 
     # favorites
     path('favorites/', views_favorites.index, name='favorites'),
-    # path('favorites/create/<int:id>', views_favorites.create, name='favorites-add')
-    # path('favorites/edit/<int:id>', views_favorites.edit, name='favorites-edit')
-    # path('favorites/home/<int:id>', views_favorites.home, name='favorites-home')
-    # path('favorites/delete/<int:id>', views_favorites.delete, name='favorites-delete')
-    # path('favorites', views_favorites.insert, name='favorites-insert')
-    # path('favorites/update/<int:id>', views_favorites.update, name='favorites-update')
+    path('favorites/create/<int:id>', views_favorites.create, name='favorites-add'),
+    path('favorites/insert', views_favorites.insert, name='favorites-insert'),
+    path('favorites/edit/<int:id>', views_favorites.edit, name='favorites-edit'),
+    path('favorites/update/<int:id>', views_favorites.update, name='favorites-update'),
+    path('favorites/delete/<int:id>', views_favorites.delete, name='favorites-delete'),
+    path('favorites/home/<int:id>', views_favorites.home, name='favorites-home'),
 
     # tasks
     path('tasks/', views_tasks.index, name='tasks'),
