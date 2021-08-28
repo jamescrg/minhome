@@ -8,50 +8,50 @@
 
 	{% include 'tasks/taskform.html' %}
 
-	<ul class="list-group task-list task-list-active">
-		<li class="list-group-item task-list-title">{{ active_folder.name }}</li>
-
-
-			{% for task in active_folder.tasks %}
-
-				<li class="list-group-item">
-
-					<a href="/tasks/complete/{{ task.id }}">
-
-						{% if task.status == 1 %}
-
-              <img class="task-done" src="/static/images/icons/task-done.png">
-
-						{% else %}
-
-              <img class="task-pending" src="/static/images/icons/task.png">
-
-						{% endif %}
-
-					</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
-
-				</li>
-
-			{% endfor %}
-	</ul>
-
 {% endif %}
 
 {% for folder in selected_folders  %}
 
 	<ul class="list-group task-list">
-		<li class="list-group-item task-list-title"><a href="/tasks/activate/{{ folder.id }}">{{ folder.name }}</a></li>
+
+		<li class="list-group-item task-list-title">
+      
+      {% if folder.active == 1 %}
+
+        {{ folder.name }}
+
+      {% else %}
+
+        <a href="/tasks/activate/{{ folder.id }}">{{ folder.name }}</a></li>
+
+
+      {% endif %}
 
 		{% for task in folder.tasks %}
+
 			<li class="list-group-item">
+
 				<a href="/tasks/complete/{{ task.id }}">
+
 					{% if task.status == 1 %}
+
 						<img class="task-done" src="/static/images/icons/task-done.png">
+
 					{% else %}
+
 						<img class="task-pending" src="/static/images/icons/task.png">
+
 					{% endif %}
-				</a>&nbsp;&nbsp;<a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} style="text-decoration: line-through; color: gray;" {% endif %}>{{ task.title}}</a>
+
+				</a>
+        &nbsp;&nbsp;
+        <a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} 
+          style="text-decoration: line-through; color: gray;" {% endif %}>
+          {{ task.title}}
+        </a>
+
 			</li>
+
 		{% endfor %}
 
 	</ul>
@@ -59,9 +59,15 @@
 {% endfor %}
 
 {% if active_folder  %}
+
 <div class="page-control" id="clear">
-	<a href="tasks/clear/{{ activeFolder.id }}" class="btn btn-default"><span class="glyphicon glyphicon-new-window"></span></a>
+
+	<a href="/tasks/clear/{{ active_folder.id }}" class="btn btn-default">
+    <span class="glyphicon glyphicon-new-window"></span>
+  </a>
+
 </div>
+
 {% endif %}
 
 </div>

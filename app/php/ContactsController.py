@@ -1,25 +1,5 @@
 
 
-def index():
-    user_id = request.user.id
-    page = 'contacts'
-    folders = FoldersController::getAll(page)
-    selectedFolder = Folder.objects.filter(user_id=user_id, page=page, selected=1).first()
-    if selectedFolder:
-        contacts = Contact.objects.filter(user_id=user_id, folder_id=selectedFolder.id).order_by('name').get()
-    else: 
-        contacts = Contact.objects.filter(user_id=user_id, folder_id=0).order_by('name').get()
-    selectedContact = Contact.objects.filter(user_id=user_id, selected=1).first()
-    return view('contacts/content', context)
-
-
-def show(id):
-    user_id = request.user.id
-    Contact.objects.filter(user_id=user_id, selected=1).update(selected=0)
-    Contact.objects.filter(id=id, user_id=user_id).update(selected=1)
-    return redirect('/contacts/')
-
-
 def create(id):
     user_id = request.user.id
     page = 'contacts'

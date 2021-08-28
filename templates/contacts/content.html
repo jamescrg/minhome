@@ -1,16 +1,24 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <div class="row">
 
-	{% if edit %}
-		{% include 'contacts/create' %}
+	{% if edit or add %}
+
+		{% include 'contacts/create.html' %}
+
 	{% else %}
-		{% include 'contacts/contacts' %}
+
+		{% include 'contacts/contacts.html' %}
+
 	{% endif %}
 
 	<div id="folders" class="col-sm-3 col-sm-pull-9">
-		{% include 'folders/list' %}
+
+		{% include 'folders/list.html' %}
+
 	</div>
 
 </div>
+
 {% endblock content %}

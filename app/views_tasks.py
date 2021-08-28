@@ -13,9 +13,8 @@ def index(request):
     page = 'tasks'
 
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
-
-    selected_folders = folders.filter(selected=1, active=0)
-    active_folder = folders.filter(active=1).first()
+    selected_folders = folders.filter(selected=1).order_by('-active', 'name')
+    active_folder = folders.filter(user_id=user_id, active=1).first()
 
     if selected_folders:
         for folder in selected_folders:
@@ -23,94 +22,81 @@ def index(request):
             tasks = tasks.order_by('status').order_by('title')
             folder.tasks = tasks
 
-    if active_folder:
-        tasks = Task.objects.filter(folder_id=active_folder.id)
-        active_folder.tasks = tasks.order_by('status').order_by('title')
-
     context = {
         'page': page,
         'folders': folders,
-        'selected_folders': selected_folders,
         'active_folder': active_folder,
+        'selected_folders': selected_folders,
     }
 
     return render(request, 'tasks/content.html', context)
 
 
-def create(request, id):
-    user_id = request.user.id
-    selected_folder_id = id
-    selected_folder = get_object_or_404(Folder, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    favorite = Favorite()
-    favorite.folder_id = id
-
-    context = {
-        'page': 'favorites',
-        'edit': False,
-        'add': True,
-        'action': '/favorites/insert',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'favorite': favorite,
-    }
-
-    return render(request, 'favorites/content.html', context)
+@login_required
+def activate(request,id):
+    Folder.objects.filter(user_id=1, active=1).update(active=0)
+    folder = get_object_or_404(Folder, pk=id)
+    folder.active=1
+    folder.save()
+    return redirect('/tasks/')
 
 
+@login_required
+def status(request, id):
+    task = get_object_or_404(Task, pk=id)
+    if task.status == 1:
+        task.status = 0
+    else: 
+        task.status = 1
+    task.save()
+    return redirect('/tasks/')
+
+
+@login_required
 def insert(request):
-    favorite = Favorite()
-    favorite.user_id = request.user.id
-    for field in favorite.fillable:
-         setattr(favorite, field, request.POST.get(field))
-    favorite.save()
-    return redirect('favorites')
+    task = Task()
+    task.user_id = request.user.id
+    task.folder_id = request.POST.get('folder_id')
+    task.title = request.POST.get('title')
+    task.save()
+    return redirect('tasks')
 
 
+@login_required
 def edit(request, id):
     user_id = request.user.id
-    favorite = get_object_or_404(Favorite, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    selected_folder_id = favorite.folder_id
+    task = get_object_or_404(Task, pk=id)
+    folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+    selected_folder_id = task.folder_id
     selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
 
     context = {
-        'page': 'favorites',
+        'page': 'tasks',
         'edit': True,
-        'add': False,
-        'action': f'/favorites/update/{id}',
+        'action': f'/tasks/update/{id}',
         'folders': folders,
         'selected_folder': selected_folder,
         'selected_folder_id': selected_folder_id,
-        'favorite': favorite,
+        'task': task,
     }
 
+    return render(request, 'tasks/content.html', context)
 
-    return render(request, 'favorites/content.html', context)
 
-
+@login_required
 def update(request, id):
-    favorite = get_object_or_404(Favorite, pk=id)
-    for field in favorite.fillable:
-         setattr(favorite, field, request.POST.get(field))
-    favorite.save()
-    return redirect('favorites')
+    task = get_object_or_404(Task, pk=id)
+    task.user_id = request.user.id
+    task.folder_id = request.POST.get('folder_id')
+    task.title = request.POST.get('title')
+    task.save()
+    return redirect('tasks')
 
 
-def delete(request, id):
-    favorite = get_object_or_404(Favorite, pk=id)
-    favorite.delete()
-    return redirect('favorites')
-
-
-def home(request, id):
+@login_required
+def clear(request, folder_id):
     user_id = request.user.id
-    favorite = get_object_or_404(Favorite, pk=id)
-    if favorite.home_rank: 
-        favorite.home_rank = 0
-    else: 
-        favorite.home_rank = 1
-    
-    favorite.save()
-    return redirect('favorites')
+    tasks = Task.objects.filter(user_id=user_id, folder_id=folder_id, status=1)
+    for task in tasks:
+        task.delete()
+    return redirect('/tasks/')

@@ -1,53 +1,102 @@
 
 <div class="section-title">
-	{{ selectedContact.name }}
+
+	{{ selected_contact.name }}
+
 </div>
 
 <div class="contact">
 
 	<div class="contact-item">
-		{{ selectedContact.name }} <br>
-		{% if selectedContact.company %} 
-      {{ selectedContact.company }} 	<br> 
+
+		{{ selected_contact.name }} <br>
+
+		{% if selected_contact.company %} 
+      {{ selected_contact.company }} 	<br> 
     {% endif %}
-		{% if selectedContact.address %}
-      {!! nl2br(selectedContact.address) !!} <br> 
+
+		{% if selected_contact.address %}
+      {{ selected_contact.address|linebreaks }} <br> 
     {% endif %}
+
 	</div>
 
-	{% if selectedContact.phone1 %}
-    <div class="contact-item"> {{ selectedContact.phone1 }} - {{ lcfirst(selectedContact.phone1_label) }} </div>
+	{% if selected_contact.phone1 %}
+
+    <div class="contact-item"> 
+      {{ selected_contact.phone1 }} - {{ selected_contact.phone1_label|lower }} 
+    </div>
+
   {% endif %}
-	{% if selectedContact.phone2 %}
-    <div class="contact-item"> {{ selectedContact.phone2 }} - {{ lcfirst(selectedContact.phone2_label) }} </div>
+
+	{% if selected_contact.phone2 %}
+
+    <div class="contact-item"> 
+      {{ selected_contact.phone2 }} - {{ selected_contact.phone2_label|lower }} 
+    </div>
+
   {% endif %}
-	{% if selectedContact.phone3  %}
-    <div class="contact-item"> {{ selectedContact.phone3 }} - {{ lcfirst(selectedContact.phone3_label) }} </div>
+
+	{% if selected_contact.phone3  %}
+
+    <div class="contact-item"> 
+      {{ selected_contact.phone3 }} - {{ selected_contact.phone3_label|lower }} 
+    </div>
+
   {% endif %}
-	{% if selectedContact.email != null %}
-    <div class="contact-item"> {{ selectedContact.email }}  </div>
+
+	{% if selected_contact.email != null %}
+
+    <div class="contact-item">
+      {{ selected_contact.email }}
+    </div>
+
   {% endif %}
-	{% if selectedContact.website %}
-    <div class="contact-item"> <a href="{{ selectedContact.website }}"> {{ selectedContact.website  }} </a> </div>
+
+	{% if selected_contact.website %}
+
+    <div class="contact-item"> 
+      <a href="{{ selected_contact.website }}"> 
+        {{ selected_contact.website  }} 
+      </a>
+    </div>
+
   {% endif %}
-	{% if selectedContact.map %}
-    <div class="contact-item"> <a href="{{ selectedContact.map }}"> Map </a>  </div>
+
+	{% if selected_contact.map %}
+
+    <div class="contact-item"> 
+      <a href="{{ selected_contact.map }}"> Map </a>  
+    </div>
+
   {% endif %}
-	{% if selectedContact.notes %}
-    <div class="contact-item"> {!! nl2br(selectedContact.notes) !!}  </div>
+
+	{% if selected_contact.notes %}
+
+    <div class="contact-item"> 
+      {{ selected_contact.notes }}  
+    </div>
+
   {% endif %}
-	{% if !selectedContact.google_id %}
-    <div class="contact-item"> (Not included in Google contacts.)  </div>
+
+	{% if not selected_contact.google_id %}
+
+    <div class="contact-item">
+      (Not included in Google contacts.)  
+    </div>
+
   {% endif %}
+
 	</div>
 
 <div class="page-control">
 
-	<a href="/contacts/edit/{{ selectedContact.id }}" class="btn btn-default" role="button">
+	<a href="/contacts/edit/{{ selected_contact.id }}" class="btn btn-default" role="button">
 		<span class="glyphicon glyphicon-pencil"></span>
 	</a>
 
-	<a href="/contacts/delete/{{ selectedContact.id }}" class="btn btn-default" role="button"
+	<a href="/contacts/delete/{{ selected_contact.id }}" 
+     class="btn btn-default" role="button"
 	   onclick="javascript: return confirm('Are you sure you want to delete this contact?')">
 		<span class="glyphicon glyphicon-remove"></span>
 	</a>
