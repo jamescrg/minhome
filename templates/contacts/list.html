@@ -1,3 +1,4 @@
+{# django template #}
 
 <ul class="list-group">
 
@@ -10,6 +11,7 @@
           {% if selected_contact and selected_contact.id == contact.id %} class="strong" {% endif %}>
           {{ contact.name }}</a>
 			</li>
+
 		{% endfor %}
 
 	{% endif %}
