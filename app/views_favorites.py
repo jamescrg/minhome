@@ -36,7 +36,7 @@ def index(request):
     return render(request, 'favorites/content.html', context)
 
 
-def create(request, id):
+def add(request, id):
     user_id = request.user.id
     selected_folder_id = id
     selected_folder = get_object_or_404(Folder, pk=id)

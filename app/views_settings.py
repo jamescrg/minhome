@@ -9,4 +9,4 @@ def index(request):
         'page': 'settings',
     }
 
-    return render(request, 'settings/index.html', context)
+    return render(request, 'settings/content.html', context)

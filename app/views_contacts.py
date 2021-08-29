@@ -23,7 +23,7 @@ def index(request):
         contacts = Contact.objects.filter(user_id=user_id, folder_id=0)
     contacts = contacts.order_by('name')
 
-    selected_contact = Contact.objects.filter(user_id=user_id, selected=1).get()
+    selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
 
     context = {
         'page': 'contacts',
@@ -48,7 +48,7 @@ def select(request, id):
 
 
 @login_required
-def create(request, id):
+def add(request, id):
     user_id = request.user.id
     selected_folder_id = id
     selected_folder = get_object_or_404(Folder, pk=id)
@@ -71,4 +71,51 @@ def create(request, id):
     return render(request, 'contacts/content.html', context)
 
 
+@login_required
+def insert(request):
+    contact = Contact()
+    contact.user_id = request.user.id
+    for field in contact.fillable:
+         setattr(contact, field, request.POST.get(field))
+    contact.save()
+    return redirect('contacts')
 
+
+@login_required
+def edit(request, id):
+    user_id = request.user.id
+    contact = get_object_or_404(Contact, pk=id)
+    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+    selected_folder_id = contact.folder_id
+    selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
+
+    context = {
+        'page': 'contacts',
+        'edit': True,
+        'add': False,
+        'action': f'/contacts/update/{id}',
+        'folders': folders,
+        'selected_folder': selected_folder,
+        'selected_folder_id': selected_folder_id,
+        'contact': contact,
+        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
+    }
+
+
+    return render(request, 'contacts/content.html', context)
+
+
+@login_required
+def update(request, id):
+    contact = get_object_or_404(Contact, pk=id)
+    for field in contact.fillable:
+         setattr(contact, field, request.POST.get(field))
+    contact.save()
+    return redirect('contacts')
+
+
+@login_required
+def delete(request, id):
+    contact = get_object_or_404(Contact, pk=id)
+    contact.delete()
+    return redirect('contacts')

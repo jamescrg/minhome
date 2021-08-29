@@ -20,6 +20,22 @@ class Contact(models.Model):
     map = models.CharField(max_length=255, blank=True, null=True)
     notes = models.CharField(max_length=255, blank=True, null=True)
     google_id = models.CharField(max_length=255, blank=True, null=True)
+    fillable = [
+        'folder_id',
+        'name',
+        'company',
+        'address',
+        'phone1',
+        'phone1_label',
+        'phone2',
+        'phone2_label',
+        'phone3',
+        'phone3_label',
+        'email',
+        'website',
+        'map',
+        'notes',
+    ]
 
     def __str__(self):
         return f'{self.name} {self.id}'
@@ -88,6 +104,11 @@ class Note(models.Model):
     subject = models.CharField(max_length=150, blank=True, null=True)
     note = models.TextField(blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
+    fillable = [
+        'folder_id',
+        'subject',
+        'note',
+    ]
 
     def __str__(self):
         return f'{self.subject} {self.id}'

@@ -18,7 +18,7 @@ urlpatterns = [
     # folders
     path('folders/home/<int:id>/<str:page>', views_folders.home, name='folder-home'),
     path('folders/<int:id>/<str:page>', views_folders.select, name='folder-select'),
-    path('folders/create/<str:page>', views_folders.insert, name='folder-insert'),
+    path('folders/add/<str:page>', views_folders.insert, name='folder-insert'),
     path('folders/update/<int:id>/<str:page>', views_folders.update, name='folder-update'),
     path('folders/delete/<int:id>/<str:page>', views_folders.delete, name='folder-delete'),
 
@@ -31,7 +31,7 @@ urlpatterns = [
 
     # favorites
     path('favorites/', views_favorites.index, name='favorites'),
-    path('favorites/create/<int:id>', views_favorites.create, name='favorites-add'),
+    path('favorites/add/<int:id>', views_favorites.add, name='favorites-add'),
     path('favorites/insert', views_favorites.insert, name='favorites-insert'),
     path('favorites/edit/<int:id>', views_favorites.edit, name='favorites-edit'),
     path('favorites/update/<int:id>', views_favorites.update, name='favorites-update'),
@@ -49,25 +49,25 @@ urlpatterns = [
     
     # contacts
     path('contacts/', views_contacts.index, name='contacts'),
-    path('contacts/create/<int:id>', views_contacts.create, name='contacts-create'),
-    # path('contacts/edit/<int:id>', views_contacts.edit, name=''),
+    path('contacts/add/<int:id>', views_contacts.add, name='contacts-add'),
+    path('contacts/edit/<int:id>', views_contacts.edit, name='contacts-edit'),
     path('contacts/<int:id>', views_contacts.select, name='contacts-select'),
-    # path('contacts', views_contacts.store, name=''),
-    # path('contacts/update/<int:id>', views_contacts.update, name=''),
-    # path('contacts/delete/<int:id>', views_contacts.destroy, name=''),
+    path('contacts/insert', views_contacts.insert, name='contacts-insert'),
+    path('contacts/update/<int:id>', views_contacts.update, name='contacts-update'),
+    path('contacts/delete/<int:id>', views_contacts.delete, name='contacts-delete'),
 
     # notes
     path('notes/', views_notes.index, name='notes'),
-    # path('notes/create/<int:id>', views_notes.create, name=''),
-    # path('notes/<int:id>', views_notes.show, name=''),
-    # path('notes/edit/<int:id>', views_notes.edit, name=''),
-    # path('notes', views_notes.store, name=''),
-    # path('notes/update/<int:id>', views_notes.update, name=''),
-    # path('notes/delete/<int:id>', views_notes.destroy, name=''),
+    path('notes/add/<int:id>', views_notes.add, name='notes-add'),
+    path('notes/<int:id>', views_notes.select, name='notes-select'),
+    path('notes/edit/<int:id>', views_notes.edit, name='notes-edit'),
+    path('notes/insert', views_notes.insert, name='notes-insert'),
+    path('notes/update/<int:id>', views_notes.update, name='notes-update'),
+    path('notes/delete/<int:id>', views_notes.delete, name='notes-delete'),
 
     # search
     path('search/', views_search.index, name='search'),
-    # path('search', views_search.search, name=''),
+    path('search/results', views_search.results, name='search-results'),
 
     # settings
     path('settings/', views_settings.index, name='settings'),

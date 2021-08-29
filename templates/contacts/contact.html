@@ -75,7 +75,7 @@
 	{% if selected_contact.notes %}
 
     <div class="contact-item"> 
-      {{ selected_contact.notes }}  
+      {{ selected_contact.notes|linebreaks }}  
     </div>
 
   {% endif %}

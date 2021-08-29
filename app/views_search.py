@@ -1,12 +1,73 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.db.models import Q
+
+from .models import Favorite, Contact, Note, Folder
 
 @login_required
 def index(request):
 
     context = {
         'page': 'search',
+        'action': '/search/results',
+        'results': False,
     }
 
-    return render(request, 'search/index.html', context)
+    return render(request, 'search/content.html', context)
+
+
+@login_required
+def results(request):
+    page = 'search'
+    results = True
+    user_id = request.user.id
+    text = request.POST.get('search_text')
+
+    favorites = Favorite.objects.filter(user_id=user_id)
+    favorites = favorites.filter(
+            Q(name__contains=text) |
+            Q(url__contains=text) |
+            Q(description__contains=text)
+            ).order_by('name')
+    for favorite in favorites:
+        favorite.folder = Folder.objects.filter(pk=favorite.folder_id).first()
+
+    contacts = Contact.objects.filter(user_id=user_id)
+    contacts = contacts.filter(
+            Q(name__contains=text) |
+            Q(company__contains=text) |
+            Q(address__contains=text) |
+            Q(phone1__contains=text) |
+            Q(phone2__contains=text) |
+            Q(phone3__contains=text) |
+            Q(email__contains=text) |
+            Q(website__contains=text) |
+            Q(notes__contains=text)
+            ).order_by('name')
+    for contact in contacts:
+        contact.folder = Folder.objects.filter(pk=contact.folder_id).first()
+
+    notes = Note.objects.filter(user_id=user_id)
+    notes = notes.filter(
+            Q(subject__contains=text) |
+            Q(note__contains=text)
+            ).order_by('subject')
+    for note in notes:
+        note.folder = Folder.objects.filter(pk=note.folder_id).first()
+
+
+    context = {
+        'page': 'search',
+        'action': '/search/results',
+        'results': True,
+        'favorites': favorites,
+        'contacts': contacts,
+        'notes': notes,
+    }
+
+    return render(request, 'search/content.html', context)
+
+
+
+

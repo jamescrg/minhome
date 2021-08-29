@@ -1,15 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <div class="row">
 
-	{% if  isset(edit)  %}
-		{% include 'notes/create' %}
+	{% if edit or add %}
+
+		{% include 'notes/form.html' %}
+
 	{% else %}
-		{% include 'notes/notes' %}
+
+		{% include 'notes/notes.html' %}
+
 	{% endif %}
 
 	<div id="folders" class="col-sm-3 col-sm-pull-9">
-		{% include 'folders/list' %}
+		{% include 'folders/list.html' %}
 	</div>
 
 

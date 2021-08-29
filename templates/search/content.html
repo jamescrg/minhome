@@ -1,9 +1,16 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 	<div class="row">
-		{% include 'search/form' %}
+
+		{% include 'search/form.html' %}
+
 		{% if results %}
-			{% include 'search/results' %}
+
+			{% include 'search/results.html' %}
+
 		{% endif %}
+
 	</div>
+
 {% endblock content %}
