@@ -38,14 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'crispy_forms',
     'accounts',
     'app',
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -143,3 +141,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+GOOGLE_CLIENT_ID = settings_local.GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET = settings_local.GOOGLE_CLIENT_SECRET

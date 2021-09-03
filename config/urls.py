@@ -71,8 +71,8 @@ urlpatterns = [
 
     # settings
     path('settings/', views_settings.index, name='settings'),
-    # path('settings/google/login', views_settings.googleLogin, name=''),
-    # path('settings/google/store', views_settings.googleStore, name=''),
-    # path('settings/google/logout', views_settings.googleLogout, name=''),
+    path('settings/google/login', views_settings.google_login, name='settings-google-login'),
+    path('settings/google/store', views_settings.google_store, name='settings-google-store'),
+    # path('settings/google/logout', views_settings.google_logout, name=''),
 
 ]

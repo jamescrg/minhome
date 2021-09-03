@@ -1,3 +1,4 @@
 tags
 config/settings_local.py
 *.pyc
+cp_credentials_web.json
