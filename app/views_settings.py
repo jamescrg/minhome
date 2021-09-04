@@ -2,15 +2,22 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+import json
+
+from accounts.models import CustomUser
 
 
 @login_required
 def index(request):
 
-    if request.session['credentials']:
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+
+    if user.google_credentials:
         logged_in = True
     else:
         logged_in = False
@@ -19,9 +26,6 @@ def index(request):
         'page': 'settings',
         'logged_in': logged_in,
     }
-
-    import app.util as util
-    return util.dump(request.session['credentials'])
 
     return render(request, 'settings/content.html', context)
 
@@ -72,12 +76,9 @@ def google_store(request):
     authorization_response = request.build_absolute_uri()
     flow.fetch_token(authorization_response=authorization_response)
 
-    # Store the credentials in the session.
-    # ACTION ITEM for developers:
-    #     Store user's access and refresh tokens in your data store if
-    #     incorporating this code into your real app.
+    # get the user credentials and package them as a json string
     credentials = flow.credentials
-    request.session['credentials'] = {
+    google_credentials = {
         'token': credentials.token,
         'refresh_token': credentials.refresh_token,
         'token_uri': credentials.token_uri,
@@ -85,6 +86,13 @@ def google_store(request):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
         }
+    google_credentials_json = json.dumps(google_credentials)
+
+    # save the json credentials to the database
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+    user.google_credentials = google_credentials_json
+    user.save()
 
     return redirect('/settings')
 

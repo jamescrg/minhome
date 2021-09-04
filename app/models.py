@@ -42,6 +42,7 @@ class Contact(models.Model):
 
     class Meta:
         db_table = 'contacts'
+        managed = False
 
 class Favorite(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -72,6 +73,7 @@ class Favorite(models.Model):
 
     class Meta:
         db_table = 'favorites'
+        managed = False
 
 class Folder(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -96,6 +98,7 @@ class Folder(models.Model):
 
     class Meta:
         db_table = 'folders'
+        managed = False
 
 class Note(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -115,6 +118,7 @@ class Note(models.Model):
 
     class Meta:
         db_table = 'notes'
+        managed = False
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -128,6 +132,7 @@ class Task(models.Model):
 
     class Meta:
         db_table = 'tasks'
+        managed = False
 
 class Old_User(models.Model):
     id = models.BigAutoField(primary_key=True)

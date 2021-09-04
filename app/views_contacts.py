@@ -14,8 +14,8 @@ def index(request):
 
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
 
-    selected_folder = Folder.objects.filter(user_id=user_id, 
-            page=page, selected=1).first()
+    selected_folder = Folder.objects.filter(
+            user_id=user_id, page=page, selected=1).first()
    
     if selected_folder:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
