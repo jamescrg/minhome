@@ -20,53 +20,47 @@
 
 		{% csrf_token %}
 
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="folder_id">Folder</label>
+    <table>
 
-			<div class="col-sm-10">
-				<select class="form-control" name="folder_id" id="folder_id">
+      <tr>
+        <td>
+          Folder
 
-					<option value="0">Uncategorized</option>
+        <td>
+          <select name="folder_id" id="folder_id">
 
-					{% for folder in folders %}
+            <option value="0">Uncategorized</option>
 
-						<option value="{{ folder.id }}" {% if note.folder_id == folder.id %} selected {% endif %}>
-							{{ folder.name }}
-						</option>
+            {% for folder in folders %}
 
-					{% endfor %}
+              <option value="{{ folder.id }}" {% if note.folder_id == folder.id %} selected {% endif %}>
+                {{ folder.name }}
+              </option>
 
-				</select>
-			</div>
+            {% endfor %}
 
-		</div>
+          </select>
 
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="subject">Subject</label>
+    <tr>
+      <td>
+        Subject
 
-			<div class="col-sm-10">
-				<input type="text" autofocus="autofocus" name="subject" id="subject" class="form-control"
+      <td>
+				<input type="text" autofocus="autofocus" name="subject" id="subject"
 				       value="{{ note.subject|default:'' }}" required>
-			</div>
 
-		</div>
+    <tr>
+      <td>
+        Note
 
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="note">Note</label>
+      <td>
+				<textarea name="note" id="note" required>{{ note.note|default:'' }}</textarea>
 
-			<div class="col-sm-10">
-				<textarea name="note" id="note" class="form-control"i required>{{ note.note|default:'' }}</textarea>
-			</div>
-
-		</div>
-
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="email"></label>
-
-			<div class="col-sm-10">
+    <tr>
+      <td>
+      <td>
         <input type="submit" value="Submit" class="btn btn-default">
-        </div>
-      </div>
 
+    </table>
 	</form>
 </div>

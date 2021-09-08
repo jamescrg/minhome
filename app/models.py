@@ -1,3 +1,4 @@
+
 from django.db import models
 
 
@@ -40,9 +41,6 @@ class Contact(models.Model):
     def __str__(self):
         return f'{self.name} {self.id}'
 
-    class Meta:
-        db_table = 'contacts'
-        managed = False
 
 class Favorite(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -71,9 +69,6 @@ class Favorite(models.Model):
     def __str__(self):
         return f'{self.name} {self.id}'
 
-    class Meta:
-        db_table = 'favorites'
-        managed = False
 
 class Folder(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -96,9 +91,6 @@ class Folder(models.Model):
     def __str__(self):
         return f'{self.name} {self.id}'
 
-    class Meta:
-        db_table = 'folders'
-        managed = False
 
 class Note(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -116,9 +108,6 @@ class Note(models.Model):
     def __str__(self):
         return f'{self.subject} {self.id}'
 
-    class Meta:
-        db_table = 'notes'
-        managed = False
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -129,23 +118,3 @@ class Task(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.id}'
-
-    class Meta:
-        db_table = 'tasks'
-        managed = False
-
-class Old_User(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    email = models.CharField(unique=True, max_length=255)
-    email_verified_at = models.DateTimeField(blank=True, null=True)
-    password = models.CharField(max_length=255)
-    remember_token = models.CharField(max_length=100, blank=True, null=True)
-    google_token = models.TextField(blank=True, null=True)
-    theme = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'users'

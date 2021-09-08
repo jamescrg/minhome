@@ -1,14 +1,16 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from .models import Folder, Note
-from pprint import pprint
+from app.models import Folder, Note
+
 
 @login_required
 def index(request):
-
     user_id = request.user.id
     page = 'notes'
 
@@ -36,7 +38,6 @@ def index(request):
 
     return render(request, 'notes/content.html', context)
 
-
 @login_required
 def select(request, id):
     user_id = request.user.id
@@ -45,7 +46,6 @@ def select(request, id):
     new.selected = 1
     new.save()
     return redirect('/notes/')
-
 
 @login_required
 def add(request, id):
@@ -70,7 +70,6 @@ def add(request, id):
 
     return render(request, 'notes/content.html', context)
 
-
 @login_required
 def select(request, id):
     user_id = request.user.id
@@ -79,7 +78,6 @@ def select(request, id):
     new.selected = 1
     new.save()
     return redirect('notes')
-
 
 @login_required
 def insert(request):
@@ -94,7 +92,6 @@ def insert(request):
     note.selected = 1
     note.save()
     return redirect('notes')
-
 
 @login_required
 def edit(request, id):
@@ -115,10 +112,7 @@ def edit(request, id):
         'note': note,
         'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
     }
-
-
     return render(request, 'notes/content.html', context)
-
 
 @login_required
 def update(request, id):
@@ -127,7 +121,6 @@ def update(request, id):
          setattr(note, field, request.POST.get(field))
     note.save()
     return redirect('notes')
-
 
 @login_required
 def delete(request, id):

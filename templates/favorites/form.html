@@ -1,80 +1,86 @@
 {# django template #}
 
 <div class="section-title">
+
   {% if add %}
+
     Add Favorite
+
   {% else %}
+
     Edit Favorite
+
   {% endif %}
+
 </div>
 
 <form action="{{ action }}" class="form-horizontal" method="post" role="form">
 
   {% csrf_token %}
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="folder_id">Folder</label>
-    <div class="col-sm-10">
-      <select class="form-control" name="folder_id" id="folder_id">
-        <option value=""></option>
-        {% for folder in folders %}
-          <option value="{{ folder.id }}" {% if folder.id == selected_folder_id %}selected{% endif %}>
-            {{ folder.name }}
-          </option>
-        {% endfor %}
-        <option value="0" {% if not selected_folder %} selected {% endif %}>Uncategorized</option>
-      </select>
-    </div>
-  </div>
+  <table>
+    <tr>
+      <td>
+        Folder
 
-  <div class="form-group"> 
-    <label class="control-label col-sm-2" for="name">Name</label>
-    <div class="col-sm-10">
-      <input type="text" autofocus name="name" id="name" class="form-control"
-              value="{{ favorite.name|default:''}}" required>
-    </div>
-  </div>
+      <td>
+        <select name="folder_id" id="folder_id">
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="url">Url</label>
-    <div class="col-sm-10">
-      <input type="text" name="url" id="url" class="form-control" value="{{ favorite.url|default:'http://' }}" required>
-    </div>
-  </div>
+          <option value="">Uncategorized</option>
+          {% for folder in folders %}
+            <option value="{{ folder.id }}" {% if folder.id == selected_folder_id %}selected{% endif %}>
+              {{ folder.name }}
+          {% endfor %}
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="description">Description</label>
-    <div class="col-sm-10">
-      <textarea name="description" id="description" class="form-control">{{ favorite.description|default:'' }}</textarea>
-    </div>
-  </div>
+        </select>
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="login">Login</label>
-    <div class="col-sm-10">
-      <input type="text" name="login" id="login" class="form-control" value="{{ favorite.login|default:'' }}">
-    </div>
-  </div>
+    <tr>
+      <td>
+        Name
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="root">Root</label>
-    <div class="col-sm-10">
-      <input type="text" name="root" id="root" class="form-control" value="{{ favorite.root|default:''}}">
-    </div>
-  </div>
+      <td>
+        <input type="text" autofocus name="name" id="name" class="form-control"
+                value="{{ favorite.name|default:''}}" required>
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="passkey">Key</label>
-    <div class="col-sm-10">
-      <input type="text" name="passkey" id="passkey" class="form-control" value="{{ favorite.passkey|default:'' }}">
-    </div>
-  </div>
+    <tr>
+      <td>
+        Url
 
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="email"></label>
-    <div class="col-sm-10">
-      <input type="submit" value="Submit" class="btn btn-default">
-    </div>
-  </div>
+      <td>
+        <input type="text" name="url" id="url" class="form-control" value="{{ favorite.url|default:'http://' }}" required>
+
+    <tr>
+      <td>
+        Description
+
+      <td>
+        <textarea name="description" id="description" class="form-control">{{ favorite.description|default:'' }}</textarea>
+
+    <tr>
+      <td>
+        Login
+
+      <td>
+        <input type="text" name="login" id="login" class="form-control" value="{{ favorite.login|default:'' }}">
+
+    <tr>
+      <td>
+        Root
+
+      <td>
+        <input type="text" name="root" id="root" class="form-control" value="{{ favorite.root|default:''}}">
+
+    <tr>
+      <td>
+        Key
+      <td>
+        <input type="text" name="passkey" id="passkey" class="form-control" value="{{ favorite.passkey|default:'' }}">
+
+    <tr>
+      <td>
+      <td> 
+        <input type="submit" value="Submit" class="btn btn-default">
+
+  </table>
 
 </form>

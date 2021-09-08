@@ -1,17 +1,15 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from .models import Folder
-
-@login_required
-def index(request):
-    pass
+from app.models import Folder
 
 
 def select(request, id, page):
-
     user_id = request.user.id
 
     if page != 'tasks':
@@ -36,7 +34,6 @@ def select(request, id, page):
 
     return redirect(page)
 
-
 def insert(request, page):
     folder = Folder()
     folder.user_id = request.user.id
@@ -46,7 +43,6 @@ def insert(request, page):
     folder.save()
     return redirect(page)
 
-
 def update(request, id, page):
     folder = get_object_or_404(Folder, pk=id)
     for field in folder.fillable:
@@ -54,12 +50,10 @@ def update(request, id, page):
     folder.save()
     return redirect(page)
 
-
 def delete(request, id, page):
     folder = get_object_or_404(Folder, pk=id)
     folder.delete()
     return redirect(page)
-
 
 def home(request, id, page):
     user_id = request.user.id

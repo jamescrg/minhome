@@ -1,21 +1,21 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q
 
-from .models import Favorite, Contact, Note, Folder
+from app.models import Favorite, Contact, Note, Folder
 
 @login_required
 def index(request):
-
     context = {
         'page': 'search',
         'action': '/search/results',
         'results': False,
     }
-
     return render(request, 'search/content.html', context)
-
 
 @login_required
 def results(request):
@@ -56,7 +56,6 @@ def results(request):
     for note in notes:
         note.folder = Folder.objects.filter(pk=note.folder_id).first()
 
-
     context = {
         'page': 'search',
         'action': '/search/results',
@@ -67,7 +66,3 @@ def results(request):
     }
 
     return render(request, 'search/content.html', context)
-
-
-
-

@@ -16,47 +16,6 @@ a:hover	{
 	color: green;
 	}
 
-/*-----------------------------------*/
-/* error messages */
-/*------------------------------------*/
-
-.vertical-center {
-	min-height: 80%;  /* Fallback for browsers do NOT support vh unit */
-	min-height: 80vh; /* These two lines are counted as one :-)       */
-	display: flex;
-	align-items: center;
-	}
-
-.error-card{
-	background: #f4f4f4;
-	border-radius: 3px;
-    font-size: 18px;
-	margin: 0 auto;
-	margin-bottom: 20px;
-	padding: 20px;
-	width: 700px;
-	}
-
-.error-title{
-	font-size: 30px;
-	/* font-weight: 600; */
-	margin-bottom: 20px;
-	text-align: center;
-	}
-
-.error-message{
-    font-size: 30px;
-    color: #355900;
-	margin-bottom: 20px;
-	text-align: center;
-	}
-
-.contact-message{
-	font-size: 20px;
-    margin-bottom: 10px;
-	text-align: center;
-	}
-    
 
 /*-----------------------------------*/
 /* login form */

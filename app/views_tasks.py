@@ -1,3 +1,6 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -8,7 +11,6 @@ from pprint import pprint
 
 @login_required
 def index(request):
-
     user_id = request.user.id
     page = 'tasks'
 
@@ -31,7 +33,6 @@ def index(request):
 
     return render(request, 'tasks/content.html', context)
 
-
 @login_required
 def activate(request,id):
     Folder.objects.filter(user_id=1, active=1).update(active=0)
@@ -39,7 +40,6 @@ def activate(request,id):
     folder.active=1
     folder.save()
     return redirect('/tasks/')
-
 
 @login_required
 def status(request, id):
@@ -51,7 +51,6 @@ def status(request, id):
     task.save()
     return redirect('/tasks/')
 
-
 @login_required
 def insert(request):
     task = Task()
@@ -61,7 +60,6 @@ def insert(request):
     task.save()
     return redirect('tasks')
 
-
 @login_required
 def edit(request, id):
     user_id = request.user.id
@@ -69,7 +67,6 @@ def edit(request, id):
     folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
     selected_folder_id = task.folder_id
     selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-
     context = {
         'page': 'tasks',
         'edit': True,
@@ -79,9 +76,7 @@ def edit(request, id):
         'selected_folder_id': selected_folder_id,
         'task': task,
     }
-
     return render(request, 'tasks/content.html', context)
-
 
 @login_required
 def update(request, id):
@@ -91,7 +86,6 @@ def update(request, id):
     task.title = request.POST.get('title')
     task.save()
     return redirect('tasks')
-
 
 @login_required
 def clear(request, folder_id):

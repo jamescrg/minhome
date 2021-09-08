@@ -1,19 +1,20 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from .models import Folder, Contact
-from pprint import pprint
+from app.models import Folder, Contact
+import app.google as google
+
 
 @login_required
 def index(request):
-
     user_id = request.user.id
     page = 'contacts'
-
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
-
     selected_folder = Folder.objects.filter(
             user_id=user_id, page=page, selected=1).first()
    
@@ -21,8 +22,8 @@ def index(request):
         contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=0)
+        
     contacts = contacts.order_by('name')
-
     selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
 
     context = {
@@ -33,9 +34,7 @@ def index(request):
         'contacts': contacts,
         'selected_contact': selected_contact,
     }
-
     return render(request, 'contacts/content.html', context)
-
 
 @login_required
 def select(request, id):
@@ -45,7 +44,6 @@ def select(request, id):
     new.selected = 1
     new.save()
     return redirect('/contacts/')
-
 
 @login_required
 def add(request, id):
@@ -70,7 +68,6 @@ def add(request, id):
 
     return render(request, 'contacts/content.html', context)
 
-
 @login_required
 def insert(request):
     contact = Contact()
@@ -78,8 +75,10 @@ def insert(request):
     for field in contact.fillable:
          setattr(contact, field, request.POST.get(field))
     contact.save()
-    return redirect('contacts')
 
+    google.add_contact(request)
+
+    return redirect('contacts')
 
 @login_required
 def edit(request, id):
@@ -88,7 +87,6 @@ def edit(request, id):
     folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
     selected_folder_id = contact.folder_id
     selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-
     context = {
         'page': 'contacts',
         'edit': True,
@@ -100,10 +98,7 @@ def edit(request, id):
         'contact': contact,
         'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
     }
-
-
     return render(request, 'contacts/content.html', context)
-
 
 @login_required
 def update(request, id):
@@ -113,9 +108,9 @@ def update(request, id):
     contact.save()
     return redirect('contacts')
 
-
 @login_required
 def delete(request, id):
+    google.delete_contact(request, id)
     contact = get_object_or_404(Contact, pk=id)
     contact.delete()
     return redirect('contacts')

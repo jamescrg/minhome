@@ -15,34 +15,17 @@
 
 <!-- app stylesheets -->
 <link rel="stylesheet" href="/static/css/app.css">
-<link rel="stylesheet" href="/static/css/layout-auth.css">
+<!-- <link rel="stylesheet" href="/static/css/layout-auth.css"> -->
+<!-- <link rel="stylesheet" href="/static/css/forms.css"> -->
 
 <!-- bootstrap javascript -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="/js/javascript.js"></script>
 
-<div class="container vertical-center">
+<div class="container vertical-center"> 
 
-    <div class="error-card">
-
-      <div class="error-title">
-        Website Error
-      </div>
-
-      <div class="error-message">
-          {% block message %}
-          {% endblock message %}
-      </div>
-
-      <div class="contact-message">
-          Please contact the site administrator if the problem persists.
-      </div>
-
-      <div class="contact-message">
-        <a href="/">Return to Home Page</a>
-      </div>
-
-    </div>
+  {% block content %}
+  {% endblock content %}
 
 </div>

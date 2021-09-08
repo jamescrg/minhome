@@ -1,6 +1,12 @@
 {# django template #}
 
-<form id="folderCreateForm" action="/folders/add/{{ page }}" method="post" style="display: none;">
+<form id="folderCreateForm" 
+      action="/folders/add/{{ page }}" 
+      method="post" style="display: none;">
+
 	{% csrf_token %}
-	<input class="form-control" type="text" name="name" onchange="submit()" value="">
+
+	<input class="form-control" 
+        type="text" name="name" onchange="submit()" value="">
+
 </form>

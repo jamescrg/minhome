@@ -1,18 +1,21 @@
+
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from .models import Folder, Favorite
+from app.models import Folder, Favorite
+
 
 @login_required
 def index(request):
-
     user_id = request.user.id
 
     columns = []
     for i in range(1, 5):
-        folders = Folder.objects.filter(user_id = user_id, home_column = i)
+        folders = Folder.objects.filter(user_id=user_id, home_column=i)
         folders = folders.order_by('home_rank')
         for folder in folders:
             favorites = Favorite.objects.filter(folder_id = folder.id, home_rank__gt = 0)
@@ -22,17 +25,13 @@ def index(request):
 
     context = {
         'page': 'home',
-        'search_engine': 'google.com/search',
+        'searchEngine': 'google.com/search',
         'columns': columns,
     }
-
-
     return render(request, 'home/index.html', context)
     
-
 @login_required
 def folder(request, id, direction):
-
     user_id = request.user.id
 
     # if the stack order is being changed
@@ -58,13 +57,14 @@ def folder(request, id, direction):
 
         # identify the destination rank
         if direction == 'up':
-            destination_rank = origin_rank - 1
+            destination_rank = originRank - 1
         if direction == 'down':
-            destination_rank = origin_rank + 1
+            destination_rank = originRank + 1
 
         # identify the folder to be displaced
         try:
-            displaced_folder = Folder.objects.filter(user_id=user_id, 
+            displaced_folder = Folder.objects.filter(
+                    user_id=user_id, 
                     home_column=origin_column, home_rank=destination_rank).get() 
         except Folder.DoesNotExist:
             raise Http404('No folder matches the given query.')
@@ -99,15 +99,13 @@ def folder(request, id, direction):
 
     return redirect('/home/')
 
-
 @login_required
 def favorite(request, id, direction):
-
     user_id = request.user.id
 
     # get the favorite to be moved
     origin_favorite = get_object_or_404(Favorite, pk=id)
-    folder_id = origin_favorite.folder_id
+    folderId = origin_favorite.folder_id
 
     # make sure the favorites are sequential and adjacent
     favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id, home_rank__gt=0)
@@ -119,7 +117,7 @@ def favorite(request, id, direction):
         favorite.save()
         count += 1
 
-    favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id,home_rank__gt=0)
+    favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id, home_rank__gt=0)
     favorites = favorites.order_by('home_rank')
 
     # identify the origin rank as modified by the sequence operation
@@ -133,8 +131,8 @@ def favorite(request, id, direction):
         destination_rank = origin_rank + 1
 
     # identify the favorite to be displaced
-    displaced_favorite = Favorite.objects.filter(user_id=user_id, 
-            folder_id=folder_id, home_rank=destination_rank).first()
+    displaced_favorite = Favorite.objects.filter(
+            user_id=user_id, folder_id=folder_id, home_rank=destination_rank).first()
 
     # if a favorite is being displaced, move it and the original favorite
     # otherwise, we are at the end of the column, make no changes
