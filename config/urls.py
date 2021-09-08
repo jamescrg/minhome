@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+
 from app import views_folders
 from app import views_home
 from app import views_favorites
@@ -8,6 +9,7 @@ from app import views_contacts
 from app import views_notes
 from app import views_search
 from app import views_settings
+
 
 urlpatterns = [
 

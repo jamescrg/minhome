@@ -16,25 +16,53 @@ a:hover	{
 	color: green;
 	}
 
+.vertical-center {
+	min-height: 80%;  /* Fallback for browsers do NOT support vh unit */
+	min-height: 80vh; /* These two lines are counted as one :-)       */
+	display: flex;
+	align-items: center;
+	}
 
-/*-----------------------------------*/
-/* login form */
-/*------------------------------------*/
+.auth-title{
+	font-size: 1.2em;
+	margin-bottom: 10px;
+	text-align: center;
+	color: #0059b3;
+	}
 
-.login-card{
-	background: #fffff7;
-	border-radius: 3px;
-    font-size: 16px;
+.auth-card{
 	margin: 0 auto;
 	margin-bottom: 20px;
+	border-radius: 3px;
+	width: 600px;
+	background: #f4f4f4;
 	padding: 20px;
-	width: 500px;
+	}
+
+.auth-subtitle{
+  font-size: 0.8em;
+	margin-bottom: 10px;
+	text-align: center;
+	}
+
+.form-check-label{
+    margin-left: 10px;
 }
 
-label{
-    font-weight: normal;
+.invalid-feedback{
+    margin: 5px 0 0 2px;
+    color: darkred;
 }
 
-.asteriskField{
-    display: none;
+.auth-label{
+  font-size: 0.8em;
+  font-weight: 500;
 }
+
+.form-control{
+  height: auto;
+  padding: 10px;
+  font-size: 18px;
+  filter: none;
+}
+

@@ -1,0 +1,40 @@
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.5em;
+	background: #d4d4d4;
+	color: #474747;
+	}
+
+a {
+	text-decoration: none;
+	color: #0059b3;
+	}
+
+a:hover	{
+	text-decoration: none;
+	color: green;
+	}
+
+
+/*-----------------------------------*/
+/* login form */
+/*------------------------------------*/
+
+.login-card{
+	background: #fffff7;
+	border-radius: 3px;
+    font-size: 16px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	padding: 20px;
+	width: 500px;
+}
+
+label{
+    font-weight: normal;
+}
+
+.asteriskField{
+    display: none;
+}
