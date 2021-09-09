@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -25,9 +26,10 @@ def index(request):
 
     context = {
         'page': 'home',
-        'searchEngine': 'google.com/search',
+        'search_engine': 'google.com/search',
         'columns': columns,
     }
+
     return render(request, 'home/index.html', context)
     
 @login_required

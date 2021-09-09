@@ -112,5 +112,6 @@ def update(request, id):
 def delete(request, id):
     google.delete_contact(request, id)
     contact = get_object_or_404(Contact, pk=id)
+    google.delete_contact(request, id)
     contact.delete()
     return redirect('contacts')

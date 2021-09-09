@@ -39,7 +39,7 @@ class Contact(models.Model):
     ]
 
     def __str__(self):
-        return f'{self.name} {self.id}'
+        return f'{self.name} : {self.id}'
 
 
 class Favorite(models.Model):
@@ -67,7 +67,7 @@ class Favorite(models.Model):
     ]
 
     def __str__(self):
-        return f'{self.name} {self.id}'
+        return f'{self.name} : {self.id}'
 
 
 class Folder(models.Model):
