@@ -89,7 +89,7 @@ class Folder(models.Model):
 
 
     def __str__(self):
-        return f'{self.name} {self.id}'
+        return f'{self.name} : {self.id}'
 
 
 class Note(models.Model):
@@ -106,7 +106,7 @@ class Note(models.Model):
     ]
 
     def __str__(self):
-        return f'{self.subject} {self.id}'
+        return f'{self.subject} : {self.id}'
 
 
 class Task(models.Model):
@@ -117,4 +117,4 @@ class Task(models.Model):
     status = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.title} {self.id}'
+        return f'{self.title} : {self.id}'

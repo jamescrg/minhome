@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 
 from accounts.models import CustomUser
-from app.models import Folder
+from app.models import Task
 
 
 class TasksViewTests(TestCase):
@@ -27,3 +27,30 @@ class TasksViewTests(TestCase):
     def testCorrectTemplate(self):
         response = self.client.get(reverse('tasks'))
         self.assertTemplateUsed(response, 'tasks/content.html')
+
+
+class TasksModelTests(TestCase):
+
+    def setUp(self):
+        Task.objects.create(
+                user_id=1,
+                folder_id=10,
+                title='Do this today',
+                status=1,
+                )
+
+    def testTaskContent(self):
+        task = Task.objects.get(pk=2)
+        expectedValues = {
+                'user_id': 1,
+                'folder_id': 10,
+                'title': 'Do this today',
+                'status': 1,
+        }
+        for key, val in expectedValues.items():
+            with self.subTest(key=key, val=val):
+                self.assertEqual(getattr(task, key), val)
+
+    def testContactString(self):
+        task = Task.objects.get(pk=1)
+        self.assertEqual(str(task), f'{task.title} : {task.id}')
