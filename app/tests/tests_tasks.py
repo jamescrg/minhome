@@ -31,7 +31,8 @@ class TasksViewTests(TestCase):
 
 class TasksModelTests(TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         Task.objects.create(
                 user_id=1,
                 folder_id=10,
@@ -40,7 +41,7 @@ class TasksModelTests(TestCase):
                 )
 
     def testTaskContent(self):
-        task = Task.objects.get(pk=2)
+        task = Task.objects.get(pk=1)
         expectedValues = {
                 'user_id': 1,
                 'folder_id': 10,

@@ -59,9 +59,9 @@ def folder(request, id, direction):
 
         # identify the destination rank
         if direction == 'up':
-            destination_rank = originRank - 1
+            destination_rank = origin_rank - 1
         if direction == 'down':
-            destination_rank = originRank + 1
+            destination_rank = origin_rank + 1
 
         # identify the folder to be displaced
         try:

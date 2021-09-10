@@ -25,6 +25,10 @@ def index(request):
         
     contacts = contacts.order_by('name')
     selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
+    if request.user.google_credentials:
+        google = True
+    else:
+        google = False
 
     context = {
         'page': 'contacts',
@@ -33,6 +37,7 @@ def index(request):
         'selected_folder': selected_folder,
         'contacts': contacts,
         'selected_contact': selected_contact,
+        'google': google,
     }
     return render(request, 'contacts/content.html', context)
 
@@ -74,10 +79,8 @@ def insert(request):
     contact.user_id = request.user.id
     for field in contact.fillable:
          setattr(contact, field, request.POST.get(field))
+    contact.google_id = google.add_contact(contact)
     contact.save()
-
-    google.add_contact(request)
-
     return redirect('contacts')
 
 @login_required
@@ -110,8 +113,15 @@ def update(request, id):
 
 @login_required
 def delete(request, id):
-    google.delete_contact(request, id)
     contact = get_object_or_404(Contact, pk=id)
-    google.delete_contact(request, id)
+    if contact.google_id:
+        google.delete_contact(contact)
     contact.delete()
+    return redirect('contacts')
+
+@login_required
+def google_sync(request, id):
+    contact = get_object_or_404(Contact, pk=id)
+    contact.google_id = google.add_contact(contact)
+    contact.save()
     return redirect('contacts')

@@ -1,16 +1,23 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-	<p>Settings</p>
+<div class="section-title">
+  Settings
+</div>
+<ul id="settings-menu">
 
-	{% if logged_in %}
-		<a href="/settings/google/logout">Log out of Google Apps</a>
+  <li>
 
-	{% else %}
-		<a href="/settings/google/login">Log in to Google Apps</a>
+    {% if logged_in %}
 
-	{% endif %}
+      <a href="/settings/google/logout">Disconnect Google Contacts</a>
 
-  <br><br><a href="/settings/google/show">Show</a>
-  
+    {% else %}
+
+      <a href="/settings/google/login">Connect Google Contacts</a>
+
+    {% endif %}
+
+</ul>
+
 {% endblock content %}

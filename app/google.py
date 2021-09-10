@@ -10,10 +10,8 @@ from apiclient.discovery import build
 from accounts.models import CustomUser
 from app.models import Contact
 
-def add_contact(request):
-    user_id = request.user.id
-    contact = Contact.objects.filter(user_id=user_id).order_by('-id').first()
-    user = get_object_or_404(CustomUser, pk=user_id)
+def build_service(contact):
+    user = get_object_or_404(CustomUser, pk=contact.user_id)
     credentials = user.google_credentials
 
     if credentials:
@@ -21,6 +19,14 @@ def add_contact(request):
         credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
                 credentials)
         service = build('people', 'v1', credentials=credentials)
+        return service
+    else:
+        return False
+
+def add_contact(contact):
+    service = build_service(contact)
+
+    if service:
         new_contact = { 
             "names": [
                 { 
@@ -47,29 +53,22 @@ def add_contact(request):
                 }
             ]
         }
+
         result = service.people().createContact(body=new_contact).execute()
 
         if result:
-            contact.google_id = result['resourceName']
-            contact.save()
-            return True
+            google_id = result['resourceName']
+            return google_id
         else:
             return False
 
     else:
         return False
 
-def delete_contact(request, id):
-    contact = get_object_or_404(Contact, pk=id)
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
-    credentials = user.google_credentials
+def delete_contact(contact):
+    service = build_service(contact)
 
-    if credentials:
-        credentials = json.loads(credentials)
-        credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
-                credentials)
-        service = build('people', 'v1', credentials=credentials)
+    if service:
         result = service.people().deleteContact(resourceName=contact.google_id).execute()
 
         if result:

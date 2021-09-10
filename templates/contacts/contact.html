@@ -80,10 +80,10 @@
 
   {% endif %}
 
-	{% if not selected_contact.google_id %}
+	{% if google and not selected_contact.google_id %}
 
     <div class="contact-item">
-      (Not included in Google contacts.)  
+      <a href="/contacts/google/{{ selected_contact.id }}" style="color: darkred">Add to Google Contacts</a>
     </div>
 
   {% endif %}

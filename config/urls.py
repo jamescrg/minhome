@@ -57,6 +57,7 @@ urlpatterns = [
     path('contacts/insert', views_contacts.insert, name='contacts-insert'),
     path('contacts/update/<int:id>', views_contacts.update, name='contacts-update'),
     path('contacts/delete/<int:id>', views_contacts.delete, name='contacts-delete'),
+    path('contacts/google/<int:id>', views_contacts.google_sync, name='contacts-google'),
 
     # notes
     path('notes/', views_notes.index, name='notes'),
