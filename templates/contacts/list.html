@@ -17,21 +17,3 @@
 	{% endif %}
 
 </ul>
-
-<div class="page-control">
-
-	{% if selected_folder %}
-
-		<a href="/{{ page }}/add/{{ selected_folder.id}}" 
-      class="btn btn-default" role="button">
-      <span class="glyphicon glyphicon-plus"></span>
-    </a>
-
-	{% else %}
-
-		<a href="/{{ page }}/add/0" class="btn btn-default" role="button">
-      <span class="glyphicon glyphicon-plus"></span>
-    </a>
-
-	{% endif %}
-</div>

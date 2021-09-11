@@ -8,6 +8,12 @@
 
 <div class="contact">
 
+  <div style="float: right;">
+    <a href="/contacts/edit/{{ selected_contact.id }}">
+      Edit
+    </a>
+  </div>
+
 	<div class="contact-item">
 
 		{{ selected_contact.name }} <br>
@@ -92,14 +98,17 @@
 
 <div class="page-control">
 
-	<a href="/contacts/edit/{{ selected_contact.id }}" class="btn btn-default" role="button">
-		<span class="glyphicon glyphicon-pencil"></span>
-	</a>
+	{% if selected_folder %}
 
-	<a href="/contacts/delete/{{ selected_contact.id }}" 
-     class="btn btn-default" role="button"
-	   onclick="javascript: return confirm('Are you sure you want to delete this contact?')">
-		<span class="glyphicon glyphicon-remove"></span>
-	</a>
+		<a href="/{{ page }}/add/{{ selected_folder.id}}">
+      Add Contact
+    </a>
 
+	{% else %}
+
+		<a href="/{{ page }}/add/0">
+      Add Contact
+    </a>
+
+	{% endif %}
 </div>

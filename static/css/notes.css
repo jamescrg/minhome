@@ -9,8 +9,9 @@ div.note{
 	margin-bottom: 20px;
 	}
 
-textarea.form-control{
-	height: 250px;
+#note {
+	height: 350px;
+  width: 550px;
 	}
 
 /* ------------------------------------------------------------------------- */

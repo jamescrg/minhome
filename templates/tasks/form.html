@@ -15,7 +15,8 @@
 		<label class="control-label col-sm-2" for="folder_id">Folder</label>
 
 		<div class="col-sm-10">
-			<select class="form-control" name="folder_id" id="folder_id">
+
+			<select name="folder_id" id="folder_id">
 
 				{% for folder in folders %}
 
@@ -26,6 +27,7 @@
 				{% endfor %}
 
 			</select>
+
 		</div>
 
 	</div>
@@ -36,15 +38,21 @@
 
 		<div class="col-sm-10">
 
-			<input type="text" autofocus name="title" id="subject" class="form-control"
+			<input type="text" autofocus name="title" id="title"
 				   value="{{ task.title }}">
 
 		</div>
 
 	</div>
 
-	<div class="submit">
-    <input type="submit" value="Submit" class="btn btn-default">
+  <div class="form-group">
+
+		<label class="control-label col-sm-2" for="subject"></label>
+
+    <div class="col-sm-10">
+      <input type="submit" value="Submit" class="btn btn-default">
+    </div>
+
   </div>
 
 </form>
