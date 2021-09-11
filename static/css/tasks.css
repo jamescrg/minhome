@@ -6,8 +6,13 @@
 }
 
 #tasks-form{
-	margin-bottom: 20px;
+	margin: 20px 5px;
   padding: 0;
+}
+
+#tasks-form input{
+  margin-left: 0;
+  margin-right: 0;
 }
 
 #title {
