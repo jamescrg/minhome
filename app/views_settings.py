@@ -37,7 +37,7 @@ def google_login(request):
     # based on sample code from https://developers.google.com/identity/protocols/oauth2/web-server
     
     # sets the url to return to when an authorization code has been obtained
-    redirect_uri = 'https://lab.cloud-portal.com/settings/google/store'
+    redirect_uri = 'https://dev.cloud-portal.com/settings/google/store'
 
     # builds the url to go to in order to obtain the authorization code
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -60,7 +60,7 @@ def google_login(request):
 
 @login_required
 def google_store(request):
-    redirect_uri = 'https://lab.cloud-portal.com/settings/google/store'
+    redirect_uri = 'https://dev.cloud-portal.com/settings/google/store'
     pwd = settings.BASE_DIR
 
     state = request.session['state']

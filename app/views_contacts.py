@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
+from accounts.models import CustomUser
 from app.models import Folder, Contact
 import app.google as google
 
@@ -75,12 +76,18 @@ def add(request, id):
 
 @login_required
 def insert(request):
+    user = get_object_or_404(CustomUser, pk=request.user.id)
+
     contact = Contact()
-    contact.user_id = request.user.id
+    contact.user_id = user.id
     for field in contact.fillable:
          setattr(contact, field, request.POST.get(field))
-    contact.google_id = google.add_contact(contact)
+
+    if user.google_credentials:
+        contact.google_id = google.add_contact(contact)
+
     contact.save()
+
     return redirect('contacts')
 
 @login_required
@@ -105,10 +112,18 @@ def edit(request, id):
 
 @login_required
 def update(request, id):
+    user = get_object_or_404(CustomUser, pk=request.user.id)
+
     contact = get_object_or_404(Contact, pk=id)
     for field in contact.fillable:
          setattr(contact, field, request.POST.get(field))
+
+    if user.google_credentials and contact.google_id:
+        google.delete_contact(contact)
+        contact.google_id = google.add_contact(contact)
+
     contact.save()
+
     return redirect('contacts')
 
 @login_required

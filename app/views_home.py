@@ -3,6 +3,7 @@ from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -44,7 +45,7 @@ def folder(request, id, direction):
         origin_folder = get_object_or_404(Folder, pk=id)
         origin_column = origin_folder.home_column
 
-        # make sure the folders are sequential and ajdacent
+        # make sure the folders are sequential and adjacent
         folders = Folder.objects.filter(user_id=user_id, home_column=origin_column) 
         folders = folders.order_by('home_rank')
         count = 1
@@ -54,7 +55,6 @@ def folder(request, id, direction):
             count += 1
 
         # identify the origin rank as modified by the sequence operation
-        origin_folder = get_object_or_404(Folder, pk=id)
         origin_rank = origin_folder.home_rank
 
         # identify the destination rank
@@ -69,14 +69,12 @@ def folder(request, id, direction):
                     user_id=user_id, 
                     home_column=origin_column, home_rank=destination_rank).get() 
         except Folder.DoesNotExist:
-            raise Http404('No folder matches the given query.')
+            displaced_folder = False
 
         # if a folder is being displaced, move it and the original folder
-        # otherwise, we are at the end of the column, make no changes
-        origin_folder.home_rank = destination_rank
-        origin_folder.save()
-
         if displaced_folder:
+            origin_folder.home_rank = destination_rank
+            origin_folder.save()
             displaced_folder.home_rank = origin_rank
             displaced_folder.save()
 
@@ -86,18 +84,36 @@ def folder(request, id, direction):
         # get the folder to be moved, along with its column and rank
         origin_folder = get_object_or_404(Folder, pk=id)
         origin_column = origin_folder.home_column
-        origin_rank = origin_folder.home_rank
 
         if direction == 'left' and origin_column > 1:
             destination_column = origin_column - 1
         elif direction == 'right' and origin_column < 4: 
             destination_column = origin_column + 1
         else:
-            return redirect('/home/')
+            destination_column = origin_column
 
-        # move over origin folder to destination column
-        origin_folder.home_column = destination_column
+        # identify the bottom folder in the destination column
+        # move over origin folder to destination column and place at bottom
+        if destination_column != origin_column:
+            bottom_folder = Folder.objects.filter(
+                    user_id=user_id, 
+                    home_column=destination_column).order_by('-home_rank').first()
+            bottom_rank = bottom_folder.home_rank
+            origin_folder.home_column = destination_column
+            origin_folder.home_rank = bottom_rank + 1
+
+        # persist changes
         origin_folder.save()
+
+        # resequence origin column
+        # make sure the folders are sequential and adjacent
+        folders = Folder.objects.filter(user_id=user_id, home_column=origin_column) 
+        folders = folders.order_by('home_rank')
+        count = 1
+        for folder in folders:
+            folder.home_rank = count
+            folder.save()
+            count += 1
 
     return redirect('/home/')
 
