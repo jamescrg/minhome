@@ -27,6 +27,7 @@
   border-left: none;
   border-right: none;
   font-weight: 600;
+  padding-left: 7px;
 }
 
 .task-pending{

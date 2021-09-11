@@ -26,7 +26,6 @@
 
         <a href="/tasks/activate/{{ folder.id }}">{{ folder.name }}</a></li>
 
-
       {% endif %}
 
 		{% for task in folder.tasks %}
@@ -58,17 +57,22 @@
 
 	</ul>
 
+    {% if folder.active == 1 %}
+
+      <div id="clear" style="text-align: right;">
+
+        <a href="/tasks/clear/{{ active_folder.id }}">
+          Clear Complete
+        </a>
+
+      </div>
+
+    {% endif %}
+
 {% endfor %}
 
 {% if active_folder  %}
 
-<div class="page-control" id="clear">
-
-	<a href="/tasks/clear/{{ active_folder.id }}" class="btn btn-default">
-    <span class="glyphicon glyphicon-new-window"></span>
-  </a>
-
-</div>
 
 {% endif %}
 
