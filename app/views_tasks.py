@@ -21,7 +21,7 @@ def index(request):
     if selected_folders:
         for folder in selected_folders:
             tasks = Task.objects.filter(folder_id=folder.id)
-            tasks = tasks.order_by('status').order_by('title')
+            tasks = tasks.order_by('status', 'title')
             folder.tasks = tasks
 
     context = {
