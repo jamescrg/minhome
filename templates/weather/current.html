@@ -1,44 +1,40 @@
 {# django template #}
 
-<div style="max-width: 350px; vertical-align: top;">
+<div style="max-width: 350px;">
 
-<div style="float: right;">
-      <img id="wicon" 
-      src="http://openweathermap.org/img/w/{{ current.weather.0.icon }}.png" 
-      alt="Weather icon">
+  <div class="section-title city" >
+    {{ current.name }}
+  </div>
+
+  <div>
+        <img id="wicon" 
+        src="http://openweathermap.org/img/w/{{ current.weather.0.icon }}.png" 
+        alt="Weather icon">
+  </div>
+
 </div>
 
-<div class="section-title" style="">
-	{{ current.name }}
-</div>
+<div style="max-width: 450px;">
 
-
-<table style="width: 100%;">
+<table id="current-weather" style="border: solid 1px green;">
   <tr>
     <td class="weather-label">Conditions
-    <td colspan="2" class="weather-data" style="padding-left: 0">
-      {{ current.weather.0.description|title }}
-  <tr>
-    <td class="weather-label">
-    <td class="weather-data" style="padding-left: 0">
+    <td class="weather-data">{{ current.weather.0.description|title }}
   <tr>
     <td class="weather-label">Temp
-    <td class="weather-data">{{ current.main.temp|floatformat:"0" }}
-    <td class="weather-degree">&deg;
+    <td class="weather-data">{{ current.main.temp|floatformat:"0" }}&deg;
   <tr>
     <td class="weather-label">High
-    <td class="weather-data">{{ current.main.temp_max|floatformat:"0" }}
-    <td class="weather-degree">&deg;
+    <td class="weather-data">{{ current.main.temp_max|floatformat:"0" }}&deg;
   <tr>
     <td class="weather-label">Low
-    <td class="weather-data">{{ current.main.temp_min|floatformat:"0" }}
-    <td class="weather-degree">&deg;
+    <td class="weather-data">{{ current.main.temp_min|floatformat:"0" }}&deg;
   <tr>
     <td class="weather-label">Humidity
-    <td class="weather-data">{{ current.main.humidity }}
+    <td class="weather-data">{{ current.main.humidity }}%
   <tr>
     <td class="weather-label">Wind
-    <td class="weather-data">{{ current.wind.speed }}
+    <td class="weather-data">{{ current.wind.speed }} mph
 </table>
 
 </div>

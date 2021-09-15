@@ -18,14 +18,42 @@ def write_response(response, file_name):
 
 
 if __name__=='__main__':
-# get current weather info
 
+    # get current data
+    # --------------------------
+
+    # atlanta
+    url = 'https://api.openweathermap.org/data/2.5/weather'
     params = {
-        'zip': '30360',
+        'zip': 30360,
         'units': 'imperial',
         'appid': '78e85b0dbd4e78f3b0d172a58915c685'
     }
-
-    url = 'https://api.openweathermap.org/data/2.5/weather'
     response = get_response(url, params)
-    write_response(response, 'data_current.json')
+    write_response(response, 'data_atlanta_current.json')
+
+    # monticello
+    params['zip'] = 32344
+    response = get_response(url, params)
+    write_response(response, 'data_monticello_current.json')
+
+    # get seven day forecast
+    # --------------------------
+
+    # atlanta
+    url = 'https://api.openweathermap.org/data/2.5/onecall'
+    params = {
+        'lat': 33.899990,
+        'lon': -84.277679,
+        'units': 'imperial',
+        'exclude': 'current,hourly,minutely',
+        'appid': '78e85b0dbd4e78f3b0d172a58915c685'
+    }
+    response = get_response(url, params)
+    write_response(response, 'data_atlanta_forecast.json')
+
+    # monticello
+    params['lat'] = 30.543039
+    params['lon'] = -83.862694
+    response = get_response(url, params)
+    write_response(response, 'data_monticello_forecast.json')

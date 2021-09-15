@@ -1,14 +1,22 @@
+.city {
+  font-size: 1.4em;
+  float: left; 
+  margin-right: 60px;
+  padding-top: 8px;
+}
 
-.weather-label {
-  padding: 5px 35px 5px 5px;
+#current-weather {
+  background: #f5f5f5;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#current-weather td {
+  border: solid 1px #e4e4e4;
+  padding: 8px 5px;
 }
 
 .weather-data {
-  padding: 0px;
-  text-align: right;
 }
 
-.weather-degree {
-  padding: 0px;
-  padding-left: 1px;
-}
+
