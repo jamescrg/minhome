@@ -123,7 +123,7 @@ def favorite(request, id, direction):
 
     # get the favorite to be moved
     origin_favorite = get_object_or_404(Favorite, pk=id)
-    folderId = origin_favorite.folder_id
+    folder_id = origin_favorite.folder_id
 
     # make sure the favorites are sequential and adjacent
     favorites = Favorite.objects.filter(user_id=user_id, folder_id=folder_id, home_rank__gt=0)
