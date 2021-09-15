@@ -9,7 +9,7 @@ from app import views_contacts
 from app import views_notes
 from app import views_search
 from app import views_settings
-from app.weather import views_weather
+from app import views_weather
 
 
 urlpatterns = [
