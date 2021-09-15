@@ -1,0 +1,14 @@
+
+.weather-label {
+  padding: 5px 35px 5px 5px;
+}
+
+.weather-data {
+  padding: 0px;
+  text-align: right;
+}
+
+.weather-degree {
+  padding: 0px;
+  padding-left: 1px;
+}

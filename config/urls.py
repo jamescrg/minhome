@@ -9,6 +9,7 @@ from app import views_contacts
 from app import views_notes
 from app import views_search
 from app import views_settings
+from app.weather import views_weather
 
 
 urlpatterns = [
@@ -67,6 +68,9 @@ urlpatterns = [
     path('notes/insert', views_notes.insert, name='notes-insert'),
     path('notes/update/<int:id>', views_notes.update, name='notes-update'),
     path('notes/delete/<int:id>', views_notes.delete, name='notes-delete'),
+
+    # weather
+    path('weather/', views_weather.index, name='weather'),
 
     # search
     path('search/', views_search.index, name='search'),
