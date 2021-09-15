@@ -3,6 +3,7 @@ from datetime import datetime
 from pprint import pprint
 import json
 import os
+import requests
 import pytz
 
 from django.contrib.auth.decorators import login_required
@@ -19,24 +20,20 @@ def index(request):
     page = 'weather'
 
     if user_id == 1:
-        city = 'atlanta'
+        zip = 30360
     else:
-        city = 'monticello'
+        zip = 32344
 
-    pwd = os.path.dirname(__file__)
+    url = 'https://api.openweathermap.org/data/2.5/weather'
+    params = {
+        'zip': zip,
+        'units': 'imperial',
+        'appid': '78e85b0dbd4e78f3b0d172a58915c685'
+    }
+    response = requests.get(url, params=params)
+    current = json.loads(response.text)
 
-    file = open(f'{pwd}/data_{city}_current.json', 'r')
-    current = file.read()
-    file.close()
-    current = json.loads(current)
-
-    file = open(f'{pwd}/data_{city}_forecast.json', 'r')
-    forecast = file.read()
-    file.close()
-    forecast = json.loads(forecast)
-
-    # import app.util as util
-    # return util.dump(current)
+    forecast = None
 
     context = {
         'page': 'weather',
