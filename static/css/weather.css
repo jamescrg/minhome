@@ -5,6 +5,11 @@
   padding-top: 8px;
 }
 
+.weather-subtitle {
+  margin: 35px 0 15px 0;
+  font-size: 1.2em;
+}
+
 #current-weather {
   background: #f5f5f5;
   margin-top: 20px;
@@ -16,7 +21,18 @@
   padding: 8px 5px;
 }
 
-.weather-data {
+#forecast-weather {
+  background: #f5f5f5;
+  margin-top: 20px;
+  width: 100%;
 }
 
+#forecast-weather td {
+  border: solid 1px #e4e4e4;
+  padding: 8px 5px;
+}
+
+.weather-label {
+  font-weight: 600;
+}
 

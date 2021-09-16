@@ -14,9 +14,13 @@
 
 </div>
 
-<div style="max-width: 450px;">
+<div class="weather-subtitle" >
+  Today
+</div>
 
-<table id="current-weather" style="border: solid 1px green;">
+<div style="max-width: 550px;">
+
+<table id="current-weather">
   <tr>
     <td class="weather-label">Conditions
     <td class="weather-data">{{ current.weather.0.description|title }}
@@ -35,6 +39,36 @@
   <tr>
     <td class="weather-label">Wind
     <td class="weather-data">{{ current.wind.speed }} mph
+  <tr>
+    <td class="weather-label">Sunrise
+    <td class="weather-data">{{ current.sunrise }}
+  <tr>
+    <td class="weather-label">Sunset
+    <td class="weather-data">{{ current.sunset }}
+</table>
+
+</div>
+
+<div class="weather-subtitle" >
+  Forecast
+</div>
+
+<div style="max-width: 550px;">
+
+<table id="forecast-weather">
+  <tr>
+    <td class="weather-label"> Day
+    <td class="weather-label"> High
+    <td class="weather-label"> Low
+    <td class="weather-label"> Conditions
+
+  {% for day in forecast.daily %}
+  <tr>
+    <td class="forecast-date">{{ day.date_string }}
+    <td class="forecast-max">{{ day.temp.min|floatformat:"0" }}&deg;
+    <td class="forecast-min">{{ day.temp.max|floatformat:"0" }}&deg;
+    <td class="forecast-description">{{ day.weather.0.description }}
+  {% endfor %}
 </table>
 
 </div>
