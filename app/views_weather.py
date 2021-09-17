@@ -40,7 +40,7 @@ def index(request):
     sunrise = sunrise.astimezone(tz)
     current['sunrise'] = sunrise.strftime("%I:%M %p")
 
-    # convert sunset to Eastern time and readable string format
+    # convert sunrise to Eastern time and readable string format
     sunset = datetime.fromtimestamp(current['sys']['sunset'])
     sunset = sunset.replace(tzinfo=timezone.utc)
     tz = pytz.timezone('US/Eastern')
