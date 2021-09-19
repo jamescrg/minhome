@@ -38,14 +38,17 @@ def index(request):
 
     return render(request, 'notes/content.html', context)
 
+
 @login_required
 def select(request, id):
+    print('this is a test')
     user_id = request.user.id
     old = Note.objects.filter(user_id=user_id, selected=1).update(selected=0)
     new = get_object_or_404(Note, pk=id)
     new.selected = 1
     new.save()
     return redirect('/notes/')
+
 
 @login_required
 def add(request, id):
@@ -70,14 +73,6 @@ def add(request, id):
 
     return render(request, 'notes/content.html', context)
 
-@login_required
-def select(request, id):
-    user_id = request.user.id
-    old = Note.objects.filter(user_id=user_id, selected=1).update(selected=0)
-    new = get_object_or_404(Note, pk=id)
-    new.selected = 1
-    new.save()
-    return redirect('notes')
 
 @login_required
 def insert(request):
@@ -92,6 +87,7 @@ def insert(request):
     note.selected = 1
     note.save()
     return redirect('notes')
+
 
 @login_required
 def edit(request, id):
@@ -114,6 +110,7 @@ def edit(request, id):
     }
     return render(request, 'notes/content.html', context)
 
+
 @login_required
 def update(request, id):
     note = get_object_or_404(Note, pk=id)
@@ -121,6 +118,7 @@ def update(request, id):
          setattr(note, field, request.POST.get(field))
     note.save()
     return redirect('notes')
+
 
 @login_required
 def delete(request, id):

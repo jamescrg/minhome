@@ -2,32 +2,14 @@
 from pprint import pprint
 
 from django.test import TestCase
+from django.test import TransactionTestCase
 from django.test import Client
 from django.urls import reverse
+from django.urls import resolve
+from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
-from app.models import Note
-
-
-class NotesViewTests(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
-        self.client.login(username='john', password='johnpassword')
-
-    def testUrl(self):
-        response = self.client.get('/notes/')
-        self.assertEqual(response.status_code, 200)
-
-    def testNamedRoute(self):
-        response = self.client.get(reverse('notes'))
-        self.assertEqual(response.status_code, 200)
-
-    def testCorrectTemplate(self):
-        response = self.client.get(reverse('notes'))
-        self.assertTemplateUsed(response, 'notes/content.html')
+from app.models import Folder, Note
 
 
 class NotesModelTests(TestCase):
@@ -40,6 +22,7 @@ class NotesModelTests(TestCase):
                 note='Main',
                 selected=1,
                 )
+
 
     def testNoteContent(self):
         note = Note.objects.get(subject='notes')
@@ -54,6 +37,67 @@ class NotesModelTests(TestCase):
             with self.subTest(key=key, val=val):
                 self.assertEqual(getattr(note, key), val)
 
-    def testContactString(self):
+
+    def testString(self):
         note = Note.objects.get(subject='notes')
         self.assertEqual(str(note), f'{note.subject} : {note.id}')
+
+
+class ViewTests(TransactionTestCase):
+    reset_sequences = True
+
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+                'john', 'lennon@thebeatles.com', 'johnpassword')
+        self.client.login(username='john', password='johnpassword')
+
+        folders = [
+            'Social',
+            'Recipes',
+            'Places',
+            'Philosophy',
+        ]
+
+        for name in folders:
+            user_id = self.user.id
+            Folder.objects.create(
+                    user_id=user_id,
+                    page='notes',
+                    name=name,
+                    )
+
+
+        notes = [
+            'Socrates',
+            'Kant',
+            'Mill',
+            'Nietzsche',
+        ]
+
+        for subject in notes:
+            Note.objects.create(
+                    user_id=user_id,
+                    folder_id=4,
+                    subject=subject,
+                    note='Some text here',
+                    )
+
+
+    def testIndexView(self):
+        response = self.client.get('/notes/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page'], 'notes')
+        self.assertTemplateUsed(response, 'notes/content.html')
+        self.assertContains(response, 'Philosophy')
+
+
+    def testSelectFolder(self):
+        folders = Folder.objects.all()
+        response = self.client.get('/folders/4/notes')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/notes/')
+        self.assertEqual(response.context['page'], 'notes')
+        self.assertTemplateUsed(response, 'notes/content.html')
+        self.assertContains(response, 'Philosophy')
+        self.assertContains(response, 'Nietzsche')
