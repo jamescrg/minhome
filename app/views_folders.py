@@ -55,18 +55,22 @@ def delete(request, id, page):
     folder.delete()
     return redirect(page)
 
+# sets a folder to show on the home page
 def home(request, id, page):
     user_id = request.user.id
     folder = get_object_or_404(Folder, pk=id)
 
-    if folder.home_column > 0: 
+    if folder.home_column: 
         folder.home_column = 0
         folder.home_rank = 0
     else: 
         folder.home_column = 4
         ranked_folders = Folder.objects.filter(user_id=user_id, 
                 home_column=4).order_by('-home_rank')
-        max_rank = ranked_folders[0].home_rank
+        if ranked_folders:
+            max_rank = ranked_folders[0].home_rank
+        else:
+            max_rank = 0
         folder.home_rank = max_rank + 1
 
     folder.save()

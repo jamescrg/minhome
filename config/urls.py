@@ -21,7 +21,7 @@ urlpatterns = [
     # folders
     path('folders/home/<int:id>/<str:page>', views_folders.home, name='folder-home'),
     path('folders/<int:id>/<str:page>', views_folders.select, name='folder-select'),
-    path('folders/add/<str:page>', views_folders.insert, name='folder-insert'),
+    path('folders/insert/<str:page>', views_folders.insert, name='folder-insert'),
     path('folders/update/<int:id>/<str:page>', views_folders.update, name='folder-update'),
     path('folders/delete/<int:id>/<str:page>', views_folders.delete, name='folder-delete'),
 
