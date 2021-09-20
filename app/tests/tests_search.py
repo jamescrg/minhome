@@ -2,14 +2,17 @@
 from pprint import pprint
 
 from django.test import TestCase
+from django.test import TransactionTestCase
 from django.test import Client
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 from app.models import Folder, Favorite, Note, Contact
 
 
-class ViewTests(TestCase):
+class ViewTests(TransactionTestCase):
+    reset_sequences = True
 
     def setUp(self):
         self.client = Client()

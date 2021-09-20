@@ -11,7 +11,6 @@ from app.models import Folder, Note
 
 @login_required
 def index(request):
-
     user_id = request.user.id
     page = 'notes'
 
@@ -42,8 +41,6 @@ def index(request):
 
 @login_required
 def select(request, id):
-
-    print('this is a test')
     user_id = request.user.id
     old = Note.objects.filter(user_id=user_id, selected=1).update(selected=0)
     new = get_object_or_404(Note, pk=id)
@@ -54,7 +51,6 @@ def select(request, id):
 
 @login_required
 def add(request, id):
-
     user_id = request.user.id
     selected_folder_id = id
     selected_folder = get_object_or_404(Folder, pk=id)
@@ -79,7 +75,6 @@ def add(request, id):
 
 @login_required
 def insert(request):
-
     user_id = request.user.id
 
     # deselect previously selected note
@@ -98,7 +93,6 @@ def insert(request):
 
 @login_required
 def edit(request, id):
-
     user_id = request.user.id
     note = get_object_or_404(Note, pk=id)
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
@@ -121,7 +115,6 @@ def edit(request, id):
 
 @login_required
 def update(request, id):
-
     note = get_object_or_404(Note, pk=id)
     for field in note.fillable:
          setattr(note, field, request.POST.get(field))
@@ -131,7 +124,6 @@ def update(request, id):
 
 @login_required
 def delete(request, id):
-
     note = get_object_or_404(Note, pk=id)
     note.delete()
     return redirect('notes')

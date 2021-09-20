@@ -65,8 +65,8 @@
   {% for day in forecast.daily %}
   <tr>
     <td class="forecast-date">{{ day.date_string }}
-    <td class="forecast-max">{{ day.temp.min|floatformat:"0" }}&deg;
-    <td class="forecast-min">{{ day.temp.max|floatformat:"0" }}&deg;
+    <td class="forecast-max">{{ day.temp.max|floatformat:"0" }}&deg;
+    <td class="forecast-min">{{ day.temp.min|floatformat:"0" }}&deg;
     <td class="forecast-description">{{ day.weather.0.description }}
   {% endfor %}
 </table>
