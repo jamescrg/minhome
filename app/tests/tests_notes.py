@@ -66,7 +66,6 @@ class ViewTests(TransactionTestCase):
                     name=name,
                     )
 
-
         notes = [
             'Socrates',
             'Kant',

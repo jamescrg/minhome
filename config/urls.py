@@ -80,7 +80,6 @@ urlpatterns = [
     path('settings/', views_settings.index, name='settings'),
     path('settings/google/login', views_settings.google_login, name='settings-google-login'),
     path('settings/google/store', views_settings.google_store, name='settings-google-store'),
-    path('settings/google/show', views_settings.show, name='settings-google-show'),
     path('settings/google/logout', views_settings.google_logout, name='settings-google-logout'),
 
 ]

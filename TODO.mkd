@@ -3,3 +3,5 @@
 * Secure all update and delete views
 * Cron backups
 * Finish testing for all models and views
+* Change Open Weather API key and move to local config file
+* Weather tweaks - high and low reversed
