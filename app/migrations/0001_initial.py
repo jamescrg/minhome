@@ -7,8 +7,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -22,11 +21,20 @@ class Migration(migrations.Migration):
                 ('company', models.CharField(blank=True, max_length=100, null=True)),
                 ('address', models.CharField(blank=True, max_length=255, null=True)),
                 ('phone1', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone1_label', models.CharField(blank=True, max_length=10, null=True)),
+                (
+                    'phone1_label',
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
                 ('phone2', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone2_label', models.CharField(blank=True, max_length=10, null=True)),
+                (
+                    'phone2_label',
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
                 ('phone3', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone3_label', models.CharField(blank=True, max_length=10, null=True)),
+                (
+                    'phone3_label',
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
                 ('email', models.CharField(blank=True, max_length=100, null=True)),
                 ('website', models.CharField(blank=True, max_length=255, null=True)),
                 ('map', models.CharField(blank=True, max_length=255, null=True)),
@@ -42,7 +50,10 @@ class Migration(migrations.Migration):
                 ('folder_id', models.BigIntegerField(blank=True, null=True)),
                 ('name', models.CharField(blank=True, max_length=100, null=True)),
                 ('url', models.CharField(blank=True, max_length=255, null=True)),
-                ('description', models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    'description',
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
                 ('login', models.CharField(blank=True, max_length=50, null=True)),
                 ('root', models.CharField(blank=True, max_length=50, null=True)),
                 ('passkey', models.CharField(blank=True, max_length=50, null=True)),

@@ -1,12 +1,13 @@
-
 from django.db.models import Model
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 
+
 def dump_model(instance):
     instance = model_to_dict(instance)
     return instance
+
 
 def dump_set(queryset):
     qDict = []
@@ -14,6 +15,7 @@ def dump_set(queryset):
         instance = model_to_dict(instance)
         qDict.append(instance)
     return qDict
+
 
 def dump(result):
     if issubclass(type(result), Model):
@@ -25,5 +27,3 @@ def dump(result):
     else:
         result = 'Input must be a a model instance, queryset, dict, string, int, list, or float.'
     return JsonResponse(result, safe=False)
-
-

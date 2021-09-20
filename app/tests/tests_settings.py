@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -10,10 +9,11 @@ from app.models import Folder
 
 
 class SettingsViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        self.user = CustomUser.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
     def testUrl(self):

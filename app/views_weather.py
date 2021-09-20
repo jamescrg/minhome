@@ -1,4 +1,3 @@
-
 from datetime import datetime, date, time, timezone
 from pprint import pprint
 import os
@@ -28,7 +27,7 @@ def index(request):
     params = {
         'zip': zip,
         'units': 'imperial',
-        'appid': '78e85b0dbd4e78f3b0d172a58915c685'
+        'appid': '78e85b0dbd4e78f3b0d172a58915c685',
     }
     response = requests.get(url, params=params)
     current = response.json()
@@ -66,4 +65,3 @@ def index(request):
         'forecast': forecast,
     }
     return render(request, 'weather/content.html', context)
-

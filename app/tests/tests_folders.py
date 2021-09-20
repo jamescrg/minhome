@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -12,17 +11,16 @@ from app.models import Folder
 
 
 class ModelTests(TestCase):
-
     def setUp(self):
         Folder.objects.create(
-                user_id=1,
-                page='favorites',
-                name='Main',
-                home_column=1,
-                home_rank=1,
-                selected=1,
-                active=1,
-                )
+            user_id=1,
+            page='favorites',
+            name='Main',
+            home_column=1,
+            home_rank=1,
+            selected=1,
+            active=1,
+        )
 
     def testContent(self):
         folder = Folder.objects.get(name='Main')
@@ -50,7 +48,8 @@ class ViewTests(TransactionTestCase):
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
         folders = [
@@ -63,13 +62,8 @@ class ViewTests(TransactionTestCase):
         for name in folders:
             user_id = self.user.id
             Folder.objects.create(
-                    user_id=user_id,
-                    page='notes',
-                    name=name,
-                    home_column=0,
-                    home_rank=0
-                    )
-
+                user_id=user_id, page='notes', name=name, home_column=0, home_rank=0
+            )
 
     def testHome(self):
         response = self.client.get('/folders/home/4/notes')
@@ -78,13 +72,11 @@ class ViewTests(TransactionTestCase):
         self.assertEqual(folder.home_column, 4)
         self.assertEqual(folder.home_rank, 1)
 
-
     def testSelect(self):
         response = self.client.get('/folders/4/notes')
         self.assertEqual(response.status_code, 302)
         response = self.client.get('/notes/')
         self.assertContains(response, 'Philosophy')
-
 
     def testInsert(self):
         data = {
@@ -99,7 +91,6 @@ class ViewTests(TransactionTestCase):
         found = Folder.objects.filter(name='Existentialism').exists()
         self.assertTrue(found)
 
-
     def testUpdate(self):
         data = {
             'user_id': self.user.id,
@@ -112,7 +103,6 @@ class ViewTests(TransactionTestCase):
         self.assertEqual(response.status_code, 302)
         found = Folder.objects.filter(name='Existentialism').exists()
         self.assertTrue(found)
-
 
     def testDelete(self):
         response = self.client.get('/folders/delete/4/notes')

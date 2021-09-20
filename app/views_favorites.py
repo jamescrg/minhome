@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
@@ -15,14 +14,15 @@ def index(request):
     user_id = request.user.id
     page = 'favorites'
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
-    selected_folder = Folder.objects.filter(user_id=user_id, 
-            page=page, selected=1).first()
+    selected_folder = Folder.objects.filter(
+        user_id=user_id, page=page, selected=1
+    ).first()
 
-    if selected_folder: 
+    if selected_folder:
         selected_folder_id = selected_folder.id
     else:
         selected_folder_id = 0
-    
+
     favorites = Favorite.objects.filter(user_id=user_id, folder_id=selected_folder_id)
     favorites = favorites.order_by('name')
 
@@ -35,6 +35,7 @@ def index(request):
         'favorites': favorites,
     }
     return render(request, 'favorites/content.html', context)
+
 
 def add(request, id):
     user_id = request.user.id
@@ -55,13 +56,15 @@ def add(request, id):
     }
     return render(request, 'favorites/content.html', context)
 
+
 def insert(request):
     favorite = Favorite()
     favorite.user_id = request.user.id
     for field in favorite.fillable:
-         setattr(favorite, field, request.POST.get(field))
+        setattr(favorite, field, request.POST.get(field))
     favorite.save()
     return redirect('favorites')
+
 
 def edit(request, id):
     user_id = request.user.id
@@ -81,15 +84,17 @@ def edit(request, id):
     }
     return render(request, 'favorites/content.html', context)
 
+
 def update(request, id):
     try:
         favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
     except:
         raise Http404('Record not found.')
     for field in favorite.fillable:
-         setattr(favorite, field, request.POST.get(field))
+        setattr(favorite, field, request.POST.get(field))
     favorite.save()
     return redirect('favorites')
+
 
 def delete(request, id):
     try:
@@ -99,12 +104,13 @@ def delete(request, id):
     favorite.delete()
     return redirect('favorites')
 
+
 def home(request, id):
     user_id = request.user.id
     favorite = get_object_or_404(Favorite, pk=id)
-    if favorite.home_rank: 
+    if favorite.home_rank:
         favorite.home_rank = 0
-    else: 
+    else:
         favorite.home_rank = 1
     favorite.save()
     return redirect('favorites')

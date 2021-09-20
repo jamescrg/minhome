@@ -1,4 +1,3 @@
-
 from pprint import pprint
 import json
 import requests
@@ -14,6 +13,7 @@ import google_auth_oauthlib.flow
 from apiclient.discovery import build
 
 from accounts.models import CustomUser
+
 
 @login_required
 def index(request):
@@ -31,18 +31,23 @@ def index(request):
     }
     return render(request, 'settings/content.html', context)
 
+
 @login_required
 def google_login(request):
     # direct the user to their login page to obtain an authorization code
     # based on sample code from https://developers.google.com/identity/protocols/oauth2/web-server
-    
+
     # sets the url to return to when an authorization code has been obtained
     redirect_uri = 'https://' + request.get_host() + '/settings/google/store'
 
     # builds the url to go to in order to obtain the authorization code
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         '/home/james/.google/cp.json',
-        scopes=['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/contacts'])
+        scopes=[
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/contacts',
+        ],
+    )
     flow.redirect_uri = redirect_uri
 
     authorization_url, state = flow.authorization_url(
@@ -51,12 +56,14 @@ def google_login(request):
         access_type='offline',
         prompt='consent',
         # Enable incremental authorization. Recommended as a best practice.
-        include_granted_scopes='true')
+        include_granted_scopes='true',
+    )
 
     # this is to prevent cross site scripting attacks
     request.session['state'] = state
 
     return redirect(authorization_url)
+
 
 @login_required
 def google_store(request):
@@ -66,8 +73,12 @@ def google_store(request):
     state = request.session['state']
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         '/home/james/.google/cp.json',
-        scopes=['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/contacts'], 
-        state=state)
+        scopes=[
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/contacts',
+        ],
+        state=state,
+    )
     flow.redirect_uri = redirect_uri
 
     authorization_response = request.build_absolute_uri()
@@ -85,6 +96,7 @@ def google_store(request):
 
     return redirect('/settings')
 
+
 @login_required
 def show(request):
     user_id = request.user.id
@@ -92,6 +104,7 @@ def show(request):
     credentials = user.google_credentials
     credentials = json.loads(credentials)
     import app.util as util
+
     return util.dump(credentials)
 
 
@@ -102,11 +115,15 @@ def google_logout(request):
     credentials = user.google_credentials
 
     credentials = json.loads(credentials)
-    credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(credentials)
+    credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
+        credentials
+    )
 
-    revoke = requests.post('https://oauth2.googleapis.com/revoke',
+    revoke = requests.post(
+        'https://oauth2.googleapis.com/revoke',
         params={'token': credentials.token},
-        headers = {'content-type': 'application/x-www-form-urlencoded'})
+        headers={'content-type': 'application/x-www-form-urlencoded'},
+    )
 
     user.google_credentials = None
     user.save()

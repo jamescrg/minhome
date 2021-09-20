@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
@@ -18,13 +17,14 @@ def index(request):
     page = 'contacts'
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
     selected_folder = Folder.objects.filter(
-            user_id=user_id, page=page, selected=1).first()
-   
+        user_id=user_id, page=page, selected=1
+    ).first()
+
     if selected_folder:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=0)
-        
+
     contacts = contacts.order_by('name')
     selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
     if request.user.google_credentials:
@@ -43,6 +43,7 @@ def index(request):
     }
     return render(request, 'contacts/content.html', context)
 
+
 @login_required
 def select(request, id):
     user_id = request.user.id
@@ -51,6 +52,7 @@ def select(request, id):
     new.selected = 1
     new.save()
     return redirect('/contacts/')
+
 
 @login_required
 def add(request, id):
@@ -75,6 +77,7 @@ def add(request, id):
 
     return render(request, 'contacts/content.html', context)
 
+
 @login_required
 def insert(request):
     user = get_object_or_404(CustomUser, pk=request.user.id)
@@ -82,7 +85,7 @@ def insert(request):
     contact = Contact()
     contact.user_id = user.id
     for field in contact.fillable:
-         setattr(contact, field, request.POST.get(field))
+        setattr(contact, field, request.POST.get(field))
 
     if user.google_credentials:
         contact.google_id = google.add_contact(contact)
@@ -90,6 +93,7 @@ def insert(request):
     contact.save()
 
     return redirect('contacts')
+
 
 @login_required
 def edit(request, id):
@@ -111,6 +115,7 @@ def edit(request, id):
     }
     return render(request, 'contacts/content.html', context)
 
+
 @login_required
 def update(request, id):
     user = get_object_or_404(CustomUser, pk=request.user.id)
@@ -121,7 +126,7 @@ def update(request, id):
         raise Http404('Record not found.')
 
     for field in contact.fillable:
-         setattr(contact, field, request.POST.get(field))
+        setattr(contact, field, request.POST.get(field))
 
     if user.google_credentials and contact.google_id:
         google.delete_contact(contact)
@@ -130,6 +135,7 @@ def update(request, id):
     contact.save()
 
     return redirect('contacts')
+
 
 @login_required
 def delete(request, id):
@@ -141,6 +147,7 @@ def delete(request, id):
         google.delete_contact(contact)
     contact.delete()
     return redirect('contacts')
+
 
 @login_required
 def google_sync(request, id):

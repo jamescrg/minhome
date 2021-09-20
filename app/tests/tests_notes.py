@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -12,16 +11,14 @@ from app.models import Folder, Note
 
 
 class ModelTests(TestCase):
-
     def setUp(self):
         Note.objects.create(
-                user_id=1,
-                folder_id=1,
-                subject='notes',
-                note='Main',
-                selected=1,
-                )
-
+            user_id=1,
+            folder_id=1,
+            subject='notes',
+            note='Main',
+            selected=1,
+        )
 
     def testContent(self):
         note = Note.objects.get(subject='notes')
@@ -36,7 +33,6 @@ class ModelTests(TestCase):
             with self.subTest(key=key, val=val):
                 self.assertEqual(getattr(note, key), val)
 
-
     def testString(self):
         note = Note.objects.get(subject='notes')
         self.assertEqual(str(note), f'{note.subject} : {note.id}')
@@ -48,7 +44,8 @@ class ViewTests(TransactionTestCase):
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
         folders = [
@@ -61,10 +58,10 @@ class ViewTests(TransactionTestCase):
         for name in folders:
             user_id = self.user.id
             Folder.objects.create(
-                    user_id=user_id,
-                    page='notes',
-                    name=name,
-                    )
+                user_id=user_id,
+                page='notes',
+                name=name,
+            )
 
         notes = [
             'Socrates',
@@ -75,12 +72,11 @@ class ViewTests(TransactionTestCase):
 
         for subject in notes:
             Note.objects.create(
-                    user_id=user_id,
-                    folder_id=4,
-                    subject=subject,
-                    note='Some text here',
-                    )
-
+                user_id=user_id,
+                folder_id=4,
+                subject=subject,
+                note='Some text here',
+            )
 
     def testIndex(self):
         response = self.client.get('/notes/')
@@ -89,13 +85,11 @@ class ViewTests(TransactionTestCase):
         self.assertTemplateUsed(response, 'notes/content.html')
         self.assertContains(response, 'Philosophy')
 
-
     def testSelectFolder(self):
         response = self.client.get('/folders/4/notes')
         self.assertEqual(response.status_code, 302)
         response = self.client.get('/notes/')
         self.assertContains(response, 'Nietzsche')
-
 
     def testSelectNote(self):
         response = self.client.get('/notes/4')
@@ -103,20 +97,17 @@ class ViewTests(TransactionTestCase):
         response = self.client.get('/notes/')
         self.assertContains(response, 'Nietzsche')
 
-
     def testAdd(self):
         response = self.client.get('/notes/add/4')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page'], 'notes')
         self.assertTemplateUsed(response, 'notes/form.html')
 
-
     def testEdit(self):
         response = self.client.get('/notes/edit/4')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page'], 'notes')
         self.assertTemplateUsed(response, 'notes/form.html')
-
 
     def testInsert(self):
         data = {
@@ -131,7 +122,6 @@ class ViewTests(TransactionTestCase):
         found = Note.objects.filter(subject='Existentialism').exists()
         self.assertTrue(found)
 
-
     def testUpdate(self):
         data = {
             'user_id': self.user.id,
@@ -144,7 +134,6 @@ class ViewTests(TransactionTestCase):
         self.assertEqual(response.status_code, 302)
         found = Note.objects.filter(note='Uebermensch').exists()
         self.assertTrue(found)
-
 
     def testDelete(self):
         response = self.client.get('/notes/delete/4')

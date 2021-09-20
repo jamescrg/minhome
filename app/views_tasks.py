@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
@@ -9,6 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Folder, Task
 from pprint import pprint
+
 
 @login_required
 def index(request):
@@ -34,23 +34,26 @@ def index(request):
 
     return render(request, 'tasks/content.html', context)
 
+
 @login_required
-def activate(request,id):
+def activate(request, id):
     Folder.objects.filter(user_id=1, active=1).update(active=0)
     folder = get_object_or_404(Folder, pk=id)
-    folder.active=1
+    folder.active = 1
     folder.save()
     return redirect('/tasks/')
+
 
 @login_required
 def status(request, id):
     task = get_object_or_404(Task, pk=id)
     if task.status == 1:
         task.status = 0
-    else: 
+    else:
         task.status = 1
     task.save()
     return redirect('/tasks/')
+
 
 @login_required
 def insert(request):
@@ -60,6 +63,7 @@ def insert(request):
     task.title = request.POST.get('title')
     task.save()
     return redirect('tasks')
+
 
 @login_required
 def edit(request, id):
@@ -79,6 +83,7 @@ def edit(request, id):
     }
     return render(request, 'tasks/content.html', context)
 
+
 @login_required
 def update(request, id):
     try:
@@ -90,6 +95,7 @@ def update(request, id):
     task.title = request.POST.get('title')
     task.save()
     return redirect('tasks')
+
 
 @login_required
 def clear(request, folder_id):

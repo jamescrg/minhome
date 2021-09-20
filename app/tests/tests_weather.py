@@ -1,5 +1,3 @@
-
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -13,10 +11,11 @@ from app.models import Folder, Task
 
 
 class ViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        self.user = CustomUser.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
     def testIndex(self):
@@ -26,4 +25,3 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'weather/content.html')
         self.assertIn(':', response.context['current']['sunrise'])
-

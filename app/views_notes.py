@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
@@ -17,9 +16,10 @@ def index(request):
 
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
 
-    selected_folder = Folder.objects.filter(user_id=user_id, 
-            page=page, selected=1).first()
-   
+    selected_folder = Folder.objects.filter(
+        user_id=user_id, page=page, selected=1
+    ).first()
+
     if selected_folder:
         notes = Note.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
@@ -85,7 +85,7 @@ def insert(request):
     note = Note()
     note.user_id = user_id
     for field in note.fillable:
-         setattr(note, field, request.POST.get(field))
+        setattr(note, field, request.POST.get(field))
     note.selected = 1
     note.save()
 
@@ -121,7 +121,7 @@ def update(request, id):
     except:
         raise Http404('Record not found.')
     for field in note.fillable:
-         setattr(note, field, request.POST.get(field))
+        setattr(note, field, request.POST.get(field))
     note.save()
     return redirect('notes')
 

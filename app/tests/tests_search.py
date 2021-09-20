@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -16,7 +15,9 @@ class ViewTests(TransactionTestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        self.user = CustomUser.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
     def testIndex(self):
@@ -30,21 +31,21 @@ class ViewTests(TransactionTestCase):
 
     def testResults(self):
         Favorite.objects.create(
-                name='Google', 
-                user_id=self.user.id,
-                folder_id=1,
-                description='Search enginge for james.'
-                )
+            name='Google',
+            user_id=self.user.id,
+            folder_id=1,
+            description='Search enginge for james.',
+        )
         Note.objects.create(
-                subject='Tasks for James',
-                folder_id=1,
-                user_id=self.user.id,
-                )
+            subject='Tasks for James',
+            folder_id=1,
+            user_id=self.user.id,
+        )
         Contact.objects.create(
-                name='James Craig',
-                folder_id=1,
-                user_id=self.user.id,
-                )
+            name='James Craig',
+            folder_id=1,
+            user_id=self.user.id,
+        )
         data = {
             'search_text': 'James',
         }

@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -11,11 +10,11 @@ from app.models import Folder, Favorite
 
 
 class HomeViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
     def testBaseUrl(self):
@@ -41,46 +40,111 @@ class HomeFolderTests(TransactionTestCase):
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
         self.folders = [
-            #column 1
-            {'name': 'Main', 'home_column': 1, 'home_rank': 1,},
-            {'name': 'Entertainment', 'home_column': 1, 'home_rank': 2,},
-            {'name': 'Local', 'home_column': 1, 'home_rank': 3,},
-            {'name': 'Social', 'home_column': 1, 'home_rank': 4,},
-            #column 2
-            {'name': 'Dev', 'home_column': 2, 'home_rank': 1,},
-            {'name': 'Research', 'home_column': 2, 'home_rank': 2,},
-            {'name': 'Filing', 'home_column': 2, 'home_rank': 3,},
-            {'name': 'Food', 'home_column': 2, 'home_rank': 4,},
-            #column 3
-            {'name': 'Philosophy', 'home_column': 3, 'home_rank': 1,},
-            {'name': 'Psych', 'home_column': 3, 'home_rank': 2,},
-            {'name': 'History', 'home_column': 3, 'home_rank': 3,},
-            {'name': 'Math', 'home_column': 3, 'home_rank': 4,},
-            #column 4
-            {'name': 'Physics', 'home_column': 4, 'home_rank': 1,},
-            {'name': 'Anthro', 'home_column': 4, 'home_rank': 2,},
-            {'name': 'Chorus', 'home_column': 4, 'home_rank': 3,},
-            {'name': 'Annoying', 'home_column': 4, 'home_rank': 4,},
+            # column 1
+            {
+                'name': 'Main',
+                'home_column': 1,
+                'home_rank': 1,
+            },
+            {
+                'name': 'Entertainment',
+                'home_column': 1,
+                'home_rank': 2,
+            },
+            {
+                'name': 'Local',
+                'home_column': 1,
+                'home_rank': 3,
+            },
+            {
+                'name': 'Social',
+                'home_column': 1,
+                'home_rank': 4,
+            },
+            # column 2
+            {
+                'name': 'Dev',
+                'home_column': 2,
+                'home_rank': 1,
+            },
+            {
+                'name': 'Research',
+                'home_column': 2,
+                'home_rank': 2,
+            },
+            {
+                'name': 'Filing',
+                'home_column': 2,
+                'home_rank': 3,
+            },
+            {
+                'name': 'Food',
+                'home_column': 2,
+                'home_rank': 4,
+            },
+            # column 3
+            {
+                'name': 'Philosophy',
+                'home_column': 3,
+                'home_rank': 1,
+            },
+            {
+                'name': 'Psych',
+                'home_column': 3,
+                'home_rank': 2,
+            },
+            {
+                'name': 'History',
+                'home_column': 3,
+                'home_rank': 3,
+            },
+            {
+                'name': 'Math',
+                'home_column': 3,
+                'home_rank': 4,
+            },
+            # column 4
+            {
+                'name': 'Physics',
+                'home_column': 4,
+                'home_rank': 1,
+            },
+            {
+                'name': 'Anthro',
+                'home_column': 4,
+                'home_rank': 2,
+            },
+            {
+                'name': 'Chorus',
+                'home_column': 4,
+                'home_rank': 3,
+            },
+            {
+                'name': 'Annoying',
+                'home_column': 4,
+                'home_rank': 4,
+            },
         ]
         for folder in self.folders:
             Folder.objects.create(
-                    user_id=self.user.id,
-                    name=folder['name'],
-                    home_column=folder['home_column'],
-                    home_rank=folder['home_rank'],
-                    page='favorites',
-                    )
+                user_id=self.user.id,
+                name=folder['name'],
+                home_column=folder['home_column'],
+                home_rank=folder['home_rank'],
+                page='favorites',
+            )
         for i in range(1, 6):
             Favorite.objects.create(
-                    user_id=self.user.id,
-                    folder_id=1,
-                    name=f'Favorite No. {i}',
-                    description=f'Awesome {i}',
-                    home_rank=i,
-                    )
+                user_id=self.user.id,
+                folder_id=1,
+                name=f'Favorite No. {i}',
+                description=f'Awesome {i}',
+                home_rank=i,
+            )
 
     def test_redirect(self):
         response = self.client.get('/home/folder/4/up/')

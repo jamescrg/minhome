@@ -1,4 +1,3 @@
-
 from pprint import pprint
 
 from django.test import TestCase
@@ -12,30 +11,30 @@ from app.models import Folder, Contact
 
 
 class ModelTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
         Contact.objects.create(
-                user_id=1,
-                folder_id=1,
-                selected=1,
-                name='Mohandas Gandhi',
-                company='Gandhi, PC',
-                address='225 Paper Street, Porbandar, India',
-                phone1='123.456.7890',
-                phone1_label='Work',
-                phone2='123.456.2222',
-                phone2_label='Mobile',
-                phone3='123.456.5555',
-                phone3_label='Other',
-                email='gandhi@gandhi.com',
-                website='gandhi.com',
-                notes='The Mahatma'
-                )
+            user_id=1,
+            folder_id=1,
+            selected=1,
+            name='Mohandas Gandhi',
+            company='Gandhi, PC',
+            address='225 Paper Street, Porbandar, India',
+            phone1='123.456.7890',
+            phone1_label='Work',
+            phone2='123.456.2222',
+            phone2_label='Mobile',
+            phone3='123.456.5555',
+            phone3_label='Other',
+            email='gandhi@gandhi.com',
+            website='gandhi.com',
+            notes='The Mahatma',
+        )
 
     def testContactContent(self):
         contact = Contact.objects.get(name='Mohandas Gandhi')
@@ -68,7 +67,8 @@ class ViewTests(TransactionTestCase):
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
-                'john', 'lennon@thebeatles.com', 'johnpassword')
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
         self.client.login(username='john', password='johnpassword')
 
         folders = [
@@ -81,26 +81,26 @@ class ViewTests(TransactionTestCase):
         for name in folders:
             user_id = self.user.id
             Folder.objects.create(
-                    user_id=user_id,
-                    page='contacts',
-                    name=name,
-                    )
+                user_id=user_id,
+                page='contacts',
+                name=name,
+            )
 
         contacts = [
-                {'name': 'Socrates', 'phone1': '406.363.5555', 'email': 'u@me.com'},
-                {'name': 'Nietzsche', 'phone1': '406.363.5555', 'email': 'u@me.com'},
-                {'name': 'Schopenhauer', 'phone1': '406.363.5555', 'email': 'u@me.com'},
-                ]
-        
+            {'name': 'Socrates', 'phone1': '406.363.5555', 'email': 'u@me.com'},
+            {'name': 'Nietzsche', 'phone1': '406.363.5555', 'email': 'u@me.com'},
+            {'name': 'Schopenhauer', 'phone1': '406.363.5555', 'email': 'u@me.com'},
+        ]
+
         for contact in contacts:
             Contact.objects.create(
-                    user_id=1,
-                    folder_id=1,
-                    selected=0,
-                    name=contact['name'],
-                    phone1=contact['phone1'],
-                    email=contact['email'],
-                    )
+                user_id=1,
+                folder_id=1,
+                selected=0,
+                name=contact['name'],
+                phone1=contact['phone1'],
+                email=contact['email'],
+            )
 
     def testIndex(self):
         response = self.client.get('/contacts/')
@@ -110,25 +110,21 @@ class ViewTests(TransactionTestCase):
         response = self.client.get(reverse('contacts'))
         self.assertTemplateUsed(response, 'contacts/content.html')
 
-
     def testSelect(self):
         response = self.client.get('/contacts/2')
         self.assertEqual(response.status_code, 302)
         selected_contact = get_object_or_404(Contact, pk=2)
         self.assertEqual(selected_contact.selected, 1)
 
-
     def testAdd(self):
         response = self.client.get('/contacts/add/4')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contacts/form.html')
 
-
     def testEdit(self):
         response = self.client.get('/contacts/edit/2')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contacts/form.html')
-
 
     def testInsert(self):
         data = {
@@ -143,7 +139,6 @@ class ViewTests(TransactionTestCase):
         found = Contact.objects.filter(name='Plato').exists()
         self.assertTrue(found)
 
-
     def testUpdate(self):
         data = {
             'user_id': self.user.id,
@@ -156,7 +151,6 @@ class ViewTests(TransactionTestCase):
         self.assertEqual(response.status_code, 302)
         found = Contact.objects.filter(name='Descartes').exists()
         self.assertTrue(found)
-
 
     def testDelete(self):
         response = self.client.get('/contacts/delete/3')

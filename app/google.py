@@ -1,4 +1,3 @@
-
 from pprint import pprint
 import json
 
@@ -10,6 +9,7 @@ from apiclient.discovery import build
 from accounts.models import CustomUser
 from app.models import Contact
 
+
 def build_service(contact):
     user = get_object_or_404(CustomUser, pk=contact.user_id)
     credentials = user.google_credentials
@@ -17,27 +17,21 @@ def build_service(contact):
     if credentials:
         credentials = json.loads(credentials)
         credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
-                credentials)
+            credentials
+        )
         service = build('people', 'v1', credentials=credentials)
         return service
     else:
         return False
 
+
 def add_contact(contact):
     service = build_service(contact)
 
     if service:
-        new_contact = { 
-            "names": [
-                { 
-                    "unstructuredName": contact.name
-                }
-            ],
-            "emailAddresses": [
-                {
-                    "value": contact.email
-                }
-            ],
+        new_contact = {
+            "names": [{"unstructuredName": contact.name}],
+            "emailAddresses": [{"value": contact.email}],
             "phoneNumbers": [
                 {
                     "value": contact.phone1,
@@ -50,8 +44,8 @@ def add_contact(contact):
                 {
                     "value": contact.phone3,
                     "type": contact.phone3_label,
-                }
-            ]
+                },
+            ],
         }
 
         result = service.people().createContact(body=new_contact).execute()
@@ -65,11 +59,14 @@ def add_contact(contact):
     else:
         return False
 
+
 def delete_contact(contact):
     service = build_service(contact)
 
     if service:
-        result = service.people().deleteContact(resourceName=contact.google_id).execute()
+        result = (
+            service.people().deleteContact(resourceName=contact.google_id).execute()
+        )
 
         if result:
             return True
