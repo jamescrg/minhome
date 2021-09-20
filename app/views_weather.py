@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
+import config.settings_local
 
 
 @login_required
@@ -27,8 +28,9 @@ def index(request):
     params = {
         'zip': zip,
         'units': 'imperial',
-        'appid': '78e85b0dbd4e78f3b0d172a58915c685',
+        'appid': config.settings_local.OPEN_WEATHER_API_KEY,
     }
+
     response = requests.get(url, params=params)
     current = response.json()
 
@@ -50,7 +52,7 @@ def index(request):
     url = 'https://api.openweathermap.org/data/2.5/onecall'
     params['lon'] = current['coord']['lon']
     params['lat'] = current['coord']['lat']
-    params['exclude'] = 'minutely,hourly'
+    params['exclude'] = 'minutely'
     del params['zip']
     response = requests.get(url, params=params)
     forecast = response.json()
