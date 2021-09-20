@@ -85,6 +85,15 @@ def google_store(request):
 
     return redirect('/settings')
 
+@login_required
+def show(request):
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+    credentials = user.google_credentials
+    credentials = json.loads(credentials)
+    import app.util as util
+    return util.dump(credentials)
+
 
 @login_required
 def google_logout(request):

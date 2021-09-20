@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -81,14 +82,20 @@ def edit(request, id):
     return render(request, 'favorites/content.html', context)
 
 def update(request, id):
-    favorite = get_object_or_404(Favorite, pk=id)
+    try:
+        favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     for field in favorite.fillable:
          setattr(favorite, field, request.POST.get(field))
     favorite.save()
     return redirect('favorites')
 
 def delete(request, id):
-    favorite = get_object_or_404(Favorite, pk=id)
+    try:
+        favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     favorite.delete()
     return redirect('favorites')
 

@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -114,7 +115,11 @@ def edit(request, id):
 def update(request, id):
     user = get_object_or_404(CustomUser, pk=request.user.id)
 
-    contact = get_object_or_404(Contact, pk=id)
+    try:
+        contact = Contact.objects.filter(user_id=user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
+
     for field in contact.fillable:
          setattr(contact, field, request.POST.get(field))
 
@@ -128,7 +133,10 @@ def update(request, id):
 
 @login_required
 def delete(request, id):
-    contact = get_object_or_404(Contact, pk=id)
+    try:
+        contact = Contact.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     if contact.google_id:
         google.delete_contact(contact)
     contact.delete()

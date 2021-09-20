@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -80,7 +81,10 @@ def edit(request, id):
 
 @login_required
 def update(request, id):
-    task = get_object_or_404(Task, pk=id)
+    try:
+        task = Task.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     task.user_id = request.user.id
     task.folder_id = request.POST.get('folder_id')
     task.title = request.POST.get('title')

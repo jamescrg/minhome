@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -44,14 +45,20 @@ def insert(request, page):
     return redirect(page)
 
 def update(request, id, page):
-    folder = get_object_or_404(Folder, pk=id)
+    try:
+        folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     for field in folder.fillable:
          setattr(folder, field, request.POST.get(field))
     folder.save()
     return redirect(page)
 
 def delete(request, id, page):
-    folder = get_object_or_404(Folder, pk=id)
+    try:
+        folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     folder.delete()
     return redirect(page)
 

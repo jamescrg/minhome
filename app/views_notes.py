@@ -2,6 +2,7 @@
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -115,7 +116,10 @@ def edit(request, id):
 
 @login_required
 def update(request, id):
-    note = get_object_or_404(Note, pk=id)
+    try:
+        note = Note.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     for field in note.fillable:
          setattr(note, field, request.POST.get(field))
     note.save()
@@ -124,6 +128,9 @@ def update(request, id):
 
 @login_required
 def delete(request, id):
-    note = get_object_or_404(Note, pk=id)
+    try:
+        note = Note.objects.filter(user_id=request.user.id, pk=id).get()
+    except:
+        raise Http404('Record not found.')
     note.delete()
     return redirect('notes')
