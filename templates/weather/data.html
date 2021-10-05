@@ -51,37 +51,7 @@
 
 
   <div class="weather-subtitle" >
-    Hourly
-  </div>
-
-
-  <table id="forecast-weather">
-    <tr>
-      <td class="weather-label"> Hour
-      <td class="weather-label"> Temp
-      <td class="weather-label"> Wind
-      <td class="weather-label"> Conditions
-      <td>
-
-    {% for hour in forecast.hourly %}
-    <tr>
-      <td class="forecast-date">{{ hour.hourTime }}
-      <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
-      <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
-      <td class="forecast-description">
-          {{ hour.weather.0.description }}
-      <td>
-          <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;" 
-          src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png" 
-          alt="Weather icon">
-    {% endfor %}
-  </table>
-</div>
-
-<div class="col-md-6">
-
-  <div class="weather-subtitle" >
-    Week Ahead
+    Forecast - Daily
   </div>
 
   <table id="forecast-weather">
@@ -106,6 +76,36 @@
     {% endfor %}
   </table>
 
+</div>
+
+<div class="col-md-6">
+
+  <div class="weather-subtitle" >
+    Forecast - Hourly
+  </div>
+
+
+  <table id="forecast-weather">
+    <tr>
+      <td class="weather-label"> Hour
+      <td class="weather-label"> Temp
+      <td class="weather-label"> Wind
+      <td class="weather-label"> Conditions
+      <td>
+
+    {% for hour in forecast.hourly %}
+    <tr>
+      <td class="forecast-date">{{ hour.hourTime }}
+      <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
+      <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
+      <td class="forecast-description">
+          {{ hour.weather.0.description }}
+      <td>
+          <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;" 
+          src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png" 
+          alt="Weather icon">
+    {% endfor %}
+  </table>
 
 </div>
 
