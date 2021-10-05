@@ -57,6 +57,11 @@ def index(request):
     response = requests.get(url, params=params)
     forecast = response.json()
 
+    forecast['daily'] = forecast['daily'][1:]
+
+    # import app.util as util
+    # return util.dump(forecast['daily'])
+
     for day in forecast['daily']:
         date = datetime.fromtimestamp(day['dt'])
         day['date_string'] = date.strftime("%A")
