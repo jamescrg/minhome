@@ -41,7 +41,7 @@ def index(request):
     sunrise = sunrise.astimezone(tz)
     current['sunrise'] = sunrise.strftime("%I:%M %p")
 
-    # convert sunrise to Eastern time and readable string format
+    # convert sunset to Eastern time and readable string format
     sunset = datetime.fromtimestamp(current['sys']['sunset'])
     sunset = sunset.replace(tzinfo=timezone.utc)
     tz = pytz.timezone('US/Eastern')
@@ -58,9 +58,18 @@ def index(request):
     forecast = response.json()
 
     forecast['daily'] = forecast['daily'][1:]
+    forecast['hourly'] = forecast['hourly'][1:13]
+    
+    for hour in forecast['hourly']:
+        # convert hour to Eastern time and readable string format
+        hourTime = datetime.fromtimestamp(hour['dt'])
+        hourTime = hourTime.replace(tzinfo=timezone.utc)
+        tz = pytz.timezone('US/Eastern')
+        hourTime = hourTime.astimezone(tz)
+        hour['hourTime'] = hourTime.strftime("%I:%M %p")
 
     # import app.util as util
-    # return util.dump(forecast['daily'])
+    # return util.dump(forecast['hourly'])
 
     for day in forecast['daily']:
         date = datetime.fromtimestamp(day['dt'])

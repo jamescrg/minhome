@@ -1,80 +1,112 @@
 {# django template #}
 
-<div style="max-width: 350px;">
+<div class="row">
 
-  <div class="section-title city" >
-    {{ current.name }}
+    <div class="section-title city" >
+      {{ current.name }}
+    </div>
+
+    <div>
+          <img id="wicon" 
+          src="https://openweathermap.org/img/w/{{ current.weather.0.icon }}.png" 
+          alt="Weather icon">
+    </div>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6">
+
+  <div class="weather-subtitle" >
+    Today
   </div>
 
-  <div>
-        <img id="wicon" 
-        src="https://openweathermap.org/img/w/{{ current.weather.0.icon }}.png" 
-        alt="Weather icon">
+  <table id="current-weather">
+    <tr>
+      <td class="weather-label">Conditions
+      <td class="weather-data">{{ current.weather.0.description|title }}
+    <tr>
+      <td class="weather-label">Temp
+      <td class="weather-data">{{ current.main.temp|floatformat:"0" }}&deg;
+    <tr>
+      <td class="weather-label">High
+      <td class="weather-data">{{ current.main.temp_max|floatformat:"0" }}&deg;
+    <tr>
+      <td class="weather-label">Low
+      <td class="weather-data">{{ current.main.temp_min|floatformat:"0" }}&deg;
+    <tr>
+      <td class="weather-label">Humidity
+      <td class="weather-data">{{ current.main.humidity }}%
+    <tr>
+      <td class="weather-label">Wind
+      <td class="weather-data">{{ current.wind.speed }} mph
+    <tr>
+      <td class="weather-label">Sunrise
+      <td class="weather-data">{{ current.sunrise }}
+    <tr>
+      <td class="weather-label">Sunset
+      <td class="weather-data">{{ current.sunset }}
+  </table>
+
+
+  <div class="weather-subtitle" >
+    Hourly
   </div>
 
+
+  <table id="forecast-weather">
+    <tr>
+      <td class="weather-label"> Hour
+      <td class="weather-label"> Temp
+      <td class="weather-label"> Wind
+      <td class="weather-label"> Conditions
+      <td>
+
+    {% for hour in forecast.hourly %}
+    <tr>
+      <td class="forecast-date">{{ hour.hourTime }}
+      <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
+      <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
+      <td class="forecast-description">
+          {{ hour.weather.0.description }}
+      <td>
+          <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;" 
+          src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png" 
+          alt="Weather icon">
+    {% endfor %}
+  </table>
 </div>
 
-<div class="weather-subtitle" >
-  Today
-</div>
+<div class="col-md-6">
 
-<div style="max-width: 550px;">
+  <div class="weather-subtitle" >
+    Week Ahead
+  </div>
 
-<table id="current-weather">
-  <tr>
-    <td class="weather-label">Conditions
-    <td class="weather-data">{{ current.weather.0.description|title }}
-  <tr>
-    <td class="weather-label">Temp
-    <td class="weather-data">{{ current.main.temp|floatformat:"0" }}&deg;
-  <tr>
-    <td class="weather-label">High
-    <td class="weather-data">{{ current.main.temp_max|floatformat:"0" }}&deg;
-  <tr>
-    <td class="weather-label">Low
-    <td class="weather-data">{{ current.main.temp_min|floatformat:"0" }}&deg;
-  <tr>
-    <td class="weather-label">Humidity
-    <td class="weather-data">{{ current.main.humidity }}%
-  <tr>
-    <td class="weather-label">Wind
-    <td class="weather-data">{{ current.wind.speed }} mph
-  <tr>
-    <td class="weather-label">Sunrise
-    <td class="weather-data">{{ current.sunrise }}
-  <tr>
-    <td class="weather-label">Sunset
-    <td class="weather-data">{{ current.sunset }}
-</table>
+  <table id="forecast-weather">
+    <tr>
+      <td class="weather-label"> Day
+      <td class="weather-label"> High
+      <td class="weather-label"> Low
+      <td class="weather-label"> Conditions
+      <td>
+
+    {% for day in forecast.daily %}
+    <tr>
+      <td class="forecast-date">{{ day.date_string }}
+      <td class="forecast-max">{{ day.temp.max|floatformat:"0" }}&deg;
+      <td class="forecast-min">{{ day.temp.min|floatformat:"0" }}&deg;
+      <td class="forecast-description">
+          {{ day.weather.0.description }}
+      <td>
+          <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;" 
+          src="https://openweathermap.org/img/w/{{ day.weather.0.icon }}.png" 
+          alt="Weather icon">
+    {% endfor %}
+  </table>
+
 
 </div>
-
-<div class="weather-subtitle" >
-  Forecast
-</div>
-
-<div style="max-width: 550px;">
-
-<table id="forecast-weather">
-  <tr>
-    <td class="weather-label"> Day
-    <td class="weather-label"> High
-    <td class="weather-label"> Low
-    <td class="weather-label"> Conditions
-    <td>
-
-  {% for day in forecast.daily %}
-  <tr>
-    <td class="forecast-date">{{ day.date_string }}
-    <td class="forecast-max">{{ day.temp.max|floatformat:"0" }}&deg;
-    <td class="forecast-min">{{ day.temp.min|floatformat:"0" }}&deg;
-    <td class="forecast-description">
-        {{ day.weather.0.description }}
-    <td>
-        <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;" 
-        src="https://openweathermap.org/img/w/{{ day.weather.0.icon }}.png" 
-        alt="Weather icon">
-  {% endfor %}
-</table>
 
 </div>
