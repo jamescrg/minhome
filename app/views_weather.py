@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 import config.settings_local
+from app.helpers import timestamp_to_eastern
 
 
 @login_required
@@ -35,17 +36,11 @@ def index(request):
     current = response.json()
 
     # convert sunrise to Eastern time and readable string format
-    sunrise = datetime.fromtimestamp(current['sys']['sunrise'])
-    sunrise = sunrise.replace(tzinfo=timezone.utc)
-    tz = pytz.timezone('US/Eastern')
-    sunrise = sunrise.astimezone(tz)
+    sunrise = timestamp_to_eastern(current['sys']['sunrise'])
     current['sunrise'] = sunrise.strftime("%I:%M %p")
 
     # convert sunset to Eastern time and readable string format
-    sunset = datetime.fromtimestamp(current['sys']['sunset'])
-    sunset = sunset.replace(tzinfo=timezone.utc)
-    tz = pytz.timezone('US/Eastern')
-    sunset = sunset.astimezone(tz)
+    sunset = timestamp_to_eastern(current['sys']['sunset'])
     current['sunset'] = sunset.strftime("%I:%M %p")
 
     # fetch forecast data
@@ -62,14 +57,8 @@ def index(request):
     
     for hour in forecast['hourly']:
         # convert hour to Eastern time and readable string format
-        hourTime = datetime.fromtimestamp(hour['dt'])
-        hourTime = hourTime.replace(tzinfo=timezone.utc)
-        tz = pytz.timezone('US/Eastern')
-        hourTime = hourTime.astimezone(tz)
-        hour['hourTime'] = hourTime.strftime("%I:%M %p")
-
-    # import app.util as util
-    # return util.dump(forecast['hourly'])
+        hour_time = timestamp_to_eastern(hour['dt'])
+        hour['hour_time'] = hour_time.strftime("%I:%M %p")
 
     for day in forecast['daily']:
         date = datetime.fromtimestamp(day['dt'])

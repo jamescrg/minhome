@@ -95,7 +95,7 @@
 
     {% for hour in forecast.hourly %}
     <tr>
-      <td class="forecast-date">{{ hour.hourTime }}
+      <td class="forecast-date">{{ hour.hour_time }}
       <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
       <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
       <td class="forecast-description">
