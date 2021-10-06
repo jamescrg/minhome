@@ -1,0 +1,37 @@
+
+{# django template #}
+
+{% extends 'layout.html' %}
+{% block content %}
+{% load humanize %}
+
+<div class="row">
+
+  <table id="crypto">
+
+    <tr>
+
+      <th>Name
+      <th>Symbol
+      <th class="numeric">Price
+      <th class="numeric">24h
+      <th class="numeric">7d
+      <th class="numeric">30d
+
+    {% for key, val in result.data.items %}
+
+      <tr>
+
+        <td class="">{{ val.name }}
+        <td class="">{{ val.symbol }}
+        <td class="numeric">${{ val.quote.USD.price|floatformat:"2"|intcomma }}
+        <td class="numeric">{{ val.quote.USD.percent_change_24h|floatformat:"1" }}%
+        <td class="numeric">{{ val.quote.USD.percent_change_7d|floatformat:"1" }}%
+        <td class="numeric">{{ val.quote.USD.percent_change_30d|floatformat:"1" }}%
+
+    {% endfor %}
+  </table>
+
+</div>
+
+{% endblock content %}

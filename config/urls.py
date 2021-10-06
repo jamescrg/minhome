@@ -10,6 +10,7 @@ from app import views_notes
 from app import views_search
 from app import views_settings
 from app import views_weather
+from app import views_crypto
 
 
 urlpatterns = [
@@ -71,6 +72,9 @@ urlpatterns = [
 
     # weather
     path('weather/', views_weather.index, name='weather'),
+
+    # crypto
+    path('crypto/', views_crypto.index, name='crypto'),
 
     # search
     path('search/', views_search.index, name='search'),
