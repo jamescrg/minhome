@@ -16,12 +16,23 @@
 
       <th>Name
       <th>Symbol
-      <th class="numeric">Price
+        <th class="numeric">Price
+          <a class="sort" href="price"><span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">Market Cap
+          <a class="sort" href="market_cap">
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">24h % Chg
+          <a class="sort" href="percent_change_24h">
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">7d % Chg
+          <a class="sort" href="percent_change_7d">
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">30d % Chg
+          <a class="sort" href="percent_change_30d">
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">90d % Chg
+          <a class="sort" href="percent_change_90d">
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
 
     {% for token in crypto_data %}
 

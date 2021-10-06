@@ -16,7 +16,7 @@ import config.settings_local
 
 
 @login_required
-def index(request):
+def index(request, ord='market_cap'):
     user_id = request.user.id
 
     # fetch current crypto data
@@ -37,7 +37,7 @@ def index(request):
     for sym in params['symbol'].split(','):
         crypto_data.append(result['data'][sym])
 
-    crypto_data = sorted(crypto_data, key=lambda k: k['quote']['USD']['market_cap'], reverse=True) 
+    crypto_data = sorted(crypto_data, key=lambda k: k['quote']['USD'][ord], reverse=True) 
 
     for token in crypto_data:
         token['quote']['USD']['market_cap'] /= 1000000000
@@ -47,6 +47,7 @@ def index(request):
 
     context = {
         'page': 'crypto',
+        'ord': ord,
         'crypto_data': crypto_data,
     }
     return render(request, 'crypto/content.html', context)
