@@ -1,9 +1,24 @@
 
 
+#crypto {
+  background: #f5f5f5;
+  width: 100%;
+}
+
 #crypto th, td {
-  padding: 5px 20px;
+  border: solid 1px #e4e4e4;
+  padding: 10px;
 }
 
 .numeric {
+  padding-left: 40px;
   text-align: right;
+}
+
+.name {
+  padding-right: 40px;
+}
+
+.symbol {
+  padding-right: 40px;
 }

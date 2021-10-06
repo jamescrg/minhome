@@ -21,7 +21,7 @@ def index(request):
     # fetch current crypto data
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
-        'symbol': 'BTC,ETH,ADA,SOL,UNI,ALGO,MATIC,ATOM,XLM,FIL,XMR,NANO,SC',
+        'symbol': 'BTC,ETH,ADA,XMR,SOL,UNI,ALGO,MATIC,ATOM,XLM,FIL,NANO,SC',
         'convert': 'USD',
         'CMC_PRO_API_KEY': config.settings_local.CRYPTO_API_KEY,
     }
@@ -32,11 +32,13 @@ def index(request):
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         result = None
 
-    # import app.helpers as helpers
-    # return helpers.dump(result)
+    crypto_data = []
+    for sym in params['symbol'].split(','):
+        crypto_data.append(result['data'][sym])
+
 
     context = {
         'page': 'crypto',
-        'result': result,
+        'crypto_data': crypto_data,
     }
     return render(request, 'crypto/content.html', context)
