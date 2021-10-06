@@ -1,6 +1,7 @@
 
 from datetime import datetime, date, time, timezone
 from pprint import pprint
+from operator import itemgetter
 import os
 import requests
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
@@ -36,6 +37,13 @@ def index(request):
     for sym in params['symbol'].split(','):
         crypto_data.append(result['data'][sym])
 
+    crypto_data = sorted(crypto_data, key=lambda k: k['quote']['USD']['market_cap'], reverse=True) 
+
+    for token in crypto_data:
+        token['quote']['USD']['market_cap'] /= 1000000000
+
+    # import app.helpers as helpers
+    # return helpers.dump(crypto_data)
 
     context = {
         'page': 'crypto',

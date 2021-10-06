@@ -17,9 +17,11 @@
       <th>Name
       <th>Symbol
       <th class="numeric">Price
-      <th class="numeric">24h
-      <th class="numeric">7d
-      <th class="numeric">30d
+      <th class="numeric">Market Cap
+      <th class="numeric">24h % Chg
+      <th class="numeric">7d % Chg
+      <th class="numeric">30d % Chg
+      <th class="numeric">90d % Chg
 
     {% for token in crypto_data %}
 
@@ -27,10 +29,28 @@
 
         <td class="name">{{ token.name }}
         <td class="symbol">{{ token.symbol }}
-          <td class="numeric">${{ token.quote.USD.price|floatformat:"2"|intcomma }}
-        <td class="numeric">{{ token.quote.USD.percent_change_24h|floatformat:"1" }}%
-        <td class="numeric">{{ token.quote.USD.percent_change_7d|floatformat:"1" }}%
-        <td class="numeric">{{ token.quote.USD.percent_change_30d|floatformat:"1" }}%
+        <td class="numeric">${{ token.quote.USD.price|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ token.quote.USD.market_cap|floatformat:"1"|intcomma }}B
+        <td class="numeric" 
+          {% if token.quote.USD.percent_change_24h < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {{ token.quote.USD.percent_change_24h|floatformat:"1" }}%
+        <td class="numeric"
+          {% if token.quote.USD.percent_change_7d < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {{ token.quote.USD.percent_change_7d|floatformat:"1" }}%
+        <td class="numeric"
+          {% if token.quote.USD.percent_change_30d < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {{ token.quote.USD.percent_change_30d|floatformat:"1" }}%
+        <td class="numeric"
+          {% if token.quote.USD.percent_change_90d < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {{ token.quote.USD.percent_change_90d|floatformat:"1" }}%
 
     {% endfor %}
   </table>
