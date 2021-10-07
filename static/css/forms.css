@@ -20,9 +20,9 @@ form{
 }
 
 .form-control:focus {
-	box-shadow: none;
-    border-color: #ccc;
-	}
+  box-shadow: none;
+  border-color: #ccc;
+}
 
 label{
 	font-weight: normal;

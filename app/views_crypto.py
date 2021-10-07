@@ -22,7 +22,7 @@ def index(request, ord='market_cap'):
     # fetch current crypto data
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
-        'symbol': 'BTC,ETH,ADA,XMR,SOL,UNI,LTC,ALGO,MATIC,ATOM,XLM,FIL,NANO,SC',
+        'symbol': 'BTC,ETH,ADA,XMR,SOL,UNI,LTC,ALGO,MATIC,ATOM,DOT,XLM,FIL,NANO,SC',
         'convert': 'USD',
         'CMC_PRO_API_KEY': config.settings_local.CRYPTO_API_KEY,
     }
