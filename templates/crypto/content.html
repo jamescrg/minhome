@@ -38,7 +38,7 @@
 
       <tr>
 
-        <td class="name">{{ token.name }}
+        <td class="name"><a href="https://coinmarketcap.com/currencies/{{ token.slug }}">{{ token.name }}</a>
         <td class="symbol">{{ token.symbol }}
         <td class="numeric">${{ token.quote.USD.price|floatformat:"2"|intcomma }}
         <td class="numeric">${{ token.quote.USD.market_cap|floatformat:"1"|intcomma }}B
