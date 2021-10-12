@@ -19,6 +19,13 @@ import config.settings_local
 def index(request):
     user_id = request.user.id
 
+    if user_id != 1: 
+        return redirect('/home/')
+
+    total_value = 0
+    total_profit = 0
+    total_cost = 0
+
     positions = [
         {
             'symbol': 'GME',
@@ -50,34 +57,18 @@ def index(request):
         },
     ]
 
-    total_value = 0
-    total_profit = 0
-    total_cost = 0
-
     for position in positions:
 
-        # fetch current crypto data
-        url = 'https://www.alphavantage.co/query'
+        url = 'https://finnhub.io/api/v1/quote'
         params = {
-            'function': 'TIME_SERIES_INTRADAY',
-            'interval': '60min',
             'symbol': position['symbol'],
-            'apikey': config.settings_local.ALPHAVANGAGE_STOCKS_API_KEY,
+            'token': config.settings_local.FINNHUB_API_KEY,
         }
+        response = requests.get(url, params=params)
+        result = response.json()
 
-        try:
-            response = requests.get(url, params=params)
-            result = response.json()
-        except (ConnectionError, Timeout, TooManyRedirects) as e:
-            import app.helpers as helpers
-            return helpers.dump(e)
-
-        hours = list(result.values())[1] # convert dict to list, take second value
-        current = list(hours.values())[0]
-        price = float(current['4. close'])
-
-        position['price'] = price
-        position['value'] = position['shares'] * price
+        position['price'] = result['c']
+        position['value'] = position['shares'] * position['price']
         position['profit'] = position['value'] - position['cost_basis']
         position['return'] = position['profit'] / position['cost_basis'] * 100
 
