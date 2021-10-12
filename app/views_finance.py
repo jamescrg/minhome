@@ -25,7 +25,7 @@ def index(request):
             'exchange': 'NYSE',
             'name': 'Gamestop',
             'shares': 100,
-            'cost_basis': 120.00,
+            'cost_basis': 12000.00,
         },
         {
             'symbol': 'TSLA',
@@ -49,6 +49,10 @@ def index(request):
             'cost_basis': 610.00,
         },
     ]
+
+    total_value = 0
+    total_profit = 0
+    total_cost = 0
 
     for position in positions:
 
@@ -74,11 +78,22 @@ def index(request):
 
         position['price'] = price
         position['value'] = position['shares'] * price
-        position['cost'] = position['shares'] * position['cost_basis']
         position['profit'] = position['value'] - position['cost_basis']
+        position['return'] = position['profit'] / position['cost_basis'] * 100
+
+        total_value += position['value']
+        total_cost += position['cost_basis']
+        total_profit += position['profit']
+        total_return = total_profit / total_cost * 100
+
+    positions = sorted(positions, key=lambda k: k['value'], reverse=True)
 
     context = {
         'page': 'finance',
         'positions': positions,
+        'total_value': total_value,
+        'total_cost': total_cost,
+        'total_profit': total_profit,
+        'total_return': total_return,
     }
     return render(request, 'finance/content.html', context)

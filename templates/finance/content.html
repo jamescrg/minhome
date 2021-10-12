@@ -3,11 +3,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 {% load humanize %}
+{% load mathfilters %}
 
   <div class="section-title">
-    Securities
+    Stocks and ETFs
   </div>
-
 
   <table id="finance">
 
@@ -18,7 +18,9 @@
         <th class="numeric">Shares
       <th class="numeric">Price
       <th class="numeric">Value
+      <th class="numeric">Cost Basis
       <th class="numeric">Profit
+      <th class="numeric">Return
 
     {% for position in positions %}
 
@@ -30,11 +32,50 @@
           </a>
         <td class="symbol">{{ position.symbol }}
         <td class="numeric">{{ position.shares }}
-        <td class="numeric">${{ position.price|floatformat:"2"|intcomma }}
+          <td class="numeric" 
+            {% if position.symbol == 'GME' %} style="font-weight: 600;" {% endif %}>
+            ${{ position.price|floatformat:"2"|intcomma }}
         <td class="numeric">${{ position.value|floatformat:"2"|intcomma }}
-        <td class="numeric">${{ position.profit|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ position.cost_basis|floatformat:"2"|intcomma }}
+
+        <td class="numeric"
+          {% if position.profit < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {% if position.profit < 0 %}
+            -${{ position.profit|abs|floatformat:"2"|intcomma }}
+          {% else %}
+            ${{ position.profit|floatformat:"2"|intcomma }}
+          {% endif %}
+
+      <td class="numeric"
+          {% if position.return < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+          {{ position.return|floatformat:"1"|intcomma }}%
 
     {% endfor %}
+
+    <tr>
+      <td>
+      <td>
+      <td>
+      <td>
+      <td class="numeric total">${{ total_value|floatformat:"2"|intcomma }}
+      <td class="numeric total">${{ total_cost|floatformat:"2"|intcomma }}
+
+      <td class="numeric total"
+          {% if total_profit < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+        ${{ total_profit|floatformat:"2"|intcomma }}
+
+      <td class="numeric total"
+          {% if total_return < 0 %} style="color: darkred" 
+          {% else %} style="color: green" 
+          {% endif %}>
+        {{ total_return|floatformat:"1"|intcomma }}%
+
   </table>
 
 
