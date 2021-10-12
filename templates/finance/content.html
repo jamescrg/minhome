@@ -1,0 +1,41 @@
+{# django template #}
+
+{% extends 'layout.html' %}
+{% block content %}
+{% load humanize %}
+
+  <div class="section-title">
+    Securities
+  </div>
+
+
+  <table id="finance">
+
+    <tr>
+
+      <th>Name
+      <th>Symbol
+        <th class="numeric">Shares
+      <th class="numeric">Price
+      <th class="numeric">Value
+      <th class="numeric">Profit
+
+    {% for position in positions %}
+
+      <tr>
+
+        <td class="name">
+          <a href="https://www.google.com/finance/quote/{{ position.symbol }}:{{ position.exchange }}">
+            {{ position.name }}
+          </a>
+        <td class="symbol">{{ position.symbol }}
+        <td class="numeric">{{ position.shares }}
+        <td class="numeric">${{ position.price|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ position.value|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ position.profit|floatformat:"2"|intcomma }}
+
+    {% endfor %}
+  </table>
+
+
+{% endblock content %}

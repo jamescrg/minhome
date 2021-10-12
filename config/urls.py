@@ -11,6 +11,7 @@ from app import views_search
 from app import views_settings
 from app import views_weather
 from app import views_crypto
+from app import views_finance
 
 
 urlpatterns = [
@@ -76,6 +77,9 @@ urlpatterns = [
     # crypto
     path('crypto/', views_crypto.index, name='crypto'),
     path('crypto/<str:ord>', views_crypto.index, name='crypto'),
+
+    # crypto
+    path('finance/', views_finance.index, name='finance'),
 
     # search
     path('search/', views_search.index, name='search'),
