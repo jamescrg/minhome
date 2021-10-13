@@ -74,9 +74,9 @@ urlpatterns = [
     path('weather/', weather.index, name='weather'),
 
     # finance
-    path('finance/crypto/', finance.crypto, name='crypto'),
-    path('finance/crypto/<str:ord>', finance.crypto, name='crypto'),
-    path('finance/securities', finance.securities, name='securities'),
+    path('crypto/', finance.crypto, name='crypto'),
+    path('crypto/<str:ord>', finance.crypto, name='crypto'),
+    path('securities/', finance.securities, name='securities'),
 
     # search
     path('search/', search.index, name='search'),
