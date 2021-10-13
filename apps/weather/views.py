@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 import config.settings_local
-from app.helpers import timestamp_to_eastern
+from apps.helpers import timestamp_to_eastern
 
 
 @login_required

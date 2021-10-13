@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from app.models import Note
+from apps.notes.models import Note
 from apps.folders.models import Folder
 
 

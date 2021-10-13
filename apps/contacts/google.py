@@ -7,7 +7,7 @@ import google_auth_oauthlib.flow
 from apiclient.discovery import build
 
 from accounts.models import CustomUser
-from app.models import Contact
+from apps.contacts.models import Contact
 
 
 def build_service(contact):
