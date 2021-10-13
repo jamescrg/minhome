@@ -43,6 +43,13 @@ INSTALLED_APPS = [
     'accounts',
     'app',
     'apps.folders',
+    'apps.home',
+    'apps.favorites',
+    'apps.tasks',
+    'apps.contacts',
+    'apps.notes',
+    'apps.search',
+    'apps.settings',
 ]
 
 MIDDLEWARE = [

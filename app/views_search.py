@@ -5,8 +5,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q
 
-from app.models import Favorite, Contact, Note
+from app.models import Contact, Note
 from apps.folders.models import Folder
+from apps.favorites.models import Favorite
 
 
 @login_required

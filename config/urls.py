@@ -14,6 +14,12 @@ from app import views_crypto
 from app import views_finance
 
 from apps.folders import views as folders
+from apps.favorites import views as favorites
+from apps.favorites import views as favorites
+from apps.favorites import views as favorites
+from apps.favorites import views as favorites
+from apps.favorites import views as favorites
+from apps.favorites import views as favorites
 
 
 urlpatterns = [
@@ -37,13 +43,13 @@ urlpatterns = [
         views_home.favorite, name='home-favorite'),
 
     # favorites
-    path('favorites/', views_favorites.index, name='favorites'),
-    path('favorites/add/<int:id>', views_favorites.add, name='favorites-add'),
-    path('favorites/insert', views_favorites.insert, name='favorites-insert'),
-    path('favorites/edit/<int:id>', views_favorites.edit, name='favorites-edit'),
-    path('favorites/update/<int:id>', views_favorites.update, name='favorites-update'),
-    path('favorites/delete/<int:id>', views_favorites.delete, name='favorites-delete'),
-    path('favorites/home/<int:id>', views_favorites.home, name='favorites-home'),
+    path('favorites/', favorites.index, name='favorites'),
+    path('favorites/add/<int:id>', favorites.add, name='favorites-add'),
+    path('favorites/insert', favorites.insert, name='favorites-insert'),
+    path('favorites/edit/<int:id>', favorites.edit, name='favorites-edit'),
+    path('favorites/update/<int:id>', favorites.update, name='favorites-update'),
+    path('favorites/delete/<int:id>', favorites.delete, name='favorites-delete'),
+    path('favorites/home/<int:id>', favorites.home, name='favorites-home'),
 
     # tasks
     path('tasks/', views_tasks.index, name='tasks'),
