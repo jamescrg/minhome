@@ -22,69 +22,49 @@ def index(request):
     if user_id != 1: 
         return redirect('/home/')
 
-    total_value = 0
-    total_profit = 0
-    total_cost = 0
-
-    positions = [
+    assets = [
         {
             'symbol': 'GME',
             'exchange': 'NYSE',
             'name': 'Gamestop',
-            'shares': 100,
-            'cost_basis': 12000.00,
         },
         {
             'symbol': 'TSLA',
             'exchange': 'NASDAQ',
             'name': 'Tesla',
-            'shares': 1,
-            'cost_basis': 799.80,
         },
         {
             'symbol': 'TLRY',
             'exchange': 'NASDAQ',
             'name': 'Tilray',
-            'shares': 50,
-            'cost_basis': 1006.50,
         },
         {
             'symbol': 'SNDL',
             'exchange': 'NASDAQ',
             'name': 'Sundial',
-            'shares': 100,
-            'cost_basis': 610.00,
         },
     ]
 
-    for position in positions:
+    for asset in assets:
 
         url = 'https://finnhub.io/api/v1/quote'
         params = {
-            'symbol': position['symbol'],
+            'symbol': asset['symbol'],
             'token': config.settings_local.FINNHUB_API_KEY,
         }
         response = requests.get(url, params=params)
         result = response.json()
 
-        position['price'] = result['c']
-        position['value'] = position['shares'] * position['price']
-        position['profit'] = position['value'] - position['cost_basis']
-        position['return'] = position['profit'] / position['cost_basis'] * 100
-
-        total_value += position['value']
-        total_cost += position['cost_basis']
-        total_profit += position['profit']
-        total_return = total_profit / total_cost * 100
-
-    positions = sorted(positions, key=lambda k: k['value'], reverse=True)
+        asset['previous_close'] = result['pc']
+        asset['open'] = result['o']
+        asset['high'] = result['h']
+        asset['low'] = result['l']
+        asset['price'] = result['c']
+        asset['change'] = result['d']
+        asset['percent_change'] = result['dp']
 
     context = {
         'page': 'finance',
-        'positions': positions,
-        'total_value': total_value,
-        'total_cost': total_cost,
-        'total_profit': total_profit,
-        'total_return': total_return,
+        'assets': assets,
     }
     return render(request, 'finance/content.html', context)

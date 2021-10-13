@@ -13,9 +13,12 @@ import app.google as google
 
 @login_required
 def index(request):
+
     user_id = request.user.id
     page = 'contacts'
+
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
+
     selected_folder = Folder.objects.filter(
         user_id=user_id, page=page, selected=1
     ).first()
@@ -26,7 +29,9 @@ def index(request):
         contacts = Contact.objects.filter(user_id=user_id, folder_id=0)
 
     contacts = contacts.order_by('name')
+
     selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
+
     if request.user.google_credentials:
         google = True
     else:
@@ -41,6 +46,7 @@ def index(request):
         'selected_contact': selected_contact,
         'google': google,
     }
+
     return render(request, 'contacts/content.html', context)
 
 
