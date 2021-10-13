@@ -7,7 +7,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from app.models import Folder, Favorite
+from app.models import Favorite
+from apps.folders.models import Folder
 
 
 @login_required

@@ -7,7 +7,8 @@ from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
-from app.models import Folder, Contact
+from apps.folders.models import Folder
+from app.models import Contact
 import app.google as google
 
 

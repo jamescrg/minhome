@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
-from .models import Folder, Task
+from .models import Task
+from apps.folders.models import Folder
 from pprint import pprint
 
 

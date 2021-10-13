@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from app import views_folders
+# from app import views_folders
 from app import views_home
 from app import views_favorites
 from app import views_tasks
@@ -13,6 +13,8 @@ from app import views_weather
 from app import views_crypto
 from app import views_finance
 
+from apps.folders import views as folders
+
 
 urlpatterns = [
 
@@ -21,11 +23,11 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     # folders
-    path('folders/home/<int:id>/<str:page>', views_folders.home, name='folder-home'),
-    path('folders/<int:id>/<str:page>', views_folders.select, name='folder-select'),
-    path('folders/insert/<str:page>', views_folders.insert, name='folder-insert'),
-    path('folders/update/<int:id>/<str:page>', views_folders.update, name='folder-update'),
-    path('folders/delete/<int:id>/<str:page>', views_folders.delete, name='folder-delete'),
+    path('folders/home/<int:id>/<str:page>', folders.home, name='folder-home'),
+    path('folders/<int:id>/<str:page>', folders.select, name='folder-select'),
+    path('folders/insert/<str:page>', folders.insert, name='folder-insert'),
+    path('folders/update/<int:id>/<str:page>', folders.update, name='folder-update'),
+    path('folders/delete/<int:id>/<str:page>', folders.delete, name='folder-delete'),
 
     # home
     path('', views_home.index, name='home-index'),
