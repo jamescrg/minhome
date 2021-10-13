@@ -17,3 +17,6 @@ class Note(models.Model):
     def __str__(self):
         return f'{self.subject} : {self.id}'
 
+    class Meta:
+        db_table = 'app_note'
+

@@ -1,6 +1,7 @@
 from django.db import models
 
 class Contact(models.Model):
+
     id = models.BigAutoField(primary_key=True)
     user_id = models.PositiveBigIntegerField()
     folder_id = models.BigIntegerField()
@@ -19,6 +20,7 @@ class Contact(models.Model):
     map = models.CharField(max_length=255, blank=True, null=True)
     notes = models.CharField(max_length=255, blank=True, null=True)
     google_id = models.CharField(max_length=255, blank=True, null=True)
+
     fillable = [
         'folder_id',
         'name',
@@ -38,3 +40,6 @@ class Contact(models.Model):
 
     def __str__(self):
         return f'{self.name} : {self.id}'
+
+    class Meta:
+        db_table = 'app_contact'
