@@ -5,3 +5,4 @@ cp_credentials_web.json
 app/weather/data*
 /static/bootstrap*
 __init__.py
+sql.sql

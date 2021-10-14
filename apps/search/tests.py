@@ -33,25 +33,35 @@ class ViewTests(TransactionTestCase):
         self.assertTemplateUsed(response, 'search/form.html')
 
     def testResults(self):
+
+        favorite_folder = Folder.objects.create(user_id=1, name='Faves', page='favorites')
+        note_folder = Folder.objects.create(user_id=1, name='My Notes', page='notes')
+        contact_folder = Folder.objects.create(user_id=1, name='People', page='contacts')
+
+
         Favorite.objects.create(
             name='Google',
             user_id=self.user.id,
-            folder_id=1,
+            folder_id=favorite_folder.id,
             description='Search enginge for james.',
         )
+
         Note.objects.create(
             subject='Tasks for James',
-            folder_id=1,
+            folder_id=note_folder.id,
             user_id=self.user.id,
         )
+
         Contact.objects.create(
             name='James Craig',
-            folder_id=1,
+            folder_id=contact_folder.id,
             user_id=self.user.id,
         )
+
         data = {
             'search_text': 'James',
         }
+
         response = self.client.post('/search/results', data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'search/content.html')

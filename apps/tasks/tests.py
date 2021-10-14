@@ -12,19 +12,33 @@ from apps.tasks.models import Task
 
 
 class ModelTests(TestCase):
+
     def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
+        self.client.login(username='john', password='johnpassword')
+
+        folder1 = Folder.objects.create(
+            user_id=1,
+            page='tasks',
+            name='Todo',
+        )
+
         Task.objects.create(
             user_id=1,
-            folder_id=10,
+            folder_id=folder1.id,
             title='Do this today',
             status=1,
         )
 
     def testContent(self):
-        task = Task.objects.get(pk=1)
+        folder = Folder.objects.all().first()
+        task = Task.objects.all().first()
         expectedValues = {
             'user_id': 1,
-            'folder_id': 10,
+            'folder_id': folder.id,
             'title': 'Do this today',
             'status': 1,
         }
@@ -33,7 +47,8 @@ class ModelTests(TestCase):
                 self.assertEqual(getattr(task, key), val)
 
     def testString(self):
-        task = Task.objects.get(folder_id=10)
+        folder = Folder.objects.all().first()
+        task = Task.objects.get(folder_id=folder.id)
         self.assertEqual(str(task), f'{task.title} : {task.id}')
 
 

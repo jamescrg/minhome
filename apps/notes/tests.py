@@ -12,20 +12,34 @@ from apps.notes.models import Note
 
 
 class ModelTests(TestCase):
+
     def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            'john', 'lennon@thebeatles.com', 'johnpassword'
+        )
+        self.client.login(username='john', password='johnpassword')
+
+        folder1 = Folder.objects.create(
+            user_id=1,
+            page='notes',
+            name='main',
+        )
+
         Note.objects.create(
             user_id=1,
-            folder_id=1,
+            folder_id=folder1.id,
             subject='notes',
             note='Main',
             selected=1,
         )
 
     def testContent(self):
+        folder = Folder.objects.all().first()
         note = Note.objects.get(subject='notes')
         expectedValues = {
             'user_id': 1,
-            'folder_id': 1,
+            'folder_id': folder.id,
             'subject': 'notes',
             'note': 'Main',
             'selected': 1,

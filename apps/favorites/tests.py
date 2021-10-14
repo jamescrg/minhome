@@ -37,10 +37,11 @@ class ModelTests(TestCase):
         )
 
     def testFavorite(self):
+        folder = Folder.objects.all().first()
         favorite = Favorite.objects.get(name="Meditation Posture")
         expectedValues = {
             'user_id': 1,
-            'folder_id': 1,
+            'folder_id': folder.id,
             'name': 'Meditation Posture',
             'url': 'http://meditationposture.net',
             'description': 'A website',

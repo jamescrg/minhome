@@ -1,10 +1,12 @@
 from django.db import models
+from apps.folders.models import Folder
+
 
 class Contact(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     user_id = models.PositiveBigIntegerField()
-    folder_id = models.BigIntegerField()
+    folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=100)
     company = models.CharField(max_length=100, blank=True, null=True)

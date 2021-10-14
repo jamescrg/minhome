@@ -12,6 +12,7 @@ from apps.contacts.models import Contact
 
 
 class ModelTests(TestCase):
+
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
@@ -19,9 +20,15 @@ class ModelTests(TestCase):
         )
         self.client.login(username='john', password='johnpassword')
 
+        folder1 = Folder.objects.create(
+            user_id=1,
+            page='contacts',
+            name='mahatmas',
+        )
+
         Contact.objects.create(
             user_id=1,
-            folder_id=1,
+            folder_id=folder1.id,
             selected=1,
             name='Mohandas Gandhi',
             company='Gandhi, PC',
@@ -87,6 +94,8 @@ class ViewTests(TransactionTestCase):
                 name=name,
             )
 
+        first_folder = Folder.objects.all().first()
+
         contacts = [
             {'name': 'Socrates', 'phone1': '406.363.5555', 'email': 'u@me.com'},
             {'name': 'Nietzsche', 'phone1': '406.363.5555', 'email': 'u@me.com'},
@@ -96,7 +105,7 @@ class ViewTests(TransactionTestCase):
         for contact in contacts:
             Contact.objects.create(
                 user_id=1,
-                folder_id=1,
+                folder_id=first_folder.id,
                 selected=0,
                 name=contact['name'],
                 phone1=contact['phone1'],

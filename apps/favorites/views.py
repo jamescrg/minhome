@@ -22,10 +22,11 @@ def index(request):
 
     if selected_folder:
         selected_folder_id = selected_folder.id
+        favorites = Favorite.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
-        selected_folder_id = 0
+        selected_folder_id = None
+        favorites = Favorite.objects.filter(user_id=user_id, folder_id__isnull=True)
 
-    favorites = Favorite.objects.filter(user_id=user_id, folder_id=selected_folder_id)
     favorites = favorites.order_by('name')
 
     context = {
