@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'mathfilters',
     'accounts',
-    'app',
     'apps.folders',
     'apps.home',
     'apps.favorites',

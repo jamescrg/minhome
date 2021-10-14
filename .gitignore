@@ -3,3 +3,5 @@ config/settings_local.py
 *.pyc
 cp_credentials_web.json
 app/weather/data*
+/static/bootstrap*
+__init__.py

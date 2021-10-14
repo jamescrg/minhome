@@ -18,9 +18,15 @@ class ModelTests(TestCase):
         )
         self.client.login(username='john', password='johnpassword')
 
+        folder1 = Folder.objects.create(
+            user_id=1,
+            page='favorites',
+            name='Meditation',
+        )
+
         Favorite.objects.create(
             user_id=1,
-            folder_id=1,
+            folder_id=folder1.id,
             name='Meditation Posture',
             url='http://meditationposture.net',
             description='A website',
@@ -73,9 +79,11 @@ class ViewTests(TransactionTestCase):
             user_id = self.user.id
             Folder.objects.create(
                 user_id=user_id,
-                page='contacts',
+                page='favorites',
                 name=name,
             )
+
+        first_folder = Folder.objects.all().first()
 
         favorites = [
             {
@@ -95,7 +103,7 @@ class ViewTests(TransactionTestCase):
         for favorite in favorites:
             Favorite.objects.create(
                 user_id=1,
-                folder_id=1,
+                folder_id=first_folder.id,
                 selected=0,
                 name=favorite['name'],
                 url=favorite['url'],
