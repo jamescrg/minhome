@@ -13,8 +13,10 @@ from apps.folders.models import Folder
 
 @login_required
 def index(request):
+
     user_id = request.user.id
     page = 'favorites'
+
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
     selected_folder = Folder.objects.filter(
         user_id=user_id, page=page, selected=1

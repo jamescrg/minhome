@@ -27,7 +27,7 @@ def index(request):
     if selected_folder:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
-        contacts = Contact.objects.filter(user_id=user_id, folder_id=0)
+        contacts = Contact.objects.filter(user_id=user_id, folder_id__isnull=True)
 
     contacts = contacts.order_by('name')
 

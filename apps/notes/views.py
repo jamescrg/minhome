@@ -13,6 +13,7 @@ from apps.folders.models import Folder
 
 @login_required
 def index(request):
+
     user_id = request.user.id
     page = 'notes'
 
@@ -25,7 +26,8 @@ def index(request):
     if selected_folder:
         notes = Note.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
-        notes = Note.objects.filter(user_id=user_id, folder_id=0)
+        notes = Note.objects.filter(user_id=user_id, folder_id__isnull=True)
+
     notes = notes.order_by('subject')
 
     selected_note = Note.objects.filter(user_id=user_id, selected=1).first()

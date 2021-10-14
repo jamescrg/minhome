@@ -13,6 +13,7 @@ from pprint import pprint
 
 @login_required
 def index(request):
+
     user_id = request.user.id
     page = 'tasks'
 
