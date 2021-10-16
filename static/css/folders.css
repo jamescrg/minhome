@@ -1,37 +1,33 @@
 div#folders{
-	/*padding-right: 10px;*/
 	margin-bottom: 20px;
 }
 
-#folders .list-group-item{
-
-	}
-
 a.folderLink{
-	margin-left: 15px;
-	}
+  margin-left: 15px;
+}
 
 .folderMenu{
 	margin: 5px 0 0 35px;
 	padding: 0;
-	}
+}
 
-	.folderMenu li {
-		background: #e4e4e4;
-		margin-top: 10px;
-		padding: 5px 10px;
-		border-radius: 5px;
-	}
+.folderMenu li {
+  background: #e4e4e4;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
 
 .folderMenu li a {
 	color: #760f13;
 	font-size: 0.85em;
-	}
+}
 
 form.editFolder{
 	padding: 0 0 0 0px;
 	text-align: left;
-	display: inline;}
+	display: inline;
+}
 
 .editFolder input {
 	border: none;
@@ -41,7 +37,7 @@ form.editFolder{
 	margin-left: 15px;
 	display: inline;
 	background: #f8f8f8;
-	}
+}
 
 form#folderCreateForm{
 	margin-top: 20px;
@@ -50,7 +46,12 @@ form#folderCreateForm{
 	background: none;
 }
 
-#folderCreateForm input {
-	border-radius: 5px;
-	/*padding: 20px;*/
+#addFolder {
+	border: none;
+  margin: 0;
+	padding: 3px;
+	padding-left: 5px;
+	width: 100%;
+	display: inline;
+	background: #f8f8f8;
 }

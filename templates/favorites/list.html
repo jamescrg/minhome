@@ -61,7 +61,13 @@
 </ul>
 
 <div class="page-control">
-	<a href="/favorites/add/{% if selected_folder_id %}{{ selected_folder_id }}{% else %}{{0}}{% endif %}">
+
+	{% if selected_folder %}
+
+    <a href="/favorites/add/{{ selected_folder_id }}">
     Add Favorite
   </a>
+
+	{% endif %}
+
 </div>
