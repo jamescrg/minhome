@@ -6,7 +6,7 @@
 
 <div class="note">
   <div style="float: right">
-    <a href="/notes/edit/{{ selected_note.id }}">
+    <a href="/notes/{{ selected_note.id }}/edit">
       Edit
     </a>
   </div>
@@ -17,7 +17,7 @@
 
 	{% if selected_folder %}
 
-		<a href="/{{ page }}/{{ selected_folder.id}}/new">
+		<a href="/{{ page }}/add">
       Add Note
     </a>
 

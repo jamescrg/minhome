@@ -34,7 +34,7 @@ def index(request):
     selected_note = Note.objects.filter(user_id=user_id, selected=1).first()
 
     context = {
-        'page': 'notes',
+        'page': page,
         'edit': False,
         'folders': folders,
         'selected_folder': selected_folder,
@@ -56,7 +56,7 @@ def select(request, id):
 
 
 @login_required
-def new(request, folder_id):
+def add(request):
 
     user_id = request.user.id
 
@@ -70,12 +70,10 @@ def new(request, folder_id):
             note.save()
 
         # deselect previously selected note
-        try:
-            old = Note.objects.filter(user_id=user_id, selected=1).get()
+        old = Note.objects.filter(user_id=user_id, selected=1).get()
+        if old:
             old.selected = 0
             old.save()
-        except:
-            pass
 
         # select newest note for user
         new = Note.objects.filter(user_id=user_id).latest('id')
@@ -87,11 +85,10 @@ def new(request, folder_id):
     else:
 
         user_id = request.user.id
-        selected_folder_id = folder_id
-        selected_folder = get_object_or_404(Folder, pk=folder_id)
         folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
 
-        form = NoteForm(initial={'folder': selected_folder_id})
+        form = NoteForm(initial={'folder': selected_folder.id})
         form.fields['folder'].queryset = Folder.objects.filter(
                 user_id=user_id, page='notes').order_by('name')
 
@@ -99,10 +96,9 @@ def new(request, folder_id):
             'page': 'notes',
             'edit': False,
             'add': True,
-            'action': f'/notes/{selected_folder_id}/new',
+            'action': f'/notes/add',
             'folders': folders,
             'selected_folder': selected_folder,
-            'selected_folder_id': selected_folder_id,
             'form': form,
         }
 
@@ -111,36 +107,45 @@ def new(request, folder_id):
 
 @login_required
 def edit(request, id):
+
     user_id = request.user.id
-    note = get_object_or_404(Note, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-    selected_folder_id = note.folder_id
-    selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
 
-    context = {
-        'page': 'notes',
-        'edit': True,
-        'add': False,
-        'action': f'/notes/update/{id}',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'note': note,
-        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
-    }
-    return render(request, 'notes/content.html', context)
+    if request.method == 'POST':
 
+        try:
+            note = Note.objects.filter(user_id=request.user.id, pk=id).get()
+        except:
+            raise Http404('Record not found.')
 
-@login_required
-def update(request, id):
-    try:
-        note = Note.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
-        raise Http404('Record not found.')
-    for field in note.fillable:
-        setattr(note, field, request.POST.get(field))
-    note.save()
-    return redirect('notes')
+        form = NoteForm(request.POST, instance=note)
+
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.user_id = user_id
+            note.save()
+
+        return redirect('notes')
+
+    else:
+
+        folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
+        note = get_object_or_404(Note, pk=id)
+
+        form = NoteForm(instance=note, initial={'folder': selected_folder.id})
+
+        context = {
+            'page': 'notes',
+            'edit': True,
+            'add': False,
+            'action': f'/notes/{id}/edit',
+            'folders': folders,
+            'selected_folder': selected_folder,
+            'selected_folder_id': selected_folder.id,
+            'form': form,
+            'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
+        }
+        return render(request, 'notes/content.html', context)
 
 
 @login_required

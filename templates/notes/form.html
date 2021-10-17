@@ -4,19 +4,15 @@
 
 	<div class="section-title">
 
-		{% if not edit %}
-
+    {% if edit %}
+      Edit Note
+    {% else %}
 			Add Note
-
-		{% else %}
-
-			Edit Note
-
-		{% endif %}
+    {% endif %}
 
 	</div>
 
-	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
+	<form action="{{ action }}" method="post" role="form">
 
 		{% csrf_token %}
 
@@ -32,45 +28,13 @@
 
     <table>
 
-      <tr>
-        <td>
-          Folder
-
-        <td>
-          <select name="folder_id" id="folder_id">
-
-            <option value="">Uncategorized</option>
-
-            {% for folder in folders %}
-
-              <option value="{{ folder.id }}" {% if note.folder_id == folder.id %} selected {% endif %}>
-                {{ folder.name }}
-              </option>
-
-            {% endfor %}
-
-          </select>
-
-    <tr>
-      <td>
-        Subject
-
-      <td>
-				<input type="text" autofocus="autofocus" name="subject" id="subject"
-				       value="{{ note.subject|default:'' }}" required>
-
-    <tr>
-      <td>
-        Note
-
-      <td>
-				<textarea name="note" id="note-text" required>{{ note.note|default:'' }}</textarea>
+    {{ form.as_table }}
 
     <tr>
       <td>
       <td>
         <input type="submit" value="Submit" class="btn btn-default">
-
     </table>
+
 	</form>
 </div>
