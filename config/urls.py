@@ -63,6 +63,7 @@ urlpatterns = [
 
     # notes
     path('notes/', notes.index, name='notes'),
+    path('notes/newform/', notes.new_form, name='notes-newform'),
     path('notes/add/<int:id>', notes.add, name='notes-add'),
     path('notes/<int:id>', notes.select, name='notes-select'),
     path('notes/edit/<int:id>', notes.edit, name='notes-edit'),

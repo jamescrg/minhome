@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from apps.notes.models import Note
+from apps.notes.forms import NoteForm
 from apps.folders.models import Folder
 
 
@@ -56,12 +57,15 @@ def select(request, id):
 
 @login_required
 def add(request, id):
+
     user_id = request.user.id
     selected_folder_id = id
     selected_folder = get_object_or_404(Folder, pk=id)
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-    note = Note()
-    note.folder_id = id
+
+    form = NoteForm(initial={'folder': selected_folder_id})
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='notes').order_by('name')
 
     context = {
         'page': 'notes',
@@ -71,8 +75,7 @@ def add(request, id):
         'folders': folders,
         'selected_folder': selected_folder,
         'selected_folder_id': selected_folder_id,
-        'note': note,
-        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
+        'form': form,
     }
 
     return render(request, 'notes/content.html', context)
@@ -138,3 +141,18 @@ def delete(request, id):
         raise Http404('Record not found.')
     note.delete()
     return redirect('notes')
+
+
+@login_required
+def new_form(request, folder=None, note=None):
+
+    form = NoteForm(initial={'folder': '320'})
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page=page).order_by('name')
+
+    context = {
+        'action': '/notes/add',
+        'form': form,
+    }
+
+    return render(request, 'notes/form_new.html', context)

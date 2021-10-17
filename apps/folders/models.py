@@ -20,7 +20,7 @@ class Folder(models.Model):
     ]
 
     def __str__(self):
-        return f'{self.name} : {self.id}'
+        return f'{self.name}'
 
     class Meta:
         db_table = 'app_folder'
