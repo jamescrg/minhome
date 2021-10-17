@@ -56,47 +56,57 @@ def select(request, id):
 
 
 @login_required
-def add(request, id):
+def new(request, folder_id):
 
     user_id = request.user.id
-    selected_folder_id = id
-    selected_folder = get_object_or_404(Folder, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
 
-    form = NoteForm(initial={'folder': selected_folder_id})
-    form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='notes').order_by('name')
+    if request.method == 'POST':
 
-    context = {
-        'page': 'notes',
-        'edit': False,
-        'add': True,
-        'action': '/notes/insert',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'form': form,
-    }
+        # create new note
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.user_id = user_id
+            note.save()
 
-    return render(request, 'notes/content.html', context)
+        # deselect previously selected note
+        try:
+            old = Note.objects.filter(user_id=user_id, selected=1).get()
+            old.selected = 0
+            old.save()
+        except:
+            pass
 
+        # select newest note for user
+        new = Note.objects.filter(user_id=user_id).latest('id')
+        new.selected = 1
+        new.save()
 
-@login_required
-def insert(request):
-    user_id = request.user.id
+        return redirect('notes')
 
-    # deselect previously selected note
-    old = Note.objects.filter(user_id=user_id, selected=1).update(selected=0)
+    else:
 
-    # create new note
-    note = Note()
-    note.user_id = user_id
-    for field in note.fillable:
-        setattr(note, field, request.POST.get(field))
-    note.selected = 1
-    note.save()
+        user_id = request.user.id
+        selected_folder_id = folder_id
+        selected_folder = get_object_or_404(Folder, pk=folder_id)
+        folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
 
-    return redirect('notes')
+        form = NoteForm(initial={'folder': selected_folder_id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='notes').order_by('name')
+
+        context = {
+            'page': 'notes',
+            'edit': False,
+            'add': True,
+            'action': f'/notes/{selected_folder_id}/new',
+            'folders': folders,
+            'selected_folder': selected_folder,
+            'selected_folder_id': selected_folder_id,
+            'form': form,
+        }
+
+        return render(request, 'notes/content.html', context)
 
 
 @login_required
@@ -141,18 +151,3 @@ def delete(request, id):
         raise Http404('Record not found.')
     note.delete()
     return redirect('notes')
-
-
-@login_required
-def new_form(request, folder=None, note=None):
-
-    form = NoteForm(initial={'folder': '320'})
-    form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page=page).order_by('name')
-
-    context = {
-        'action': '/notes/add',
-        'form': form,
-    }
-
-    return render(request, 'notes/form_new.html', context)
