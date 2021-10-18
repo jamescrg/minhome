@@ -28,7 +28,7 @@ class ModelTests(TestCase):
 
         Contact.objects.create(
             user_id=1,
-            folder_id=folder1.id,
+            folder=folder1,
             selected=1,
             name='Mohandas Gandhi',
             company='Gandhi, PC',
@@ -94,7 +94,9 @@ class ViewTests(TransactionTestCase):
                 name=name,
             )
 
-        first_folder = Folder.objects.all().first()
+        self.first_folder = Folder.objects.all().first()
+        self.first_folder.selected = 1
+        self.first_folder.save()
 
         contacts = [
             {'name': 'Socrates', 'phone1': '406.363.5555', 'email': 'u@me.com'},
@@ -105,12 +107,14 @@ class ViewTests(TransactionTestCase):
         for contact in contacts:
             Contact.objects.create(
                 user_id=1,
-                folder_id=first_folder.id,
+                folder=self.first_folder,
                 selected=0,
                 name=contact['name'],
                 phone1=contact['phone1'],
                 email=contact['email'],
             )
+
+        Contact.objects.filter(name='Socrates').update(selected=1)
 
     def testIndex(self):
         response = self.client.get('/contacts/')
@@ -127,43 +131,42 @@ class ViewTests(TransactionTestCase):
         self.assertEqual(selected_contact.selected, 1)
 
     def testAdd(self):
-        response = self.client.get('/contacts/add/4')
+        response = self.client.get('/contacts/add')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contacts/form.html')
 
-    def testEdit(self):
-        response = self.client.get('/contacts/edit/2')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'contacts/form.html')
-
-    def testInsert(self):
+    def testAddData(self):
         data = {
-            'user_id': 1,
-            'folder_id': 4,
+            'user_id': self.user.id,
+            'folder': 4,
             'name': 'Plato',
             'phone1': '440.500.6000',
         }
-
-        response = self.client.post('/contacts/insert', data)
+        response = self.client.post('/contacts/add', data)
         self.assertEqual(response.status_code, 302)
         found = Contact.objects.filter(name='Plato').exists()
         self.assertTrue(found)
 
-    def testUpdate(self):
+    def testEdit(self):
+        response = self.client.get('/contacts/2/edit')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'contacts/form.html')
+
+    def testEditData(self):
         data = {
             'user_id': self.user.id,
-            'folder_id': 4,
+            'folder': 4,
             'name': 'Descartes',
             'phone1': '440.500.6000',
         }
 
-        response = self.client.post('/contacts/update/2', data)
+        response = self.client.post('/contacts/2/edit', data)
         self.assertEqual(response.status_code, 302)
         found = Contact.objects.filter(name='Descartes').exists()
         self.assertTrue(found)
 
     def testDelete(self):
-        response = self.client.get('/contacts/delete/3')
+        response = self.client.get('/contacts/3/delete')
         self.assertEqual(response.status_code, 302)
         found = Contact.objects.filter(name='Schopenhauer').exists()
         self.assertFalse(found)

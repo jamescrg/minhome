@@ -101,49 +101,49 @@ class ViewTests(TransactionTestCase):
         self.assertTemplateUsed(response, 'tasks/content.html')
 
     def testActivate(self):
-        response = self.client.get('/tasks/activate/2')
+        response = self.client.get('/tasks/2/activate')
         self.assertEqual(response.status_code, 302)
         folder = Folder.objects.filter(pk=2).get()
         self.assertEqual(folder.active, 1)
 
     def testStatus(self):
-        response = self.client.get('/tasks/complete/2')
+        response = self.client.get('/tasks/2/complete')
         self.assertEqual(response.status_code, 302)
         task = Task.objects.filter(pk=2).get()
         self.assertEqual(task.status, 1)
 
-    def testEdit(self):
-        response = self.client.get('/tasks/edit/4')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'tasks')
-        self.assertTemplateUsed(response, 'tasks/form.html')
-
-    def testInsert(self):
+    def testAddData(self):
         data = {
             'user_id': 1,
             'folder_id': 3,
             'title': 'Sweep garage',
         }
 
-        response = self.client.post('/tasks/insert', data)
+        response = self.client.post('/tasks/add', data)
         self.assertEqual(response.status_code, 302)
         found = Task.objects.filter(folder_id=3).exists()
         self.assertTrue(found)
 
-    def testUpdate(self):
+    def testEdit(self):
+        response = self.client.get('/tasks/4/edit')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page'], 'tasks')
+        self.assertTemplateUsed(response, 'tasks/form.html')
+
+    def testEditData(self):
         data = {
             'user_id': self.user.id,
             'folder_id': 3,
             'title': 'Sweep garage',
         }
 
-        response = self.client.post('/tasks/update/2', data)
+        response = self.client.post('/tasks/2/edit', data)
         self.assertEqual(response.status_code, 302)
-        found = Task.objects.filter(folder_id=3).exists()
+        found = Task.objects.filter(title='Sweep garage').exists()
         self.assertTrue(found)
 
     def testClear(self):
         tasks = Task.objects.filter(folder_id=2).update(status=1)
-        response = self.client.get('/tasks/clear/2')
+        response = self.client.get('/tasks/2/clear')
         tasks = Task.objects.filter(folder_id=2)
         self.assertFalse(tasks)

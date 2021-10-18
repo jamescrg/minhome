@@ -31,6 +31,7 @@ class ContactForm(forms.ModelForm):
                 ('Other', 'Other'),
                 )
         widgets = {
+            'address': forms.Textarea(),
             'notes': forms.Textarea(),
             'phone1_label': forms.Select(choices=PHONE_LABELS),
             'phone2_label': forms.Select(choices=PHONE_LABELS),

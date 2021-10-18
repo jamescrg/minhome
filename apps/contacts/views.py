@@ -159,6 +159,7 @@ def edit(request, id):
             'action': f'/contacts/{id}/edit',
             'folders': folders,
             'selected_folder': selected_folder,
+            'contact': contact,
             'form': form,
         }
 

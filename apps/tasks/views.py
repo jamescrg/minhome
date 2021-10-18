@@ -82,7 +82,7 @@ def edit(request, id):
         except:
             raise Http404('Record not found.')
 
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
             task.user_id = user_id

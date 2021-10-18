@@ -39,7 +39,7 @@ class ModelTests(TestCase):
 
     def testString(self):
         folder = Folder.objects.get(name='Main')
-        self.assertEqual(str(folder), f'{folder.name} : {folder.id}')
+        self.assertEqual(str(folder), f'{folder.name}')
 
 
 class ViewTests(TransactionTestCase):

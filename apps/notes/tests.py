@@ -29,7 +29,7 @@ class ModelTests(TestCase):
 
         Note.objects.create(
             user_id=1,
-            folder_id=folder1.id,
+            folder=folder1,
             subject='notes',
             note='Main',
             selected=1,
