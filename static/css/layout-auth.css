@@ -1,7 +1,6 @@
 
 body {
 	font-family: 'Open Sans', sans-serif;
-	font-size: 1.5em;
 	background: #d4d4d4;
 	color: #474747;
 	}
@@ -32,7 +31,7 @@ a:hover	{
 }
 
 .auth-title{
-	font-size: 1.4em;
+	font-size: 2.2em;
   font-weight: 500;
 	margin-bottom: 5px;
 	text-align: center;
@@ -40,13 +39,13 @@ a:hover	{
 }
 
 .auth-subtitle{
-  font-size: 1em;
+  font-size: 1.4em;
 	margin-bottom: 30px;
 	text-align: center;
 }
 
 #login-form label {
-  font-size: 0.9em;
+  font-size: 1.2em;
   display: block;
   font-weight: normal;
 }
@@ -55,7 +54,7 @@ a:hover	{
   border: solid 1px #d4d4d4;
   border-radius: 5px;
   display: block;
-  font-size: 0.8em;
+  font-size: 1.2em;
   margin-bottom: 30px;
   padding: 7px;
   width: 100%;
@@ -64,30 +63,7 @@ a:hover	{
 #login-form button {
   border: solid 1px #d4d4d4;
   border-radius: 5px;
-  font-size: 0.8em;
+  font-size: 1.2em;
   margin-top: 0px;
   padding: 7px;
 }
-
-
-/* .form-check-label{ */
-/*     margin-left: 10px; */
-/* } */
-
-/* .invalid-feedback{ */
-/*     margin: 5px 0 0 2px; */
-/*     color: darkred; */
-/* } */
-
-/* .auth-label{ */
-/*   font-size: 0.8em; */
-/*   font-weight: 500; */
-/* } */
-
-/* .form-control{ */
-/*   height: auto; */
-/*   padding: 10px; */
-/*   font-size: 18px; */
-/*   filter: none; */
-/* } */
-
