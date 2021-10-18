@@ -35,10 +35,8 @@ urlpatterns = [
 
     # favorites
     path('favorites/', favorites.index, name='favorites'),
-    path('favorites/add/<int:id>', favorites.add, name='favorites-add'),
-    path('favorites/insert', favorites.insert, name='favorites-insert'),
-    path('favorites/edit/<int:id>', favorites.edit, name='favorites-edit'),
-    path('favorites/update/<int:id>', favorites.update, name='favorites-update'),
+    path('favorites/add', favorites.add, name='favorites-add'),
+    path('favorites/<int:id>/edit', favorites.edit, name='favorites-edit'),
     path('favorites/delete/<int:id>', favorites.delete, name='favorites-delete'),
     path('favorites/home/<int:id>', favorites.home, name='favorites-home'),
 

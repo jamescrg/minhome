@@ -1,9 +1,11 @@
+
 from pprint import pprint
 
 from django.test import TestCase
 from django.test import TransactionTestCase
 from django.test import Client
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 from apps.folders.models import Folder
@@ -11,6 +13,7 @@ from apps.favorites.models import Favorite
 
 
 class ModelTests(TestCase):
+
     def setUp(self):
         self.client = Client()
         self.user = CustomUser.objects.create_user(
@@ -56,7 +59,7 @@ class ModelTests(TestCase):
 
     def testFavoriteString(self):
         favorite = Favorite.objects.get(name="Meditation Posture")
-        self.assertEqual(str(favorite), f'{favorite.name} : {favorite.id}')
+        self.assertEqual(str(favorite), f'{favorite.name}')
 
 
 class ViewTests(TransactionTestCase):
@@ -83,6 +86,8 @@ class ViewTests(TransactionTestCase):
                 page='favorites',
                 name=name,
             )
+
+        Folder.objects.filter(name='Local').update(selected=1)
 
         first_folder = Folder.objects.all().first()
 
@@ -119,37 +124,35 @@ class ViewTests(TransactionTestCase):
         self.assertTemplateUsed(response, 'favorites/content.html')
 
     def testAdd(self):
-        response = self.client.get('/favorites/add/4')
+        response = self.client.get('/favorites/add')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'favorites/form.html')
 
-    def testEdit(self):
-        response = self.client.get('/favorites/edit/2')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'favorites/form.html')
-
-    def testInsert(self):
+    def testAddData(self):
         data = {
-            'user_id': 1,
-            'folder_id': 4,
+            'folder': 4,
             'name': 'Reddit',
             'url': 'https://reddit.com',
         }
 
-        response = self.client.post('/favorites/insert', data)
+        response = self.client.post('/favorites/add', data)
         self.assertEqual(response.status_code, 302)
         found = Favorite.objects.filter(name='Reddit').exists()
         self.assertTrue(found)
 
-    def testUpdate(self):
+    def testEdit(self):
+        response = self.client.get('/favorites/2/edit')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'favorites/form.html')
+
+    def testEditData(self):
         data = {
-            'user_id': self.user.id,
-            'folder_id': 4,
+            'folder': 4,
             'name': 'Reddit',
             'url': 'https://reddit.com',
         }
 
-        response = self.client.post('/favorites/update/2', data)
+        response = self.client.post('/favorites/2/edit', data)
         self.assertEqual(response.status_code, 302)
         found = Favorite.objects.filter(name='Reddit').exists()
         self.assertTrue(found)

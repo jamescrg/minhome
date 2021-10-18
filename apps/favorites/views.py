@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from apps.favorites.models import Favorite
+from apps.favorites.forms import FavoriteForm
 from apps.folders.models import Folder
 
 
@@ -42,63 +43,82 @@ def index(request):
     return render(request, 'favorites/content.html', context)
 
 
-def add(request, id):
+def add(request):
+
     user_id = request.user.id
-    selected_folder_id = id
-    selected_folder = get_object_or_404(Folder, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    favorite = Favorite()
-    favorite.folder_id = id
-    context = {
-        'page': 'favorites',
-        'edit': False,
-        'add': True,
-        'action': '/favorites/insert',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'favorite': favorite,
-    }
-    return render(request, 'favorites/content.html', context)
 
+    if request.method == 'POST':
 
-def insert(request):
-    favorite = Favorite()
-    favorite.user_id = request.user.id
-    for field in favorite.fillable:
-        setattr(favorite, field, request.POST.get(field))
-    favorite.save()
-    return redirect('favorites')
+        form = FavoriteForm(request.POST)
+
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.user_id = user_id
+            favorite.save()
+
+        return redirect('favorites')
+
+    else:
+
+        folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
+
+        form = FavoriteForm(initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='favorites').order_by('name')
+
+        context = {
+            'page': 'favorites',
+            'add': True,
+            'action': '/favorites/add',
+            'folders': folders,
+            'selected_folder': selected_folder,
+            'form': form,
+        }
+
+        return render(request, 'favorites/content.html', context)
 
 
 def edit(request, id):
+
     user_id = request.user.id
-    favorite = get_object_or_404(Favorite, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    selected_folder_id = favorite.folder_id
-    selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-    context = {
-        'page': 'favorites',
-        'edit': True,
-        'add': False,
-        'action': f'/favorites/update/{id}',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'favorite': favorite,
-    }
-    return render(request, 'favorites/content.html', context)
 
+    if request.method == 'POST':
 
-def update(request, id):
-    try:
-        favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
-        raise Http404('Record not found.')
-    for field in favorite.fillable:
-        setattr(favorite, field, request.POST.get(field))
-    favorite.save()
-    return redirect('favorites')
+        try:
+            favorite = get_object_or_404(Favorite, pk=id)
+        except:
+            raise Http404('Record note found.')
+
+        form = FavoriteForm(request.POST, instance=favorite)
+
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.user_id = user_id
+            favorite.save()
+
+        return redirect('favorites')
+
+    else:
+
+        folders = Folder.objects.filter(
+                user_id=user_id, page='favorites').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
+        favorite = get_object_or_404(Favorite, pk=id)
+
+        form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
+
+        context = {
+            'page': 'favorites',
+            'edit': True,
+            'add': False,
+            'action': f'/favorites/{id}/edit',
+            'folders': folders,
+            'selected_folder': selected_folder,
+            'form': form,
+        }
+
+        return render(request, 'favorites/content.html', context)
 
 
 def delete(request, id):

@@ -66,17 +66,21 @@ div#favorites{
 	background: #ffffe6;
 }
 
-#folder_id {
-    max-width: 250px;
+#id_folder {
+  max-width: 250px;
 }
 
-#description{
+#id_url {
+  width: 550px;
+}
+
+#id_description{
     height: 100px;
 }
 
-#login,
-#root,
-#passkey {
+#id_login,
+#id_root,
+#id_passkey {
 	max-width: 150px;
 	}
 

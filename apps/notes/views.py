@@ -84,7 +84,6 @@ def add(request):
 
     else:
 
-        user_id = request.user.id
         folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
         selected_folder = folders.filter(selected=1).get()
 
@@ -96,7 +95,7 @@ def add(request):
             'page': 'notes',
             'edit': False,
             'add': True,
-            'action': f'/notes/add',
+            'action': '/notes/add',
             'folders': folders,
             'selected_folder': selected_folder,
             'form': form,
@@ -143,7 +142,6 @@ def edit(request, id):
             'selected_folder': selected_folder,
             'selected_folder_id': selected_folder.id,
             'form': form,
-            'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
         }
         return render(request, 'notes/content.html', context)
 

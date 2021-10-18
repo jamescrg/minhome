@@ -16,20 +16,8 @@ class Favorite(models.Model):
     selected = models.IntegerField(blank=True, null=True)
     home_rank = models.IntegerField(blank=True, null=True)
 
-    fillable = [
-        'folder_id',
-        'name',
-        'url',
-        'description',
-        'login',
-        'root',
-        'passkey',
-        'selected',
-        'home_rank',
-    ]
-
     def __str__(self):
-        return f'{self.name} : {self.id}'
+        return f'{self.name}'
 
     class Meta:
         db_table = 'app_favorite'

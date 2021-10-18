@@ -2,13 +2,13 @@
 
 <div class="section-title">
 
-  {% if add %}
+  {% if edit %}
 
-    Add Favorite
+    Edit Favorite
 
   {% else %}
 
-    Edit Favorite
+    Add Favorite
 
   {% endif %}
 
@@ -19,62 +19,8 @@
   {% csrf_token %}
 
   <table>
-    <tr>
-      <td>
-        Folder
 
-      <td>
-        <select name="folder_id" id="folder_id">
-
-          <option value="">Uncategorized</option>
-          {% for folder in folders %}
-            <option value="{{ folder.id }}" {% if folder.id == selected_folder_id %}selected{% endif %}>
-              {{ folder.name }}
-          {% endfor %}
-
-        </select>
-
-    <tr>
-      <td>
-        Name
-
-      <td>
-        <input type="text" autofocus name="name" id="name"
-                value="{{ favorite.name|default:''}}" required>
-
-    <tr>
-      <td>
-        Url
-
-      <td>
-        <input type="text" name="url" id="url" value="{{ favorite.url|default:'http://' }}" required>
-
-    <tr>
-      <td>
-        Description
-
-      <td>
-        <textarea name="description" id="description">{{ favorite.description|default:'' }}</textarea>
-
-    <tr>
-      <td>
-        Login
-
-      <td>
-        <input type="text" name="login" id="login" value="{{ favorite.login|default:'' }}">
-
-    <tr>
-      <td>
-        Root
-
-      <td>
-        <input type="text" name="root" id="root" value="{{ favorite.root|default:''}}">
-
-    <tr>
-      <td>
-        Key
-      <td>
-        <input type="text" name="passkey" id="passkey" value="{{ favorite.passkey|default:'' }}">
+    {{ form.as_table }}
 
     <tr>
       <td>

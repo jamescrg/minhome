@@ -1,3 +1,4 @@
+
 from pprint import pprint
 
 from django.test import TestCase
@@ -78,6 +79,8 @@ class ViewTests(TransactionTestCase):
                 name=name,
             )
 
+        Folder.objects.filter(name='Philosophy').update(selected=1)
+
         notes = [
             'Socrates',
             'Kant',
@@ -92,6 +95,8 @@ class ViewTests(TransactionTestCase):
                 subject=subject,
                 note='Some text here',
             )
+
+        Note.objects.filter(subject='Mill').update(selected=1)
 
     def testIndex(self):
         response = self.client.get('/notes/')
@@ -113,39 +118,39 @@ class ViewTests(TransactionTestCase):
         self.assertContains(response, 'Nietzsche')
 
     def testAdd(self):
-        response = self.client.get('/notes/add/4')
+        response = self.client.get('/notes/add')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['page'], 'notes')
         self.assertTemplateUsed(response, 'notes/form.html')
 
-    def testEdit(self):
-        response = self.client.get('/notes/edit/4')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'notes')
-        self.assertTemplateUsed(response, 'notes/form.html')
-
-    def testInsert(self):
+    def testAddData(self):
         data = {
-            'user_id': 1,
-            'folder_id': 4,
+            'user_id': self.user.id,
+            'folder': 4,
             'subject': 'Existentialism',
             'note': 'Sad',
         }
 
-        response = self.client.post('/notes/insert', data)
+        response = self.client.post('/notes/add', data)
         self.assertEqual(response.status_code, 302)
         found = Note.objects.filter(subject='Existentialism').exists()
         self.assertTrue(found)
 
-    def testUpdate(self):
+    def testEdit(self):
+        response = self.client.get('/notes/4/edit')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['page'], 'notes')
+        self.assertTemplateUsed(response, 'notes/form.html')
+
+    def testEditData(self):
         data = {
             'user_id': self.user.id,
-            'folder_id': 4,
+            'folder': 4,
             'subject': 'Nietzsche',
             'note': 'Uebermensch',
         }
 
-        response = self.client.post('/notes/update/4', data)
+        response = self.client.post('/notes/4/edit', data)
         self.assertEqual(response.status_code, 302)
         found = Note.objects.filter(note='Uebermensch').exists()
         self.assertTrue(found)

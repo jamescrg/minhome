@@ -2,7 +2,7 @@
 
 <ul>
 	<li>
-		<a href="/favorites/edit/{{ favorite.id }}">Edit</a>
+		<a href="/favorites/{{ favorite.id }}/edit">Edit</a>
 	</li>
 	<li>
 		<a href="/favorites/home/{{ favorite.id }}"> {% if favorite.home_rank > 0 %} Remove from {% else %} Add to {% endif %} Home </a>
