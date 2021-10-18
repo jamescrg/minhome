@@ -11,6 +11,7 @@ from apps.folders.models import Folder
 
 
 class ModelTests(TestCase):
+
     def setUp(self):
         Folder.objects.create(
             user_id=1,
