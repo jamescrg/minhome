@@ -1,8 +1,8 @@
-
 {% extends 'layout-auth.html' %}
 
-{% block content %}
+{% block title %}Log In{% endblock title %}
 
+{% block content %}
 
 <div class="auth-card">
 
@@ -14,31 +14,16 @@
         Log in to your account
     </div>
 
-      <form method="post">
+    <form id="login-form" method="post">
 
-          {% csrf_token %}
+      {% csrf_token %}
 
-        <div class="form-group">
-          <label class="auth-label" for="username">Username</label>
-          <input type="text" name="username" id="username" 
-            class="form-control" autofocus required> 
-        </div>
+      {{ form.as_p }}
 
-        <div class="form-group">
-          <label class="auth-label" for="password">Password</label>
-          <input type="password" name="password" id="password" 
-            class="form-control" required> 
-        </div>
+      <button type="submit">Submit</button>
 
-        <div class="form-group">
-          <button type="submit" class="btn btn-default">
-            Login
-          </button>
-        </div>
-
-      </form>
+    </form>
 
 </div>
-
 
 {% endblock content %}
