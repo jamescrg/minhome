@@ -1,14 +1,14 @@
+
 from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from apps.tasks.models import Task
+from apps.tasks.forms import TaskForm
 from apps.folders.models import Folder
-from pprint import pprint
 
 
 @login_required
@@ -58,45 +58,56 @@ def status(request, id):
 
 
 @login_required
-def insert(request):
-    task = Task()
-    task.user_id = request.user.id
-    task.folder_id = request.POST.get('folder_id')
-    task.title = request.POST.get('title')
-    task.save()
-    return redirect('tasks')
+def add(request):
+
+    if request.method == 'POST':
+        task = Task()
+        task.user_id = request.user.id
+        folder = get_object_or_404(Folder, pk=request.POST.get('folder_id'))
+        task.folder = folder
+        task.title = request.POST.get('title')
+        task.save()
+        return redirect('tasks')
 
 
 @login_required
 def edit(request, id):
+
     user_id = request.user.id
-    task = get_object_or_404(Task, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
-    selected_folder_id = task.folder_id
-    selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-    context = {
-        'page': 'tasks',
-        'edit': True,
-        'action': f'/tasks/update/{id}',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'task': task,
-    }
-    return render(request, 'tasks/content.html', context)
 
+    if request.method == 'POST':
 
-@login_required
-def update(request, id):
-    try:
-        task = Task.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
-        raise Http404('Record not found.')
-    task.user_id = request.user.id
-    task.folder_id = request.POST.get('folder_id')
-    task.title = request.POST.get('title')
-    task.save()
-    return redirect('tasks')
+        try:
+            task = Task.objects.filter(user_id=request.user.id, pk=id).get()
+        except:
+            raise Http404('Record not found.')
+
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user_id = user_id
+            task.save()
+
+        return redirect('tasks')
+
+    else:
+
+        task = get_object_or_404(Task, pk=id)
+        folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+        selected_folder = folders.filter(id=task.folder.id).get()
+
+        form = TaskForm(instance=task, initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='tasks').order_by('name')
+
+        context = {
+            'page': 'tasks',
+            'edit': True,
+            'action': f'/tasks/{id}/edit',
+            'form': form,
+        }
+
+        return render(request, 'tasks/content.html', context)
 
 
 @login_required

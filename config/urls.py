@@ -42,22 +42,19 @@ urlpatterns = [
 
     # tasks
     path('tasks/', tasks.index, name='tasks'),
-    path('tasks/edit/<int:id>', tasks.edit,  name='tasks-edit'),
-    path('tasks/activate/<int:id>', tasks.activate, name='tasks-activate'),
-    path('tasks/complete/<int:id>', tasks.status, name='tasks-complete'),
-    path('tasks/clear/<int:folder_id>', tasks.clear, name='tasks-clear'),
-    path('tasks/insert', tasks.insert, name='tasks-insert'),
-    path('tasks/update/<int:id>', tasks.update, name='tasks-update'),
+    path('tasks/<int:id>/activate', tasks.activate, name='tasks-activate'),
+    path('tasks/add', tasks.add, name='tasks-add'),
+    path('tasks/<int:id>/edit', tasks.edit,  name='tasks-edit'),
+    path('tasks/<int:id>/complete', tasks.status, name='tasks-complete'),
+    path('tasks/<int:folder_id>/clear', tasks.clear, name='tasks-clear'),
     
     # contacts
     path('contacts/', contacts.index, name='contacts'),
-    path('contacts/add/<int:id>', contacts.add, name='contacts-add'),
-    path('contacts/edit/<int:id>', contacts.edit, name='contacts-edit'),
     path('contacts/<int:id>', contacts.select, name='contacts-select'),
-    path('contacts/insert', contacts.insert, name='contacts-insert'),
-    path('contacts/update/<int:id>', contacts.update, name='contacts-update'),
-    path('contacts/delete/<int:id>', contacts.delete, name='contacts-delete'),
-    path('contacts/google/<int:id>', contacts.google_sync, name='contacts-google'),
+    path('contacts/add', contacts.add, name='contacts-add'),
+    path('contacts/<int:id>/edit', contacts.edit, name='contacts-edit'),
+    path('contacts/<int:id>/delete', contacts.delete, name='contacts-delete'),
+    path('contacts/<int:id>/google', contacts.google_sync, name='contacts-google'),
 
     # notes
     path('notes/', notes.index, name='notes'),

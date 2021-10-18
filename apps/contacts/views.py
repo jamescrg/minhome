@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from accounts.models import CustomUser
 from apps.folders.models import Folder
 from apps.contacts.models import Contact
+from apps.contacts.forms import ContactForm
 import apps.contacts.google as google
 
 
@@ -62,86 +63,106 @@ def select(request, id):
 
 
 @login_required
-def add(request, id):
+def add(request):
+
     user_id = request.user.id
-    selected_folder_id = id
-    selected_folder = get_object_or_404(Folder, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-    contact = Contact()
-    contact.folder_id = id
+    user = get_object_or_404(CustomUser, pk=user_id)
 
-    context = {
-        'page': 'contacts',
-        'edit': False,
-        'add': True,
-        'action': '/contacts/insert',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'contact': contact,
-        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
-    }
+    if request.method == 'POST':
 
-    return render(request, 'contacts/content.html', context)
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            contact = form.save(commit=False)
+            contact.user_id = user_id
+            if user.google_credentials:
+                contact.google_id = google.add_contact(contact)
+            contact.save()
 
+        # deselect previously selected contact
+        old = Contact.objects.filter(user_id=user_id, selected=1).get()
+        if old:
+            old.selected = 0
+            old.save()
 
-@login_required
-def insert(request):
-    user = get_object_or_404(CustomUser, pk=request.user.id)
+        # select newest contact for user
+        new = Contact.objects.filter(user_id=user_id).latest('id')
+        new.selected = 1
+        new.save()
 
-    contact = Contact()
-    contact.user_id = user.id
-    for field in contact.fillable:
-        setattr(contact, field, request.POST.get(field))
+        return redirect('contacts')
 
-    if user.google_credentials:
-        contact.google_id = google.add_contact(contact)
+    else:
 
-    contact.save()
+        folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
 
-    return redirect('contacts')
+        form = ContactForm(initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='contacts').order_by('name')
+
+        context = {
+            'page': 'contacts',
+            'edit': False,
+            'add': True,
+            'action': '/contacts/add',
+            'folders': folders,
+            'form': form,
+            'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
+        }
+
+        return render(request, 'contacts/content.html', context)
 
 
 @login_required
 def edit(request, id):
+
     user_id = request.user.id
-    contact = get_object_or_404(Contact, pk=id)
-    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-    selected_folder_id = contact.folder_id
-    selected_folder = get_object_or_404(Folder, pk=selected_folder_id)
-    context = {
-        'page': 'contacts',
-        'edit': True,
-        'add': False,
-        'action': f'/contacts/update/{id}',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
-        'contact': contact,
-        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
-    }
-    return render(request, 'contacts/content.html', context)
+    user = get_object_or_404(CustomUser, pk=user_id)
 
+    if request.method == 'POST':
 
-@login_required
-def update(request, id):
-    user = get_object_or_404(CustomUser, pk=request.user.id)
+        try:
+            contact = Contact.objects.filter(user_id=user.id, pk=id).get()
+        except:
+            raise Http404('Record not found.')
 
-    try:
-        contact = Contact.objects.filter(user_id=user.id, pk=id).get()
-    except:
-        raise Http404('Record not found.')
+        form = ContactForm(request.POST, instance=contact)
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='contacts').order_by('name')
 
-    for field in contact.fillable:
-        setattr(contact, field, request.POST.get(field))
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.user_id = user_id
 
-    if user.google_credentials and contact.google_id:
-        google.delete_contact(contact)
-        contact.google_id = google.add_contact(contact)
+            if user.google_credentials and contact.google_id:
+                google.delete_contact(contact)
+                contact.google_id = google.add_contact(contact)
 
-    contact.save()
+            note.save()
 
-    return redirect('contacts')
+        return redirect('contacts')
+
+    else:
+
+        folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+        selected_folder = folders.filter(selected=1).get()
+        contact = get_object_or_404(Contact, pk=id)
+
+        form = ContactForm(instance=contact, initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='contacts').order_by('name')
+
+        context = {
+            'page': 'contacts',
+            'edit': True,
+            'add': False,
+            'action': f'/contacts/{id}/edit',
+            'folders': folders,
+            'selected_folder': selected_folder,
+            'form': form,
+        }
+
+        return render(request, 'contacts/content.html', context)
 
 
 @login_required

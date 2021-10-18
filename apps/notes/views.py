@@ -95,9 +95,8 @@ def add(request):
             'page': 'notes',
             'edit': False,
             'add': True,
-            'action': '/notes/add',
             'folders': folders,
-            'selected_folder': selected_folder,
+            'action': '/notes/add',
             'form': form,
         }
 
@@ -117,6 +116,8 @@ def edit(request, id):
             raise Http404('Record not found.')
 
         form = NoteForm(request.POST, instance=note)
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='notes').order_by('name')
 
         if form.is_valid():
             note = form.save(commit=False)
@@ -132,15 +133,14 @@ def edit(request, id):
         note = get_object_or_404(Note, pk=id)
 
         form = NoteForm(instance=note, initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='notes').order_by('name')
 
         context = {
             'page': 'notes',
             'edit': True,
             'add': False,
             'action': f'/notes/{id}/edit',
-            'folders': folders,
-            'selected_folder': selected_folder,
-            'selected_folder_id': selected_folder.id,
             'form': form,
         }
         return render(request, 'notes/content.html', context)

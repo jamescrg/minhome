@@ -24,7 +24,7 @@
 
       {% else %}
 
-        <a href="/tasks/activate/{{ folder.id }}">{{ folder.name }}</a></li>
+        <a href="/tasks/{{ folder.id }}/activate">{{ folder.name }}</a></li>
 
       {% endif %}
 
@@ -32,7 +32,7 @@
 
 			<li class="list-group-item">
 
-				<a href="/tasks/complete/{{ task.id }}">
+				<a href="/tasks/{{ task.id }}/complete">
 
 					{% if task.status == 1 %}
 
@@ -46,7 +46,7 @@
 
 				</a>
         &nbsp;&nbsp;
-        <a href="/tasks/edit/{{ task.id }}" {% if task.status == 1 %} 
+        <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %} 
           style="text-decoration: line-through; color: gray;" {% endif %}>
           {{ task.title}}
         </a>
@@ -61,7 +61,7 @@
 
       <div id="clear" style="text-align: right;">
 
-        <a href="/tasks/clear/{{ active_folder.id }}">
+        <a href="/tasks/{{ active_folder.id }}/clear">
           Clear Complete
         </a>
 
@@ -70,10 +70,5 @@
     {% endif %}
 
 {% endfor %}
-
-{% if active_folder  %}
-
-
-{% endif %}
 
 </div>

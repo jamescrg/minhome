@@ -107,6 +107,8 @@ def edit(request, id):
         favorite = get_object_or_404(Favorite, pk=id)
 
         form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
+        form.fields['folder'].queryset = Folder.objects.filter(
+                user_id=user_id, page='favorites').order_by('name')
 
         context = {
             'page': 'favorites',

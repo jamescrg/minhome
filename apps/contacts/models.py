@@ -4,6 +4,7 @@ from apps.folders.models import Folder
 
 class Contact(models.Model):
 
+
     id = models.BigAutoField(primary_key=True)
     user_id = models.PositiveBigIntegerField()
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)

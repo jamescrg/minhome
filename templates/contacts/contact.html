@@ -9,7 +9,7 @@
 <div class="contact">
 
   <div style="float: right;">
-    <a href="/contacts/edit/{{ selected_contact.id }}">
+    <a href="/contacts/{{ selected_contact.id }}/edit">
       Edit
     </a>
   </div>
@@ -100,7 +100,7 @@
 
 	{% if selected_folder %}
 
-		<a href="/{{ page }}/add/{{ selected_folder.id}}">
+		<a href="/contacts/add">
       Add Contact
     </a>
 
