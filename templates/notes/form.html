@@ -19,7 +19,7 @@
     {% if edit %}
 
       <div style="float: right;">
-        <a href="/notes/delete/{{ note.id }}"
+        <a href="/notes/{{ note.id }}/delete"
           onclick="javascript: return confirm('Are you sure you want to delete this note?')"
           >Delete Note</a>
       </div>

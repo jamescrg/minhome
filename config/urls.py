@@ -61,7 +61,7 @@ urlpatterns = [
     path('notes/<int:id>', notes.select, name='notes-select'),
     path('notes/add', notes.add, name='notes-add'),
     path('notes/<int:id>/edit', notes.edit, name='notes-edit'),
-    path('notes/delete/<int:id>', notes.delete, name='notes-delete'),
+    path('notes/<int:id>/delete', notes.delete, name='notes-delete'),
 
     # weather
     path('weather/', weather.index, name='weather'),

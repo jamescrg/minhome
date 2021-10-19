@@ -59,6 +59,16 @@ def select(request, id):
 def add(request):
 
     user_id = request.user.id
+    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
+
+    context = {
+        'page': 'notes',
+        'edit': False,
+        'add': True,
+        'folders': folders,
+        'action': '/notes/add',
+    }
 
     if request.method == 'POST':
 
@@ -69,37 +79,34 @@ def add(request):
             note.user_id = user_id
             note.save()
 
-        # deselect previously selected note
-        old = Note.objects.filter(user_id=user_id, selected=1).get()
-        if old:
-            old.selected = 0
-            old.save()
+            # deselect previously selected note
+            old = Note.objects.filter(user_id=user_id, selected=1).get()
+            if old:
+                old.selected = 0
+                old.save()
 
-        # select newest note for user
-        new = Note.objects.filter(user_id=user_id).latest('id')
-        new.selected = 1
-        new.save()
+            # select newest note for user
+            new = Note.objects.filter(user_id=user_id).latest('id')
+            new.selected = 1
+            new.save()
 
-        return redirect('notes')
+            return redirect('notes')
+
+        else:
+
+            # if there are form errors, reload the form with errors
+            form.fields['folder'].queryset = Folder.objects.filter(
+                    user_id=user_id, page='notes').order_by('name')
+            context['form'] = form
+            return render(request, 'notes/content.html', context)
 
     else:
 
-        folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
-
+        # if no user input has been submitted, load a vanilla notes form
         form = NoteForm(initial={'folder': selected_folder.id})
         form.fields['folder'].queryset = Folder.objects.filter(
                 user_id=user_id, page='notes').order_by('name')
-
-        context = {
-            'page': 'notes',
-            'edit': False,
-            'add': True,
-            'folders': folders,
-            'action': '/notes/add',
-            'form': form,
-        }
-
+        context['form'] = form
         return render(request, 'notes/content.html', context)
 
 
@@ -142,6 +149,7 @@ def edit(request, id):
             'add': False,
             'action': f'/notes/{id}/edit',
             'form': form,
+            'note': note,
         }
         return render(request, 'notes/content.html', context)
 
