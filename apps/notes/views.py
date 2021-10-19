@@ -62,18 +62,12 @@ def add(request):
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
     selected_folder = folders.filter(selected=1).get()
 
-    context = {
-        'page': 'notes',
-        'edit': False,
-        'add': True,
-        'folders': folders,
-        'action': '/notes/add',
-    }
-
     if request.method == 'POST':
 
-        # create new note
+        # create a bound note form loaded with the post values
+        # this will render even if the post values are invalid
         form = NoteForm(request.POST)
+
         if form.is_valid():
             note = form.save(commit=False)
             note.user_id = user_id
@@ -92,28 +86,35 @@ def add(request):
 
             return redirect('notes')
 
-        else:
-
-            # if there are form errors, reload the form with errors
-            form.fields['folder'].queryset = Folder.objects.filter(
-                    user_id=user_id, page='notes').order_by('name')
-            context['form'] = form
-            return render(request, 'notes/content.html', context)
-
     else:
 
-        # if no user input has been submitted, load a vanilla notes form
+        # request is a get request
+        # create unbound note form
         form = NoteForm(initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='notes').order_by('name')
-        context['form'] = form
-        return render(request, 'notes/content.html', context)
+
+    # set the initial range of values for folder attribute
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='notes').order_by('name')
+
+    context = {
+        'page': 'notes',
+        'edit': False,
+        'add': True,
+        'folders': folders,
+        'action': '/notes/add',
+        'form': form,
+    }
+
+    return render(request, 'notes/content.html', context)
 
 
 @login_required
 def edit(request, id):
 
     user_id = request.user.id
+    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
+    note = get_object_or_404(Note, pk=id)
 
     if request.method == 'POST':
 
@@ -123,35 +124,32 @@ def edit(request, id):
             raise Http404('Record not found.')
 
         form = NoteForm(request.POST, instance=note)
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='notes').order_by('name')
 
         if form.is_valid():
+
             note = form.save(commit=False)
             note.user_id = user_id
             note.save()
-
-        return redirect('notes')
+            return redirect('notes')
 
     else:
 
-        folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
-        note = get_object_or_404(Note, pk=id)
-
         form = NoteForm(instance=note, initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='notes').order_by('name')
 
-        context = {
-            'page': 'notes',
-            'edit': True,
-            'add': False,
-            'action': f'/notes/{id}/edit',
-            'form': form,
-            'note': note,
-        }
-        return render(request, 'notes/content.html', context)
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='notes').order_by('name')
+
+    context = {
+        'page': 'notes',
+        'edit': True,
+        'add': False,
+        'folders': folders,
+        'action': f'/notes/{id}/edit',
+        'form': form,
+        'note': note,
+    }
+
+    return render(request, 'notes/content.html', context)
 
 
 @login_required

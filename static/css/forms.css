@@ -140,3 +140,15 @@ textarea {
   padding: 5px;
   width: 350px;
 }
+
+
+/*------------------------------------------------
+validation error messages
+------------------------------------------------*/
+
+.errorlist {
+  color: darkred;
+  font-size: 0.9em;
+  margin: 5px 0 10px 0;
+  padding-left: 20px;
+}

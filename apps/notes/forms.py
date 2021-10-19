@@ -14,13 +14,7 @@ class NoteForm(forms.ModelForm):
         }
 
     def clean_subject(self):
-
         subject = self.cleaned_data['subject']
-
-        if len(subject) < 2:
-            raise ValidationError('Subject must be 2 or more characters')
-
-        if len(subject) > 15:
-            raise ValidationError('Subject must be fewer than 50 characters')
-
+        if len(subject) > 50:
+            raise ValidationError('Subject must be fewer than 70 characters')
         return subject
