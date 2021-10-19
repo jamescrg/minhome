@@ -51,7 +51,7 @@ class ModelTests(TestCase):
 
     def testString(self):
         note = Note.objects.get(subject='notes')
-        self.assertEqual(str(note), f'{note.subject} : {note.id}')
+        self.assertEqual(str(note), f'{note.subject}')
 
 
 class ViewTests(TransactionTestCase):

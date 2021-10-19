@@ -48,7 +48,10 @@ def add(request):
 
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
 
     if request.method == 'POST':
 
@@ -62,7 +65,10 @@ def add(request):
 
     else:
 
+        if selected_folder:
             form = FavoriteForm(initial={'folder': selected_folder.id})
+        else:
+            form = FavoriteForm()
 
     form.fields['folder'].queryset = Folder.objects.filter(
             user_id=user_id, page='favorites').order_by('name')
@@ -85,7 +91,11 @@ def edit(request, id):
     user_id = request.user.id
     folders = Folder.objects.filter(
             user_id=user_id, page='favorites').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
+
     favorite = get_object_or_404(Favorite, pk=id)
 
     if request.method == 'POST':
@@ -105,7 +115,11 @@ def edit(request, id):
 
     else:
 
-        form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
+        if selected_folder:
+            form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
+        else:
+            form = FavoriteForm(instance=favorite)
+
 
     form.fields['folder'].queryset = Folder.objects.filter(
             user_id=user_id, page='favorites').order_by('name')

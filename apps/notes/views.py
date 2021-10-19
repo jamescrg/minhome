@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
+import markdown
+
 from apps.notes.models import Note
 from apps.notes.forms import NoteForm
 from apps.folders.models import Folder
@@ -32,6 +34,7 @@ def index(request):
     notes = notes.order_by('subject')
 
     selected_note = Note.objects.filter(user_id=user_id, selected=1).first()
+    selected_note.note = markdown.markdown(selected_note.note)
 
     context = {
         'page': page,
@@ -60,7 +63,11 @@ def add(request):
 
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
+
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
 
     if request.method == 'POST':
 
@@ -74,8 +81,11 @@ def add(request):
             note.save()
 
             # deselect previously selected note
-            old = Note.objects.filter(user_id=user_id, selected=1).get()
-            if old:
+            try:
+                old = Note.objects.filter(user_id=user_id, selected=1).get()
+            except Note.DoesNotExist:
+                pass
+            else:
                 old.selected = 0
                 old.save()
 
@@ -90,7 +100,11 @@ def add(request):
 
         # request is a get request
         # create unbound note form
-        form = NoteForm(initial={'folder': selected_folder.id})
+
+        if selected_folder:
+            form = NoteForm(initial={'folder': selected_folder.id})
+        else:
+            form = NoteForm()
 
     # set the initial range of values for folder attribute
     form.fields['folder'].queryset = Folder.objects.filter(
@@ -113,7 +127,12 @@ def edit(request, id):
 
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
+
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
+
     note = get_object_or_404(Note, pk=id)
 
     if request.method == 'POST':
@@ -134,7 +153,10 @@ def edit(request, id):
 
     else:
 
-        form = NoteForm(instance=note, initial={'folder': selected_folder.id})
+        if selected_folder:
+            form = NoteForm(instance=note, initial={'folder': selected_folder.id})
+        else:
+            form = NoteForm(instance=note)
 
     form.fields['folder'].queryset = Folder.objects.filter(
             user_id=user_id, page='notes').order_by('name')

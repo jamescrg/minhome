@@ -65,11 +65,17 @@ def select(request, id):
 @login_required
 def add(request):
 
+    # load initial page values (user, folders, selected folder)
     user_id = request.user.id
     user = get_object_or_404(CustomUser, pk=user_id)
     folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
 
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
+
+    # if applicable, process any post data submitted by user
     if request.method == 'POST':
 
         form = ContactForm(request.POST)
@@ -80,9 +86,12 @@ def add(request):
                 contact.google_id = google.add_contact(contact)
             contact.save()
 
-            # deselect previously selected contact
-            old = Contact.objects.filter(user_id=user_id, selected=1).get()
-            if old:
+            # deselect previously selected contact, if one exists
+            try:
+                old = Contact.objects.filter(user_id=user_id, selected=1).get()
+            except Contact.DoesNotExist:
+                pass
+            else:
                 old.selected = 0
                 old.save()
 
@@ -93,9 +102,13 @@ def add(request):
 
             return redirect('contacts')
 
+    # if no post data has been submitted, show the contact form
     else:
 
+        if selected_folder:
             form = ContactForm(initial={'folder': selected_folder.id})
+        else:
+            form = ContactForm()
 
     form.fields['folder'].queryset = Folder.objects.filter(
             user_id=user_id, page='contacts').order_by('name')
@@ -119,7 +132,12 @@ def edit(request, id):
     user_id = request.user.id
     user = get_object_or_404(CustomUser, pk=user_id)
     folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-    selected_folder = folders.filter(selected=1).get()
+
+    try:
+        selected_folder = folders.filter(selected=1).get()
+    except:
+        selected_folder = None
+
     contact = get_object_or_404(Contact, pk=id)
 
     if request.method == 'POST':
@@ -134,20 +152,23 @@ def edit(request, id):
                 user_id=user_id, page='contacts').order_by('name')
 
         if form.is_valid():
-            note = form.save(commit=False)
-            note.user_id = user_id
+            contact = form.save(commit=False)
+            contact.user_id = user_id
 
             if user.google_credentials and contact.google_id:
                 google.delete_contact(contact)
                 contact.google_id = google.add_contact(contact)
 
-            note.save()
+            contact.save()
 
             return redirect('contacts')
 
     else:
 
-        form = ContactForm(instance=contact, initial={'folder': selected_folder.id})
+        if selected_folder:
+            form = ContactForm(instance=contact, initial={'folder': selected_folder.id})
+        else:
+            form = ContactForm(instance=contact)
 
     form.fields['folder'].queryset = Folder.objects.filter(
             user_id=user_id, page='contacts').order_by('name')

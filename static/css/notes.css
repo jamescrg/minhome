@@ -25,3 +25,8 @@ div.note{
 #id_folder {
     max-width: 250px;
 }
+
+#id_note {
+  height: 250px;
+  width: 500px;
+}

@@ -10,17 +10,6 @@
       Edit
     </a>
   </div>
-	{{ selected_note.note|linebreaks }}
+	{{ selected_note.note|safe }}
 </div>
 
-<div class="page-control">
-
-	{% if selected_folder %}
-
-		<a href="/{{ page }}/add">
-      Add Note
-    </a>
-
-	{% endif %}
-
-</div>
