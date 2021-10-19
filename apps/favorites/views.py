@@ -43,9 +43,12 @@ def index(request):
     return render(request, 'favorites/content.html', context)
 
 
+@login_required
 def add(request):
 
     user_id = request.user.id
+    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
 
     if request.method == 'POST':
 
@@ -55,33 +58,35 @@ def add(request):
             favorite = form.save(commit=False)
             favorite.user_id = user_id
             favorite.save()
-
-        return redirect('favorites')
+            return redirect('favorites')
 
     else:
 
-        folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
+            form = FavoriteForm(initial={'folder': selected_folder.id})
 
-        form = FavoriteForm(initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='favorites').order_by('name')
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='favorites').order_by('name')
 
-        context = {
-            'page': 'favorites',
-            'add': True,
-            'action': '/favorites/add',
-            'folders': folders,
-            'selected_folder': selected_folder,
-            'form': form,
-        }
+    context = {
+        'page': 'favorites',
+        'add': True,
+        'action': '/favorites/add',
+        'folders': folders,
+        'selected_folder': selected_folder,
+        'form': form,
+    }
 
-        return render(request, 'favorites/content.html', context)
+    return render(request, 'favorites/content.html', context)
 
 
+@login_required
 def edit(request, id):
 
     user_id = request.user.id
+    folders = Folder.objects.filter(
+            user_id=user_id, page='favorites').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
+    favorite = get_object_or_404(Favorite, pk=id)
 
     if request.method == 'POST':
 
@@ -96,33 +101,29 @@ def edit(request, id):
             favorite = form.save(commit=False)
             favorite.user_id = user_id
             favorite.save()
-
-        return redirect('favorites')
+            return redirect('favorites')
 
     else:
 
-        folders = Folder.objects.filter(
-                user_id=user_id, page='favorites').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
-        favorite = get_object_or_404(Favorite, pk=id)
-
         form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='favorites').order_by('name')
 
-        context = {
-            'page': 'favorites',
-            'edit': True,
-            'add': False,
-            'action': f'/favorites/{id}/edit',
-            'folders': folders,
-            'selected_folder': selected_folder,
-            'form': form,
-        }
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='favorites').order_by('name')
 
-        return render(request, 'favorites/content.html', context)
+    context = {
+        'page': 'favorites',
+        'edit': True,
+        'add': False,
+        'action': f'/favorites/{id}/edit',
+        'folders': folders,
+        'selected_folder': selected_folder,
+        'form': form,
+    }
+
+    return render(request, 'favorites/content.html', context)
 
 
+@login_required
 def delete(request, id):
     try:
         favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
@@ -132,6 +133,7 @@ def delete(request, id):
     return redirect('favorites')
 
 
+@login_required
 def home(request, id):
     user_id = request.user.id
     favorite = get_object_or_404(Favorite, pk=id)

@@ -67,6 +67,8 @@ def add(request):
 
     user_id = request.user.id
     user = get_object_or_404(CustomUser, pk=user_id)
+    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
 
     if request.method == 'POST':
 
@@ -78,39 +80,37 @@ def add(request):
                 contact.google_id = google.add_contact(contact)
             contact.save()
 
-        # deselect previously selected contact
-        old = Contact.objects.filter(user_id=user_id, selected=1).get()
-        if old:
-            old.selected = 0
-            old.save()
+            # deselect previously selected contact
+            old = Contact.objects.filter(user_id=user_id, selected=1).get()
+            if old:
+                old.selected = 0
+                old.save()
 
-        # select newest contact for user
-        new = Contact.objects.filter(user_id=user_id).latest('id')
-        new.selected = 1
-        new.save()
+            # select newest contact for user
+            new = Contact.objects.filter(user_id=user_id).latest('id')
+            new.selected = 1
+            new.save()
 
-        return redirect('contacts')
+            return redirect('contacts')
 
     else:
 
-        folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
+            form = ContactForm(initial={'folder': selected_folder.id})
 
-        form = ContactForm(initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='contacts').order_by('name')
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='contacts').order_by('name')
 
-        context = {
-            'page': 'contacts',
-            'edit': False,
-            'add': True,
-            'action': '/contacts/add',
-            'folders': folders,
-            'form': form,
-            'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
-        }
+    context = {
+        'page': 'contacts',
+        'edit': False,
+        'add': True,
+        'action': '/contacts/add',
+        'folders': folders,
+        'form': form,
+        'phone_labels': ['Mobile', 'Home', 'Work', 'Fax', 'Other'],
+    }
 
-        return render(request, 'contacts/content.html', context)
+    return render(request, 'contacts/content.html', context)
 
 
 @login_required
@@ -118,6 +118,9 @@ def edit(request, id):
 
     user_id = request.user.id
     user = get_object_or_404(CustomUser, pk=user_id)
+    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+    selected_folder = folders.filter(selected=1).get()
+    contact = get_object_or_404(Contact, pk=id)
 
     if request.method == 'POST':
 
@@ -140,30 +143,27 @@ def edit(request, id):
 
             note.save()
 
-        return redirect('contacts')
+            return redirect('contacts')
 
     else:
 
-        folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
-        selected_folder = folders.filter(selected=1).get()
-        contact = get_object_or_404(Contact, pk=id)
-
         form = ContactForm(instance=contact, initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='contacts').order_by('name')
 
-        context = {
-            'page': 'contacts',
-            'edit': True,
-            'add': False,
-            'action': f'/contacts/{id}/edit',
-            'folders': folders,
-            'selected_folder': selected_folder,
-            'contact': contact,
-            'form': form,
-        }
+    form.fields['folder'].queryset = Folder.objects.filter(
+            user_id=user_id, page='contacts').order_by('name')
 
-        return render(request, 'contacts/content.html', context)
+    context = {
+        'page': 'contacts',
+        'edit': True,
+        'add': False,
+        'action': f'/contacts/{id}/edit',
+        'folders': folders,
+        'selected_folder': selected_folder,
+        'contact': contact,
+        'form': form,
+    }
+
+    return render(request, 'contacts/content.html', context)
 
 
 @login_required

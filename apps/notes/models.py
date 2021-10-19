@@ -7,7 +7,7 @@ class Note(models.Model):
     id = models.BigAutoField(primary_key=True)
     user_id = models.PositiveBigIntegerField()
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)
-    subject = models.CharField(max_length=50)
+    subject = models.CharField(max_length=50, null=True)
     note = models.TextField(blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
 
