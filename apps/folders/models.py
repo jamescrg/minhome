@@ -1,9 +1,11 @@
+
 from django.db import models
+from accounts.models import CustomUser
 
 
 class Folder(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user_id = models.PositiveBigIntegerField()
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     page = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     home_column = models.IntegerField(blank=True, null=True)
