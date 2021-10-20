@@ -34,7 +34,8 @@ def index(request):
     notes = notes.order_by('subject')
 
     selected_note = Note.objects.filter(user_id=user_id, selected=1).first()
-    selected_note.note = markdown.markdown(selected_note.note)
+    if selected_note:
+        selected_note.note = markdown.markdown(selected_note.note)
 
     context = {
         'page': page,
