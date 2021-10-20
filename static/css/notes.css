@@ -15,6 +15,65 @@ div.note{
 	}
 
 /* ------------------------------------------------------------------------- */
+/* markdown formatting */
+/* ------------------------------------------------------------------------- */
+
+.note h1 {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.note h2 {
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.note h3 {
+  font-size: 1.0em;
+  font-weight: 600;
+}
+
+.note strong {
+  font-weight: 600;
+}
+
+.note ul {
+  padding: inherit;
+}
+
+.note ul li {
+  list-style-type: disc;
+  padding-left: 5px;
+}
+
+.note ol {
+  padding: inherit;
+}
+
+.note ol li {
+  list-style-type: decimal;
+  padding-left: 5px;
+}
+
+.note p {
+  font-size: 1.05em;
+}
+
+.note a {
+  text-decoration: underline;
+}
+
+code{
+  background: inherit;
+  color: inherit;
+  display: block;
+  font-family: 'Courier Prime';
+  font-size: 1.03em;
+  margin-left: 20px;
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------------------- */
 /* notes form */
 /* ------------------------------------------------------------------------- */
 
