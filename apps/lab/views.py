@@ -19,7 +19,7 @@ def index(request):
     user_id = request.user.id
     page = 'lab'
 
-    contacts = Contact.objects.filter(user_id=1, id__lt=200).order_by('name')
+    contacts = Contact.objects.filter(user_id=1, google_id__isnull=True).order_by('name')[:10]
     count = contacts.count()
     
     for contact in contacts:
