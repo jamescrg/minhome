@@ -22,9 +22,9 @@ def index(request):
     contacts = Contact.objects.filter(user_id=1, google_id__isnull=True).order_by('name')[:10]
     count = contacts.count()
     
-    for contact in contacts:
-        contact.google_id = add_contact(contact)
-        contact.save
+    # for contact in contacts:
+    #     contact.google_id = add_contact(contact)
+    #     contact.save
 
     context = {
         'page': page,

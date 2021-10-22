@@ -3,4 +3,4 @@ __init__.py
 config/settings_local.py
 /static/bootstrap*
 /static/admin
-tags
+tags*
