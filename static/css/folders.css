@@ -1,5 +1,8 @@
-div#folders{
+
+#folders{
 	margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 a.folderLink{

@@ -103,6 +103,7 @@ def edit(request, id):
         context = {
             'page': 'tasks',
             'edit': True,
+            'folders': folders,
             'action': f'/tasks/{id}/edit',
             'form': form,
         }

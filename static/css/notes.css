@@ -1,18 +1,27 @@
-div#notes{
+
+#notes{
+  padding-left: 10px;
+  padding-right: 10px;
 	padding-bottom: 20px;
 	}
 
-div.note{
+#note{
+  padding-left: 10px;
+  padding-right: 10px;
+	padding-bottom: 20px;
+}
+
+.note{
 	background: #f4f4f4;
 	border-radius: 4px;
 	padding: 10px 15px;
 	margin-bottom: 20px;
-	}
+}
 
-#note-text {
-	height: 350px;
-  width: 550px;
-	}
+#note-edit-link{
+  text-decoration: none;
+}
+
 
 /* ------------------------------------------------------------------------- */
 /* markdown formatting */
@@ -77,15 +86,23 @@ code{
 /* notes form */
 /* ------------------------------------------------------------------------- */
 
+#note-form table {
+  width: 100%;
+}
+
 .form-control{
 	background: #ffffe6;
 }
 
 #id_folder {
-    max-width: 250px;
+  max-width: 50%;
+}
+
+#id_subject {
+    width: 80%;
 }
 
 #id_note {
-  height: 250px;
-  width: 500px;
+  min-height: 250px;
+  width: 100%;
 }
