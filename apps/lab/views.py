@@ -24,7 +24,7 @@ def index(request):
     
     # for contact in contacts:
     #     contact.google_id = add_contact(contact)
-    #     contact.save
+    #     contact.save()
 
     context = {
         'page': page,
