@@ -11,6 +11,7 @@ from apps.search import views as search
 from apps.settings import views as settings
 from apps.finance import views as finance
 from apps.weather import views as weather
+from apps.lab import views as lab
 
 
 urlpatterns = [
@@ -18,6 +19,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    # email test
+    path('mail/', home.mail, name='mail-test'),
+
 
     # folders
     path('folders/home/<int:id>/<str:page>', folders.home, name='folder-home'),
@@ -80,5 +85,8 @@ urlpatterns = [
     path('settings/google/login', settings.google_login, name='settings-google-login'),
     path('settings/google/store', settings.google_store, name='settings-google-store'),
     path('settings/google/logout', settings.google_logout, name='settings-google-logout'),
+
+    # lab
+    path('lab/', lab.index, name='lab'),
 
 ]

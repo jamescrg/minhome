@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="row">
+
+  <p>This is the {{ page }}.</p>
+
+  <p>There are {{ count }} contacts.
+
+  <table>
+    {% for contact in contacts %}
+    <tr>
+      <td> {{ contact.name }}
+      <td> {{ contact.google_id }}
+    {% endfor %}
+  </table>
+
+</div>
+{% endblock content %}

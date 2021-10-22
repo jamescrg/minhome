@@ -51,7 +51,7 @@ a:hover	{
 }
 
 #login-form input {
-  border: solid 1px #d4d4d4;
+  border: solid 1px #cccccc;
   border-radius: 5px;
   display: block;
   font-size: 1em;
@@ -66,4 +66,8 @@ a:hover	{
   font-size: 1em;
   margin-top: 0px;
   padding: 7px;
+}
+
+input:focus {
+  outline: none;
 }

@@ -10,6 +10,20 @@ from django.shortcuts import get_object_or_404
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 
+from django.core.mail import send_mail
+
+
+@login_required
+def mail(request):
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'no-reply@cloud-portal.com',
+        ['jamespcraig@gmail.com'],
+        fail_silently=False,
+    )
+    return HttpResponse('mail has been sent, allegedly')
+
 
 @login_required
 def index(request):

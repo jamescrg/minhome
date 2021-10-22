@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.favorites',
     'apps.tasks',
     'apps.contacts',
+    'apps.lab',
     'apps.notes',
     'apps.search',
     'apps.settings',
@@ -147,3 +148,12 @@ LOGOUT_REDIRECT_URL = 'home'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@cloud-portal.com'
+EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
