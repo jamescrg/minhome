@@ -43,7 +43,7 @@ def crypto(request, ord='market_cap'):
     for token in crypto_data:
         token['quote']['USD']['market_cap'] /= 1000000000
 
-    # import app.helpers as helpers
+    # import config.helpers as helpers
     # return helpers.dump(crypto_data)
 
     context = {
@@ -102,8 +102,11 @@ def securities(request):
         asset['change'] = result['d']
         asset['percent_change'] = result['dp']
 
+    # import config.helpers as helpers
+    # return helpers.dump(assets)
+
     context = {
-        'page': 'finance',
+        'page': 'securities',
         'assets': assets,
     }
     return render(request, 'finance/content.html', context)
