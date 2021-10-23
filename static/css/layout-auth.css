@@ -61,11 +61,15 @@ a:hover	{
 }
 
 #login-form button {
-  border: solid 1px #d4d4d4;
+  border: solid 1px #cccccc;
   border-radius: 5px;
   font-size: 1em;
   margin-top: 0px;
   padding: 7px;
+}
+
+input {
+  filter: none;
 }
 
 input:focus {
