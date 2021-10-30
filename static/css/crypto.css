@@ -25,3 +25,7 @@
 .symbol {
   padding-right: 40px;
 }
+
+.numeric a {
+  color: inherit
+}

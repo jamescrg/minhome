@@ -1,6 +1,4 @@
 
-{# django template #}
-
 {% extends 'layout.html' %}
 {% block content %}
 {% load humanize %}
@@ -16,22 +14,22 @@
 
       <th>Name
       <th>Symbol
-        <th class="numeric">Price
-          <a class="sort" href="price"><span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">Market Cap
-          <a class="sort" href="market_cap">
+        <th class="numeric">
+          <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
+      <th class="numeric">
+          <a class="sort" href="market_cap">Market Cap&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">24h % Chg
-          <a class="sort" href="percent_change_24h">
+      <th class="numeric">
+          <a class="sort" href="percent_change_24h">24h % Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">7d % Chg
-          <a class="sort" href="percent_change_7d">
+      <th class="numeric">
+          <a class="sort" href="percent_change_7d">7d % Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">30d % Chg
-          <a class="sort" href="percent_change_30d">
+      <th class="numeric">
+          <a class="sort" href="percent_change_30d">30d % Chg&nbsp
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">90d % Chg
-          <a class="sort" href="percent_change_90d">
+      <th class="numeric">
+          <a class="sort" href="percent_change_90d">90d % Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
 
     {% for token in crypto_data %}
