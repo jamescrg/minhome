@@ -15,6 +15,14 @@
 
 	</div>
 
+{% if user.id == 1 and not user.google_credentials %}
+
+  <div class="warn">
+    Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="/settings">here</a> to connect.
+  </div>
+
+{% endif %}
+
 	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
 
     {% csrf_token %}

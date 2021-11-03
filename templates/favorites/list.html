@@ -31,7 +31,7 @@
 					<a href="{{ favorite.url }}">{{ favorite.name }}</a>
 				</div>
 				<div class="description">
-					{{ favorite.description }}
+					{{ favorite.description|default_if_none:'' }}
 				</div>
 				<div id="favoriteMenu-{{ favorite.id }}" class="favoriteMenu" style="display: none;">
 					{% include 'favorites/menu.html' %}

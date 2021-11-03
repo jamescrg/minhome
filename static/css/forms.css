@@ -152,3 +152,14 @@ validation error messages
   margin: 5px 0 10px 0;
   padding-left: 20px;
 }
+
+
+/*------------------------------------------------
+general warning messages
+------------------------------------------------*/
+
+.warn {
+  background: lightyellow;
+  padding: 10px;
+  margin-bottom: 20px;
+}
