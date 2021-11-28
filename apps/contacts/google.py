@@ -1,13 +1,11 @@
-from pprint import pprint
+
 import json
 
 from django.shortcuts import get_object_or_404
 import google.oauth2.credentials
-import google_auth_oauthlib.flow
 from apiclient.discovery import build
 
 from accounts.models import CustomUser
-from apps.contacts.models import Contact
 
 
 def build_service(contact):
@@ -65,7 +63,8 @@ def delete_contact(contact):
 
     if service:
         result = (
-            service.people().deleteContact(resourceName=contact.google_id).execute()
+            service.people().deleteContact(
+                resourceName=contact.google_id).execute()
         )
 
         if result:
