@@ -1,6 +1,5 @@
 
 import pytest
-from accounts.models import CustomUser
 
 from django.test import Client
 from django.urls import reverse
@@ -14,27 +13,32 @@ from apps.contacts.models import Contact
 pytestmark = pytest.mark.django_db
 
 
+# -------------------------------------------
+# fixtures
+# -------------------------------------------
+
 @pytest.fixture
 def user():
-    user = CustomUser.objects.create_user(
-        'john', 'lennon@thebeatles.com', 'johnpassword'
-    )
+    user = CustomUser.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
     return user
 
 
 @pytest.fixture
 def folder1(user):
-    folder1 = Folder.objects.create(
-        user=user,
-        page='contacts',
-        name='mahatmas',
-    )
+    folder1 = Folder.objects.create(user=user, page='contacts', name='mahatmas',)
     return folder1
 
 
 @pytest.fixture
+def client(user):
+    client = Client()
+    client.login(username='john', password='johnpassword')
+    return client
+
+
+@pytest.fixture
 def contact(user, folder1):
-    Contact.objects.create(
+    contact = Contact.objects.create(
         user=user,
         folder=folder1,
         selected=1,
@@ -49,23 +53,20 @@ def contact(user, folder1):
         phone3_label='Other',
         email='gandhi@gandhi.com',
         website='gandhi.com',
-        notes='The Mahatma',
-    )
+        notes='The Mahatma',)
+    return contact
 
 
-@pytest.fixture
-def client(user):
-    client = Client()
-    client.login(username='john', password='johnpassword')
-    return client
+# -------------------------------------------
+# tests
+# -------------------------------------------
 
-
-def test_contact_string(user, folder1, contact):
+def test_contact_string(contact):
     contact = Contact.objects.get(name='Mohandas Gandhi')
     assert str(contact) == f'{contact.name} : {contact.id}'
 
 
-def test_contact_content(user, folder1, contact):
+def test_contact_content(contact):
     contact = Contact.objects.get(name='Mohandas Gandhi')
     expectedValues = {
         'name': 'Mohandas Gandhi',
@@ -78,7 +79,6 @@ def test_contact_content(user, folder1, contact):
         'phone3': '123.456.5555',
         'phone3_label': 'Other',
         'email': 'gandhi@gandhi.com',
-        'website': 'gandhi.com',
         'notes': 'The Mahatma',
     }
     for key, val in expectedValues.items():
@@ -92,3 +92,51 @@ def test_index(client):
     assert response.status_code == 200
     response = client.get(reverse('contacts'))
     assertTemplateUsed(response, 'contacts/content.html')
+
+
+def test_select(client, user, folder1, contact):
+    response = client.get(f'/contacts/{contact.id}')
+    assert response.status_code == 302
+    selected_contact = get_object_or_404(Contact, pk=contact.id)
+    assert selected_contact.selected == 1
+
+
+def test_add(client):
+    response = client.get('/contacts/add')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'contacts/form.html')
+
+
+def test_add_data(client, folder1):
+    data = {
+        'folder': folder1.id,
+        'name': 'Plato',
+        'phone1': '440.500.6000', }
+    response = client.post('/contacts/add', data)
+    assert response.status_code == 302
+    found = Contact.objects.filter(name='Plato').exists()
+    assert found
+
+
+def test_edit(client, contact):
+    response = client.get(f'/contacts/{contact.id}/edit')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'contacts/form.html')
+
+
+def test_edit_data(client, folder1, contact):
+    data = {
+        'folder': folder1.id,
+        'name': 'Descartes',
+        'phone1': '440.500.6000', }
+    response = client.post(f'/contacts/{contact.id}/edit', data)
+    assert response.status_code == 302
+    found = Contact.objects.filter(name='Descartes').exists()
+    assert found
+
+
+def test_delete(client, contact):
+    response = client.get(f'/contacts/{contact.id}/delete')
+    assert response.status_code == 302
+    found = Contact.objects.filter(name='Schopenhauer').exists()
+    assert not found
