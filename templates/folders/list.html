@@ -17,7 +17,7 @@
 
   {% if folders %}
 	{% for folder in folders %}
- 
+
 
 		<li class="list-group-item" id="folderItem-{{ folder.id }}" style="display:block;">
 
@@ -29,7 +29,9 @@
 				{% endif %}
 			</a>
 
-			<a class="folderLink" href="/folders/{{ folder.id }}/{{ page }}" {% if folder.selected == 1 %} 
+			<a class="folderLink"
+         href="/folders/{{ folder.id }}/{{ page }}"
+         {% if folder.selected == 1 %}
           style="font-weight: bold;"{% endif %};>
 
 				{{ folder.name }}

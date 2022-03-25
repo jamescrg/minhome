@@ -21,13 +21,13 @@ class ModelTests(TestCase):
         self.client.login(username='john', password='johnpassword')
 
         folder1 = Folder.objects.create(
-            user_id=1,
+            user=self.user,
             page='contacts',
             name='mahatmas',
         )
 
         Contact.objects.create(
-            user_id=1,
+            user=self.user,
             folder=folder1,
             selected=1,
             name='Mohandas Gandhi',

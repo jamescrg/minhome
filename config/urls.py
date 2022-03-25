@@ -35,8 +35,7 @@ urlpatterns = [
     path('', home.index, name='home-index'),
     path('home/', home.index, name='home'),
     path('home/folder/<int:id>/<str:direction>/', home.folder, name='home-folder'),
-    path('home/favorite/<int:id>/<str:direction>/', 
-        home.favorite, name='home-favorite'),
+    path('home/favorite/<int:id>/<str:direction>/', home.favorite, name='home-favorite'),
 
     # favorites
     path('favorites/', favorites.index, name='favorites'),
@@ -52,7 +51,7 @@ urlpatterns = [
     path('tasks/<int:id>/edit', tasks.edit,  name='tasks-edit'),
     path('tasks/<int:id>/complete', tasks.status, name='tasks-complete'),
     path('tasks/<int:folder_id>/clear', tasks.clear, name='tasks-clear'),
-    
+
     # contacts
     path('contacts/', contacts.index, name='contacts'),
     path('contacts/<int:id>', contacts.select, name='contacts-select'),
