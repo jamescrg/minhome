@@ -12,10 +12,29 @@ import config.settings_local
 @login_required
 def crypto(request, ord='market_cap'):
 
+    positions = {
+        'ALGO': 1000,
+        'ATOM': 0.7903,
+        'BTC': 0.7903,
+        'ETH': 12,
+        'IMX': 3500,
+        'MATIC': 3000,
+        'SOL': 10,
+        'LRC': 997,
+        'XCH': 0.5,
+        'XLM': 11991,
+        'XMR': 20,
+    }
+
+    key_string = ''
+    for key in positions.keys():
+        key_string += ',' + key
+    key_string = key_string[1:]
+
     # fetch current crypto data
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
-        'symbol': 'BTC,ETH,IMX,MATIC,XMR,SOL,LRC,XCH',
+        'symbol': key_string,
         'convert': 'USD',
         'CMC_PRO_API_KEY': config.settings_local.CRYPTO_API_KEY,
     }
@@ -26,15 +45,22 @@ def crypto(request, ord='market_cap'):
     except (ConnectionError, Timeout, TooManyRedirects):
         result = None
 
+    # import config.helpers as helpers
+    # return helpers.dump(result)
+
     crypto_data = []
     for sym in params['symbol'].split(','):
+        result['data'][sym]['quote']['USD']['position'] = positions[sym]
+        result['data'][sym]['quote']['USD']['position_value'] = positions[sym] * result['data'][sym]['quote']['USD']['price']
         crypto_data.append(result['data'][sym])
 
     crypto_data = sorted(
             crypto_data, key=lambda k: k['quote']['USD'][ord], reverse=True)
 
+    total = 0
     for token in crypto_data:
         token['quote']['USD']['market_cap'] /= 1000000000
+        total += token['quote']['USD']['position_value']
 
     # import config.helpers as helpers
     # return helpers.dump(crypto_data)
@@ -43,6 +69,7 @@ def crypto(request, ord='market_cap'):
         'page': 'crypto',
         'ord': ord,
         'crypto_data': crypto_data,
+        'total': total,
     }
     return render(request, 'crypto/content.html', context)
 

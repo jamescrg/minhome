@@ -13,6 +13,10 @@
   padding: 10px;
 }
 
+th {
+  font-weight: 600;
+}
+
 .numeric {
   padding-left: 40px;
   text-align: right;

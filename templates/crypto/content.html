@@ -15,23 +15,28 @@
 
       <th>Name
       <th>Symbol
-        <th class="numeric">
-          <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">
-          <a class="sort" href="market_cap">Market Cap&nbsp;
+        <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
+      <th class="numeric">
+          <a class="sort" href="market_cap">Mkt Cap&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">
-          <a class="sort" href="percent_change_24h">24h % Chg&nbsp;
+          <a class="sort" href="percent_change_24h">24h Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">
-          <a class="sort" href="percent_change_7d">7d % Chg&nbsp;
+          <a class="sort" href="percent_change_7d">7d Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">
-          <a class="sort" href="percent_change_30d">30d % Chg&nbsp
+          <a class="sort" href="percent_change_30d">30d Chg&nbsp
             <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">
-          <a class="sort" href="percent_change_90d">90d % Chg&nbsp;
+          <a class="sort" href="percent_change_90d">90d Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
+      <th class="numeric">
+          Position
+      <th class="numeric">
+          <a class="sort" href="position_value">Value&nbsp;
+          <span class="glyphicon glyphicon-chevron-down"></span></a>
 
     {% for token in crypto_data %}
 
@@ -41,28 +46,44 @@
         <td class="symbol">{{ token.symbol }}
         <td class="numeric">${{ token.quote.USD.price|floatformat:"2"|intcomma }}
         <td class="numeric">${{ token.quote.USD.market_cap|floatformat:"1"|intcomma }}B
-        <td class="numeric" 
-          {% if token.quote.USD.percent_change_24h < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+        <td class="numeric"
+          {% if token.quote.USD.percent_change_24h < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {{ token.quote.USD.percent_change_24h|floatformat:"1" }}%
         <td class="numeric"
-          {% if token.quote.USD.percent_change_7d < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+          {% if token.quote.USD.percent_change_7d < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {{ token.quote.USD.percent_change_7d|floatformat:"1" }}%
         <td class="numeric"
-          {% if token.quote.USD.percent_change_30d < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+          {% if token.quote.USD.percent_change_30d < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {{ token.quote.USD.percent_change_30d|floatformat:"1" }}%
         <td class="numeric"
-          {% if token.quote.USD.percent_change_90d < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+          {% if token.quote.USD.percent_change_90d < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {{ token.quote.USD.percent_change_90d|floatformat:"1" }}%
+        <td class="numeric">
+          {{ token.quote.USD.position|floatformat:"2"|intcomma }}
+        <td class="numeric">
+          ${{ token.quote.USD.position_value|floatformat:"2"|intcomma }}
 
     {% endfor %}
+
+    <tr>
+      <td style="font-weight: 600">Total
+      <td>
+      <td>
+      <td>
+      <td>
+      <td>
+      <td>
+      <td>
+      <td>
+      <td class="numeric" style="font-weight: 600">${{ total|floatformat:"2"|intcomma }}
   </table>
   </div>
 
