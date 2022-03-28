@@ -74,6 +74,7 @@ urlpatterns = [
     path('crypto/', finance.crypto, name='crypto'),
     path('crypto/<str:ord>', finance.crypto, name='crypto'),
     path('securities/', finance.securities, name='securities'),
+    path('finance/positions/', finance.positions, name='positions'),
 
     # search
     path('search/', search.index, name='search'),

@@ -1,40 +1,29 @@
 
 import requests
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.shortcuts import redirect
 
 import config.settings_local
+import apps.finance.crypto_data as crypto_data
 
 
 @login_required
 def crypto(request, ord='market_cap'):
 
-    positions = {
-        'ALGO': 1000,
-        'ATOM': 0.7903,
-        'BTC': 0.7903,
-        'ETH': 12,
-        'IMX': 3500,
-        'MATIC': 3000,
-        'SOL': 10,
-        'LRC': 997,
-        'XCH': 0.5,
-        'XLM': 11991,
-        'XMR': 20,
-    }
+    # load the list of crypto positions
+    positions = crypto_data.positions()
 
-    key_string = ''
-    for key in positions.keys():
-        key_string += ',' + key
-    key_string = key_string[1:]
+    # get the list of symbols as a string
+    symbols = crypto_data.symbols(positions)
+
+    # fetch data from remote service
+    data = crypto_data.fetch(symbols)
 
     # fetch current crypto data
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
-        'symbol': key_string,
+        'symbol': symbols,
         'convert': 'USD',
         'CMC_PRO_API_KEY': config.settings_local.CRYPTO_API_KEY,
     }
@@ -48,27 +37,27 @@ def crypto(request, ord='market_cap'):
     # import config.helpers as helpers
     # return helpers.dump(result)
 
-    crypto_data = []
+    cdata = []
     for sym in params['symbol'].split(','):
-        result['data'][sym]['quote']['USD']['position'] = positions[sym]
-        result['data'][sym]['quote']['USD']['position_value'] = positions[sym] * result['data'][sym]['quote']['USD']['price']
-        crypto_data.append(result['data'][sym])
+        result['data'][sym]['quote']['USD']['position'] = crypto_positions[sym]
+        result['data'][sym]['quote']['USD']['position_value'] = crypto_positions[sym] * result['data'][sym]['quote']['USD']['price']
+        cdata.append(result['data'][sym])
 
-    crypto_data = sorted(
-            crypto_data, key=lambda k: k['quote']['USD'][ord], reverse=True)
+    cdata = sorted(
+            cdata, key=lambda k: k['quote']['USD'][ord], reverse=True)
 
     total = 0
-    for token in crypto_data:
+    for token in cdata:
         token['quote']['USD']['market_cap'] /= 1000000000
         total += token['quote']['USD']['position_value']
 
     # import config.helpers as helpers
-    # return helpers.dump(crypto_data)
+    # return helpers.dump(cdata)
 
     context = {
         'page': 'crypto',
         'ord': ord,
-        'crypto_data': crypto_data,
+        'crypto_data': cdata,
         'total': total,
     }
     return render(request, 'crypto/content.html', context)
@@ -76,10 +65,6 @@ def crypto(request, ord='market_cap'):
 
 @login_required
 def securities(request):
-    user_id = request.user.id
-
-    if user_id != 1:
-        return redirect('/home/')
 
     assets = [
         {
@@ -103,6 +88,8 @@ def securities(request):
             'name': 'Sundial',
         },
     ]
+
+    user_id = request.user.id
 
     for asset in assets:
 
@@ -130,3 +117,12 @@ def securities(request):
         'assets': assets,
     }
     return render(request, 'finance/content.html', context)
+
+
+@login_required
+def positions(request):
+
+    context = {
+        'page': 'securities',
+    }
+    return render(request, 'finance/positions.html', context)
