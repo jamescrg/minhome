@@ -4,32 +4,9 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 import config.settings_local
 
-def positions():
-    return {
-        'ALGO': 1000,
-        'ATOM': 0.7903,
-        'BTC': 0.7903,
-        'ETH': 12,
-        'IMX': 3500,
-        'MATIC': 3000,
-        'SOL': 10,
-        'LRC': 997,
-        'XCH': 0.5,
-        'XLM': 11991,
-        'XMR': 20,
-    }
 
-
-def symbols(positions):
-    symbols = ''
-    for key in positions.keys():
-        symbols += ',' + key
-    symbols = symbols[1:]
-    return symbols
-
-
+# fetch the data for each asset from the coinmarketcap api
 def fetch(symbols):
-
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
         'symbol': symbols,
@@ -45,3 +22,29 @@ def fetch(symbols):
         result = None
 
     return result
+
+
+# extract the most relevant data into a smaller dict
+# include the name of the symbol in the dict data
+def condense(data):
+    condensed_data = {}
+    for key, val in data.items():
+        condensed_data[key] = data[key]['quote']['USD']
+        condensed_data[key]['symbol'] = key
+        condensed_data[key]['name'] = data[key]['name']
+        condensed_data[key]['market_cap'] = condensed_data[key]['market_cap'] / 1000000000
+    return condensed_data
+
+
+# convert the dict to a list and sort the list according
+# to the chosen field
+def sort(data, ord='market_cap'):
+
+    # convert to a list of dicts
+    sequential_data = []
+    for key in data.keys():
+        sequential_data.append(data[key])
+
+    # sort list of dicts by common key
+    sorted_data = sorted(sequential_data, key=lambda k: k[ord], reverse=True)
+    return sorted_data

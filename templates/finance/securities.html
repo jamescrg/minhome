@@ -31,24 +31,32 @@
           <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
             {{ asset.name }}
           </a>
+
         <td class="symbol">{{ asset.symbol }}
+
         <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
+
         <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
+
         <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
+
         <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
+
         <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
+
         <td class="numeric"
-          {% if asset.change < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+          {% if asset.change < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {% if asset.change < 0 %}
             -${{ asset.change|abs|floatformat:"2"|intcomma }}
           {% else %}
             ${{ asset.change|floatformat:"2"|intcomma }}
           {% endif %}
+
         <td class="numeric"
-          {% if asset.percent_change < 0 %} style="color: darkred" 
-          {% else %} style="color: green" 
+          {% if asset.percent_change < 0 %} style="color: darkred"
+          {% else %} style="color: green"
           {% endif %}>
           {{ asset.percent_change|floatformat:"1"|intcomma }}%
 

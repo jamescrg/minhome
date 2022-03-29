@@ -13,9 +13,9 @@ import apps.finance.crypto_data as crypto_data
 pytestmark = pytest.mark.django_db
 
 
-# -------------------------------------------
+# ---------------------------------------------------------------------------
 # fixtures
-# -------------------------------------------
+# ---------------------------------------------------------------------------
 
 @pytest.fixture
 def user():
@@ -31,42 +31,18 @@ def client(user):
 
 
 
-# -------------------------------------------
+# ---------------------------------------------------------------------------
 # tests
-# -------------------------------------------
-
-def test_crypto_symbols():
-
-    positions = {
-        'BTC': 0.7903,
-        'ETH': 12,
-    }
-    symbols = crypto_data.symbols(positions)
-    assert symbols == 'BTC,ETH'
-
-    positions.update({
-        'IMX': 3500,
-        'MATIC': 3000,
-    })
-    symbols = crypto_data.symbols(positions)
-    assert symbols == 'BTC,ETH,IMX,MATIC'
+# ---------------------------------------------------------------------------
 
 
-def test_crypto_fetch():
-    symbols = 'BTC'
-    data = crypto_data.fetch(symbols)
-    for key, val in data.items():
-        data[key] = data[key]['quote']['USD']
-    pprint(data)
-    assert data is True
-
-
-def test_crypto_view(client):
+def test_crypto(client):
     response = client.get('/crypto/')
     assert response.status_code == 200
     assert response.context['page'] == 'crypto'
-    assert response.context['crypto_data'][0]['max_supply'] == 21000000
-    assertTemplateUsed(response, 'crypto/content.html')
+    from pprint import pprint
+    assert 'market_cap' in response.context['data'][0]
+    assertTemplateUsed(response, 'finance/crypto.html')
     assertContains(response, 'BTC')
     assertContains(response, 'Bitcoin')
     assertContains(response, '24h Chg')
@@ -78,10 +54,11 @@ def test_securities(client):
     assert response.context['page'] == 'securities'
     assert response.context['assets'][0]['symbol'] is 'GME'
     assert response.context['assets'][0]['price'] > 0
+    assertTemplateUsed(response, 'finance/securities.html')
 
 
 def test_positions(client):
-    response = client.get('/finance/positions/')
+    response = client.get('/positions/')
     assert response.status_code == 200
     response = client.get(reverse('positions'))
     assert response.status_code == 200
