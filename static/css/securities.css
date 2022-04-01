@@ -1,8 +1,5 @@
 
 
-.sort {
-  margin-left: 7px;
-}
 
 #finance {
   background: #f5f5f5;
@@ -12,6 +9,14 @@
 #finance th, td {
   border: solid 1px #e4e4e4;
   padding: 10px;
+}
+
+th {
+  font-weight: 600;
+}
+
+th a {
+  color: inherit
 }
 
 .numeric {
@@ -30,3 +35,4 @@
 .total {
   font-weight: 600;
 }
+

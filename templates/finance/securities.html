@@ -13,17 +13,25 @@
 
     <tr>
 
-      <th>Name
-      <th>Symbol
-      <th class="numeric">Current Price
+      <th>
+          <a class="sort" href="name">Name&nbsp;
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
+      <th>
+          <a class="sort" href="symbol">Symbol&nbsp;
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
+      <th class="numeric">
+          <a class="sort" href="price">Price&nbsp;
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
       <th class="numeric">Prev Close
       <th class="numeric">Open
       <th class="numeric">High
       <th class="numeric">Low
       <th class="numeric">Change
-      <th class="numeric">% Chg
+      <th class="numeric">
+          <a class="sort" href="percent_change">% Chg&nbsp;
+            <span class="glyphicon glyphicon-chevron-down"></span></a>
 
-    {% for asset in assets %}
+    {% for asset in data %}
 
       <tr>
 

@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 import config.settings_local
 import apps.finance.crypto_data as crypto_data
+import apps.finance.securities_data as securities_data
 
 
 @login_required
@@ -33,52 +34,16 @@ def crypto(request, ord='market_cap'):
 
 
 @login_required
-def securities(request):
+def securities(request, ord='name'):
 
-    assets = [
-        {
-            'symbol': 'GME',
-            'exchange': 'NYSE',
-            'name': 'Gamestop',
-        },
-        {
-            'symbol': 'TSLA',
-            'exchange': 'NASDAQ',
-            'name': 'Tesla',
-        },
-        {
-            'symbol': 'TLRY',
-            'exchange': 'NASDAQ',
-            'name': 'Tilray',
-        },
-        {
-            'symbol': 'SNDL',
-            'exchange': 'NASDAQ',
-            'name': 'Sundial',
-        },
-    ]
-
-    for asset in assets:
-
-        url = 'https://finnhub.io/api/v1/quote'
-        params = {
-            'symbol': asset['symbol'],
-            'token': config.settings_local.FINNHUB_API_KEY,
-        }
-        response = requests.get(url, params=params)
-        result = response.json()
-
-        asset['previous_close'] = result['pc']
-        asset['open'] = result['o']
-        asset['high'] = result['h']
-        asset['low'] = result['l']
-        asset['price'] = result['c']
-        asset['change'] = result['d']
-        asset['percent_change'] = result['dp']
+    asset_list = securities_data.asset_list
+    data = securities_data.collect(asset_list)
+    data = securities_data.sort(data, ord)
 
     context = {
         'page': 'securities',
-        'assets': assets,
+        'ord': ord,
+        'data': data,
     }
     return render(request, 'finance/securities.html', context)
 

@@ -40,7 +40,6 @@ def test_crypto(client):
     response = client.get('/crypto/')
     assert response.status_code == 200
     assert response.context['page'] == 'crypto'
-    from pprint import pprint
     assert 'market_cap' in response.context['data'][0]
     assertTemplateUsed(response, 'finance/crypto.html')
     assertContains(response, 'BTC')
@@ -52,8 +51,7 @@ def test_securities(client):
     response = client.get('/securities/')
     assert response.status_code == 200
     assert response.context['page'] == 'securities'
-    assert response.context['assets'][0]['symbol'] is 'GME'
-    assert response.context['assets'][0]['price'] > 0
+    assert response.context['data'][0]['price'] > 0
     assertTemplateUsed(response, 'finance/securities.html')
 
 
