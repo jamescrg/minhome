@@ -1,5 +1,4 @@
 from datetime import datetime, date, time, timezone
-from pprint import pprint
 import os
 import requests
 import pytz
@@ -54,7 +53,7 @@ def index(request):
 
     forecast['daily'] = forecast['daily'][1:]
     forecast['hourly'] = forecast['hourly'][1:13]
-    
+
     for hour in forecast['hourly']:
         # convert hour to Eastern time and readable string format
         hour_time = timestamp_to_eastern(hour['dt'])

@@ -1,5 +1,4 @@
 
-from pprint import pprint
 import pytest
 
 from django.test import Client

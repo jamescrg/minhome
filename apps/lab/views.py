@@ -1,6 +1,4 @@
 
-from pprint import pprint
-
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
@@ -21,7 +19,7 @@ def index(request):
 
     contacts = Contact.objects.filter(user_id=1, google_id__isnull=True).order_by('name')[:10]
     count = contacts.count()
-    
+
     # for contact in contacts:
     #     contact.google_id = add_contact(contact)
     #     contact.save()
