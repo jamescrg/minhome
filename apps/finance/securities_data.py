@@ -30,6 +30,8 @@ asset_list = [
 
 
 def fetch(symbol):
+    """Fetch securities data for a specific symbol/asset"""
+
     url = 'https://finnhub.io/api/v1/quote'
     params = {
         'symbol': symbol,
@@ -41,6 +43,8 @@ def fetch(symbol):
 
 
 def collect(assets):
+    """Fetch securities data for a list of symbols/assets"""
+
     for asset in assets:
         quote = fetch(asset['symbol'])
         asset['previous_close'] = quote['pc']
