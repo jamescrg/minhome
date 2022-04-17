@@ -36,7 +36,9 @@ def condense(data):
         condensed_data[key] = data[key]['quote']['USD']
         condensed_data[key]['symbol'] = key
         condensed_data[key]['name'] = data[key]['name']
+        condensed_data[key]['slug'] = data[key]['slug']
         condensed_data[key]['market_cap'] = condensed_data[key]['market_cap'] / 1000000000
+
     return condensed_data
 
 
@@ -50,4 +52,5 @@ def sort(data, ord='market_cap'):
 
     # sort list of dicts by common key
     sorted_data = sorted(sequential_data, key=lambda k: k[ord], reverse=True)
+
     return sorted_data

@@ -11,6 +11,7 @@ import apps.finance.securities_data as securities_data
 
 @login_required
 def crypto(request, ord='market_cap'):
+    """View crypto data"""
 
     # specify the list of assets to be viewed
     symbols = 'ALGO,ATOM,BTC,ETH,IMX,MATIC,SOL,LRC,XCH,XLM,XMR'
@@ -35,6 +36,7 @@ def crypto(request, ord='market_cap'):
 
 @login_required
 def securities(request, ord='name'):
+    """View securities data"""
 
     asset_list = securities_data.asset_list
     data = securities_data.collect(asset_list)
@@ -50,6 +52,7 @@ def securities(request, ord='name'):
 
 @login_required
 def positions(request):
+    """View positions for all assets"""
 
     context = {
         'page': 'securities',
