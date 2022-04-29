@@ -1,6 +1,7 @@
 
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -48,7 +49,7 @@ def insert(request, page):
 def update(request, id, page):
     try:
         folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
+    except ObjectDoesNotExist:
         raise Http404('Record not found.')
     for field in folder.fillable:
         setattr(folder, field, request.POST.get(field))
@@ -59,7 +60,7 @@ def update(request, id, page):
 def delete(request, id, page):
     try:
         folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
+    except ObjectDoesNotExist:
         raise Http404('Record not found.')
     folder.delete()
     return redirect(page)

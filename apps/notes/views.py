@@ -1,5 +1,6 @@
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -65,7 +66,7 @@ def add(request):
 
     try:
         selected_folder = folders.filter(selected=1).get()
-    except:
+    except ObjectDoesNotExist:
         selected_folder = None
 
     if request.method == 'POST':
@@ -129,7 +130,7 @@ def edit(request, id):
 
     try:
         selected_folder = folders.filter(selected=1).get()
-    except:
+    except ObjectDoesNotExist:
         selected_folder = None
 
     note = get_object_or_404(Note, pk=id)
@@ -138,7 +139,7 @@ def edit(request, id):
 
         try:
             note = Note.objects.filter(user_id=request.user.id, pk=id).get()
-        except:
+        except ObjectDoesNotExist:
             raise Http404('Record not found.')
 
         form = NoteForm(request.POST, instance=note)
@@ -177,7 +178,7 @@ def edit(request, id):
 def delete(request, id):
     try:
         note = Note.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
+    except ObjectDoesNotExist:
         raise Http404('Record not found.')
     note.delete()
     return redirect('notes')

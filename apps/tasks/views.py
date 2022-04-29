@@ -1,5 +1,6 @@
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -77,7 +78,7 @@ def edit(request, id):
 
         try:
             task = Task.objects.filter(user_id=request.user.id, pk=id).get()
-        except:
+        except ObjectDoesNotExist:
             raise Http404('Record not found.')
 
         form = TaskForm(request.POST, instance=task)

@@ -1,5 +1,6 @@
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -48,7 +49,7 @@ def add(request):
     folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
     try:
         selected_folder = folders.filter(selected=1).get()
-    except:
+    except ObjectDoesNotExist:
         selected_folder = None
 
     if request.method == 'POST':
@@ -91,7 +92,7 @@ def edit(request, id):
             user_id=user_id, page='favorites').order_by('name')
     try:
         selected_folder = folders.filter(selected=1).get()
-    except:
+    except ObjectDoesNotExist:
         selected_folder = None
 
     favorite = get_object_or_404(Favorite, pk=id)
@@ -100,7 +101,7 @@ def edit(request, id):
 
         try:
             favorite = get_object_or_404(Favorite, pk=id)
-        except:
+        except ObjectDoesNotExist:
             raise Http404('Record note found.')
 
         form = FavoriteForm(request.POST, instance=favorite)
@@ -139,7 +140,7 @@ def edit(request, id):
 def delete(request, id):
     try:
         favorite = Favorite.objects.filter(user_id=request.user.id, pk=id).get()
-    except:
+    except ObjectDoesNotExist:
         raise Http404('Record not found.')
     favorite.delete()
     return redirect('favorites')
