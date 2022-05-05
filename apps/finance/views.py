@@ -14,7 +14,7 @@ def crypto(request, ord='market_cap'):
     """View crypto data"""
 
     # specify the list of assets to be viewed
-    symbols = 'ALGO,ATOM,BTC,ETH,IMX,MATIC,SOL,LRC,XCH,XLM,XMR'
+    symbols = 'ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR'
 
     # fetch data from remote service
     data = crypto_data.fetch(symbols)
