@@ -3,39 +3,44 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
 from apps.folders.models import Folder
 
 
+@login_required
 def select(request, id, page):
-    user_id = request.user.id
+
+    if not request.session.get('selected_folders'):
+        request.session['selected_folders'] = {}
 
     if page != 'tasks':
-        Folder.objects.filter(page=page, user_id=user_id).update(selected=0)
-        if id > 0:
-            folder = get_object_or_404(Folder, pk=id)
-            folder.selected = 1
-            folder.save()
+        request.session['selected_folders'][page] = id
 
     if page == 'tasks':
-        folder = get_object_or_404(Folder, pk=id)
 
-        if folder.active == 1:
-            folder.active = 0
+        # if there are no active task folders, initialize a list
+        if not request.session['selected_folders'].get('tasks'):
+            request.session['selected_folders']['tasks'] = []
 
-        if folder.selected == 1:
-            folder.selected = 0
+        # if the folder is on the list, remove it
+        if id in request.session['selected_folders']['tasks']:
+            request.session['selected_folders']['tasks'].remove(id)
+
+        # if the folder is not on the list, add it
         else:
-            folder.selected = 1
+            request.session['selected_folders']['tasks'].append(id)
 
-        folder.save()
+        # if the folder is active, deactivate it
+        if request.session.get('active_task_folder'):
+            if request.session.get('active_task_folder') == id:
+                del request.session['active_task_folder']
 
     return redirect(page)
 
 
+@login_required
 def insert(request, page):
     folder = Folder()
     folder.user_id = request.user.id
@@ -46,6 +51,7 @@ def insert(request, page):
     return redirect(page)
 
 
+@login_required
 def update(request, id, page):
     try:
         folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
@@ -57,6 +63,7 @@ def update(request, id, page):
     return redirect(page)
 
 
+@login_required
 def delete(request, id, page):
     try:
         folder = Folder.objects.filter(user_id=request.user.id, pk=id).get()
@@ -67,6 +74,7 @@ def delete(request, id, page):
 
 
 # sets a folder to show on the home page
+@login_required
 def home(request, id, page):
     user_id = request.user.id
     folder = get_object_or_404(Folder, pk=id)

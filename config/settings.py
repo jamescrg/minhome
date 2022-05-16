@@ -162,3 +162,5 @@ EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
 # set cookies (sessions) to last for two months
 # default is two weeks, multiplying by four to get two months
 SESSION_COOKIE_AGE = 1209600 * 4
+
+SESSION_SAVE_EVERY_REQUEST = True
