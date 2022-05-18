@@ -31,8 +31,13 @@
 
 			<a class="folderLink"
          href="/folders/{{ folder.id }}/{{ page }}"
-         {% if folder.id == selected_folder.id %}
-          style="font-weight: bold;"{% endif %};>
+          {% if page != tasks and folder.id == selected_folder.id %}
+            style="font-weight: bold;"
+          {% endif %};
+          {% if page == 'tasks' and folder in selected_folders %}
+            style="font-weight: bold;"
+          {% endif %};
+          >
 
 				{{ folder.name }}
 

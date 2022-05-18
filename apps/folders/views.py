@@ -33,9 +33,9 @@ def select(request, id, page):
             request.session['selected_folders']['tasks'].append(id)
 
         # if the folder is active, deactivate it
-        if request.session.get('active_task_folder'):
-            if request.session.get('active_task_folder') == id:
-                del request.session['active_task_folder']
+        if request.session.get('active_folder_id'):
+            if request.session.get('active_folder_id') == id:
+                del request.session['active_folder_id']
 
     return redirect(page)
 

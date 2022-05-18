@@ -8,17 +8,24 @@ from django.shortcuts import get_object_or_404
 from apps.tasks.models import Task
 from apps.tasks.forms import TaskForm
 from apps.folders.models import Folder
+from apps.folders.folders import select_folders
 
 
 @login_required
 def index(request):
 
     user_id = request.user.id
-    page = 'tasks'
 
-    folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
-    selected_folders = folders.filter(selected=1).order_by('-active', 'name')
-    active_folder = folders.filter(user_id=user_id, active=1).first()
+    folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+
+    selected_folders = select_folders(request, 'tasks')
+
+    active_folder_id = request.session.get('active_folder_id')
+
+    if active_folder_id:
+        active_folder = get_object_or_404(Folder, pk=active_folder_id)
+    else:
+        active_folder = None
 
     if selected_folders:
         for folder in selected_folders:
@@ -27,10 +34,10 @@ def index(request):
             folder.tasks = tasks
 
     context = {
-        'page': page,
+        'page': 'tasks',
         'folders': folders,
-        'active_folder': active_folder,
         'selected_folders': selected_folders,
+        'active_folder': active_folder,
     }
 
     return render(request, 'tasks/content.html', context)
@@ -38,10 +45,7 @@ def index(request):
 
 @login_required
 def activate(request, id):
-    Folder.objects.filter(user_id=1, active=1).update(active=0)
-    folder = get_object_or_404(Folder, pk=id)
-    folder.active = 1
-    folder.save()
+    request.session['active_folder_id'] = id
     return redirect('/tasks/')
 
 

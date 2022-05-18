@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from apps.favorites.models import Favorite
 from apps.favorites.forms import FavoriteForm
 from apps.folders.models import Folder
-from apps.folders.folders import selected_folders
+from apps.folders.folders import select_folders
 
 
 @login_required
@@ -19,7 +19,7 @@ def index(request):
 
     folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
 
-    selected_folder = selected_folders(request, 'favorites')
+    selected_folder = select_folders(request, 'favorites')
 
     if selected_folder:
         favorites = Favorite.objects.filter(user_id=user_id, folder_id=selected_folder.id)
@@ -44,7 +44,7 @@ def add(request):
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
 
-    selected_folder = selected_folders(request, 'favorites')
+    selected_folder = select_folders(request, 'favorites')
 
     if request.method == 'POST':
 
@@ -85,7 +85,7 @@ def edit(request, id):
     folders = Folder.objects.filter(
             user_id=user_id, page='favorites').order_by('name')
 
-    selected_folder = selected_folders(request, 'favorites')
+    selected_folder = select_folders(request, 'favorites')
 
     favorite = get_object_or_404(Favorite, pk=id)
 

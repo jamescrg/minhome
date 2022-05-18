@@ -11,7 +11,7 @@ import markdown
 from apps.notes.models import Note
 from apps.notes.forms import NoteForm
 from apps.folders.models import Folder
-from apps.folders.folders import selected_folders
+from apps.folders.folders import select_folders
 
 
 @login_required
@@ -22,7 +22,7 @@ def index(request):
 
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
 
-    selected_folder = selected_folders(request, 'notes')
+    selected_folder = select_folders(request, 'notes')
 
     if selected_folder:
         notes = Note.objects.filter(user_id=user_id, folder_id=selected_folder.id)
@@ -63,7 +63,7 @@ def add(request):
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
 
-    selected_folder = selected_folders(request, 'notes')
+    selected_folder = select_folders(request, 'notes')
 
     if request.method == 'POST':
 
@@ -125,7 +125,7 @@ def edit(request, id):
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
 
-    selected_folder = selected_folders(request, 'notes')
+    selected_folder = select_folders(request, 'notes')
 
     note = get_object_or_404(Note, pk=id)
 

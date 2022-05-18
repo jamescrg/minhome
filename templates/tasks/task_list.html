@@ -1,18 +1,4 @@
 
-<div class="section-title">
-	Tasks
-</div>
-
-<div id="tasks">
-
-{% if active_folder %}
-
-	{% include 'tasks/taskform.html' %}
-
-{% endif %}
-
-{% for folder in selected_folders  %}
-
 	<ul class="list-group task-list">
 
 		<li class="list-group-item task-list-title">
@@ -55,19 +41,3 @@
 		{% endfor %}
 
 	</ul>
-
-    {% if folder.active == 1 %}
-
-      <div id="clear" style="text-align: right;">
-
-        <a href="/tasks/{{ active_folder.id }}/clear">
-          Clear Complete
-        </a>
-
-      </div>
-
-    {% endif %}
-
-{% endfor %}
-
-</div>

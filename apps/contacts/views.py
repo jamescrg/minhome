@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 from apps.folders.models import Folder
-from apps.folders.folders import selected_folders
+from apps.folders.folders import select_folders
 from apps.contacts.models import Contact
 from apps.contacts.forms import ContactForm
 import apps.contacts.google as google
@@ -22,7 +22,7 @@ def index(request):
 
     folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
 
-    selected_folder = selected_folders(request, 'contacts')
+    selected_folder = select_folders(request, 'contacts')
 
     if selected_folder:
         contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
@@ -69,7 +69,7 @@ def add(request):
     user = get_object_or_404(CustomUser, pk=user_id)
     folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
 
-    selected_folder = selected_folders(request, 'contacts')
+    selected_folder = select_folders(request, 'contacts')
 
     # if applicable, process any post data submitted by user
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def edit(request, id):
     user = get_object_or_404(CustomUser, pk=user_id)
     folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
 
-    selected_folder = selected_folders(request, 'contacts')
+    selected_folder = select_folders(request, 'contacts')
 
     contact = get_object_or_404(Contact, pk=id)
 
