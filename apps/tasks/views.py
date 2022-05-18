@@ -9,6 +9,7 @@ from apps.tasks.models import Task
 from apps.tasks.forms import TaskForm
 from apps.folders.models import Folder
 from apps.folders.folders import select_folders
+from apps.folders.folders import get_task_folders
 
 
 @login_required
@@ -16,7 +17,7 @@ def index(request):
 
     user_id = request.user.id
 
-    folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+    folders = get_task_folders(request, user_id)
 
     selected_folders = select_folders(request, 'tasks')
 
@@ -32,6 +33,10 @@ def index(request):
             tasks = Task.objects.filter(folder_id=folder.id)
             tasks = tasks.order_by('status', 'title')
             folder.tasks = tasks
+
+    if active_folder:
+        active_folder.tasks = Task.objects.filter(
+            folder_id=active_folder.id).order_by('status', 'title')
 
     context = {
         'page': 'tasks',
@@ -81,7 +86,7 @@ def edit(request, id):
     if request.method == 'POST':
 
         try:
-            task = Task.objects.filter(user_id=request.user.id, pk=id).get()
+            task = Task.objects.filter(pk=id).get()
         except ObjectDoesNotExist:
             raise Http404('Record not found.')
 
@@ -96,12 +101,11 @@ def edit(request, id):
     else:
 
         task = get_object_or_404(Task, pk=id)
-        folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+        folders = get_task_folders(request, user_id)
         selected_folder = folders.filter(id=task.folder.id).get()
 
         form = TaskForm(instance=task, initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='tasks').order_by('name')
+        form.fields['folder'].queryset = folders
 
         context = {
             'page': 'tasks',
@@ -116,8 +120,7 @@ def edit(request, id):
 
 @login_required
 def clear(request, folder_id):
-    user_id = request.user.id
-    tasks = Task.objects.filter(user_id=user_id, folder_id=folder_id, status=1)
+    tasks = Task.objects.filter(folder_id=folder_id, status=1)
     for task in tasks:
         task.delete()
     return redirect('/tasks/')
