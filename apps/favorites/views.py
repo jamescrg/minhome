@@ -9,24 +9,21 @@ from django.shortcuts import get_object_or_404
 from apps.favorites.models import Favorite
 from apps.favorites.forms import FavoriteForm
 from apps.folders.models import Folder
+from apps.folders.folders import selected_folders
 
 
 @login_required
 def index(request):
 
     user_id = request.user.id
-    page = 'favorites'
 
-    folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
-    selected_folder = Folder.objects.filter(
-        user_id=user_id, page=page, selected=1
-    ).first()
+    folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
+
+    selected_folder = selected_folders(request, 'favorites')
 
     if selected_folder:
-        selected_folder_id = selected_folder.id
         favorites = Favorite.objects.filter(user_id=user_id, folder_id=selected_folder.id)
     else:
-        selected_folder_id = None
         favorites = Favorite.objects.filter(user_id=user_id, folder_id__isnull=True)
 
     favorites = favorites.order_by('name')
@@ -36,7 +33,6 @@ def index(request):
         'edit': False,
         'folders': folders,
         'selected_folder': selected_folder,
-        'selected_folder_id': selected_folder_id,
         'favorites': favorites,
     }
     return render(request, 'favorites/content.html', context)
@@ -47,10 +43,8 @@ def add(request):
 
     user_id = request.user.id
     folders = Folder.objects.filter(user_id=user_id, page='favorites').order_by('name')
-    try:
-        selected_folder = folders.filter(selected=1).get()
-    except ObjectDoesNotExist:
-        selected_folder = None
+
+    selected_folder = selected_folders(request, 'favorites')
 
     if request.method == 'POST':
 
@@ -70,7 +64,7 @@ def add(request):
             form = FavoriteForm()
 
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='favorites').order_by('name')
+        user_id=user_id, page='favorites').order_by('name')
 
     context = {
         'page': 'favorites',
@@ -90,10 +84,8 @@ def edit(request, id):
     user_id = request.user.id
     folders = Folder.objects.filter(
             user_id=user_id, page='favorites').order_by('name')
-    try:
-        selected_folder = folders.filter(selected=1).get()
-    except ObjectDoesNotExist:
-        selected_folder = None
+
+    selected_folder = selected_folders(request, 'favorites')
 
     favorite = get_object_or_404(Favorite, pk=id)
 
@@ -119,9 +111,8 @@ def edit(request, id):
         else:
             form = FavoriteForm(instance=favorite)
 
-
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='favorites').order_by('name')
+        user_id=user_id, page='favorites').order_by('name')
 
     context = {
         'page': 'favorites',
@@ -148,7 +139,6 @@ def delete(request, id):
 
 @login_required
 def home(request, id):
-    user_id = request.user.id
     favorite = get_object_or_404(Favorite, pk=id)
     if favorite.home_rank:
         favorite.home_rank = 0

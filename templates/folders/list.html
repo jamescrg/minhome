@@ -31,7 +31,7 @@
 
 			<a class="folderLink"
          href="/folders/{{ folder.id }}/{{ page }}"
-         {% if folder.selected == 1 %}
+         {% if folder.id == selected_folder.id %}
           style="font-weight: bold;"{% endif %};>
 
 				{{ folder.name }}
