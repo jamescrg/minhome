@@ -1,43 +1,43 @@
 
-	<ul class="list-group task-list">
+<ul class="list-group task-list">
 
-		<li class="list-group-item task-list-title">
+  <li class="list-group-item task-list-title">
 
-      {% if folder.id == active_folder.id %}
+    {% if folder.id == active_folder.id %}
 
-        {{ folder.name }}
+      {{ folder.name }}
 
-      {% else %}
+    {% else %}
 
-        <a href="/tasks/{{ folder.id }}/activate">{{ folder.name }}</a></li>
+      <a href="/tasks/{{ folder.id }}/activate">{{ folder.name }}</a></li>
 
-      {% endif %}
+    {% endif %}
 
-		{% for task in folder.tasks %}
+  {% for task in folder.tasks %}
 
-			<li class="list-group-item">
+    <li class="list-group-item">
 
-				<a href="/tasks/{{ task.id }}/complete">
+      <a href="/tasks/{{ task.id }}/complete">
 
-					{% if task.status == 1 %}
+        {% if task.status == 1 %}
 
-						<img class="task-done" src="/static/images/icons/task-done.png">
+          <img class="task-done" src="/static/images/icons/task-done.png">
 
-					{% else %}
+        {% else %}
 
-						<img class="task-pending" src="/static/images/icons/task.png">
+          <img class="task-pending" src="/static/images/icons/task.png">
 
-					{% endif %}
+        {% endif %}
 
-				</a>
-        &nbsp;&nbsp;
-        <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
-          style="text-decoration: line-through; color: gray;" {% endif %}>
-          {{ task.title}}
-        </a>
+      </a>
+      &nbsp;&nbsp;
+      <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
+        style="text-decoration: line-through; color: gray;" {% endif %}>
+        {{ task.title}}
+      </a>
 
-			</li>
+    </li>
 
-		{% endfor %}
+  {% endfor %}
 
-	</ul>
+</ul>

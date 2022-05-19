@@ -29,48 +29,7 @@
 
   {% if folder != active_folder %}
 
-	<ul class="list-group task-list">
-
-		<li class="list-group-item task-list-title">
-
-      {% if folder.id == active_folder.id %}
-
-        {{ folder.name }}
-
-      {% else %}
-
-        <a href="/tasks/{{ folder.id }}/activate">{{ folder.name }}</a></li>
-
-      {% endif %}
-
-		{% for task in folder.tasks %}
-
-			<li class="list-group-item">
-
-				<a href="/tasks/{{ task.id }}/complete">
-
-					{% if task.status == 1 %}
-
-						<img class="task-done" src="/static/images/icons/task-done.png">
-
-					{% else %}
-
-						<img class="task-pending" src="/static/images/icons/task.png">
-
-					{% endif %}
-
-				</a>
-        &nbsp;&nbsp;
-        <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
-          style="text-decoration: line-through; color: gray;" {% endif %}>
-          {{ task.title}}
-        </a>
-
-			</li>
-
-		{% endfor %}
-
-	</ul>
+    {% include 'tasks/task_list.html' %}
 
   {% endif %}
 
