@@ -10,7 +10,7 @@ def get_task_folders(request, user_id):
 
     # include my groceries lists in katie's folder list
     if request.user.id == 19:
-        james_folders = Folder.objects.filter(id__in=[312, 354])
+        james_folders = Folder.objects.filter(id__in=[380, 354])
         folders = folders | james_folders
         folders.order_by('name')
 
