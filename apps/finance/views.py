@@ -1,10 +1,7 @@
 
-import requests
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-import config.settings_local
 import apps.finance.crypto_data as crypto_data
 import apps.finance.securities_data as securities_data
 
