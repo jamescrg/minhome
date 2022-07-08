@@ -13,8 +13,6 @@ from apps.finance import views as finance
 from apps.weather import views as weather
 from apps.lab import views as lab
 
-# test commit
-
 urlpatterns = [
 
     path('admin/', admin.site.urls),
