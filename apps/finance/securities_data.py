@@ -26,6 +26,11 @@ asset_list = [
         'exchange': 'NASDAQ',
         'name': 'Sundial',
     },
+    {
+        'symbol': 'BBBY',
+        'exchange': 'NASDAQ',
+        'name': 'BBBY',
+    },
 ]
 
 
