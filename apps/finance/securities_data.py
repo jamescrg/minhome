@@ -31,6 +31,31 @@ asset_list = [
         'exchange': 'NASDAQ',
         'name': 'BBBY',
     },
+    {
+        'symbol': 'O',
+        'exchange': 'NYSE',
+        'name': 'REIT',
+    },
+    {
+        'symbol': 'FXF',
+        'exchange': 'NYSEARCA',
+        'name': 'Swiss Francs',
+    },
+    {
+        'symbol': 'GLD',
+        'exchange': 'NSEARCA',
+        'name': 'Gold ETF',
+    },
+    {
+        'symbol': 'QQQ',
+        'exchange': 'NASDAQ',
+        'name': 'Invesco Tech',
+    },
+    {
+        'symbol': 'VTV',
+        'exchange': 'NYSEARCA',
+        'name': 'Vanguard Value',
+    },
 ]
 
 
