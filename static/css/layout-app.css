@@ -103,3 +103,9 @@ header / nav bar
 	background: #616161;
 	border: solid 1px gray;
 }
+
+.dev-flag {
+  color: gold;;
+  font-weight: bold;
+  padding: 12px 20px 0 0;
+}
