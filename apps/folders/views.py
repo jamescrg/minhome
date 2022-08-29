@@ -20,7 +20,7 @@ def select(request, id, page):
 
     if page == 'tasks':
 
-        # if there are no active task folders, initialize a list
+        # if there are no selected task folders, initialize a list
         if not request.session['selected_folders'].get('tasks'):
             request.session['selected_folders']['tasks'] = []
 
@@ -70,6 +70,13 @@ def delete(request, id, page):
     except ObjectDoesNotExist:
         raise Http404('Record not found.')
     folder.delete()
+    if page != 'tasks':
+        if request.session['selected_folders'][page]:
+            del request.session['selected_folders'][page]
+    if page == 'tasks':
+        if request.session['selected_folders']['tasks']:
+            if id in request.session['selected_folders']['tasks']:
+                request.session['selected_folders']['tasks'].remove(id)
     return redirect(page)
 
 
