@@ -2,7 +2,11 @@
 <li class="list-group-item" id="folderForm-{{ folder.id }}" style="display: none;">
 
 	<a href="javascript:showHideFolder('{{ folder.id }}');">
-		<span class="glyphicon glyphicon-folder-close" style=""></span>
+      {% if page == 'tasks' %}
+        <span class="glyphicon glyphicon-th-list"></span>
+      {% else %}
+        <span class="glyphicon glyphicon-folder-close"></span>
+      {% endif %}
 	</a>
 
 	<form class="editFolder" action="/folders/update/{{ folder.id }}/{{ page }}" method="post">

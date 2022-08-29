@@ -6,18 +6,19 @@
 		{% include 'notes/note.html' %}
 
 	{% endif %}
-  
-  <div class="page-control">
-      <a href="/{{ page }}/add">
-        Add Note
-      </a>
-  </div>
 
 </div>
 
 <div id="notes" class="col-sm-3 col-sm-pull-3">
 
+  <div class="add-record">
+      <a href="/{{ page }}/add">
+        <span class="glyphicon glyphicon-plus"></span>
+      </a>
+  </div>
+
 	<div class="section-title">
+
 		Notes
 	</div>
 
