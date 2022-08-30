@@ -1,15 +1,14 @@
 
-<div class="add-record">
-  <a id="note-edit-link" href="/notes/{{ selected_note.id }}/edit">
-      <span class="glyphicon glyphicon-pencil"></span>
-  </a>
-</div>
-
 <div class="section-title">
 	{{ selected_note.subject }}
 </div>
 
 <div class="note">
+  <div style="float: right">
+    <a id="note-edit-link" href="/notes/{{ selected_note.id }}/edit">
+      Edit
+    </a>
+  </div>
 	{{ selected_note.note|safe }}
 </div>
 
