@@ -55,14 +55,14 @@ def activate(request, id):
 
 
 @login_required
-def status(request, id):
+def status(request, id, origin='tasks'):
     task = get_object_or_404(Task, pk=id)
     if task.status == 1:
         task.status = 0
     else:
         task.status = 1
     task.save()
-    return redirect('/tasks/')
+    return redirect(origin)
 
 
 @login_required

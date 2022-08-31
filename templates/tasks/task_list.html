@@ -17,7 +17,7 @@
 
     <li class="list-group-item">
 
-      <a href="/tasks/{{ task.id }}/complete">
+      <a href="/tasks/{{ task.id }}/complete{% if origin %}/{{origin}}{%endif%}">
 
         {% if task.status == 1 %}
 

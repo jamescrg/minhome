@@ -1,7 +1,7 @@
+from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -29,7 +29,22 @@ def mail(request):
 def index(request):
     user_id = request.user.id
 
-    task_folders = Folder.objects.filter(user_id=user_id, page='tasks', home_column__gt=1)
+    # check whether tasks have been hidden
+    show_tasks = request.session.get('show_tasks', True)
+
+    # if tasks are hidden, check the date they were hidden
+    # if that date is less than today, show them
+    if not show_tasks:
+        today = date.today()
+        timestamp = int(request.session.get('hide_expire'))
+        old_date = date.fromtimestamp(timestamp)
+        if today > old_date:
+            show_tasks = True
+            request.session['show_tasks'] = True
+
+    # check for task_folders
+    task_folders = Folder.objects.filter(
+        user_id=user_id, page='tasks', home_column__gt=1)
     if task_folders:
         for folder in task_folders:
             tasks = Task.objects.filter(folder_id=folder.id)
@@ -48,12 +63,25 @@ def index(request):
 
     context = {
         'page': 'home',
+        'origin': 'home',
         'search_engine': 'google.com/search',
-        'columns': columns,
+        'show_tasks': show_tasks,
         'task_folders': task_folders,
+        'columns': columns,
     }
 
     return render(request, 'home/index.html', context)
+
+
+@login_required
+def toggle_tasks(request):
+    show_tasks = request.session.get('show_tasks', False)
+    if show_tasks:
+        request.session['show_tasks'] = False
+        request.session['hide_expire'] = date.today().strftime('%s')
+    else:
+        request.session['show_tasks'] = True
+    return redirect('/home/')
 
 
 @login_required

@@ -2,14 +2,32 @@
 {% block content %}
 
 {% if task_folders %}
+  <div style="float: right; margin-right: 40px; font-weight: 600;">
+    <a href="/home/toggle-tasks">
+      {% if show_tasks %}Hide Tasks{% else %}Show Tasks{% endif%}
+    </a>
+  </div>
+{% endif %}
 
-  <div style="background: white;">
+{% if show_tasks and task_folders %}
 
-    {% for folder in task_folders  %}
+  <div class="home-task-area">
 
-        {% include 'tasks/task_list.html' %}
+    <div class="section-title home-task-area-title">
 
-    {% endfor %}
+      Current Tasks
+
+    </div>
+
+    {% if task_folders %}
+
+      {% for folder in task_folders  %}
+
+          {% include 'tasks/task_list.html' %}
+
+      {% endfor %}
+
+    {% endif %}
 
   </div>
 
