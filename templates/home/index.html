@@ -1,6 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+{% if task_folders %}
+
+  <div style="background: white;">
+
+    {% for folder in task_folders  %}
+
+        {% include 'tasks/task_list.html' %}
+
+    {% endfor %}
+
+  </div>
+
+{% endif %}
+
 <form role="form" id="home-form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
 	<div class="row row-centered">
 		<div class="col-sm-8 col-sm-offset-2">
@@ -52,7 +66,7 @@
 						</div>
 				</li>
         {% for favorite in folder.favorites %}
-          {% if favorite.folder_id == folder.id %} 
+          {% if favorite.folder_id == folder.id %}
 						<li class="list-group-item home-item">
               <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/up"><span class="glyphicon glyphicon-arrow-up"></span></a>
               <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/down"><span class="glyphicon glyphicon-arrow-down"></span></a>

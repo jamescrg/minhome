@@ -2,7 +2,11 @@
 <li class="list-group-item" id="folderForm-{{ folder.id }}" style="display: none;">
 
 	<a href="javascript:showHideFolder('{{ folder.id }}');">
-		<span class="glyphicon glyphicon-folder-close" style=""></span>
+      {% if page == 'tasks' %}
+        <span class="glyphicon glyphicon-th-list"></span>
+      {% else %}
+        <span class="glyphicon glyphicon-folder-close"></span>
+      {% endif %}
 	</a>
 
 	<form class="editFolder" action="/folders/update/{{ folder.id }}/{{ page }}" method="post">
@@ -19,7 +23,7 @@
 
 	<ul id="folderInput-{{ folder.id }}" class="folderMenu">
 
-		{% if page == 'favorites' %}
+		{% if page == 'favorites' or page == 'tasks' %}
 
 			<li><a href="/folders/home/{{ folder.id }}/{{ page }}"> {% if folder.home_column > 0 %} Remove from {% else %} Add to {% endif %} Home </a></li>
 

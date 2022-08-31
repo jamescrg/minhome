@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
+from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 
@@ -28,6 +29,13 @@ def mail(request):
 def index(request):
     user_id = request.user.id
 
+    task_folders = Folder.objects.filter(user_id=user_id, page='tasks', home_column__gt=1)
+    if task_folders:
+        for folder in task_folders:
+            tasks = Task.objects.filter(folder_id=folder.id)
+            tasks = tasks.order_by('status', 'title')
+            folder.tasks = tasks
+
     columns = []
     for i in range(1, 5):
         folders = Folder.objects.filter(user_id=user_id, home_column=i)
@@ -42,6 +50,7 @@ def index(request):
         'page': 'home',
         'search_engine': 'google.com/search',
         'columns': columns,
+        'task_folders': task_folders,
     }
 
     return render(request, 'home/index.html', context)
