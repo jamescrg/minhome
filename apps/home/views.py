@@ -47,7 +47,7 @@ def index(request):
         user_id=user_id, page='tasks', home_column__gt=1)
     if task_folders:
         for folder in task_folders:
-            tasks = Task.objects.filter(folder_id=folder.id)
+            tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
             tasks = tasks.order_by('status', 'title')
             folder.tasks = tasks
 
