@@ -53,7 +53,7 @@ def index(request):
 
     columns = []
     for i in range(1, 5):
-        folders = Folder.objects.filter(user_id=user_id, home_column=i)
+        folders = Folder.objects.filter(user_id=user_id, page='favorites', home_column=i)
         folders = folders.order_by('home_rank')
         for folder in folders:
             favorites = Favorite.objects.filter(folder_id=folder.id, home_rank__gt=0)
