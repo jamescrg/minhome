@@ -81,8 +81,8 @@
 	}
 
 .home-task-area {
-  margin: auto;
-  max-width: 1000px;
+  margin: 0 auto 30px auto;
+  max-width: 970px;
 }
 
 .home-task-area-title {
