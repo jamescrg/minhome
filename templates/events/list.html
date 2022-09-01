@@ -33,7 +33,7 @@
                     {{ event.date|date:"Y-m-d" }}
 
                 <td class="description
-                    {% if event.date < third_day and event.status == 'Pending' %} soon {% endif %}">
+                    {% if event.date < three_days_out and event.status == 'Pending' %} soon {% endif %}">
 
                     <a class="event" href="/events/{{event.id}}/edit">
                         {{ event.description }}

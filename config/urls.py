@@ -20,9 +20,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    # email test
-    path('mail/', home.mail, name='mail-test'),
-
     # folders
     path('folders/home/<int:id>/<str:page>', folders.home, name='folder-home'),
     path('folders/<int:id>/<str:page>', folders.select, name='folder-select'),
@@ -36,6 +33,7 @@ urlpatterns = [
     path('home/folder/<int:id>/<str:direction>/', home.folder, name='home-folder'),
     path('home/favorite/<int:id>/<str:direction>/', home.favorite, name='home-favorite'),
     path('home/toggle-tasks', home.toggle_tasks, name='home-toggle-tasks'),
+    path('home/toggle-events', home.toggle_events, name='home-toggle-events'),
 
     # favorites
     path('favorites/', favorites.index, name='favorites'),

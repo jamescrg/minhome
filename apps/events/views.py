@@ -16,14 +16,14 @@ import apps.events.google as google
 def index(request):
 
     today = date.today()
-    third_day = today + timedelta(days=3)
+    three_days_out = today + timedelta(days=3)
 
-    events = Event.objects.filter(status='Pending').order_by('date')
+    events = Event.objects.filter(user=request.user, status='Pending').order_by('date')
 
     context = {
         'page': 'events',
         'events': events,
-        'third_day': third_day,
+        'three_days_out': three_days_out,
     }
 
     return render(request, 'events/list.html', context)

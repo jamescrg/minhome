@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -9,25 +9,44 @@ from django.shortcuts import get_object_or_404
 from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
-
-from django.core.mail import send_mail
-
-
-@login_required
-def mail(request):
-    send_mail(
-        'Subject here',
-        'Here is the message.',
-        'no-reply@cloud-portal.com',
-        ['jamespcraig@gmail.com'],
-        fail_silently=False,
-    )
-    return HttpResponse('mail has been sent, allegedly')
+from apps.events.models import Event
 
 
 @login_required
 def index(request):
     user_id = request.user.id
+
+    # EVENTS
+    # ----------------
+
+    # check whether events have been hidden
+    show_events = request.session.get('show_events', True)
+
+    # if events are hidden, check the date they were hidden
+    # if that date is less than today, show them
+    if not show_events:
+        today = date.today()
+        timestamp = int(request.session.get('hide_expire'))
+        old_date = date.fromtimestamp(timestamp)
+        if today > old_date:
+            show_events = True
+            request.session['show_events'] = True
+
+    # if events are shown, load them
+    if show_events:
+        today = date.today()
+        thirty_days_out = today + timedelta(days=30)
+        three_days_out = today + timedelta(days=3)
+        events = Event.objects.filter(
+            user=request.user, status='Pending', date__lt=thirty_days_out
+        ).order_by('date')
+    else:
+        events = None
+        three_days_out = None
+
+
+    # TASKS
+    # ----------------
 
     # check whether tasks have been hidden
     show_tasks = request.session.get('show_tasks', True)
@@ -51,6 +70,10 @@ def index(request):
             tasks = tasks.order_by('status', 'title')
             folder.tasks = tasks
 
+
+    # FAVORITES
+    # ----------------
+
     columns = []
     for i in range(1, 5):
         folders = Folder.objects.filter(user_id=user_id, page='favorites', home_column=i)
@@ -67,8 +90,14 @@ def index(request):
         'search_engine': 'google.com/search',
         'show_tasks': show_tasks,
         'task_folders': task_folders,
+        'events': events,
+        'show_events': show_events,
+        'three_days_out': three_days_out,
         'columns': columns,
     }
+
+    from pprint import pprint
+    pprint(three_days_out)
 
     return render(request, 'home/index.html', context)
 
@@ -81,6 +110,17 @@ def toggle_tasks(request):
         request.session['hide_expire'] = date.today().strftime('%s')
     else:
         request.session['show_tasks'] = True
+    return redirect('/home/')
+
+
+@login_required
+def toggle_events(request):
+    show_events = request.session.get('show_events', False)
+    if show_events:
+        request.session['show_events'] = False
+        request.session['hide_expire'] = date.today().strftime('%s')
+    else:
+        request.session['show_events'] = True
     return redirect('/home/')
 
 

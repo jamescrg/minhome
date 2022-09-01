@@ -77,13 +77,6 @@
 	margin-right: 5px;
 }
 
-.home-task-toggle {
-  font-weight: 600;
-  margin: 0 auto;
-  max-width: 970px;
-  text-align: right;
-}
-
 .home-task-area {
   border-radius: 4px;
   margin: 0 auto 30px auto;
@@ -91,10 +84,31 @@
 }
 
 .home-task-area-title {
-  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
   padding-top: 10px;
+}
+
+.home-task-area-title .section-title {
+  margin: 0;
+}
+
+.home-task-hide {
+  margin: 5px 5px 0 0;
 }
 
 .task-list-title {
   font-weight: 600;
+}
+
+.events {
+  width: 100%;
+  background: #f5f5f5;
+  margin-bottom: 0;
+}
+
+.event-date {
+  width: 120px;
 }
