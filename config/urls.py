@@ -5,6 +5,7 @@ from apps.folders import views as folders
 from apps.home import views as home
 from apps.favorites import views as favorites
 from apps.tasks import views as tasks
+from apps.events import views as events
 from apps.contacts import views as contacts
 from apps.notes import views as notes
 from apps.search import views as search
@@ -48,10 +49,16 @@ urlpatterns = [
     path('tasks/', tasks.index, name='tasks'),
     path('tasks/<int:id>/activate', tasks.activate, name='tasks-activate'),
     path('tasks/add', tasks.add, name='tasks-add'),
-    path('tasks/<int:id>/edit', tasks.edit,  name='tasks-edit'),
+    path('tasks/<int:id>/edit', tasks.edit, name='tasks-edit'),
     path('tasks/<int:id>/complete', tasks.status, name='tasks-complete'),
     path('tasks/<int:id>/complete/<str:origin>', tasks.status, name='tasks-complete'),
     path('tasks/<int:folder_id>/clear', tasks.clear, name='tasks-clear'),
+
+    # events
+    path('events/', events.index, name='events'),
+    path('events/add', events.add, name='events-add'),
+    path('events/<int:id>/edit', events.edit, name='events-edit'),
+    path('events/<int:id>/delete', events.delete, name='events-delete'),
 
     # contacts
     path('contacts/', contacts.index, name='contacts'),

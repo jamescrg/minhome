@@ -29,7 +29,7 @@ def index(request):
 
 
 @login_required
-def add(request):
+def add(request, origin='events'):
 
     # identify the origin of the request (events or agenda)
     if request.method == 'GET':
@@ -57,7 +57,6 @@ def add(request):
 
     # if no post data has been submitted, show the contact form
     else:
-
         form = EventForm()
 
     google_connected = google.check_credentials()
@@ -70,6 +69,7 @@ def add(request):
         'action': '/events/add',
         'google_connected': google_connected,
         'form': form,
+        'origin': origin,
     }
 
     return render(request, 'events/form.html', context)

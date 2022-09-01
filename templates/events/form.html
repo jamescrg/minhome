@@ -1,13 +1,7 @@
 
 {% extends 'layout.html' %}
 
-{% block 'content' %}
-
-{% if not edit %}
-
-  {% include 'events/deadline-calc.html' %}
-
-{% endif %}
+{% block content %}
 
 <div class="section-title">
 
@@ -22,13 +16,6 @@
     {% endif %}
 
 </div>
-
-{% if results %}
-
-  <div id="calculator-results">
-  </div>
-
-{% endif %}
 
 {% if not google_connected %}
 
@@ -64,4 +51,4 @@
   </table>
 </form>
 
-{% endblock 'content' %}
+{% endblock content %}

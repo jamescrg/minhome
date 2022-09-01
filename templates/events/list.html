@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
-{% block 'content' %}
+{% block content %}
 
-<div style="float: right; margin-top: 25px">
+<div style="float: right; margin-top: 6px">
 
   <a href="/events/add">
     Add Event
@@ -9,7 +9,7 @@
 
 </div>
 
-<div class="data-header">
+<div class="section-title">
 
     Pending Events
 
@@ -22,12 +22,6 @@
 		    <th class="date">
 			    Date
 
-		    <th class="project">
-			    Project
-
-		    <th class="party">
-			    Party
-
 		    <th class="description">
 			    Description
 
@@ -37,17 +31,8 @@
 
                 <td class="date">
                     {{ event.date|date:"Y-m-d" }}
-                        
-                <td class="project">
 
-                    <a href="/projects/{{ event.project.id }}/events">
-                        {{ event.project.name }}
-                    </a>
-
-                <td class="party">
-                    {{event.party}}
-
-                <td class="description 
+                <td class="description
                     {% if event.date < third_day and event.status == 'Pending' %} soon {% endif %}">
 
                     <a class="event" href="/events/{{event.id}}/edit">
@@ -59,4 +44,4 @@
   </table>
   </div>
 
-{% endblock 'content' %}
+{% endblock content %}
