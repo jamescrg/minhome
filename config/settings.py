@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.favorites',
     'apps.tasks',
+    'apps.events',
     'apps.contacts',
     'apps.lab',
     'apps.notes',

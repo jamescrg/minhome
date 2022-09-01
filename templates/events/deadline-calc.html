@@ -1,0 +1,86 @@
+{% if not results %}
+
+  <div class="calc-deadline">
+    <button id="calc-dead" class="button-link"
+      onclick="toggleCalculator()">Calculate Deadline</button>
+  </div>
+
+  <div id="deadline-calculator">
+
+    <div class="section-title">
+      Calculate Deadline
+    </div>
+
+    <form action="/events/add_with_results" method="post">
+
+      {% csrf_token %}
+
+      <input type="hidden" name="project_id" value="{{ event.projectId }}">
+
+      <table>
+        <tr>
+
+          <td>Initial Date
+
+          <td>
+            <input id="initial-date" type="date" name="initial_date" value="{{ today }}">
+
+        <tr>
+
+          <td>Number of Days
+
+          <td>
+            <input type="text" id="num-days" name="days" value="">
+
+        <tr>
+          <td>
+          <td>
+            <input type="submit" value="Submit">
+
+      </table>
+
+    </form>
+
+  </div>
+
+{% else %}
+
+  <div class="section-title">
+
+    Deadline Calculation Results
+
+  </div>
+
+  <div id="calc-results">
+
+    <table id="deadlines">
+
+      <tr>
+        <td>Initial Date
+        <td>{{ results.initial_date|date:"Y-m-d" }}
+
+      <tr>
+        <td>Period of Days
+        <td>{{ results.days }}
+
+      <tr>
+        <td>Deadline
+        <td {% if not results.next_workday %} class="strong" {% endif %}> {{ results.deadline|date:"Y-m-d" }}
+
+      <tr>
+        <td>Weekday
+        <td>{{ results.deadline_weekday }}
+
+      {% if results.next_workday %}
+
+        <tr>
+          <td>Next Business Day
+          <td class="strong">{{ results.next_workday|date:"Y-m-d" }}
+
+      {% endif %}
+
+    </table>
+
+  </div>
+
+{% endif %}
