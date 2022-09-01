@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
+from accounts.models import CustomUser
 from apps.events.models import Event
 from apps.events.forms import EventForm
 import apps.events.google as google
@@ -36,6 +37,10 @@ def add(request, origin='events'):
         request.session['origin'] = origin
     origin = request.session.get('origin', 'events')
 
+    # identify user
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+
     # if applicable, process any post data submitted by user
     if request.method == 'POST':
 
@@ -47,7 +52,7 @@ def add(request, origin='events'):
             event.user_id = request.user.id
 
             # add to google account
-            if google.check_credentials():
+            if user.google_credentials:
                 event.google_id = google.add_event(event)
 
             # save event to database with google id
@@ -59,7 +64,7 @@ def add(request, origin='events'):
     else:
         form = EventForm()
 
-    google_connected = google.check_credentials()
+    google_connected = user.google_credentials
 
     context = {
         'page': 'events',
@@ -83,6 +88,9 @@ def edit(request, id, origin='events'):
         request.session['origin'] = origin
     origin = request.session.get('origin', 'events')
 
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+
     event = get_object_or_404(Event, pk=id)
 
     if request.method == 'POST':
@@ -93,7 +101,8 @@ def edit(request, id, origin='events'):
             event = form.save(commit=False)
             event.user_id = request.user.id
 
-            if google.check_credentials() and event.google_id:
+            google_connected = user.google_credentials
+            if google_connected and event.google_id:
                 google.edit_event(event)
 
             event.save()
@@ -104,7 +113,7 @@ def edit(request, id, origin='events'):
         form = EventForm(instance=event)
 
 
-    google_connected = google.check_credentials()
+    google_connected = user.google_credentials
 
     context = {
         'page': 'events',
@@ -115,6 +124,7 @@ def edit(request, id, origin='events'):
         'event': event,
         'google_connected': google_connected,
         'form': form,
+        'origin': origin,
     }
 
     return render(request, 'events/form.html', context)
@@ -123,6 +133,9 @@ def edit(request, id, origin='events'):
 @login_required
 def delete(request, id, origin='events'):
 
+    user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
+
     # identify the origin of the request (events or agenda)
     if request.method == 'GET':
         request.session['origin'] = origin
@@ -130,7 +143,9 @@ def delete(request, id, origin='events'):
 
     event = get_object_or_404(Event, pk=id)
 
-    if google.check_credentials() and event.google_id:
+    google_connected = user.google_credentials
+
+    if google_connected and event.google_id:
         google.delete_event(event)
 
     event.delete()

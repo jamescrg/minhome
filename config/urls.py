@@ -23,7 +23,6 @@ urlpatterns = [
     # email test
     path('mail/', home.mail, name='mail-test'),
 
-
     # folders
     path('folders/home/<int:id>/<str:page>', folders.home, name='folder-home'),
     path('folders/<int:id>/<str:page>', folders.select, name='folder-select'),
@@ -57,8 +56,11 @@ urlpatterns = [
     # events
     path('events/', events.index, name='events'),
     path('events/add', events.add, name='events-add'),
+    path('events/add/<str:origin>', events.add, name='events-add-origin'),
     path('events/<int:id>/edit', events.edit, name='events-edit'),
+    path('events/<int:id>/edit/<str:origin>', events.edit, name='events-edit-origin'),
     path('events/<int:id>/delete', events.delete, name='events-delete'),
+    path('events/<int:id>/delete/<str:origin>', events.delete, name='events-delete-origin'),
 
     # contacts
     path('contacts/', contacts.index, name='contacts'),

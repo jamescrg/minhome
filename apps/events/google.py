@@ -1,27 +1,16 @@
 import json
 from datetime import timedelta
 
+from django.shortcuts import get_object_or_404
 import google.oauth2.credentials
 from apiclient.discovery import build
 
-
-def check_credentials():
-    credential_file = open('/home/james/.google/cla_calendar_token.json', 'r')
-    credentials = credential_file.read()
-    credential_file.close()
-    if 'token' in credentials:
-        return True
-    else:
-        return False
+from accounts.models import CustomUser
 
 
-def build_service():
-
-    f = open('/home/james/.google/cla_calendar_token.json', 'r')
-    google_calendar_token = f.read()
-    f.close()
-
-    credentials = google_calendar_token
+def build_service(event):
+    user = get_object_or_404(CustomUser, pk=event.user_id)
+    credentials = user.google_credentials
 
     if credentials:
         credentials = json.loads(credentials)
@@ -36,7 +25,7 @@ def build_service():
 
 def add_event(event):
 
-    service = build_service()
+    service = build_service(event)
 
     if service:
         new_event = {
@@ -51,11 +40,8 @@ def add_event(event):
             },
         }
 
-        calendar_id = 'c_gu3p3ov90qi79he0i1p8k1qo0o@group.calendar.google.com'
-
         google_event = (
-            service.events().insert(
-                calendarId=calendar_id, body=new_event).execute()
+            service.events().insert(calendarId='primary', body=new_event).execute()
         )
 
         if google_event:
@@ -70,15 +56,13 @@ def add_event(event):
 
 def delete_event(event):
 
-    service = build_service()
-
-    calendar_id = 'c_gu3p3ov90qi79he0i1p8k1qo0o@group.calendar.google.com'
+    service = build_service(event)
 
     if service:
         result = (
             service.events()
             .delete(
-                calendarId=calendar_id,
+                calendarId='primary',
                 eventId=event.google_id,
             )
             .execute()
@@ -95,7 +79,7 @@ def delete_event(event):
 
 def edit_event(event):
 
-    service = build_service()
+    service = build_service(event)
 
     if service:
         revised_event = {
@@ -108,12 +92,10 @@ def edit_event(event):
             },
         }
 
-        calendar_id = 'c_gu3p3ov90qi79he0i1p8k1qo0o@group.calendar.google.com'
-
         result = (
             service.events()
             .update(
-                calendarId=calendar_id,
+                calendarId='primary',
                 eventId=event.google_id,
                 body=revised_event,
             )

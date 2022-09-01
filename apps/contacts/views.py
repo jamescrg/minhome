@@ -76,10 +76,16 @@ def add(request):
 
         form = ContactForm(request.POST)
         if form.is_valid():
+
+            # initialize contact data
             contact = form.save(commit=False)
             contact.user_id = user_id
+
+            # add to google account
             if user.google_credentials:
                 contact.google_id = google.add_contact(contact)
+
+            # save contact to database with google id
             contact.save()
 
             # deselect previously selected contact, if one exists
