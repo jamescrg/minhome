@@ -26,7 +26,7 @@ def index(request):
     # if that date is less than today, show them
     if not show_events:
         today = date.today()
-        timestamp = int(request.session.get('hide_expire'))
+        timestamp = int(request.session.get('events_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_events = True
@@ -55,7 +55,7 @@ def index(request):
     # if that date is less than today, show them
     if not show_tasks:
         today = date.today()
-        timestamp = int(request.session.get('hide_expire'))
+        timestamp = int(request.session.get('tasks_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_tasks = True
@@ -96,18 +96,15 @@ def index(request):
         'columns': columns,
     }
 
-    from pprint import pprint
-    pprint(three_days_out)
-
     return render(request, 'home/index.html', context)
 
 
 @login_required
 def toggle_tasks(request):
-    show_tasks = request.session.get('show_tasks', False)
+    show_tasks = request.session.get('show_tasks', True)
     if show_tasks:
         request.session['show_tasks'] = False
-        request.session['hide_expire'] = date.today().strftime('%s')
+        request.session['tasks_hide_expire'] = date.today().strftime('%s')
     else:
         request.session['show_tasks'] = True
     return redirect('/home/')
@@ -115,10 +112,10 @@ def toggle_tasks(request):
 
 @login_required
 def toggle_events(request):
-    show_events = request.session.get('show_events', False)
+    show_events = request.session.get('show_events', True)
     if show_events:
         request.session['show_events'] = False
-        request.session['hide_expire'] = date.today().strftime('%s')
+        request.session['events_hide_expire'] = date.today().strftime('%s')
     else:
         request.session['show_events'] = True
     return redirect('/home/')
