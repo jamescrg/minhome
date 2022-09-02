@@ -22,6 +22,9 @@
 		    <th class="date">
 			    Date
 
+		    <th class="date">
+			    Day
+
 		    <th class="description">
 			    Description
 
@@ -31,6 +34,9 @@
 
                 <td class="date">
                     {{ event.date|date:"Y-m-d" }}
+
+                <td class="date">
+                    {{ event.date|date:"l" }}
 
                 <td class="description
                     {% if event.date < three_days_out and event.status == 'Pending' %} soon {% endif %}">

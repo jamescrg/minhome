@@ -36,6 +36,9 @@
                 <td class="event-date">
                     {{ event.date|date:"Y-m-d" }}
 
+                <td class="event-date">
+                    {{ event.date|date:"l" }}
+
                 <td class="description
                     {% if event.date < three_days_out %} soon{% endif %}">
 
