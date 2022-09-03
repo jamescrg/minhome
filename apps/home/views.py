@@ -10,11 +10,14 @@ from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 from apps.events.models import Event
+import apps.home.google as google
 
 
 @login_required
 def index(request):
     user_id = request.user.id
+
+    google.get_events(user_id)
 
     # EVENTS
     # ----------------
