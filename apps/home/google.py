@@ -1,4 +1,5 @@
 
+import calendar
 import json
 import datetime
 
@@ -42,8 +43,10 @@ def get_events(user_id):
             date = start[0:10]
             datetime_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
             weekday = datetime_date.strftime('%A')
+            month = calendar.month_name[datetime_date.month]
             event_simplified['date'] = date
             event_simplified['weekday'] = weekday
+            event_simplified['month'] = month
             event_simplified['duration'] = start[11:]
             event_simplified['summary'] = event['summary']
             events_simplified.append(event_simplified)
