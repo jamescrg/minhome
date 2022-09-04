@@ -17,7 +17,6 @@ import apps.home.google as google
 def index(request):
     user_id = request.user.id
 
-    google.get_events(user_id)
 
     # EVENTS
     # ----------------
@@ -37,15 +36,9 @@ def index(request):
 
     # if events are shown, load them
     if show_events:
-        today = date.today()
-        thirty_days_out = today + timedelta(days=30)
-        three_days_out = today + timedelta(days=3)
-        events = Event.objects.filter(
-            user=request.user, status='Pending', date__lt=thirty_days_out
-        ).order_by('date')
+        events = google.get_events(user_id)
     else:
         events = None
-        three_days_out = None
 
 
     # TASKS
@@ -95,7 +88,6 @@ def index(request):
         'task_folders': task_folders,
         'events': events,
         'show_events': show_events,
-        'three_days_out': three_days_out,
         'columns': columns,
     }
 

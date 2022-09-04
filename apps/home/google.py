@@ -35,11 +35,17 @@ def get_events(user_id):
                                               orderBy='startTime').execute()
     events = events_result.get('items', [])
 
-    if not events:
-        print('No upcoming events found.')
-        return
-
-    # Prints the start and name of the next 10 events
+    events_simplified = []
     for event in events:
+        event_simplified = {}
         start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        date = start[0:10]
+        datetime_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        weekday = datetime_date.strftime('%A')
+        event_simplified['date'] = date
+        event_simplified['weekday'] = weekday
+        event_simplified['duration'] = start[11:]
+        event_simplified['summary'] = event['summary']
+        events_simplified.append(event_simplified)
+
+    return events_simplified

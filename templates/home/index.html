@@ -29,22 +29,26 @@
     <div class="table-responsive">
     <table class="table events">
 
+        <th>Date
+        <th>Weekday
+        <th>Summary
+        <th>Duration
+
         {% for event in events %}
 
             <tr>
 
                 <td class="event-date">
-                    {{ event.date|date:"Y-m-d" }}
+                    {{ event.date }}
 
                 <td class="event-date">
-                    {{ event.date|date:"l" }}
+                    {{ event.weekday }}
 
-                <td class="description
-                    {% if event.date < three_days_out %} soon{% endif %}">
+                <td class="description">
+                    {{ event.summary }}
 
-                    <a class="event" href="/events/{{event.id}}/edit">
-                        {{ event.description }}
-                    </a>
+                <td class="event-date">
+                    {{ event.duration }}
 
         {% endfor %}
 
