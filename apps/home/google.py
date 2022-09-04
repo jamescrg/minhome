@@ -29,10 +29,9 @@ def get_events(user_id):
     service = build_service(user_id)
 
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                            maxResults=10, singleEvents=True,
-                                              orderBy='startTime').execute()
+    events_result = service.events().list(
+        calendarId='primary', timeMin=now,
+        maxResults=10, singleEvents=True, orderBy='startTime').execute()
     events = events_result.get('items', [])
 
     if events:
@@ -48,6 +47,6 @@ def get_events(user_id):
             event_simplified['duration'] = start[11:]
             event_simplified['summary'] = event['summary']
             events_simplified.append(event_simplified)
-            return events_simplified
+        return events_simplified
     else:
         return None
