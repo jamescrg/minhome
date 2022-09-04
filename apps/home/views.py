@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 
+from accounts.models import CustomUser
 from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
@@ -16,6 +17,7 @@ import apps.home.google as google
 @login_required
 def index(request):
     user_id = request.user.id
+    user = get_object_or_404(CustomUser, pk=user_id)
 
 
     # EVENTS
@@ -36,7 +38,10 @@ def index(request):
 
     # if events are shown, load them
     if show_events:
-        events = google.get_events(user_id)
+        if user.google_credentials:
+            events = google.get_events(user_id)
+        else:
+            events = None
     else:
         events = None
 
