@@ -31,6 +31,7 @@ def index(request):
     if not show_events:
         today = date.today()
         timestamp = int(request.session.get('events_hide_expire'))
+        timestamp = timestamp - (60*60*5) # convert to eastern time
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_events = True
@@ -57,6 +58,7 @@ def index(request):
     if not show_tasks:
         today = date.today()
         timestamp = int(request.session.get('tasks_hide_expire'))
+        timestamp = timestamp - (60*60*5) # convert to eastern time
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_tasks = True
