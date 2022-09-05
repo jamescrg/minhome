@@ -31,7 +31,6 @@ def index(request):
     if not show_events:
         today = date.today()
         timestamp = int(request.session.get('events_hide_expire'))
-        timestamp = timestamp - (60*60*5) # convert to eastern time
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_events = True
@@ -58,7 +57,6 @@ def index(request):
     if not show_tasks:
         today = date.today()
         timestamp = int(request.session.get('tasks_hide_expire'))
-        timestamp = timestamp - (60*60*5) # convert to eastern time
         old_date = date.fromtimestamp(timestamp)
         if today > old_date:
             show_tasks = True
@@ -102,17 +100,6 @@ def index(request):
 
 
 @login_required
-def toggle_tasks(request):
-    show_tasks = request.session.get('show_tasks', True)
-    if show_tasks:
-        request.session['show_tasks'] = False
-        request.session['tasks_hide_expire'] = date.today().strftime('%s')
-    else:
-        request.session['show_tasks'] = True
-    return redirect('/home/')
-
-
-@login_required
 def toggle_events(request):
     show_events = request.session.get('show_events', True)
     if show_events:
@@ -120,6 +107,17 @@ def toggle_events(request):
         request.session['events_hide_expire'] = date.today().strftime('%s')
     else:
         request.session['show_events'] = True
+    return redirect('/home/')
+
+
+@login_required
+def toggle_tasks(request):
+    show_tasks = request.session.get('show_tasks', True)
+    if show_tasks:
+        request.session['show_tasks'] = False
+        request.session['tasks_hide_expire'] = date.today().strftime('%s')
+    else:
+        request.session['show_tasks'] = True
     return redirect('/home/')
 
 
