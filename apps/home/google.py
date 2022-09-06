@@ -1,7 +1,5 @@
-
-import calendar
 import json
-import datetime
+from datetime import datetime, date, timedelta
 from dateutil.parser import parse
 
 from django.shortcuts import get_object_or_404
@@ -30,7 +28,7 @@ def get_events(user_id):
 
     service = build_service(user_id)
 
-    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
     events_result = service.events().list(
         calendarId='primary', timeMin=now,
         maxResults=10, singleEvents=True, orderBy='startTime').execute()
@@ -41,9 +39,6 @@ def get_events(user_id):
         events_simplified = []
 
         for event in events:
-
-            if 'dateTime' in event['start'].keys():
-                print(parse(event['start']['dateTime']))
 
             event_simple = {}
             start = event['start'].get('dateTime', event['start'].get('date'))
@@ -59,10 +54,22 @@ def get_events(user_id):
 
             event_simple['summary'] = event['summary']
 
+            today = date.today()
+            soon = today + timedelta(days=3)
+            pydate = date.fromisoformat(event_simple['date'])
+
+            if pydate <= soon:
+                event_simple['soon'] = 'soon'
+            else:
+                event_simple['soon'] = ''
+
             events_simplified.append(event_simple)
 
         events_simplified = [i for i in events_simplified if not (
             i['summary'] == 'Change water fountain filters')]
+
+        from pprint import pprint
+        pprint(events_simplified)
 
         return events_simplified
 

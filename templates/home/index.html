@@ -39,20 +39,20 @@
 
             <tr>
 
-                <td class="event-date">
-                    {{ event.date }}
+              <td class="event-date {{event.soon}}">
+                {{ event.date }}
 
-                <td class="event-date">
-                    {{ event.month }}
+              <td class="event-date {{event.soon}}">
+                {{ event.month }}
 
-                <td class="event-date">
-                    {{ event.weekday }}
+              <td class="event-date {{event.soon}}">
+                {{ event.weekday }}
 
-                <td class="description">
-                    {{ event.summary }}
+              <td class="description {{event.soon}}">
+                {{ event.summary }}
 
-                <td class="event-date">
-                    {{ event.time }}
+              <td class="event-date {{event.soon}}">
+                {{ event.time }}
 
         {% endfor %}
 

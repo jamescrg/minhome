@@ -57,9 +57,6 @@ def index(request):
     else:
         events = None
 
-    print('show events', show_events)
-    from pprint import pprint
-    pprint(events)
 
     # TASKS
     # ----------------
