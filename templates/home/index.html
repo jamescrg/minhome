@@ -33,7 +33,7 @@
         <th>Month
         <th>Weekday
         <th>Summary
-        <th>Duration
+        <th>Time
 
         {% for event in events %}
 
@@ -52,7 +52,7 @@
                     {{ event.summary }}
 
                 <td class="event-date">
-                    {{ event.duration }}
+                    {{ event.time }}
 
         {% endfor %}
 

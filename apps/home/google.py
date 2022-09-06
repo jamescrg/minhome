@@ -2,6 +2,7 @@
 import calendar
 import json
 import datetime
+from dateutil.parser import parse
 
 from django.shortcuts import get_object_or_404
 import google.oauth2.credentials
@@ -36,20 +37,34 @@ def get_events(user_id):
     events = events_result.get('items', [])
 
     if events:
+
         events_simplified = []
+
         for event in events:
-            event_simplified = {}
+
+            if 'dateTime' in event['start'].keys():
+                print(parse(event['start']['dateTime']))
+
+            event_simple = {}
             start = event['start'].get('dateTime', event['start'].get('date'))
-            date = start[0:10]
-            datetime_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
-            weekday = datetime_date.strftime('%A')
-            month = calendar.month_name[datetime_date.month]
-            event_simplified['date'] = date
-            event_simplified['weekday'] = weekday
-            event_simplified['month'] = month
-            event_simplified['duration'] = start[11:]
-            event_simplified['summary'] = event['summary']
-            events_simplified.append(event_simplified)
+            start = parse(start)
+
+            event_simple['date'] = start.strftime('%Y-%m-%d')
+            event_simple['weekday'] = start.strftime('%A')
+            event_simple['month'] = start.strftime('%B')
+
+            event_simple['time'] = start.strftime('%I:%M %p')
+            if event_simple['time'] == '12:00 AM':
+                event_simple['time'] = ''
+
+            event_simple['summary'] = event['summary']
+
+            events_simplified.append(event_simple)
+
+        events_simplified = [i for i in events_simplified if not (
+            i['summary'] == 'Change water fountain filters')]
+
         return events_simplified
+
     else:
         return None
