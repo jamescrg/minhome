@@ -1,4 +1,5 @@
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
+import time
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -29,10 +30,21 @@ def index(request):
     # if events are hidden, check the date they were hidden
     # if that date is less than today, show them
     if not show_events:
+
+        # get current day
         today = date.today()
+
+        # get day events were previously hidden
         timestamp = int(request.session.get('events_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
-        if today > old_date:
+
+        # check the hour of the day as an integer
+        now = time.localtime()
+        current_hour = int(time.strftime("%H", now))
+
+        # set events to shown only if today is greater than the old date
+        # and the hour on the server clock is greater than 5 am
+        if today > old_date and current_hour > 5:
             show_events = True
             request.session['show_events'] = True
 
@@ -55,10 +67,21 @@ def index(request):
     # if tasks are hidden, check the date they were hidden
     # if that date is less than today, show them
     if not show_tasks:
+
+        # get current day
         today = date.today()
-        timestamp = int(request.session.get('tasks_hide_expire'))
+
+        # get day events were previously hidden
+        timestamp = int(request.session.get('events_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
-        if today > old_date:
+
+        # check the hour of the day as an integer
+        now = time.localtime()
+        current_hour = int(time.strftime("%H", now))
+
+        # set events to shown only if today is greater than the old date
+        # and the hour on the server clock is greater than 5 am
+        if today > old_date and current_hour > 5:
             show_tasks = True
             request.session['show_tasks'] = True
 
