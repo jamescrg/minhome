@@ -29,7 +29,7 @@ def index(request):
     if not show_events:
 
         # get current day
-        now = datetime.now(pytz.timezone('America/New_York'))
+        now = datetime.now(pytz.timezone('US/Eastern'))
         today = now.date()
 
         # get day events were previously hidden
@@ -62,7 +62,7 @@ def index(request):
     if not show_tasks:
 
         # get current day
-        now = datetime.now(pytz.timezone('America/New_York'))
+        now = datetime.now(pytz.timezone('US/Eastern'))
         today = now.date()
 
         # get day events were previously hidden
