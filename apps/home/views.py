@@ -1,8 +1,7 @@
 from datetime import datetime, date, timedelta
-from dateutil import tz
+import pytz
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -11,7 +10,6 @@ from accounts.models import CustomUser
 from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
-from apps.events.models import Event
 import apps.home.google as google
 
 
@@ -19,7 +17,6 @@ import apps.home.google as google
 def index(request):
     user_id = request.user.id
     user = get_object_or_404(CustomUser, pk=user_id)
-
 
     # EVENTS
     # ----------------
@@ -32,7 +29,7 @@ def index(request):
     if not show_events:
 
         # get current day
-        now = datetime.now() - timedelta(hours=4)
+        now = datetime.now(pytz.timezone('America/New_York'))
         today = now.date()
 
         # get day events were previously hidden
@@ -65,7 +62,7 @@ def index(request):
     if not show_tasks:
 
         # get current day
-        now = datetime.now() - timedelta(hours=4)
+        now = datetime.now(pytz.timezone('America/New_York'))
         today = now.date()
 
         # get day events were previously hidden
