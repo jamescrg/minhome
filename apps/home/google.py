@@ -68,8 +68,8 @@ def get_events(user_id):
         events_simplified = [i for i in events_simplified if not (
             i['summary'] == 'Change water fountain filters')]
 
-        from pprint import pprint
-        pprint(events_simplified)
+        # from pprint import pprint
+        # pprint(events_simplified)
 
         return events_simplified
 
