@@ -65,19 +65,16 @@ def index(request):
     if not show_tasks:
 
         # get current day
-        today = date.today()
+        now = datetime.now() - timedelta(hours=4)
+        today = now.date()
 
         # get day events were previously hidden
         timestamp = int(request.session.get('events_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
 
-        # check the hour of the day as an integer
-        now = time.localtime()
-        current_hour = int(time.strftime("%H", now))
-
         # set events to shown only if today is greater than the old date
         # and the hour on the server clock is greater than 5 am
-        if today > old_date and current_hour > 5:
+        if today > old_date:
             show_tasks = True
             request.session['show_tasks'] = True
 
