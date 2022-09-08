@@ -1,5 +1,5 @@
 from datetime import datetime, date, timedelta
-import pytz
+from dateutil import tz
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -29,7 +29,7 @@ def index(request):
     if not show_events:
 
         # get current day
-        now = datetime.now(pytz.timezone('US/Eastern'))
+        now = datetime.now(tz.gettz('US/Eastern'))
         today = now.date()
 
         # get day events were previously hidden
@@ -62,7 +62,7 @@ def index(request):
     if not show_tasks:
 
         # get current day
-        now = datetime.now(pytz.timezone('US/Eastern'))
+        now = datetime.now(tz.gettz('US/Eastern'))
         today = now.date()
 
         # get day events were previously hidden
