@@ -74,6 +74,7 @@ def add(request):
         folder = get_object_or_404(Folder, pk=request.POST.get('folder_id'))
         task.folder = folder
         task.title = request.POST.get('title')
+        task.title = task.title[0].upper() + task.title[1:]
         task.save()
         return redirect('tasks')
 
@@ -94,6 +95,7 @@ def edit(request, id):
         if form.is_valid():
             task = form.save(commit=False)
             task.user_id = user_id
+            task.title = task.title[0].upper() + task.title[1:]
             task.save()
 
         return redirect('tasks')
