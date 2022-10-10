@@ -84,6 +84,16 @@ def index(request):
             tasks = tasks.order_by('status', 'title')
             folder.tasks = tasks
 
+    # check whether there are some tasks in any of the folders
+    # if so, flag as true
+    # the purpose of this flag is to show the tasks area
+    # only if there are at least some unchecked tasks to display
+    some_tasks = False
+    if task_folders:
+        for folder in task_folders:
+            if folder.tasks:
+                some_tasks = True
+
 
     # FAVORITES
     # ----------------
@@ -104,6 +114,7 @@ def index(request):
         'search_engine': 'google.com/search',
         'show_tasks': show_tasks,
         'task_folders': task_folders,
+        'some_tasks': some_tasks,
         'events': events,
         'show_events': show_events,
         'columns': columns,
