@@ -65,17 +65,16 @@ def index(request):
         now = datetime.now(pytz.timezone('US/Eastern'))
         today = now.date()
 
-        # get day events were previously hidden
-        timestamp = int(request.session.get('events_hide_expire'))
+        # get day tasks were previously hidden
+        timestamp = int(request.session.get('tasks_hide_expire'))
         old_date = date.fromtimestamp(timestamp)
 
         # set events to shown only if today is greater than the old date
-        # and the hour on the server clock is greater than 5 am
         if today > old_date:
             show_tasks = True
             request.session['show_tasks'] = True
 
-    # check for task_folders
+    # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(
         user_id=user_id, page='tasks', home_column__gt=1)
     if task_folders:
