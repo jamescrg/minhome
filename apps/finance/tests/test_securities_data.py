@@ -24,10 +24,10 @@ def test_sort():
     assets = securities_data.asset_list
     data = securities_data.collect(assets)
     sorted_data = securities_data.sort(data, 'symbol')
-    assert sorted_data[0]['symbol'] == 'GME'
-    assert sorted_data[-1]['symbol'] == 'TSLA'
+    assert sorted_data[0]['symbol'] == 'BBBY'
+    assert sorted_data[-1]['symbol'] == 'VTV'
     sorted_data = securities_data.sort(data, 'name')
-    assert sorted_data[0]['name'] == 'Gamestop'
-    assert sorted_data[-1]['name'] == 'Tilray'
+    assert sorted_data[0]['name'] == 'BBBY'
+    assert sorted_data[-1]['name'] == 'Vanguard Value'
     sorted_data = securities_data.sort(data, 'percent_change')
     assert sorted_data
