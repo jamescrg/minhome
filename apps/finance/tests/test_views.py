@@ -1,38 +1,11 @@
 
 import pytest
 
-from django.test import Client
 from django.urls import reverse
-from django.shortcuts import get_object_or_404
 from pytest_django.asserts import assertTemplateUsed, assertContains
 
-from accounts.models import CustomUser
-import apps.finance.crypto_data as crypto_data
 
 pytestmark = pytest.mark.django_db
-
-
-# ---------------------------------------------------------------------------
-# fixtures
-# ---------------------------------------------------------------------------
-
-@pytest.fixture
-def user():
-    user = CustomUser.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-    return user
-
-
-@pytest.fixture
-def client(user):
-    client = Client()
-    client.login(username='john', password='johnpassword')
-    return client
-
-
-
-# ---------------------------------------------------------------------------
-# tests
-# ---------------------------------------------------------------------------
 
 
 def test_crypto(client):
