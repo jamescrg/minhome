@@ -1,159 +1,94 @@
 
-from django.test import TestCase
-from django.test import TransactionTestCase
-from django.test import Client
+
+import pytest
+
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from pytest_django.asserts import assertTemplateUsed
 
-from accounts.models import CustomUser
-from apps.folders.models import Folder
 from apps.notes.models import Note
 
-
-class ModelTests(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
-
-        folder1 = Folder.objects.create(
-            user_id=1,
-            page='notes',
-            name='main',
-        )
-
-        Note.objects.create(
-            user_id=1,
-            folder=folder1,
-            subject='notes',
-            note='Main',
-            selected=1,
-        )
-
-    def testContent(self):
-        folder = Folder.objects.all().first()
-        note = Note.objects.get(subject='notes')
-        expectedValues = {
-            'user_id': 1,
-            'folder_id': folder.id,
-            'subject': 'notes',
-            'note': 'Main',
-            'selected': 1,
-        }
-        for key, val in expectedValues.items():
-            with self.subTest(key=key, val=val):
-                self.assertEqual(getattr(note, key), val)
-
-    def testString(self):
-        note = Note.objects.get(subject='notes')
-        self.assertEqual(str(note), f'{note.subject}')
+# This flags all tests in the file as needing database access
+# Once setup, the database is cached to be used for all subsequent tests
+# and rolls back transactions, to isolate tests from each other.
+# This is the same way the standard Django TestCase uses the database.
+# However pytest-django also caters for transaction test cases and allows you to
+# keep the test databases configured across different test runs.
+pytestmark = pytest.mark.django_db
 
 
-class ViewTests(TransactionTestCase):
-    reset_sequences = True
+def test_note_string(note):
+    note = Note.objects.get(subject='Things I Like')
+    assert str(note) == f'{note.subject}'
 
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
 
-        folders = [
-            'Social',
-            'Recipes',
-            'Places',
-            'Philosophy',
-        ]
+def test_note_content(note, user, folder1):
+    note = Note.objects.get(subject='Things I like')
+    expectedValues = {
+        'user': user,
+        'folder': folder1,
+        'selected': 1,
+        'subject': 'Things I Like',
+        'note': 'Ice cream and cookies are nice',
+    }
+    for key, val in expectedValues.items():
+        assert getattr(note, key) == val
 
-        for name in folders:
-            user_id = self.user.id
-            Folder.objects.create(
-                user_id=user_id,
-                page='notes',
-                name=name,
-            )
 
-        Folder.objects.filter(name='Philosophy').update(selected=1)
+def test_index(client):
+    response = client.get('/notes/')
+    assert response.status_code == 200
+    response = client.get(reverse('notes'))
+    assert response.status_code == 200
+    response = client.get(reverse('notes'))
+    assertTemplateUsed(response, 'notes/content.html')
 
-        notes = [
-            'Socrates',
-            'Kant',
-            'Mill',
-            'Nietzsche',
-        ]
 
-        for subject in notes:
-            Note.objects.create(
-                user_id=user_id,
-                folder_id=4,
-                subject=subject,
-                note='Some text here',
-            )
+def test_select(client, user, folder1, note):
+    response = client.get(f'/notes/{note.id}')
+    assert response.status_code == 302
+    selected_note = get_object_or_404(Note, pk=note.id)
+    assert selected_note.selected == 1
 
-        Note.objects.filter(subject='Mill').update(selected=1)
 
-    def testIndex(self):
-        response = self.client.get('/notes/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'notes')
-        self.assertTemplateUsed(response, 'notes/content.html')
-        self.assertContains(response, 'Philosophy')
+def test_add_form(client):
+    response = client.get('/notes/add')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'notes/form.html')
 
-    def testSelectFolder(self):
-        response = self.client.get('/folders/4/notes')
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get('/notes/')
-        self.assertContains(response, 'Nietzsche')
 
-    def testSelectNote(self):
-        response = self.client.get('/notes/4')
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get('/notes/')
-        self.assertContains(response, 'Nietzsche')
+def test_add_data(client, folder1):
+    data = {
+        'folder': folder1.id,
+        'subject': 'Plato',
+        'note': 'A Greek philosopher',
+    }
+    response = client.post('/notes/add', data)
+    assert response.status_code == 302
+    found = Note.objects.filter(subject='Plato').exists()
+    assert found
 
-    def testAdd(self):
-        response = self.client.get('/notes/add')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'notes')
-        self.assertTemplateUsed(response, 'notes/form.html')
 
-    def testAddData(self):
-        data = {
-            'user_id': self.user.id,
-            'folder': 4,
-            'subject': 'Existentialism',
-            'note': 'Sad',
-        }
+def test_edit_form(client, note):
+    response = client.get(f'/notes/{note.id}/edit')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'notes/form.html')
 
-        response = self.client.post('/notes/add', data)
-        self.assertEqual(response.status_code, 302)
-        found = Note.objects.filter(subject='Existentialism').exists()
-        self.assertTrue(found)
 
-    def testEdit(self):
-        response = self.client.get('/notes/4/edit')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'notes')
-        self.assertTemplateUsed(response, 'notes/form.html')
+def test_edit_data(client, folder1, note):
+    data = {
+        'folder': folder1.id,
+        'subject': 'Descartes',
+        'note': 'A French philosopher',
+    }
+    response = client.post(f'/notes/{note.id}/edit', data)
+    assert response.status_code == 302
+    found = Note.objects.filter(subject='Descartes').exists()
+    assert found
 
-    def testEditData(self):
-        data = {
-            'user_id': self.user.id,
-            'folder': 4,
-            'subject': 'Nietzsche',
-            'note': 'Uebermensch',
-        }
 
-        response = self.client.post('/notes/4/edit', data)
-        self.assertEqual(response.status_code, 302)
-        found = Note.objects.filter(note='Uebermensch').exists()
-        self.assertTrue(found)
-
-    def testDelete(self):
-        response = self.client.get('/notes/delete/4')
-        found = Note.objects.filter(note='Uebermensch').exists()
-        self.assertFalse(found)
+def test_delete(client, note):
+    response = client.get(f'/notes/{note.id}/delete')
+    assert response.status_code == 302
+    found = Note.objects.filter(subject='Things I like').exists()
+    assert not found
