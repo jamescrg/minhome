@@ -71,12 +71,14 @@ def delete(request, id, page):
         raise Http404('Record not found.')
     folder.delete()
     if page != 'tasks':
-        if request.session['selected_folders'][page]:
-            del request.session['selected_folders'][page]
+        if 'selected_folders' in request.session:
+            if page in request.session['selected_folders']:
+                del request.session['selected_folders'][page]
     if page == 'tasks':
-        if request.session['selected_folders']['tasks']:
-            if id in request.session['selected_folders']['tasks']:
-                request.session['selected_folders']['tasks'].remove(id)
+        if 'selected_folders' in request.session:
+            if 'tasks' in request.session['selected_folders']:
+                if id in request.session['selected_folders']['tasks']:
+                    request.session['selected_folders']['tasks'].remove(id)
     return redirect(page)
 
 

@@ -22,28 +22,29 @@ def test_content(user, folder):
         'user_id': user.id,
         'page': 'favorites',
         'name': 'Main',
-        'home_column': 1,
-        'home_rank': 1,
-        'selected': 1,
-        'active': 1,
+        'home_column': 0,
+        'home_rank': 0,
+        'selected': 0,
+        'active': 0,
     }
     for key, val in expectedValues.items():
         assert getattr(folder, key) == val
 
 
 def test_home(client, folder):
-    response = client.get('/folders/home/4/notes')
-    assertEqual(response.status_code, 302)
-    folder = Folder.objects.filter(pk=4).get()
+    response = client.get(f'/folders/home/{folder.id}/notes')
+    assert response.status_code == 302
+    folder = Folder.objects.filter(pk=folder.id).get()
     assert folder.home_column == 4
     assert folder.home_rank == 1
 
 
-def test_select(client):
-    response = client.get('/folders/4/notes')
+def test_select(client, folders):
+    folder = Folder.objects.filter(name='Philosophy').get()
+    response = client.get(f'/folders/{folder.id}/notes')
     assert response.status_code == 302
     response = client.get('/notes/')
-    assert 'Philosophy' in response
+    assert folder in response.context['folders']
 
 
 def test_insert(client):
@@ -53,28 +54,23 @@ def test_insert(client):
         'page': 'notes',
         'name': 'Existentialism',
     }
-
     response = client.post('/folders/insert/notes', data)
     assert response.status_code == 302
     found = Folder.objects.filter(name='Existentialism').exists()
     assert found
 
 
-def test_update(client):
+def test_update(client, folder):
     data = {
-        'user_id': user.id,
-        'folder_id': 4,
-        'page': 'notes',
-        'name': 'Existentialism',
+        'name': 'Atlanta',
     }
-
-    response = client.post('/folders/update/4/notes', data)
+    response = client.post(f'/folders/update/{folder.id}/favorites', data)
     assert response.status_code == 302
-    found = Folder.objects.filter(name='Existentialism').exists()
+    found = Folder.objects.filter(name='Atlanta').exists()
     assert found
 
 
-def test_delete(client):
-    response = client.get('/folders/delete/4/notes')
-    found = Folder.objects.filter(name='Philosophy').exists()
+def test_delete(client, folder):
+    client.get(f'/folders/delete/{folder.id}/notes')
+    found = Folder.objects.filter(id=folder.id).exists()
     assert not found

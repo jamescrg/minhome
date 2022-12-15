@@ -23,16 +23,16 @@ def client(user):
 
 @pytest.fixture
 def folder(user):
-    folder1 = Folder.objects.create(
+    folder = Folder.objects.create(
         user=user,
         page='favorites',
         name='Main',
-        home_column=1,
-        home_rank=1,
-        selected=1,
-        active=1,
+        home_column=0,
+        home_rank=0,
+        selected=0,
+        active=0,
     )
-    return folder1
+    return folder
 
 
 @pytest.fixture

@@ -1,250 +1,160 @@
 
-from django.test import TestCase
-from django.test import TransactionTestCase
-from django.test import Client
+import pytest
+
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
 
-from accounts.models import CustomUser
-from apps.folders.models import Folder
 from apps.favorites.models import Favorite
+from apps.folders.models import Folder
 
 
-class HomeViewTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
-
-    def testBaseUrl(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-
-    def testHomeUrl(self):
-        response = self.client.get('/home/')
-        self.assertEqual(response.status_code, 200)
-
-    def testNamedRoute(self):
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
-
-    def testCorrectTemplate(self):
-        response = self.client.get(reverse('home'))
-        self.assertTemplateUsed(response, 'home/index.html')
+pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
-class HomeFolderTests(TransactionTestCase):
-    reset_sequences = True
+# ------------------------------------
+# test urls and templates
+# ------------------------------------
 
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
-        self.folders = [
-            # column 1
-            {
-                'name': 'Main',
-                'home_column': 1,
-                'home_rank': 1,
-            },
-            {
-                'name': 'Entertainment',
-                'home_column': 1,
-                'home_rank': 2,
-            },
-            {
-                'name': 'Local',
-                'home_column': 1,
-                'home_rank': 3,
-            },
-            {
-                'name': 'Social',
-                'home_column': 1,
-                'home_rank': 4,
-            },
-            # column 2
-            {
-                'name': 'Dev',
-                'home_column': 2,
-                'home_rank': 1,
-            },
-            {
-                'name': 'Research',
-                'home_column': 2,
-                'home_rank': 2,
-            },
-            {
-                'name': 'Filing',
-                'home_column': 2,
-                'home_rank': 3,
-            },
-            {
-                'name': 'Food',
-                'home_column': 2,
-                'home_rank': 4,
-            },
-            # column 3
-            {
-                'name': 'Philosophy',
-                'home_column': 3,
-                'home_rank': 1,
-            },
-            {
-                'name': 'Psych',
-                'home_column': 3,
-                'home_rank': 2,
-            },
-            {
-                'name': 'History',
-                'home_column': 3,
-                'home_rank': 3,
-            },
-            {
-                'name': 'Math',
-                'home_column': 3,
-                'home_rank': 4,
-            },
-            # column 4
-            {
-                'name': 'Physics',
-                'home_column': 4,
-                'home_rank': 1,
-            },
-            {
-                'name': 'Anthro',
-                'home_column': 4,
-                'home_rank': 2,
-            },
-            {
-                'name': 'Chorus',
-                'home_column': 4,
-                'home_rank': 3,
-            },
-            {
-                'name': 'Annoying',
-                'home_column': 4,
-                'home_rank': 4,
-            },
-        ]
-        for folder in self.folders:
-            Folder.objects.create(
-                user_id=self.user.id,
-                name=folder['name'],
-                home_column=folder['home_column'],
-                home_rank=folder['home_rank'],
-                page='favorites',
-            )
-        for i in range(1, 6):
-            Favorite.objects.create(
-                user_id=self.user.id,
-                folder_id=1,
-                name=f'Favorite No. {i}',
-                description=f'Awesome {i}',
-                home_rank=i,
-            )
+def test_base_url(client):
+    response = client.get('/')
+    assert response.status_code == 200
 
-    def test_redirect(self):
-        response = self.client.get('/home/folder/4/up/')
-        self.assertEqual(response.status_code, 302)
 
-    def test_redirect(self):
-        response = self.client.get('/home/folder/4/up/')
-        self.assertEqual(response.status_code, 302)
+def test_home_url(client):
+    response = client.get('/home/')
+    assert response.status_code == 200
 
-    def test_up_from_bottom(self):
-        response = self.client.get('/home/folder/4/up/')
-        folder = Folder.objects.get(pk=4)
-        self.assertEqual(folder.home_rank, 3)
-        folder = Folder.objects.get(pk=3)
-        self.assertEqual(folder.home_rank, 4)
 
-    def test_up_from_middle(self):
-        response = self.client.get('/home/folder/3/up/')
-        folder = Folder.objects.get(pk=3)
-        self.assertEqual(folder.home_rank, 2)
+def test_named_route(client):
+    response = client.get(reverse('home'))
+    assert response.status_code == 200
 
-    def test_up_from_top(self):
-        response = self.client.get('/home/folder/1/up/')
-        folder = Folder.objects.get(pk=1)
-        self.assertEqual(folder.home_rank, 1)
-        folder = Folder.objects.get(pk=2)
-        self.assertEqual(folder.home_rank, 2)
 
-    def test_down_from_bottom(self):
-        response = self.client.get('/home/folder/16/down/')
-        folder = Folder.objects.get(pk=16)
-        self.assertEqual(folder.home_rank, 4)
-        folder = Folder.objects.get(pk=15)
-        self.assertEqual(folder.home_rank, 3)
+def test_correct_template(client):
+    response = client.get(reverse('home'))
+    assertTemplateUsed(response, 'home/index.html')
 
-    def test_down_from_middle(self):
-        response = self.client.get('/home/folder/10/down/')
-        folder = Folder.objects.get(pk=10)
-        self.assertEqual(folder.home_rank, 3)
-        folder = Folder.objects.get(pk=11)
-        self.assertEqual(folder.home_rank, 2)
 
-    def test_down_from_top(self):
-        response = self.client.get('/home/folder/13/down/')
-        folder = Folder.objects.get(pk=13)
-        self.assertEqual(folder.home_rank, 2)
-        folder = Folder.objects.get(pk=14)
-        self.assertEqual(folder.home_rank, 1)
+# ------------------------------------
+# folder movement
+# ------------------------------------
 
-    def test_down_from_top_to_bottom(self):
-        response = self.client.get('/home/folder/1/down/')
-        response = self.client.get('/home/folder/1/down/')
-        response = self.client.get('/home/folder/1/down/')
-        folder = Folder.objects.get(pk=1)
-        self.assertEqual(folder.home_rank, 4)
-        folder = Folder.objects.get(pk=4)
-        self.assertEqual(folder.home_rank, 3)
+def test_redirect(client, folders):
+    response = client.get(f'/home/folder/{folders[3].id}/up/')
+    assert response.status_code == 302
 
-    def test_left_from_far_left(self):
-        response = self.client.get('/home/folder/1/left/')
-        folder = Folder.objects.get(pk=1)
-        self.assertEqual(folder.home_column, 1)
 
-    def test_left_from_middle_left(self):
-        response = self.client.get('/home/folder/5/left/')
-        folder = Folder.objects.get(pk=5)
-        self.assertEqual(folder.home_column, 1)
-        self.assertEqual(folder.home_rank, 5)
+def test_up_from_bottom(client, folders):
+    client.get(f'/home/folder/{folders[3].id}/up/')
+    folder = Folder.objects.get(pk=folders[3].id)
+    assert folder.home_rank == 3
+    folder = Folder.objects.get(pk=folders[2].id)
+    assert folder.home_rank == 4
 
-    def test_right_from_middle_right(self):
-        response = self.client.get('/home/folder/9/right/')
-        folder = Folder.objects.get(pk=9)
-        self.assertEqual(folder.home_column, 4)
-        self.assertEqual(folder.home_rank, 5)
 
-    def test_right_from_far_right(self):
-        response = self.client.get('/home/folder/13/right/')
-        folder = Folder.objects.get(pk=13)
-        self.assertEqual(folder.home_column, 4)
+def test_up_from_middle(client, folders):
+    client.get(f'/home/folder/{folders[2].id}/up/')
+    folder = Folder.objects.get(pk=3)
+    assert folder.home_rank == 2
 
-    def favorite_up_from_bottom(self):
-        response = self.client.get('/home/favorite/5/up/')
-        favorite = Favorite.objects.get(pk=5)
-        self.assertEqual(favorite.home_rank, 4)
-        favorite = Favorite.objects.get(pk=4)
-        self.assertEqual(favorite.home_rank, 5)
 
-    def favorite_up_from_top(self):
-        response = self.client.get('/home/favorite/1/up/')
-        favorite = Favorite.objects.get(pk=1)
-        self.assertEqual(favorite.home_rank, 1)
+def test_up_from_top(client, folders):
+    client.get(f'/home/folder/{folders[0].id}/up/')
+    folder = Folder.objects.get(pk=folders[0].id)
+    assert folder.home_rank == 1
+    folder = Folder.objects.get(pk=folders[1].id)
+    assert folder.home_rank == 2
 
-    def favorite_down_from_bottom(self):
-        response = self.client.get('/home/favorite/5/down/')
-        favorite = Favorite.objects.get(pk=5)
-        self.assertEqual(favorite.home_rank, 5)
 
-    def favorite_down_from_bottom(self):
-        response = self.client.get('/home/favorite/1/down/')
-        favorite = Favorite.objects.get(pk=1)
-        self.assertEqual(favorite.home_rank, 2)
-        favorite = Favorite.objects.get(pk=2)
-        self.assertEqual(favorite.home_rank, 1)
+def test_down_from_bottom(client, folders):
+    client.get(f'/home/folder/{folders[15].id}/down/')
+    folder = Folder.objects.get(pk=folders[15].id)
+    assert folder.home_rank == 4
+    folder = Folder.objects.get(pk=folders[14].id)
+    assert folder.home_rank == 3
+
+
+def test_down_from_middle(client, folders):
+    client.get(f'/home/folder/{folders[9].id}/down/')
+    folder = Folder.objects.get(pk=folders[9].id)
+    assert folder.home_rank == 3
+    folder = Folder.objects.get(pk=folders[10].id)
+    assert folder.home_rank == 2
+
+
+def test_down_from_top(client, folders):
+    client.get(f'/home/folder/{folders[12].id}/down/')
+    folder = Folder.objects.get(pk=folders[12].id)
+    assert folder.home_rank == 2
+    folder = Folder.objects.get(pk=folders[13].id)
+    assert folder.home_rank == 1
+
+
+def test_down_from_top_to_bottom(client, folders):
+    client.get(f'/home/folder/{folders[0].id}/down/')
+    client.get(f'/home/folder/{folders[0].id}/down/')
+    client.get(f'/home/folder/{folders[0].id}/down/')
+    folder = Folder.objects.get(pk=folders[0].id)
+    assert folder.home_rank == 4
+    folder = Folder.objects.get(pk=folders[3].id)
+    assert folder.home_rank == 3
+
+
+def test_left_from_far_left(client, folders):
+    client.get(f'/home/folder/{folders[0].id}/left/')
+    folder = Folder.objects.get(pk=folders[0].id)
+    assert folder.home_column == 1
+
+
+def test_left_from_middle_left(client, folders):
+    client.get(f'/home/folder/{folders[4].id}/left/')
+    folder = Folder.objects.get(pk=folders[4].id)
+    assert folder.home_column == 1
+    assert folder.home_rank == 5
+
+
+def test_right_from_middle_right(client, folders):
+    client.get(f'/home/folder/{folders[8].id}/right/')
+    folder = Folder.objects.get(pk=folders[8].id)
+    assert folder.home_column == 4
+    assert folder.home_rank == 5
+
+
+def test_right_from_far_right(client, folders):
+    client.get(f'/home/folder/{folders[12].id}/right/')
+    folder = Folder.objects.get(pk=folders[12].id)
+    assert folder.home_column == 4
+
+
+# ------------------------------------
+# favorite movement
+# ------------------------------------
+
+def test_favorite_up_from_bottom(client, favorites):
+    client.get(f'/home/favorite/{favorites[4].id}/up/')
+    favorite = Favorite.objects.get(pk=favorites[4].id)
+    assert favorite.home_rank == 4
+    favorite = Favorite.objects.get(pk=favorites[3].id)
+    assert favorite.home_rank == 5
+
+
+def test_favorite_up_from_top(client, favorites):
+    client.get(f'/home/favorite/{favorites[0].id}/up/')
+    favorite = Favorite.objects.get(pk=favorites[0].id)
+    assert favorite.home_rank == 1
+
+
+def test_favorite_down_from_bottom(client, favorites):
+    client.get(f'/home/favorite/{favorites[4].id}/down/')
+    favorite = Favorite.objects.get(pk=favorites[4].id)
+    assert favorite.home_rank == 6
+
+
+def test_favorite_down_from_top(client, favorites):
+    client.get(f'/home/favorite/{favorites[0].id}/down/')
+    favorite = Favorite.objects.get(pk=favorites[0].id)
+    assert favorite.home_rank == 2
+    favorite = Favorite.objects.get(pk=favorites[1].id)
+    assert favorite.home_rank == 1
+
+

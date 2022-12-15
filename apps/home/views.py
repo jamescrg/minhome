@@ -273,8 +273,11 @@ def favorite(request, id, direction):
 
     # if a favorite is being displaced, move it and the original favorite
     # otherwise, we are at the end of the column, make no changes
-    origin_favorite.home_rank = destination_rank
-    origin_favorite.save()
+
+    # make sure the top favorite doesn't move if the user attempts to move it up
+    if destination_rank > 0:
+        origin_favorite.home_rank = destination_rank
+        origin_favorite.save()
 
     if displaced_favorite:
         displaced_favorite.home_rank = origin_rank
