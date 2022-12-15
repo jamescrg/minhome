@@ -1,28 +1,24 @@
 
-from django.test import TestCase
-from django.test import Client
+import pytest
+
 from django.urls import reverse
 
-from accounts.models import CustomUser
-from apps.folders.models import Folder
+from pytest_django.asserts import assertTemplateUsed
 
 
-class SettingsViewTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
+pytestmark = pytest.mark.django_db
 
-    def testUrl(self):
-        response = self.client.get('/settings/')
-        self.assertEqual(response.status_code, 200)
 
-    def testNamedRoute(self):
-        response = self.client.get(reverse('settings'))
-        self.assertEqual(response.status_code, 200)
+def test_url(client):
+    response = client.get('/settings/')
+    assert response.status_code == 200
 
-    def testCorrectTemplate(self):
-        response = self.client.get(reverse('settings'))
-        self.assertTemplateUsed(response, 'settings/content.html')
+
+def test_named_route(client):
+    response = client.get(reverse('settings'))
+    assert response.status_code == 200
+
+
+def test_correct_template(client):
+    response = client.get(reverse('settings'))
+    assertTemplateUsed(response, 'settings/content.html')

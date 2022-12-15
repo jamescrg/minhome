@@ -1,79 +1,73 @@
 
-from django.test import TestCase
-from django.test import TransactionTestCase
-from django.test import Client
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
+import pytest
 
-from accounts.models import CustomUser
+from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
+
 from apps.folders.models import Folder
 from apps.favorites.models import Favorite
 from apps.notes.models import Note
 from apps.contacts.models import Contact
 
 
-class ViewTests(TransactionTestCase):
-    reset_sequences = True
-
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
-
-    def testIndex(self):
-        response = self.client.get('/search/')
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('search'))
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('search'))
-        self.assertTemplateUsed(response, 'search/content.html')
-        self.assertTemplateUsed(response, 'search/form.html')
-
-    def testResults(self):
-
-        favorite_folder = Folder.objects.create(user_id=1, name='Faves', page='favorites')
-        note_folder = Folder.objects.create(user_id=1, name='My Notes', page='notes')
-        contact_folder = Folder.objects.create(user_id=1, name='People', page='contacts')
+pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
-        Favorite.objects.create(
-            name='Google',
-            user_id=self.user.id,
-            folder_id=favorite_folder.id,
-            description='Search enginge for james.',
-        )
+def test_index(user, client):
 
-        Note.objects.create(
-            subject='Tasks for James',
-            folder_id=note_folder.id,
-            user_id=self.user.id,
-        )
+    response = client.get('/search/')
+    assert response.status_code == 200
 
-        Contact.objects.create(
-            name='James Craig',
-            folder_id=contact_folder.id,
-            user_id=self.user.id,
-        )
+    response = client.get(reverse('search'))
+    assert response.status_code == 200
 
-        data = {
-            'search_text': 'James',
-        }
+    response = client.get(reverse('search'))
+    assertTemplateUsed(response, 'search/content.html')
+    assertTemplateUsed(response, 'search/form.html')
 
-        response = self.client.post('/search/results', data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'search/content.html')
-        self.assertTemplateUsed(response, 'search/results.html')
 
-        favorites = response.context['favorites']
-        favorite = favorites.filter(name='Google').get()
-        self.assertEqual(favorite.name, 'Google')
+def test_results(user, client):
 
-        note = response.context['notes']
-        note = note.filter(pk=1).get()
-        self.assertEqual(note.subject, 'Tasks for James')
+    favorite_folder = Folder.objects.create(user=user, name='Faves', page='favorites')
+    note_folder = Folder.objects.create(user=user, name='My Notes', page='notes')
+    contact_folder = Folder.objects.create(user=user, name='People', page='contacts')
 
-        contact = response.context['contacts']
-        contact = contact.filter(name='James Craig').get()
-        self.assertEqual(contact.name, 'James Craig')
+    Favorite.objects.create(
+        user=user,
+        name='Google',
+        folder=favorite_folder,
+        description='Search enginge for james.',
+    )
+
+    Note.objects.create(
+        user=user,
+        subject='Tasks for James',
+        folder=note_folder,
+    )
+
+    Contact.objects.create(
+        user=user,
+        name='James Craig',
+        folder=contact_folder,
+    )
+
+    data = {
+        'search_text': 'James',
+    }
+
+    response = client.post('/search/results', data)
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'search/content.html')
+    assertTemplateUsed(response, 'search/results.html')
+
+    favorites = response.context['favorites']
+    favorite = favorites.filter(name='Google').get()
+    assert favorite.name == 'Google'
+
+    note = response.context['notes']
+    note = note.filter(pk=1).get()
+    assert note.subject == 'Tasks for James'
+
+    contact = response.context['contacts']
+    contact = contact.filter(name='James Craig').get()
+    assert contact.name == 'James Craig'

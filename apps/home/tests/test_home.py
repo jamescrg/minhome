@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
 # ------------------------------------
-# test urls and templates
+# urls and templates
 # ------------------------------------
 
 def test_base_url(client):

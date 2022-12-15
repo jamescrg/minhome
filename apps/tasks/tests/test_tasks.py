@@ -1,148 +1,93 @@
 
-from django.test import TestCase
-from django.test import TransactionTestCase
-from django.test import Client
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
+import pytest
 
-from accounts.models import CustomUser
+from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
+
 from apps.folders.models import Folder
 from apps.tasks.models import Task
 
 
-class ModelTests(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
-
-        folder1 = Folder.objects.create(
-            user_id=1,
-            page='tasks',
-            name='Todo',
-        )
-
-        Task.objects.create(
-            user_id=1,
-            folder_id=folder1.id,
-            title='Do this today',
-            status=1,
-        )
-
-    def testContent(self):
-        folder = Folder.objects.all().first()
-        task = Task.objects.all().first()
-        expectedValues = {
-            'user_id': 1,
-            'folder_id': folder.id,
-            'title': 'Do this today',
-            'status': 1,
-        }
-        for key, val in expectedValues.items():
-            with self.subTest(key=key, val=val):
-                self.assertEqual(getattr(task, key), val)
-
-    def testString(self):
-        folder = Folder.objects.all().first()
-        task = Task.objects.get(folder_id=folder.id)
-        self.assertEqual(str(task), f'{task.title} : {task.id}')
+pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
-class ViewTests(TransactionTestCase):
-    reset_sequences = True
+# ------------------------------------
+# urls and templates
+# ------------------------------------
 
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
+def test_content(client, user, tasks, folders):
+    task = tasks[0]
+    expectedValues = {
+        'user': user,
+        'folder': folders[0],
+        'title': 'Take out trash',
+        'status': 0,
+    }
+    for key, val in expectedValues.items():
+        assert getattr(task, key) == val
 
-        folders = [
-            'Current',
-            'Chores',
-            'Writing',
-            'Monday',
-        ]
 
-        for name in folders:
-            user_id = self.user.id
-            Folder.objects.create(
-                user_id=user_id,
-                page='tasks',
-                name=name,
-            )
+def test_string(client, tasks):
+    task = tasks[0]
+    assert str(task) == f'{task.title} : {task.id}'
 
-        tasks = [
-            'Take out trash',
-            'Rake leaves',
-            'Sweep back porch',
-            'Scrub shower tile',
-        ]
 
-        for title in tasks:
-            Task.objects.create(
-                user_id=user_id,
-                folder_id=2,
-                title=title,
-                status=0,
-            )
+# ------------------------------------
+# task functionality
+# ------------------------------------
 
-    def testIndex(self):
-        response = self.client.get('/tasks/')
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('tasks'))
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('tasks'))
-        self.assertTemplateUsed(response, 'tasks/content.html')
 
-    def testActivate(self):
-        response = self.client.get('/tasks/2/activate')
-        self.assertEqual(response.status_code, 302)
-        folder = Folder.objects.filter(pk=2).get()
-        self.assertEqual(folder.active, 1)
+def test_index(client):
+    response = client.get('/tasks/')
+    assert response.status_code == 200
 
-    def testStatus(self):
-        response = self.client.get('/tasks/2/complete')
-        self.assertEqual(response.status_code, 302)
-        task = Task.objects.filter(pk=2).get()
-        self.assertEqual(task.status, 1)
+    response = client.get(reverse('tasks'))
+    assert response.status_code == 200
 
-    def testAddData(self):
-        data = {
-            'user_id': 1,
-            'folder_id': 3,
-            'title': 'Sweep garage',
-        }
+    response = client.get(reverse('tasks'))
+    assertTemplateUsed(response, 'tasks/content.html')
 
-        response = self.client.post('/tasks/add', data)
-        self.assertEqual(response.status_code, 302)
-        found = Task.objects.filter(folder_id=3).exists()
-        self.assertTrue(found)
 
-    def testEdit(self):
-        response = self.client.get('/tasks/4/edit')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['page'], 'tasks')
-        self.assertTemplateUsed(response, 'tasks/form.html')
+def test_status(client, task):
+    response = client.get(f'/tasks/{task.id}/complete')
+    assert response.status_code == 302
+    task = Task.objects.filter(pk=task.id).get()
+    assert task.status == 1
 
-    def testEditData(self):
-        data = {
-            'user_id': self.user.id,
-            'folder_id': 3,
-            'title': 'Sweep garage',
-        }
 
-        response = self.client.post('/tasks/2/edit', data)
-        self.assertEqual(response.status_code, 302)
-        found = Task.objects.filter(title='Sweep garage').exists()
-        self.assertTrue(found)
+def test_add_data(user, client, folder):
+    data = {
+        'user': user,
+        'folder_id': folder.id,
+        'title': 'Sweep garage',
+    }
+    response = client.post('/tasks/add', data)
+    assert response.status_code == 302
+    found = Task.objects.filter(folder=folder).exists()
+    assert found
 
-    def testClear(self):
-        tasks = Task.objects.filter(folder_id=2).update(status=1)
-        response = self.client.get('/tasks/2/clear')
-        tasks = Task.objects.filter(folder_id=2)
-        self.assertFalse(tasks)
+
+def test_edit(client, task):
+    response = client.get(f'/tasks/{task.id}/edit')
+    assert response.status_code == 200
+    assert response.context['page'] == 'tasks'
+    assertTemplateUsed(response, 'tasks/form.html')
+
+
+def test_edit_data(user, client, folder, task):
+    data = {
+        'user_id': user.id,
+        'folder_id': folder.id,
+        'title': 'Sweep garage',
+    }
+    response = client.post(f'/tasks/{task.id}/edit', data)
+    assert response.status_code == 302
+    found = Task.objects.filter(title='Sweep garage').exists()
+    assert found
+
+
+def test_clear(client, folder):
+    tasks = Task.objects.filter(folder=folder).update(status=1)
+    client.get(f'/tasks/{folder.id}/clear')
+    tasks = Task.objects.filter(folder=folder)
+    assert not tasks

@@ -70,7 +70,7 @@ def add(request):
 
     if request.method == 'POST':
         task = Task()
-        task.user_id = request.user.id
+        task.user = request.user
         folder = get_object_or_404(Folder, pk=request.POST.get('folder_id'))
         task.folder = folder
         task.title = request.POST.get('title')

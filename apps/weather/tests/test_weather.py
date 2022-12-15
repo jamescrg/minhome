@@ -1,27 +1,20 @@
 
-from django.test import TestCase
-from django.test import TransactionTestCase
-from django.test import Client
+import pytest
+
 from django.urls import reverse
-from django.shortcuts import get_object_or_404
 
-from accounts.models import CustomUser
-from apps.folders.models import Folder
-from apps.tasks.models import Task
+from pytest_django.asserts import assertTemplateUsed
 
 
-class ViewTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            'john', 'lennon@thebeatles.com', 'johnpassword'
-        )
-        self.client.login(username='john', password='johnpassword')
+pytestmark = pytest.mark.django_db()
 
-    def testIndex(self):
-        response = self.client.get('/weather/')
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('weather'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'weather/content.html')
-        self.assertIn(':', response.context['current']['sunrise'])
+
+def test_index(client):
+    response = client.get('/weather/')
+    assert response.status_code == 200
+
+    response = client.get(reverse('weather'))
+    assert response.status_code == 200
+
+    assertTemplateUsed(response, 'weather/content.html')
+    assert ':' in response.context['current']['sunrise']
