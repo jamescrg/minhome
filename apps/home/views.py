@@ -1,4 +1,6 @@
-from datetime import datetime, date, timedelta
+
+
+from datetime import datetime, date
 import pytz
 
 from django.contrib.auth.decorators import login_required
@@ -11,6 +13,7 @@ from apps.tasks.models import Task
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 import apps.home.google as google
+from apps.home.toggle import show_section
 
 
 @login_required
@@ -22,24 +25,8 @@ def index(request):
     # ----------------
 
     # check whether events have been hidden
-    show_events = request.session.get('show_events', True)
-
-    # if events are hidden, check the date they were hidden
-    # if that date is less than today, show them
-    if not show_events:
-
-        # get current day
-        now = datetime.now(pytz.timezone('US/Eastern'))
-        today = now.date()
-
-        # get day events were previously hidden
-        timestamp = int(request.session.get('events_hide_expire'))
-        old_date = date.fromtimestamp(timestamp)
-
-        # set events to shown only if today is greater than the old date
-        if today > old_date:
-            show_events = True
-            request.session['show_events'] = True
+    # default to events are shown
+    show_events = show_section(request, 'events')
 
     # if events are shown, load them
     if show_events:
@@ -50,29 +37,11 @@ def index(request):
     else:
         events = None
 
-
     # TASKS
     # ----------------
 
     # check whether tasks have been hidden
-    show_tasks = request.session.get('show_tasks', True)
-
-    # if tasks are hidden, check the date they were hidden
-    # if that date is less than today, show them
-    if not show_tasks:
-
-        # get current day
-        now = datetime.now(pytz.timezone('US/Eastern'))
-        today = now.date()
-
-        # get day tasks were previously hidden
-        timestamp = int(request.session.get('tasks_hide_expire'))
-        old_date = date.fromtimestamp(timestamp)
-
-        # set events to shown only if today is greater than the old date
-        if today > old_date:
-            show_tasks = True
-            request.session['show_tasks'] = True
+    show_tasks = show_section(request, 'tasks')
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(
@@ -123,24 +92,24 @@ def index(request):
 
 
 @login_required
-def toggle_events(request):
-    show_events = request.session.get('show_events', True)
-    if show_events:
-        request.session['show_events'] = False
-        request.session['events_hide_expire'] = date.today().strftime('%s')
-    else:
-        request.session['show_events'] = True
-    return redirect('/home/')
+def toggle(request, section):
 
+    allowed_sections = ['events', 'tasks', 'gathas']
 
-@login_required
-def toggle_tasks(request):
-    show_tasks = request.session.get('show_tasks', True)
-    if show_tasks:
-        request.session['show_tasks'] = False
-        request.session['tasks_hide_expire'] = date.today().strftime('%s')
-    else:
-        request.session['show_tasks'] = True
+    if section in allowed_sections:
+
+        # set the section name to use for the session key
+        flag = 'show_' + section
+        exp = section + '_hide_expire'
+
+        show_section = request.session.get(flag, True)
+
+        if show_section:
+            request.session[flag] = False
+            request.session[exp] = date.today().strftime('%s')
+        else:
+            request.session[flag] = True
+
     return redirect('/home/')
 
 

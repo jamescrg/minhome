@@ -31,8 +31,7 @@ urlpatterns = [
     path('home/', home.index, name='home'),
     path('home/folder/<int:id>/<str:direction>/', home.folder, name='home-folder'),
     path('home/favorite/<int:id>/<str:direction>/', home.favorite, name='home-favorite'),
-    path('home/toggle-tasks', home.toggle_tasks, name='home-toggle-tasks'),
-    path('home/toggle-events', home.toggle_events, name='home-toggle-events'),
+    path('home/toggle/<str:section>', home.toggle, name='home-toggle'),
 
     # favorites
     path('favorites/', favorites.index, name='favorites'),

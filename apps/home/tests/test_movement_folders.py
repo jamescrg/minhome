@@ -1,43 +1,12 @@
 
+
 import pytest
 
-from django.urls import reverse
-from pytest_django.asserts import assertTemplateUsed
-
-from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
-
-# ------------------------------------
-# urls and templates
-# ------------------------------------
-
-def test_base_url(client):
-    response = client.get('/')
-    assert response.status_code == 200
-
-
-def test_home_url(client):
-    response = client.get('/home/')
-    assert response.status_code == 200
-
-
-def test_named_route(client):
-    response = client.get(reverse('home'))
-    assert response.status_code == 200
-
-
-def test_correct_template(client):
-    response = client.get(reverse('home'))
-    assertTemplateUsed(response, 'home/index.html')
-
-
-# ------------------------------------
-# folder movement
-# ------------------------------------
 
 def test_redirect(client, folders):
     response = client.get(f'/home/folder/{folders[3].id}/up/')
@@ -124,37 +93,3 @@ def test_right_from_far_right(client, folders):
     client.get(f'/home/folder/{folders[12].id}/right/')
     folder = Folder.objects.get(pk=folders[12].id)
     assert folder.home_column == 4
-
-
-# ------------------------------------
-# favorite movement
-# ------------------------------------
-
-def test_favorite_up_from_bottom(client, favorites):
-    client.get(f'/home/favorite/{favorites[4].id}/up/')
-    favorite = Favorite.objects.get(pk=favorites[4].id)
-    assert favorite.home_rank == 4
-    favorite = Favorite.objects.get(pk=favorites[3].id)
-    assert favorite.home_rank == 5
-
-
-def test_favorite_up_from_top(client, favorites):
-    client.get(f'/home/favorite/{favorites[0].id}/up/')
-    favorite = Favorite.objects.get(pk=favorites[0].id)
-    assert favorite.home_rank == 1
-
-
-def test_favorite_down_from_bottom(client, favorites):
-    client.get(f'/home/favorite/{favorites[4].id}/down/')
-    favorite = Favorite.objects.get(pk=favorites[4].id)
-    assert favorite.home_rank == 6
-
-
-def test_favorite_down_from_top(client, favorites):
-    client.get(f'/home/favorite/{favorites[0].id}/down/')
-    favorite = Favorite.objects.get(pk=favorites[0].id)
-    assert favorite.home_rank == 2
-    favorite = Favorite.objects.get(pk=favorites[1].id)
-    assert favorite.home_rank == 1
-
-
