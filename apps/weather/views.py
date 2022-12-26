@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 import config.settings_local
-from config.helpers import timestamp_to_eastern
+from apps.weather.timeshift import timestamp_to_eastern
 
 
 @login_required
