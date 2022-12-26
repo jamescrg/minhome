@@ -17,6 +17,7 @@ def user():
 @pytest.fixture
 def folder1(user):
     folder1 = Folder.objects.create(user=user, page='contacts', name='Mahatmas',)
+    folder1.save()
     return folder1
 
 
@@ -32,7 +33,7 @@ def contact(user, folder1):
     contact = Contact.objects.create(
         user=user,
         folder=folder1,
-        selected=1,
+        selected=0,
         name='Mohandas Gandhi',
         company='Gandhi, PC',
         address='225 Paper Street, Porbandar, India',
@@ -45,5 +46,14 @@ def contact(user, folder1):
         email='gandhi@gandhi.com',
         website='gandhi.com',
         notes='The Mahatma',)
+    contact.save()
     return contact
 
+
+@pytest.fixture
+def contact_data(contact):
+    contact_data = contact.__dict__
+    keys = '_state id folder_id google_id'.split()
+    for key in keys:
+        del contact_data[key]
+    return contact_data

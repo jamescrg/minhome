@@ -1,11 +1,10 @@
 
 import pytest
 
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
-from pytest_django.asserts import assertTemplateUsed
+from django.test.client import RequestFactory
 
 from apps.contacts.models import Folder
+from apps.folders.folders import get_task_folders
 
 
 pytestmark = pytest.mark.django_db
@@ -19,7 +18,7 @@ def test_string(folder):
 def test_content(user, folder):
     folder = Folder.objects.get(name='Main')
     expectedValues = {
-        'user_id': user.id,
+        'user': user,
         'page': 'favorites',
         'name': 'Main',
         'home_column': 0,
@@ -39,17 +38,32 @@ def test_home(client, folder):
     assert folder.home_rank == 1
 
 
-def test_select(client, folders):
+def test_select_folder(client, folders):
     folder = Folder.objects.filter(name='Philosophy').get()
     response = client.get(f'/folders/{folder.id}/notes')
     assert response.status_code == 302
     response = client.get('/notes/')
-    assert folder in response.context['folders']
+    assert folder == response.context['selected_folder']
+
+
+def test_select_task_folders(client, task_folders):
+    folder1 = Folder.objects.filter(pk=task_folders[0].id).get()
+    response = client.get(f'/folders/{folder1.id}/tasks')
+
+    assert response.status_code == 302
+    folder2 = Folder.objects.filter(pk=task_folders[1].id).get()
+    response = client.get(f'/folders/{folder2.id}/tasks')
+
+    assert response.status_code == 302
+    response = client.get('/tasks/')
+
+    assert folder1 in response.context['selected_folders']
+    assert folder2 in response.context['selected_folders']
 
 
 def test_insert(client):
     data = {
-        'user_id': 1,
+        'user': 1,
         'folder_id': 2,
         'page': 'notes',
         'name': 'Existentialism',
@@ -74,3 +88,11 @@ def test_delete(client, folder):
     client.get(f'/folders/delete/{folder.id}/notes')
     found = Folder.objects.filter(id=folder.id).exists()
     assert not found
+
+
+def test_get_task_folders(user, task_folders):
+    factory = RequestFactory()
+    request = factory.get('/tasks')
+    request.user = user
+    folders = get_task_folders(request)
+    assert len(folders) > 0

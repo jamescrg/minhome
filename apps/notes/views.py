@@ -17,21 +17,21 @@ from apps.folders.folders import select_folders
 @login_required
 def index(request):
 
-    user_id = request.user.id
+    user = request.user
     page = 'notes'
 
-    folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
+    folders = Folder.objects.filter(user=user, page=page).order_by('name')
 
     selected_folder = select_folders(request, 'notes')
 
     if selected_folder:
-        notes = Note.objects.filter(user_id=user_id, folder_id=selected_folder.id)
+        notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
     else:
-        notes = Note.objects.filter(user_id=user_id, folder_id__isnull=True)
+        notes = Note.objects.filter(user=user, folder_id__isnull=True)
 
     notes = notes.order_by('subject')
 
-    selected_note = Note.objects.filter(user_id=user_id, selected=1).first()
+    selected_note = Note.objects.filter(user=user, selected=1).first()
     if selected_note:
         selected_note.note = markdown.markdown(selected_note.note)
 
@@ -49,8 +49,8 @@ def index(request):
 
 @login_required
 def select(request, id):
-    user_id = request.user.id
-    old = Note.objects.filter(user_id=user_id, selected=1).update(selected=0)
+    user = request.user
+    old = Note.objects.filter(user=user, selected=1).update(selected=0)
     new = get_object_or_404(Note, pk=id)
     new.selected = 1
     new.save()
@@ -60,8 +60,8 @@ def select(request, id):
 @login_required
 def add(request):
 
-    user_id = request.user.id
-    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+    user = request.user
+    folders = Folder.objects.filter(user=user, page='notes').order_by('name')
 
     selected_folder = select_folders(request, 'notes')
 
@@ -73,12 +73,12 @@ def add(request):
 
         if form.is_valid():
             note = form.save(commit=False)
-            note.user_id = user_id
+            note.user = user
             note.save()
 
             # deselect previously selected note
             try:
-                old = Note.objects.filter(user_id=user_id, selected=1).get()
+                old = Note.objects.filter(user=user, selected=1).get()
             except Note.DoesNotExist:
                 pass
             else:
@@ -86,7 +86,7 @@ def add(request):
                 old.save()
 
             # select newest note for user
-            new = Note.objects.filter(user_id=user_id).latest('id')
+            new = Note.objects.filter(user=user).latest('id')
             new.selected = 1
             new.save()
 
@@ -104,7 +104,7 @@ def add(request):
 
     # set the initial range of values for folder attribute
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='notes').order_by('name')
+            user=user, page='notes').order_by('name')
 
     context = {
         'page': 'notes',
@@ -122,8 +122,8 @@ def add(request):
 @login_required
 def edit(request, id):
 
-    user_id = request.user.id
-    folders = Folder.objects.filter(user_id=user_id, page='notes').order_by('name')
+    user = request.user
+    folders = Folder.objects.filter(user=user, page='notes').order_by('name')
 
     selected_folder = select_folders(request, 'notes')
 
@@ -132,7 +132,7 @@ def edit(request, id):
     if request.method == 'POST':
 
         try:
-            note = Note.objects.filter(user_id=request.user.id, pk=id).get()
+            note = Note.objects.filter(user=request.user, pk=id).get()
         except ObjectDoesNotExist:
             raise Http404('Record not found.')
 
@@ -141,7 +141,7 @@ def edit(request, id):
         if form.is_valid():
 
             note = form.save(commit=False)
-            note.user_id = user_id
+            note.user = user
             note.save()
             return redirect('notes')
 
@@ -153,7 +153,7 @@ def edit(request, id):
             form = NoteForm(instance=note)
 
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='notes').order_by('name')
+            user=user, page='notes').order_by('name')
 
     context = {
         'page': 'notes',
@@ -172,7 +172,7 @@ def edit(request, id):
 @login_required
 def delete(request, id):
     try:
-        note = Note.objects.filter(user_id=request.user.id, pk=id).get()
+        note = Note.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
         raise Http404('Record not found.')
     note.delete()

@@ -116,7 +116,7 @@ def folders(user):
     for folder in folder_data:
         folders.append(
             Folder.objects.create(
-                user_id=user.id,
+                user=user,
                 name=folder['name'],
                 home_column=folder['home_column'],
                 home_rank=folder['home_rank'],
@@ -134,7 +134,7 @@ def favorites(user, folders):
     for i in range(1, 6):
         favorites.append(
             Favorite.objects.create(
-                user_id=user.id,
+                user=user,
                 folder_id=1,
                 name=f'Favorite No. {i}',
                 description=f'Awesome {i}',

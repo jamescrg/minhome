@@ -6,7 +6,6 @@ from accounts.models import CustomUser
 
 class Contact(models.Model):
 
-
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)

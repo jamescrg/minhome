@@ -17,8 +17,7 @@ from accounts.models import CustomUser
 
 @login_required
 def index(request):
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = request.user
 
     if user.google_credentials:
         logged_in = True
@@ -89,8 +88,7 @@ def google_store(request):
     google_credentials_json = credentials.to_json()
 
     # save the json credentials to the database
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = request.user
     user.google_credentials = google_credentials_json
     user.save()
 
@@ -99,19 +97,16 @@ def google_store(request):
 
 @login_required
 def show(request):
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = request.user
     credentials = user.google_credentials
     credentials = json.loads(credentials)
     import app.util as util
-
     return util.dump(credentials)
 
 
 @login_required
 def google_logout(request):
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = request.user
     credentials = user.google_credentials
 
     credentials = json.loads(credentials)
@@ -119,7 +114,7 @@ def google_logout(request):
         credentials
     )
 
-    revoke = requests.post(
+    requests.post(
         'https://oauth2.googleapis.com/revoke',
         params={'token': credentials.token},
         headers={'content-type': 'application/x-www-form-urlencoded'},

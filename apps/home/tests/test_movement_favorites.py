@@ -1,7 +1,6 @@
 
 
 import pytest
-import random
 
 from apps.favorites.models import Favorite
 

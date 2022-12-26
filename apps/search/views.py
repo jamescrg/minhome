@@ -24,10 +24,10 @@ def index(request):
 def results(request):
     page = 'search'
     results = True
-    user_id = request.user.id
+    user = request.user
     text = request.POST.get('search_text')
 
-    favorites = Favorite.objects.filter(user_id=user_id)
+    favorites = Favorite.objects.filter(user=user)
     favorites = favorites.filter(
         Q(name__icontains=text)
         | Q(url__icontains=text)
@@ -36,7 +36,7 @@ def results(request):
     for favorite in favorites:
         favorite.folder = Folder.objects.filter(pk=favorite.folder_id).first()
 
-    contacts = Contact.objects.filter(user_id=user_id)
+    contacts = Contact.objects.filter(user=user)
     contacts = contacts.filter(
         Q(name__contains=text)
         | Q(company__icontains=text)
@@ -51,7 +51,7 @@ def results(request):
     for contact in contacts:
         contact.folder = Folder.objects.filter(pk=contact.folder_id).first()
 
-    notes = Note.objects.filter(user_id=user_id)
+    notes = Note.objects.filter(user=user)
     notes = notes.filter(Q(subject__icontains=text) | Q(note__icontains=text)).order_by(
         'subject'
     )

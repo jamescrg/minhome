@@ -1,7 +1,6 @@
 
 
-from datetime import datetime, date
-import pytz
+from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -18,20 +17,18 @@ from apps.home.toggle import show_section
 
 @login_required
 def index(request):
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = request.user
 
     # EVENTS
     # ----------------
 
-    # check whether events have been hidden
-    # default to events are shown
+    # check whether events are shown are hidden
     show_events = show_section(request, 'events')
 
     # if events are shown, load them
     if show_events:
         if user.google_credentials:
-            events = google.get_events(user_id)
+            events = google.get_events(user.id)
         else:
             events = None
     else:
@@ -40,12 +37,12 @@ def index(request):
     # TASKS
     # ----------------
 
-    # check whether tasks have been hidden
+    # check whether tasks are shown or hidden
     show_tasks = show_section(request, 'tasks')
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(
-        user_id=user_id, page='tasks', home_column__gt=1)
+        user=user, page='tasks', home_column__gt=1)
     if task_folders:
         for folder in task_folders:
             tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
@@ -62,13 +59,12 @@ def index(request):
             if folder.tasks:
                 some_tasks = True
 
-
     # FAVORITES
     # ----------------
 
     columns = []
     for i in range(1, 5):
-        folders = Folder.objects.filter(user_id=user_id, page='favorites', home_column=i)
+        folders = Folder.objects.filter(user=user, page='favorites', home_column=i)
         folders = folders.order_by('home_rank')
         for folder in folders:
             favorites = Favorite.objects.filter(folder_id=folder.id, home_rank__gt=0)
@@ -115,7 +111,7 @@ def toggle(request, section):
 
 @login_required
 def folder(request, id, direction):
-    user_id = request.user.id
+    user = request.user
 
     # if the stack order is being changed
     if direction == 'up' or direction == 'down':
@@ -126,7 +122,7 @@ def folder(request, id, direction):
         origin_column = origin_folder.home_column
 
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(user_id=user_id, home_column=origin_column)
+        folders = Folder.objects.filter(user=user, home_column=origin_column)
         folders = folders.order_by('home_rank')
         count = 1
         for folder in folders:
@@ -146,7 +142,7 @@ def folder(request, id, direction):
         # identify the folder to be displaced
         try:
             displaced_folder = Folder.objects.filter(
-                user_id=user_id, home_column=origin_column, home_rank=destination_rank
+                user=user, home_column=origin_column, home_rank=destination_rank
             ).get()
         except Folder.DoesNotExist:
             displaced_folder = False
@@ -176,7 +172,7 @@ def folder(request, id, direction):
         # move over origin folder to destination column and place at bottom
         if destination_column != origin_column:
             bottom_folder = (
-                Folder.objects.filter(user_id=user_id, home_column=destination_column)
+                Folder.objects.filter(user=user, home_column=destination_column)
                 .order_by('-home_rank')
                 .first()
             )
@@ -189,7 +185,7 @@ def folder(request, id, direction):
 
         # resequence origin column
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(user_id=user_id, home_column=origin_column)
+        folders = Folder.objects.filter(user=user, home_column=origin_column)
         folders = folders.order_by('home_rank')
         count = 1
         for folder in folders:
@@ -202,7 +198,7 @@ def folder(request, id, direction):
 
 @login_required
 def favorite(request, id, direction):
-    user_id = request.user.id
+    user = request.user
 
     # get the favorite to be moved
     origin_favorite = get_object_or_404(Favorite, pk=id)
@@ -210,7 +206,7 @@ def favorite(request, id, direction):
 
     # make sure the favorites are sequential and adjacent
     favorites = Favorite.objects.filter(
-        user_id=user_id, folder_id=folder_id, home_rank__gt=0
+        user=user, folder_id=folder_id, home_rank__gt=0
     )
     favorites = favorites.order_by('home_rank')
 
@@ -221,7 +217,7 @@ def favorite(request, id, direction):
         count += 1
 
     favorites = Favorite.objects.filter(
-        user_id=user_id, folder_id=folder_id, home_rank__gt=0
+        user=user, folder_id=folder_id, home_rank__gt=0
     )
     favorites = favorites.order_by('home_rank')
 
@@ -237,7 +233,7 @@ def favorite(request, id, direction):
 
     # identify the favorite to be displaced
     displaced_favorite = Favorite.objects.filter(
-        user_id=user_id, folder_id=folder_id, home_rank=destination_rank
+        user=user, folder_id=folder_id, home_rank=destination_rank
     ).first()
 
     # if a favorite is being displaced, move it and the original favorite

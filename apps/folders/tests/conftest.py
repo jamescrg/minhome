@@ -50,3 +50,22 @@ def folders(user):
         )
     return folders
 
+
+@pytest.fixture
+def task_folders(user):
+    task_folders = [
+        'Current',
+        'Next Week',
+        'Admin',
+        'To Write',
+    ]
+
+    folders = []
+    for name in task_folders:
+        folder = Folder.objects.create(
+            user=user, page='tasks', name=name,
+        )
+        folder.save()
+        folders.append(folder)
+
+    return folders

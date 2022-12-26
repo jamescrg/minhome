@@ -1,27 +1,20 @@
-from datetime import datetime, date, time, timezone
-import os
+from datetime import datetime
 import requests
-import pytz
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
 
-from accounts.models import CustomUser
 import config.settings_local
 from config.helpers import timestamp_to_eastern
 
 
 @login_required
 def index(request):
-    user_id = request.user.id
-    page = 'weather'
 
-    if user_id == 1:
+    if request.user.id == 1:
         zip = 30360
     else:
-        zip = 32344
+        zip = 30533
 
     # fetch current weather data
     url = 'https://api.openweathermap.org/data/2.5/weather'

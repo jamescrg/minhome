@@ -15,9 +15,7 @@ from apps.folders.folders import get_task_folders
 @login_required
 def index(request):
 
-    user_id = request.user.id
-
-    folders = get_task_folders(request, user_id)
+    folders = get_task_folders(request)
 
     selected_folders = select_folders(request, 'tasks')
 
@@ -82,7 +80,7 @@ def add(request):
 @login_required
 def edit(request, id):
 
-    user_id = request.user.id
+    user = request.user
 
     if request.method == 'POST':
 
@@ -94,7 +92,7 @@ def edit(request, id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
-            task.user_id = user_id
+            task.user = user
             task.title = task.title[0].upper() + task.title[1:]
             task.save()
 
@@ -103,7 +101,7 @@ def edit(request, id):
     else:
 
         task = get_object_or_404(Task, pk=id)
-        folders = get_task_folders(request, user_id)
+        folders = get_task_folders(request)
         selected_folder = folders.filter(id=task.folder.id).get()
 
         form = TaskForm(instance=task, initial={'folder': selected_folder.id})

@@ -17,21 +17,18 @@ import apps.contacts.google as google
 @login_required
 def index(request):
 
-    user_id = request.user.id
-    page = 'contacts'
-
-    folders = Folder.objects.filter(user_id=user_id, page=page).order_by('name')
+    folders = Folder.objects.filter(user=request.user, page='contacts').order_by('name')
 
     selected_folder = select_folders(request, 'contacts')
 
     if selected_folder:
-        contacts = Contact.objects.filter(user_id=user_id, folder_id=selected_folder.id)
+        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
     else:
-        contacts = Contact.objects.filter(user_id=user_id, folder_id__isnull=True)
+        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
 
     contacts = contacts.order_by('name')
 
-    selected_contact = Contact.objects.filter(user_id=user_id, selected=1).first()
+    selected_contact = Contact.objects.filter(user=request.user, selected=1).first()
 
     if request.user.google_credentials:
         google = True
@@ -53,8 +50,8 @@ def index(request):
 
 @login_required
 def select(request, id):
-    user_id = request.user.id
-    old = Contact.objects.filter(user_id=user_id, selected=1).update(selected=0)
+    user = request.user
+    Contact.objects.filter(user=user, selected=1).update(selected=0)
     new = get_object_or_404(Contact, pk=id)
     new.selected = 1
     new.save()
@@ -65,9 +62,8 @@ def select(request, id):
 def add(request):
 
     # load initial page values (user, folders, selected folder)
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
-    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+    user = request.user
+    folders = Folder.objects.filter(user=user, page='contacts').order_by('name')
 
     selected_folder = select_folders(request, 'contacts')
 
@@ -79,7 +75,7 @@ def add(request):
 
             # initialize contact data
             contact = form.save(commit=False)
-            contact.user_id = user_id
+            contact.user = user
 
             # add to google account
             if user.google_credentials:
@@ -90,7 +86,7 @@ def add(request):
 
             # deselect previously selected contact, if one exists
             try:
-                old = Contact.objects.filter(user_id=user_id, selected=1).get()
+                old = Contact.objects.filter(user=user, selected=1).get()
             except Contact.DoesNotExist:
                 pass
             else:
@@ -98,7 +94,7 @@ def add(request):
                 old.save()
 
             # select newest contact for user
-            new = Contact.objects.filter(user_id=user_id).latest('id')
+            new = Contact.objects.filter(user=user).latest('id')
             new.selected = 1
             new.save()
 
@@ -113,7 +109,7 @@ def add(request):
             form = ContactForm()
 
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='contacts').order_by('name')
+        user=user, page='contacts').order_by('name')
 
     context = {
         'page': 'contacts',
@@ -131,9 +127,8 @@ def add(request):
 @login_required
 def edit(request, id):
 
-    user_id = request.user.id
-    user = get_object_or_404(CustomUser, pk=user_id)
-    folders = Folder.objects.filter(user_id=user_id, page='contacts').order_by('name')
+    user = request.user
+    folders = Folder.objects.filter(user=user, page='contacts').order_by('name')
 
     selected_folder = select_folders(request, 'contacts')
 
@@ -142,17 +137,17 @@ def edit(request, id):
     if request.method == 'POST':
 
         try:
-            contact = Contact.objects.filter(user_id=user.id, pk=id).get()
+            contact = Contact.objects.filter(user=user, pk=id).get()
         except ObjectDoesNotExist:
             raise Http404('Record not found.')
 
         form = ContactForm(request.POST, instance=contact)
         form.fields['folder'].queryset = Folder.objects.filter(
-                user_id=user_id, page='contacts').order_by('name')
+            user=user, page='contacts').order_by('name')
 
         if form.is_valid():
             contact = form.save(commit=False)
-            contact.user_id = user_id
+            contact.user = user
 
             if user.google_credentials and contact.google_id:
                 google.delete_contact(contact)
@@ -170,7 +165,7 @@ def edit(request, id):
             form = ContactForm(instance=contact)
 
     form.fields['folder'].queryset = Folder.objects.filter(
-            user_id=user_id, page='contacts').order_by('name')
+        user=user, page='contacts').order_by('name')
 
     context = {
         'page': 'contacts',
@@ -189,7 +184,7 @@ def edit(request, id):
 @login_required
 def delete(request, id):
     try:
-        contact = Contact.objects.filter(user_id=request.user.id, pk=id).get()
+        contact = Contact.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
         raise Http404('Record not found.')
     if contact.google_id:
@@ -204,5 +199,3 @@ def google_sync(request, id):
     contact.google_id = google.add_contact(contact)
     contact.save()
     return redirect('contacts')
-
-

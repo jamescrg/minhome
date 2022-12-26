@@ -1,23 +1,17 @@
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
-
-import markdown
 
 from apps.contacts.models import Contact
-from apps.contacts.google import add_contact
 
 
 @login_required
 def index(request):
 
-    user_id = request.user.id
+    user = request.user
     page = 'lab'
 
-    contacts = Contact.objects.filter(user_id=1, google_id__isnull=True).order_by('name')[:10]
+    contacts = Contact.objects.filter(user=user, google_id__isnull=True).order_by('name')[:10]
     count = contacts.count()
 
     # for contact in contacts:

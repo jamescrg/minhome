@@ -4,12 +4,14 @@ from django.shortcuts import get_object_or_404
 from apps.folders.models import Folder
 
 
-def get_task_folders(request, user_id):
+def get_task_folders(request):
 
-    folders = Folder.objects.filter(user_id=user_id, page='tasks').order_by('name')
+    user = request.user
+
+    folders = Folder.objects.filter(user=user, page='tasks').order_by('name')
 
     # include my groceries lists in katie's folder list
-    if request.user.id == 19:
+    if user.id == 19:
         james_folders = Folder.objects.filter(id__in=[380, 354])
         folders = folders | james_folders
         folders.order_by('name')

@@ -9,7 +9,7 @@ from accounts.models import CustomUser
 
 
 def build_service(contact):
-    user = get_object_or_404(CustomUser, pk=contact.user_id)
+    user = get_object_or_404(CustomUser, pk=contact.user.id)
     credentials = user.google_credentials
 
     if credentials:

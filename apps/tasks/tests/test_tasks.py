@@ -76,7 +76,7 @@ def test_edit(client, task):
 
 def test_edit_data(user, client, folder, task):
     data = {
-        'user_id': user.id,
+        'user': user,
         'folder_id': folder.id,
         'title': 'Sweep garage',
     }
