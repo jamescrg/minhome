@@ -2,20 +2,21 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from accounts.models import CustomUser
-from apps.folders.models import Folder
-from apps.folders.folders import select_folders
-from apps.contacts.models import Contact
-from apps.contacts.forms import ContactForm
 import apps.contacts.google as google
+from apps.contacts.forms import ContactForm
+from apps.contacts.models import Contact
+from apps.folders.folders import select_folders
+from apps.folders.models import Folder
 
 
 @login_required
 def index(request):
+    """Display a list of folders.
+    If a folder is selected, display the contacts for a folder.
+    If a contact is selected, display the contact.
+    """
 
     folders = Folder.objects.filter(user=request.user, page='contacts').order_by('name')
 
@@ -50,6 +51,11 @@ def index(request):
 
 @login_required
 def select(request, id):
+    """Select a contact for display, redirect to index.
+
+    Args:
+    id -- a Contact instance id
+    """
     user = request.user
     Contact.objects.filter(user=user, selected=1).update(selected=0)
     new = get_object_or_404(Contact, pk=id)
@@ -60,6 +66,11 @@ def select(request, id):
 
 @login_required
 def add(request):
+    """Add a new contact.
+
+    GET: Display new contact form.
+    POST: Add contact to database.
+    """
 
     # load initial page values (user, folders, selected folder)
     user = request.user
@@ -126,7 +137,14 @@ def add(request):
 
 @login_required
 def edit(request, id):
+    """Edit a contact.
 
+    GET: Display contact form.
+    POST: Update contact in database.
+
+    Args:
+    id -- a Contact instance id
+    """
     user = request.user
     folders = Folder.objects.filter(user=user, page='contacts').order_by('name')
 
@@ -183,6 +201,11 @@ def edit(request, id):
 
 @login_required
 def delete(request, id):
+    """Delete a contact.
+
+    Args:
+    id -- a Contact instance id
+    """
     try:
         contact = Contact.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -195,6 +218,15 @@ def delete(request, id):
 
 @login_required
 def google_sync(request, id):
+    """Add a contact to Google account, update the contact with its google_id.
+
+    Args:
+    id -- a Contact instance id
+
+    Notes:
+    Invoked by a link under the contact,
+    which is displayed if the contact does not have a google_id.
+    """
     contact = get_object_or_404(Contact, pk=id)
     contact.google_id = google.add_contact(contact)
     contact.save()

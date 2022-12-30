@@ -18,12 +18,13 @@ from apps.home.toggle import show_section
 @login_required
 def index(request):
     user = request.user
+    session = request.session
 
     # EVENTS
     # ----------------
 
     # check whether events are shown are hidden
-    show_events = show_section(request, 'events')
+    show_events = show_section(session, 'events')
 
     # if events are shown, load them
     if show_events:
@@ -38,7 +39,7 @@ def index(request):
     # ----------------
 
     # check whether tasks are shown or hidden
-    show_tasks = show_section(request, 'tasks')
+    show_tasks = show_section(session, 'tasks')
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(
