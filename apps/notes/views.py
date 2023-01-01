@@ -16,6 +16,14 @@ from apps.folders.folders import select_folders
 
 @login_required
 def index(request):
+    """Display a list of folders and notes, along with a note.
+
+    Notes:
+        Always displays folders.
+        If a folder is selected, displays the notes for a folder.
+        If a note is selected, displays the note.
+
+    """
 
     user = request.user
     page = 'notes'
@@ -49,6 +57,12 @@ def index(request):
 
 @login_required
 def select(request, id):
+    """Select a note for display, redirect to index.
+
+    Args:
+        id (int): a Note instance id
+
+    """
     user = request.user
     old = Note.objects.filter(user=user, selected=1).update(selected=0)
     new = get_object_or_404(Note, pk=id)
@@ -59,6 +73,13 @@ def select(request, id):
 
 @login_required
 def add(request):
+    """Add a new note.
+
+    Notes:
+        GET: Display new note form.
+        POST: Add note to database.
+
+    """
 
     user = request.user
     folders = Folder.objects.filter(user=user, page='notes').order_by('name')
@@ -121,6 +142,16 @@ def add(request):
 
 @login_required
 def edit(request, id):
+    """Edit a note.
+
+    Args:
+        id (int): A Note instance id
+
+    Notes:
+        GET: Display note form.
+        POST: Update note in database.
+
+    """
 
     user = request.user
     folders = Folder.objects.filter(user=user, page='notes').order_by('name')
@@ -171,6 +202,12 @@ def edit(request, id):
 
 @login_required
 def delete(request, id):
+    """Delete a note.
+
+    Args:
+        id (int):  a Note instance id
+
+    """
     try:
         note = Note.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:

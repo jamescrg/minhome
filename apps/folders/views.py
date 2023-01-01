@@ -11,6 +11,13 @@ from apps.folders.models import Folder
 
 @login_required
 def select(request, id, page):
+    """Select a folder for display, redirect to index if that folder's page.
+
+    Args:
+        id (int): a Folder instance id
+        page (int): the page to which the folder belongs
+
+    """
 
     if not request.session.get('selected_folders'):
         request.session['selected_folders'] = {}
@@ -42,6 +49,15 @@ def select(request, id, page):
 
 @login_required
 def insert(request, page):
+    """Add a new folder.
+
+    Args:
+        page(str): the page to which the folder belongs
+
+    Notes:
+        Only accepts post requests
+
+    """
     folder = Folder()
     folder.user = request.user
     folder.page = page
@@ -53,6 +69,17 @@ def insert(request, page):
 
 @login_required
 def update(request, id, page):
+    """Edit a folder.
+
+    Args:
+        id (str): a Folder instance id
+        page (str): the page to which the folder belongs
+
+    Notes:
+        Only accepts post requests
+
+    """
+
     try:
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -65,6 +92,14 @@ def update(request, id, page):
 
 @login_required
 def delete(request, id, page):
+    """Delete a folder
+
+    Args:
+        id (int): a Folder instance id
+        page (str): the page to which the delete function should redirection
+
+    """
+
     try:
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -85,6 +120,14 @@ def delete(request, id, page):
 # sets a folder to show on the home page
 @login_required
 def home(request, id, page):
+    """Add a folder to the home page.
+
+    Args:
+        id (int): a Folder instance id
+        page (str): the page to which function should redirect
+
+    """
+
     user = request.user
     folder = get_object_or_404(Folder, pk=id)
 

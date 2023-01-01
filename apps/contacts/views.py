@@ -13,9 +13,13 @@ from apps.folders.models import Folder
 
 @login_required
 def index(request):
-    """Display a list of folders.
-    If a folder is selected, display the contacts for a folder.
-    If a contact is selected, display the contact.
+    """Display a list of folders and contacts, along with a contact.
+
+    Notes:
+        Always displays folders.
+        If a folder is selected, displays the contacts for a folder.
+        If a contact is selected, displays the contact.
+
     """
 
     folders = Folder.objects.filter(user=request.user, page='contacts').order_by('name')
@@ -54,8 +58,10 @@ def select(request, id):
     """Select a contact for display, redirect to index.
 
     Args:
-    id -- a Contact instance id
+        id (int): a Contact instance id
+
     """
+
     user = request.user
     Contact.objects.filter(user=user, selected=1).update(selected=0)
     new = get_object_or_404(Contact, pk=id)
@@ -68,8 +74,10 @@ def select(request, id):
 def add(request):
     """Add a new contact.
 
-    GET: Display new contact form.
-    POST: Add contact to database.
+    Notes:
+        GET: Display new contact form.
+        POST: Add contact to database.
+
     """
 
     # load initial page values (user, folders, selected folder)
@@ -139,12 +147,15 @@ def add(request):
 def edit(request, id):
     """Edit a contact.
 
-    GET: Display contact form.
-    POST: Update contact in database.
-
     Args:
-    id -- a Contact instance id
+        id (int): A Contact instance id
+
+    Notes:
+        GET: Display contact form.
+        POST: Update contact in database.
+
     """
+
     user = request.user
     folders = Folder.objects.filter(user=user, page='contacts').order_by('name')
 
@@ -204,8 +215,10 @@ def delete(request, id):
     """Delete a contact.
 
     Args:
-    id -- a Contact instance id
+        id (int):  a Contact instance id
+
     """
+
     try:
         contact = Contact.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -221,12 +234,14 @@ def google_sync(request, id):
     """Add a contact to Google account, update the contact with its google_id.
 
     Args:
-    id -- a Contact instance id
+        id (int): a Contact instance id
 
     Notes:
-    Invoked by a link under the contact,
-    which is displayed if the contact does not have a google_id.
+        Invoked by a link under the contact,
+        which is displayed if the contact does not have a google_id.
+
     """
+
     contact = get_object_or_404(Contact, pk=id)
     contact.google_id = google.add_contact(contact)
     contact.save()

@@ -14,9 +14,12 @@ from apps.folders.folders import select_folders
 
 @login_required
 def index(request):
-    """
-    Display a list of folders.
-    If selected, display the the favorites for a folder.
+    """Display a list of folders and favorites
+
+    Notes:
+        Always displays folders.
+        If a folder is selected, displays the favorites for a folder.
+
     """
 
     user = request.user
@@ -44,10 +47,12 @@ def index(request):
 
 @login_required
 def add(request):
-    """
-    Add a new favorite
-    GET: Display new favorite form
-    POST: Add favorite to database
+    """Add a new favorite
+
+    Notes:
+        GET: Display new favorite form
+        POST: Add favorite to database
+
     """
     user = request.user
     folders = Folder.objects.filter(user=user, page='favorites').order_by('name')
@@ -88,13 +93,13 @@ def add(request):
 
 @login_required
 def edit(request, id):
-    """
-    Edit a favorite
+    """Edit a favorite
+    Args:
+        id (int): a Favorite instance id
+
     GET: Display favorite form
     POST: Update favorite in database
 
-    Args:
-        id: a Favorite instance id
     """
     user = request.user
     folders = Folder.objects.filter(
@@ -148,7 +153,8 @@ def delete(request, id):
     Delete a favorite
 
     Args:
-        id: a Favorite instance id
+        id (int): a Favorite instance id
+
     """
     try:
         favorite = Favorite.objects.filter(user=request.user, pk=id).get()
@@ -160,11 +166,11 @@ def delete(request, id):
 
 @login_required
 def home(request, id):
-    """
-    Add or remove a favorite from home
+    """Add or remove a favorite from home
 
     Args:
-        id: a Favorite instance id
+        id (int): a Favorite instance id
+
     """
     favorite = get_object_or_404(Favorite, pk=id)
     if favorite.home_rank:

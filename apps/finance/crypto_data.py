@@ -5,8 +5,16 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import config.settings_local
 
 
-def fetch(symbols):
-    """Fetch the data for each asset from the coinmarketcap api"""
+def collect(symbols):
+    """Fetch the data for each asset from the coinmarketcap api.
+
+    Args:
+        symbols (str): a string of crypto symbols
+
+    Returns:
+        result (list): a list of assets and their associated data
+
+    """
 
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
@@ -26,9 +34,17 @@ def fetch(symbols):
 
 
 def condense(data):
-    """Extract the most relevant data into a smaller dict
+    """Extract the most relevant data into a smaller dict.
 
-    Include the name of the symbol in the dict data
+    Args:
+        data(list): crypto data from the "collect" function
+
+    Returns:
+        condensed_data(dict): reorganized data with relevant data points extracted
+
+    Notes:
+        This includes the name of the symbol in the dict data
+
     """
 
     condensed_data = {}
@@ -43,7 +59,16 @@ def condense(data):
 
 
 def sort(data, ord='market_cap'):
-    """Convert the dict to a list and sort the list according to the chosen field """
+    """Convert the dict to a list and sort the list according to the chosen field.
+
+    Args:
+        data (list): the list of assets produced by the "collect" function
+        ord (str): the user's preferred sort order
+
+    Returns:
+        sorted_data (list): a list of assets, sorted
+
+    """
 
     # convert to a list of dicts
     sequential_data = []

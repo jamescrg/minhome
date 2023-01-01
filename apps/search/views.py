@@ -12,6 +12,8 @@ from apps.favorites.models import Favorite
 
 @login_required
 def index(request):
+    """Display the form to enter a search query. """
+
     context = {
         'page': 'search',
         'action': '/search/results',
@@ -22,8 +24,8 @@ def index(request):
 
 @login_required
 def results(request):
-    page = 'search'
-    results = True
+    """Run the search query and display the results."""
+
     user = request.user
     text = request.POST.get('search_text')
 
