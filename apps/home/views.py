@@ -3,27 +3,32 @@
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from accounts.models import CustomUser
-from apps.tasks.models import Task
+import apps.home.google as google
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
-import apps.home.google as google
 from apps.home.toggle import show_section
+from apps.tasks.models import Task
 
 
 @login_required
 def index(request):
+    """Display the home page.
+
+    Notes:
+        Displays upcoming events, current tasks, and priority favorites
+
+    """
+
     user = request.user
+    session = request.session
 
     # EVENTS
     # ----------------
 
     # check whether events are shown are hidden
-    show_events = show_section(request, 'events')
+    show_events = show_section(session, 'events')
 
     # if events are shown, load them
     if show_events:
@@ -38,7 +43,7 @@ def index(request):
     # ----------------
 
     # check whether tasks are shown or hidden
-    show_tasks = show_section(request, 'tasks')
+    show_tasks = show_section(session, 'tasks')
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(
@@ -89,6 +94,18 @@ def index(request):
 
 @login_required
 def toggle(request, section):
+    """Toggle on or off various sections of the home page.
+
+    Args:
+        section (str): the section to toggle
+
+    Notes:
+        Page sections appear in the morning, this turns them off
+
+        Session based, so that sections are only turned off for
+        the specific browser from whcih they are toggled
+
+    """
 
     allowed_sections = ['events', 'tasks', 'gathas']
 
@@ -111,6 +128,18 @@ def toggle(request, section):
 
 @login_required
 def folder(request, id, direction):
+    """Move a folder up, down, left, or right
+
+    Args:
+        id (int): the folder to be moved
+        direction (str): the direction in which to move the folder
+
+    Notes:
+        The home page has four columns. This function moves folders
+        from one column to another, or up and down in an specific column.
+
+    """
+
     user = request.user
 
     # if the stack order is being changed
@@ -198,6 +227,14 @@ def folder(request, id, direction):
 
 @login_required
 def favorite(request, id, direction):
+    """Move a favorite up or down.
+
+    Args:
+        id (int): the favorite to be moved
+        direction (str): the direction in which to move the favorite
+
+    """
+
     user = request.user
 
     # get the favorite to be moved

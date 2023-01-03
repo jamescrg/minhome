@@ -6,61 +6,26 @@ import config.settings_local
 
 
 asset_list = [
-    {
-        'symbol': 'GME',
-        'exchange': 'NYSE',
-        'name': 'Gamestop',
-    },
-    {
-        'symbol': 'TSLA',
-        'exchange': 'NASDAQ',
-        'name': 'Tesla',
-    },
-    {
-        'symbol': 'TLRY',
-        'exchange': 'NASDAQ',
-        'name': 'Tilray',
-    },
-    {
-        'symbol': 'SNDL',
-        'exchange': 'NASDAQ',
-        'name': 'Sundial',
-    },
-    {
-        'symbol': 'BBBY',
-        'exchange': 'NASDAQ',
-        'name': 'BBBY',
-    },
-    {
-        'symbol': 'O',
-        'exchange': 'NYSE',
-        'name': 'REIT',
-    },
-    {
-        'symbol': 'FXF',
-        'exchange': 'NYSEARCA',
-        'name': 'Swiss Francs',
-    },
-    {
-        'symbol': 'GLD',
-        'exchange': 'NSEARCA',
-        'name': 'Gold ETF',
-    },
-    {
-        'symbol': 'QQQ',
-        'exchange': 'NASDAQ',
-        'name': 'Invesco Tech',
-    },
-    {
-        'symbol': 'VTV',
-        'exchange': 'NYSEARCA',
-        'name': 'Vanguard Value',
-    },
+    {'symbol': 'GME', 'exchange': 'NYSE', 'name': 'Gamestop', },
+    {'symbol': 'TSLA', 'exchange': 'NASDAQ', 'name': 'Tesla', },
+    {'symbol': 'TLRY', 'exchange': 'NASDAQ', 'name': 'Tilray', },
+    {'symbol': 'SNDL', 'exchange': 'NASDAQ', 'name': 'Sundial', },
+    {'symbol': 'BBBY', 'exchange': 'NASDAQ', 'name': 'BBBY', },
+    {'symbol': 'O', 'exchange': 'NYSE', 'name': 'REIT', },
+    {'symbol': 'FXF', 'exchange': 'NYSEARCA', 'name': 'Swiss Francs', },
+    {'symbol': 'GLD', 'exchange': 'NSEARCA', 'name': 'Gold ETF', },
+    {'symbol': 'QQQ', 'exchange': 'NASDAQ', 'name': 'Invesco Tech', },
+    {'symbol': 'VTV', 'exchange': 'NYSEARCA', 'name': 'Vanguard Value', },
 ]
 
 
 def fetch(symbol):
-    """Fetch securities data for a specific symbol/asset"""
+    """Fetch securities data for a specific symbol/asset.
+
+    Returns:
+        quote (dict): a list of attributes for each asset
+
+    """
 
     url = 'https://finnhub.io/api/v1/quote'
     params = {
@@ -73,7 +38,15 @@ def fetch(symbol):
 
 
 def collect(assets):
-    """Fetch securities data for a list of symbols/assets"""
+    """Fetch securities data for a COLLECTION of symbols/assets.
+
+    Returns:
+        assets (list): a list of assets with the dict of attributes for each
+
+    Notes:
+        Uses the "fetch" function, above to pull the data for each asset
+
+    """
 
     for asset in assets:
         quote = fetch(asset['symbol'])
@@ -88,6 +61,17 @@ def collect(assets):
 
 
 def sort(data, ord):
+    """Sorts a list of assets
+
+    Args:
+        data (list): the list of assets produced by the "collect" function
+        ord (str): the user's preferred sort order
+
+    Returns:
+        sorted_data (list): a list of assets, sorted
+
+    """
+
     if (ord == 'percent_change'):
         reverse = True
     else:

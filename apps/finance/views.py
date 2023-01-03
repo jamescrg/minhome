@@ -8,13 +8,18 @@ import apps.finance.securities_data as securities_data
 
 @login_required
 def crypto(request, ord='market_cap'):
-    """View crypto data"""
+    """Retrieve and display crypto data.
+
+    Args:
+    ord (str): the sort order for the list of assets,
+
+    """
 
     # specify the list of assets to be viewed
     symbols = 'ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR'
 
     # fetch data from remote service
-    data = crypto_data.fetch(symbols)
+    data = crypto_data.collect(symbols)
 
     # condense and sort the data
     data = crypto_data.condense(data)
@@ -33,7 +38,13 @@ def crypto(request, ord='market_cap'):
 
 @login_required
 def securities(request, ord='name'):
-    """View securities data"""
+    """Retrieve and display securities data.
+
+    Args:
+        ord (int): the sort order for the list of assets,
+            e.g. name, market cap, etc., with the default being name
+
+    """
 
     asset_list = securities_data.asset_list
     data = securities_data.collect(asset_list)
@@ -49,7 +60,12 @@ def securities(request, ord='name'):
 
 @login_required
 def positions(request):
-    """View positions for all assets"""
+    """Retrieve and display positions in all assets.
+
+    Notes:
+        this function is currently unfinished and is not in active use
+
+    """
 
     context = {
         'page': 'securities',

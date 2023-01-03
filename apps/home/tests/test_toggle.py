@@ -1,6 +1,10 @@
 
 import pytest
 
+from django.test.client import RequestFactory
+
+from apps.home.toggle import show_section
+from apps.home.toggle import change_session
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
@@ -51,3 +55,11 @@ def test_toggle(client):
     assert response.status_code == 200
     assert not client.session['show_gathas']
     assert client.session['gathas_hide_expire']
+
+
+def test_change_session(client):
+    """ test a function that changes session data"""
+    client.get('/home')
+    session = client.session
+    change_session(session)
+    assert session['motto'] == 'Stuff happens.'
