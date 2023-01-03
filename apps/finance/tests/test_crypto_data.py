@@ -4,7 +4,7 @@ import apps.finance.crypto_data as crypto_data
 
 def test_fetch():
     symbols = 'ALGO,ETH,ATOM,MATIC,BTC'
-    data = crypto_data.fetch(symbols)
+    data = crypto_data.collect(symbols)
     assert data['BTC']
     assert data['BTC']['quote']['USD']['market_cap'] > 0
     assert data['MATIC']['quote']['USD']['price'] > 0

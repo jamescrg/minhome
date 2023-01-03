@@ -1,8 +1,8 @@
 
-import requests
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import os
 
-import config.settings_local
+import requests
+from dotenv import load_dotenv
 
 
 asset_list = [
@@ -27,10 +27,13 @@ def fetch(symbol):
 
     """
 
+    # load env variables, where API key is saved
+    load_dotenv()
+
     url = 'https://finnhub.io/api/v1/quote'
     params = {
         'symbol': symbol,
-        'token': config.settings_local.FINNHUB_API_KEY,
+        'token': os.getenv('FINNHUB_API_KEY'),
     }
     response = requests.get(url, params=params)
     quote = response.json()

@@ -1,10 +1,11 @@
-from datetime import datetime
+import os
 import requests
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from dotenv import load_dotenv
 
-import config.settings_local
 from apps.weather.timeshift import timestamp_to_eastern
 
 
@@ -16,12 +17,15 @@ def index(request):
     else:
         zip = 30533
 
+    # load env variables, where API key is saved
+    load_dotenv()
+
     # fetch current weather data
     url = 'https://api.openweathermap.org/data/2.5/weather'
     params = {
         'zip': zip,
         'units': 'imperial',
-        'appid': config.settings_local.OPEN_WEATHER_API_KEY,
+        'appid': os.getenv('OPEN_WEATHER_API_KEY'),
     }
 
     response = requests.get(url, params=params)
