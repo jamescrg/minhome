@@ -4,3 +4,4 @@ config/settings_local.py
 /static/bootstrap*
 /static/admin
 tags*
+.env

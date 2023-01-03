@@ -10,8 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import json
+import os
 from pathlib import Path
-from . import settings_local
+
+# import .env file variables
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,15 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = settings_local.SECRET_KEY
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = settings_local.DEBUG
+DEBUG = os.getenv('DEBUG')
 
 # check dev v. production environment
-ENV = settings_local.ENV
+ENV = os.getenv('ENV')
 
-ALLOWED_HOSTS = settings_local.ALLOWED_HOSTS
+ALLOWED_HOSTS = json.loads(os.getenv('ALLOWED_HOSTS'))
 
 
 # Application definition
@@ -93,9 +100,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': settings_local.DB_NAME,
-        'USER': settings_local.DB_USER,
-        'PASSWORD': settings_local.DB_PASSWORD,
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
     }
 }
 
@@ -160,7 +167,7 @@ EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'no-reply@cloud-portal.com'
-EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 # set cookies (sessions) to last for two months
