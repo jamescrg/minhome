@@ -18,7 +18,7 @@ def crypto(request, ord='market_cap'):
     # specify the list of assets to be viewed
     symbols = 'ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR'
 
-    # fetch data from remote service
+    # collect data from remote service
     data = crypto_data.collect(symbols)
 
     # condense and sort the data

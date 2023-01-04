@@ -1,8 +1,7 @@
 
-import os
-
 import requests
-from dotenv import load_dotenv
+
+from config import settings_local
 
 
 asset_list = [
@@ -27,13 +26,10 @@ def fetch(symbol):
 
     """
 
-    # load env variables, where API key is saved
-    load_dotenv()
-
     url = 'https://finnhub.io/api/v1/quote'
     params = {
         'symbol': symbol,
-        'token': os.getenv('FINNHUB_API_KEY'),
+        'token': settings_local.FINNHUB_API_KEY,
     }
     response = requests.get(url, params=params)
     quote = response.json()

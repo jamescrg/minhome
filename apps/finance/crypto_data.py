@@ -1,9 +1,8 @@
 
-import os
-
 import requests
-from dotenv import load_dotenv
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+
+from config import settings_local
 
 
 def collect(symbols):
@@ -17,14 +16,11 @@ def collect(symbols):
 
     """
 
-    # load env variables, where API key is saved
-    load_dotenv()
-
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     params = {
         'symbol': symbols,
         'convert': 'USD',
-        'CMC_PRO_API_KEY': os.getenv('CRYPTO_API_KEY'),
+        'CMC_PRO_API_KEY': settings_local.CRYPTO_API_KEY,
     }
 
     try:

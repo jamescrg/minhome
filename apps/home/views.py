@@ -25,8 +25,6 @@ def index(request):
 
     """
 
-    logger.warning('Homepage was accessed at ' + str(datetime.datetime.now()) + ' hours!')
-
     user = request.user
     session = request.session
 
