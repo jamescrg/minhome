@@ -5,3 +5,4 @@ config/settings_local.py
 /static/admin
 tags*
 .env
+*.log

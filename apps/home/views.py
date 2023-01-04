@@ -11,6 +11,10 @@ from apps.folders.models import Folder
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
 
+import logging
+import datetime
+logger = logging.getLogger(__name__)
+
 
 @login_required
 def index(request):
@@ -20,6 +24,8 @@ def index(request):
         Displays upcoming events, current tasks, and priority favorites
 
     """
+
+    logger.warning('Homepage was accessed at ' + str(datetime.datetime.now()) + ' hours!')
 
     user = request.user
     session = request.session
