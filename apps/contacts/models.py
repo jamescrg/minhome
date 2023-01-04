@@ -5,6 +5,30 @@ from accounts.models import CustomUser
 
 
 class Contact(models.Model):
+    """A person or entity and its associated contact information.
+
+    Attributes:
+        id (int): the unique identifier for the contact
+        user (int): the user who created and owns the contact
+        folder (int): the folder where the contact is displayed
+        selected (int): whether the contact has been selected to be displayed
+        name (str): the contact's full name
+        company (str): if a person, their affiliated company
+        address (str): full street address
+        phone1 (str): primary phone
+        phone1_label (str): primary phone label
+        phone2 (str): seciondary phone
+        phone2_label (str): seciondary phone label
+        phone3 (str): tertiary phone
+        phone3_label (str): tertiary phone label
+        email (str): email address
+        website (str): web address
+        map (str): a url to google maps for the contact's address
+        notes (str): comments about the contact
+        google_id (str): if added to a Google account, the unique identifier for that Google contact
+
+        fillable (list): a list of the above attributes that are fillable by a form
+    """
 
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
