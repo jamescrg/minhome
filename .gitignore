@@ -4,5 +4,7 @@ config/settings_local.py
 /static/bootstrap*
 /static/admin
 tags*
-.env
 *.log
+.flake8
+.coverage
+.coveragerc
