@@ -21,9 +21,9 @@ def index(request):
     """
 
     if request.user.id == 1:
-        zip = 30360
+        zip = settings_local.ZIP_PRIMARY
     else:
-        zip = 30533
+        zip = settings_local.ZIP_SECONDARY
 
 
     # fetch current weather data
