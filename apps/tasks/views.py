@@ -14,6 +14,15 @@ from apps.folders.folders import get_task_folders
 
 @login_required
 def index(request):
+    """Display a list of folders and one or more lists of tasks.
+
+    Notes:
+        * Always displays folders.
+        * If a folder is selected, displays the tasks for that folder.
+        * Allows the display of mulitple task folders.
+        * Task folders are informally called "lists" but are part of the consolidated
+          folder system for the whole site.
+    """
 
     folders = get_task_folders(request)
 
@@ -48,12 +57,30 @@ def index(request):
 
 @login_required
 def activate(request, id):
+    """Activate a folder.
+
+    Notes:
+        This makes the folder the "active" folder for task entry.
+        That means that new tasks created on the task page are added to this folder.
+    """
+
     request.session['active_folder_id'] = id
     return redirect('/tasks/')
 
 
 @login_required
 def status(request, id, origin='tasks'):
+    """Update a task status to complete / not complete
+
+    Args:
+        id (int): a task id
+        origin (str): the page from which the request originated and should return
+
+    Notes:
+        Tasks may be updated from the home or the task page,
+        in which case, the user should be returned to the page of origin.
+    """
+
     task = get_object_or_404(Task, pk=id)
     if task.status == 1:
         task.status = 0
@@ -65,6 +92,13 @@ def status(request, id, origin='tasks'):
 
 @login_required
 def add(request):
+    """Add a new task.
+
+    Notes:
+        GET: There is no get method for this view.
+             The task form is always visible via "index".
+        POST: Add task to database.
+    """
 
     if request.method == 'POST':
         task = Task()
@@ -79,6 +113,15 @@ def add(request):
 
 @login_required
 def edit(request, id):
+    """Edit a task.
+
+    Args:
+        id (int): A Task instance id
+
+    Notes:
+        GET: Display task edit form.
+        POST: Update task in database.
+    """
 
     user = request.user
 
@@ -120,6 +163,12 @@ def edit(request, id):
 
 @login_required
 def clear(request, folder_id):
+    """Delete all completed tasks in the active folder.
+
+    Args:
+        folder_id (int): the folder where tasks should be deleted
+    """
+
     tasks = Task.objects.filter(folder_id=folder_id, status=1)
     for task in tasks:
         task.delete()

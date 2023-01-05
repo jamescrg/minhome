@@ -1,7 +1,8 @@
 
 from django.db import models
-from apps.folders.models import Folder
+
 from accounts.models import CustomUser
+from apps.folders.models import Folder
 
 
 class Contact(models.Model):
@@ -10,7 +11,7 @@ class Contact(models.Model):
     Attributes:
         id (int): the unique identifier for the contact
         user (int): the user who created and owns the contact
-        folder (int): the folder where the contact is displayed
+        folder (int): the folder to which the contact belongs
         selected (int): whether the contact has been selected to be displayed
         name (str): the contact's full name
         company (str): if a person, their affiliated company
@@ -26,7 +27,6 @@ class Contact(models.Model):
         map (str): a url to google maps for the contact's address
         notes (str): comments about the contact
         google_id (str): if added to a Google account, the unique identifier for that Google contact
-
         fillable (list): a list of the above attributes that are fillable by a form
     """
 

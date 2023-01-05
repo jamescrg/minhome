@@ -1,11 +1,29 @@
 
 from django.db import models
-from apps.folders.models import Folder
+
 from accounts.models import CustomUser
+from apps.folders.models import Folder
 
 
 class Favorite(models.Model):
+    """A favorite url belonging to the user.
 
+    Attributes:
+        id (int): the unique identifier for the favorite
+        user (int): the user who created and owns the favorite
+        folder (int): the folder to which the favorite belongs
+        name (str): the name or title of the favorite url
+        url (str): a web url
+        description (str): a description of the site
+        login (str): the username to log in
+        root (str): a credential root
+        passkey (str): a credential key
+        selected (int): whether the favorite has been selected to be displayed
+        home_rank (int): whether the favorite should be displayed on the home page, and
+            if so, what rank it should have within its folder
+    """
+
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100)

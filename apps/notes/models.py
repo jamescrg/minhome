@@ -5,6 +5,16 @@ from accounts.models import CustomUser
 
 
 class Note(models.Model):
+    """A user's note, may be in plain text or markdown.
+
+    Attributes:
+        id (int): the unique identifier for the favorite
+        user (int): the user who created and owns the note
+        folder (int): the folder to which the note belongs
+        subject (str): the subject matter of the note
+        note (str): the content of the note
+        selected (int): whether the favorite has been selected to be displayed
+    """
 
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

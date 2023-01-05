@@ -150,7 +150,6 @@ def edit(request, id):
     Notes:
         GET: Display note form.
         POST: Update note in database.
-
     """
 
     user = request.user

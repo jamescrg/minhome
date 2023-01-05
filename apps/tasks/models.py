@@ -5,6 +5,17 @@ from accounts.models import CustomUser
 
 
 class Task(models.Model):
+    """A user's task.
+
+    Attributes:
+        id (int): the unique identifier for the favorite
+        user (int): the user who created and owns the task
+        folder (int): the folder to which the task belongs
+        title (str): the content of the task, the thing to be done
+        status (int): whether the task has been completed
+            0: not completed
+            1: completed
+    """
 
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

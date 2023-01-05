@@ -12,6 +12,13 @@ from config import settings_local
 
 @login_required
 def index(request):
+    """Display current weather conditions at a specified zip code.
+
+    TODO:
+        * Create a user's zip code attribute and store the zip code there.
+        * Have the user register a zip code up on creating
+        * Allow the user the change their zip code through the settings page.
+    """
 
     if request.user.id == 1:
         zip = 30360

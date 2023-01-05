@@ -2,24 +2,24 @@
 import json
 import requests
 
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
-
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
-from apiclient.discovery import build
-
-from accounts.models import CustomUser
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
 
 @login_required
 def index(request):
-    user = request.user
+    """Show the settings page.
 
-    if user.google_credentials:
+    Notes:
+        Shows whether the user has linked a Google account.
+        If not, provides a url to link one.
+        If so, provides a url to log out.
+    """
+
+    if request.user.google_credentials:
         logged_in = True
     else:
         logged_in = False
@@ -33,8 +33,12 @@ def index(request):
 
 @login_required
 def google_login(request):
-    # direct the user to their login page to obtain an authorization code
-    # based on sample code from https://developers.google.com/identity/protocols/oauth2/web-server
+    """Direct the user to their login page to obtain an authorization code.
+
+    Notes:
+        Based on sample code from:
+        https://developers.google.com/identity/protocols/oauth2/web-server
+    """
 
     # sets the url to return to when an authorization code has been obtained
     redirect_uri = 'https://' + request.get_host() + '/settings/google/store'
@@ -66,6 +70,13 @@ def google_login(request):
 
 @login_required
 def google_store(request):
+    """Store the user's authorization code in the database.
+
+    Notes:
+        The user's authorization code is a json string,
+        which is stored in the user's "google_credentials" attribute.
+    """
+
     redirect_uri = 'https://' + request.get_host() + '/settings/google/store'
     pwd = settings.BASE_DIR
 
@@ -96,30 +107,30 @@ def google_store(request):
 
 
 @login_required
-def show(request):
-    user = request.user
-    credentials = user.google_credentials
-    credentials = json.loads(credentials)
-    import app.util as util
-    return util.dump(credentials)
-
-
-@login_required
 def google_logout(request):
+    """Disconnects the user's google account from the app.
+
+    Notes:
+        Contacts google and revokes the user's auth code.
+        Then deletes the user's code from the database.
+    """
+
+    # get / build the user credentials
     user = request.user
     credentials = user.google_credentials
-
     credentials = json.loads(credentials)
     credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
         credentials
     )
 
+    # use the credentials to revoke access
     requests.post(
         'https://oauth2.googleapis.com/revoke',
         params={'token': credentials.token},
         headers={'content-type': 'application/x-www-form-urlencoded'},
     )
 
+    # delete the credentials from the database
     user.google_credentials = None
     user.save()
 
