@@ -2,7 +2,7 @@
 
 ## Summary
 
-Minhome is a custom home page that allows a user to store favorites in the cloud and access them on a custom home page. It also provides several other pages with additional functionality: a "tasks" page, a contact manager, and a notes page.
+Minhome is a Django application that allows a user to store favorites in the cloud and access them on a custom home page. It also provides several other pages with additional functionality: a "tasks" page, a contact manager, and a notes page.
 
 A user can also link a Google account, so that contacts added to the contact manager are synced to their Google account. 
 
