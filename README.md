@@ -1,6 +1,6 @@
 ## Summary
 
-A custom home page that focuses on speed, simplicity, and minimalism. Built on Django.
+A free and open-source custom home page application that focuses on speed, simplicity, and minimalism. Built on Django.
 
 
 ## Features
@@ -13,6 +13,8 @@ A custom home page that focuses on speed, simplicity, and minimalism. Built on D
 * View designated task lists directly on your home page
 * View your upcoming Google calendar events directly on your home page
 * Access real-time weather, securities, and crypto data
+* Completely free and open source.
+* Self-host the application for your own enjoyment or your community: allows for mulitiple users and accounts
 
 
 ## Installation
