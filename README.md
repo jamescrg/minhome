@@ -13,8 +13,9 @@ A free and open-source custom home page application that focuses on speed, simpl
 * View designated task lists directly on your home page
 * View your upcoming Google calendar events directly on your home page
 * Access real-time weather, securities, and crypto data
-* Completely free and open source.
-* Self-host the application for your own enjoyment or your community: allows for mulitiple users and accounts
+* Completely free and open source, no ads or distractions
+* Self-hosted and completely customizable
+* Share with friends, family, and community: allows for mulitiple users and accounts
 
 
 ## Installation
