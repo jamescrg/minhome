@@ -1,4 +1,4 @@
-# min-home
+# Minhome
 
 ## Summary
 
