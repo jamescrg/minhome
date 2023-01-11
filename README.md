@@ -20,4 +20,4 @@ A free and open-source custom home page application that focuses on speed, simpl
 
 ## Installation
 
-Minhome an be installed and set up like any other Django application using the datase backend of your choice. Simply pull the repository, install dependences, and run the migrations. Create a new user via the Django shell, and enjoy your new home page.
+Minhome an be installed and set up like any other Django application using the datase backend of your choice. Simply pull the repository, install dependences via pip, and run the migrations. Create a new user via the Django shell, and enjoy your new home page. Note, the site also uses Bootstrap 3.3.7, which will need to be installed under the "static" directory.
