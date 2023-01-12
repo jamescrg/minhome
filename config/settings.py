@@ -169,7 +169,6 @@ SERVER_EMAIL = settings_local.SERVER_EMAIL
 ADMINS = settings_local.ADMINS
 
 
-
 # set cookies (sessions) to last for two months
 # default is two weeks, multiplying by four to get two months
 SESSION_COOKIE_AGE = 1209600 * 4
