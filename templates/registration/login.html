@@ -7,14 +7,14 @@
 <div class="auth-card">
 
     <div class="auth-title">
-        cloud-portal.com
+      {{ site_handle }}
     </div>
 
     <div class="auth-subtitle">
         Log in to your account
     </div>
 
-    <form id="login-form" method="post">
+    <form id="login-form" class="account-form" method="post">
 
       {% csrf_token %}
 
@@ -24,6 +24,9 @@
 
     </form>
 
+    <div class="forgot">
+      <a href="/accounts/password_reset">Forgot Password?</a>
+    </div>
 </div>
 
 {% endblock content %}

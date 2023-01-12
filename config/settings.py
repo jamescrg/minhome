@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -81,6 +82,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context.env',
+                'config.context.site_handle',
             ],
         },
     },
@@ -158,11 +160,14 @@ INTERNAL_IPS = [
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST = settings_local.EMAIL_HOST
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@cloud-portal.com'
+EMAIL_HOST_USER = settings_local.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
+SERVER_EMAIL = settings_local.SERVER_EMAIL
+ADMINS = settings_local.ADMINS
+
 
 
 # set cookies (sessions) to last for two months

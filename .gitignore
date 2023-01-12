@@ -8,3 +8,4 @@ tags*
 .flake8
 .coverage
 .coveragerc
+/apps/lab

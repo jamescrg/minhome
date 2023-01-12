@@ -1,21 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'layout-auth.html' %}
 
-{% block title %}
-    Sign Up
-{% endblock title %}
+{% block title %}Sign Up{% endblock title %}
 
 {% block content %}
 
-    <h2>Sign Up</h2>
+<div class="auth-card">
 
-    <form method="post">
+  <div class="auth-title">{{ site_handle }}</div>
+    <div class="auth-subtitle">
+    </div>
 
-    {% csrf_token %}
+    <form class="account-form" method="post">
 
-    {{ form.as_p }}
+      {% csrf_token %}
 
-    <button type="submit">Sign Up</button>
+      {{ form.as_p }}
+
+      <button type="submit">Sign Up</button>
 
     </form>
+
+</div>
 
 {% endblock content %}

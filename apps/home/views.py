@@ -12,7 +12,6 @@ from apps.home.toggle import show_section
 from apps.tasks.models import Task
 
 import logging
-import datetime
 logger = logging.getLogger(__name__)
 
 

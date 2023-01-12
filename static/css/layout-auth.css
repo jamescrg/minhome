@@ -1,41 +1,41 @@
 
 body {
-	font-family: 'Open Sans', sans-serif;
 	background: #d4d4d4;
 	color: #474747;
+	font-family: 'Open Sans', sans-serif;
 	}
 
 a {
-	text-decoration: none;
 	color: #0059b3;
+	text-decoration: none;
 	}
 
 a:hover	{
-	text-decoration: none;
 	color: green;
+	text-decoration: none;
 	}
 
 .vertical-center {
+	align-items: center;
+	display: flex;
 	min-height: 80%;  /* Fallback for browsers do NOT support vh unit */
 	min-height: 80vh; /* These two lines are counted as one :-)       */
-	display: flex;
-	align-items: center;
 	}
 
 .auth-card{
-	margin: 0 auto;
-	border-radius: 3px;
-	width: 400px;
 	background: #f4f4f4;
+	border-radius: 3px;
+	margin: 0 auto;
 	padding: 20px;
+	width: 400px;
 }
 
 .auth-title{
+	color: #0059b3;
 	font-size: 1.5em;
   font-weight: 500;
 	margin-bottom: 5px;
 	text-align: center;
-	color: #0059b3;
 }
 
 .auth-subtitle{
@@ -44,13 +44,21 @@ a:hover	{
 	text-align: center;
 }
 
-#login-form label {
-  font-size: 1em;
+.prompt {
+  margin-bottom: 30px;
+}
+
+.reset_confirm p {
+  margin-bottom: 20px;
+}
+
+.account-form label {
   display: block;
+  font-size: 1em;
   font-weight: normal;
 }
 
-#login-form input {
+.account-form input {
   border: solid 1px #cccccc;
   border-radius: 5px;
   display: block;
@@ -60,12 +68,27 @@ a:hover	{
   width: 100%;
 }
 
-#login-form button {
-  border: solid 1px #cccccc;
+.account-form ul {
+  margin-bottom: 30px;
+  margin-top: -50px;
+  padding-left: 25px;
+}
+
+.account-form ul li {
+  list-style-type: disc;
+  margin-top: 5px;
+}
+
+
+
+.account-form button {
+  background: var(--gray6);
+  border: solid 1px var(--gray6);
+  color: var(--gray3);
   border-radius: 5px;
   font-size: 1em;
-  margin-top: 0px;
-  padding: 7px;
+  margin-top: 0;
+  padding: 7px 10px;
 }
 
 input {
@@ -74,4 +97,14 @@ input {
 
 input:focus {
   outline: none;
+}
+
+.forgot {
+  text-align: right;
+}
+
+.helptext {
+  display: inline-block;
+  margin-bottom: 30px;
+  margin-top: -15px;
 }
