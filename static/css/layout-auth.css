@@ -40,7 +40,7 @@ a:hover	{
 
 .auth-subtitle{
   font-size: 1em;
-	margin-bottom: 30px;
+  margin-top: 5px;
 	text-align: center;
 }
 
@@ -48,8 +48,9 @@ a:hover	{
   margin-bottom: 30px;
 }
 
-.reset_confirm p {
-  margin-bottom: 20px;
+.account-form p {
+  margin: 30px 0 0 0;
+  padding: 0;
 }
 
 .account-form label {
@@ -63,19 +64,17 @@ a:hover	{
   border-radius: 5px;
   display: block;
   font-size: 1em;
-  margin-bottom: 30px;
   padding: 7px;
   width: 100%;
 }
 
 .account-form ul {
-  margin-bottom: 30px;
-  margin-top: -50px;
-  padding-left: 25px;
+  /* margin: 20px 0 0 2px; */
+  padding-left: 2px;
 }
 
 .account-form ul li {
-  list-style-type: disc;
+  color: var(--red-dark);
   margin-top: 5px;
 }
 
@@ -85,7 +84,7 @@ a:hover	{
   color: var(--gray3);
   border-radius: 5px;
   font-size: 1em;
-  margin-top: 0;
+  margin-top: 30px;
   padding: 7px 10px;
 }
 
@@ -102,7 +101,31 @@ input:focus {
 }
 
 .helptext {
+  color: var(--red-dark);
   display: inline-block;
-  margin-bottom: 30px;
-  margin-top: -15px;
+  margin: 5px 0 0 2px;
+}
+
+.login-bottom {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.login-bottom-right {
+  margin-bottom: 2px;
+}
+
+.reset-confirm {
+  margin-top: 30px;
+}
+
+.reset-complete {
+  text-align: center;
+}
+
+.spam-folder {
+  color: var(--red-dark);
+  font-weight: 600;
 }

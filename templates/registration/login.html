@@ -20,13 +20,20 @@
 
       {{ form.as_p }}
 
-      <button type="submit">Submit</button>
+    <div class="flex-container login-bottom">
+
+      <div class="login-bottom-left">
+        <button type="submit">Submit</button>
+      </div>
+
+      <div class="login-bottom-right">
+        <a href="/accounts/password_reset">Forgot Password?</a>
+      </div>
+
+    </div>
 
     </form>
 
-    <div class="forgot">
-      <a href="/accounts/password_reset">Forgot Password?</a>
-    </div>
 </div>
 
 {% endblock content %}
