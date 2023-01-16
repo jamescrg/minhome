@@ -1,19 +1,20 @@
 
+
 body {
-	background: #d4d4d4;
-	color: #474747;
+	background: var(--gray4);
+	color: var(--gray7);
 	font-family: 'Open Sans', sans-serif;
-	}
+}
 
 a {
-	color: #0059b3;
+	color: var(--blue);
 	text-decoration: none;
-	}
+}
 
 a:hover	{
-	color: green;
+	color: var(--green);
 	text-decoration: none;
-	}
+}
 
 .vertical-center {
 	align-items: center;
@@ -23,7 +24,7 @@ a:hover	{
 	}
 
 .auth-card{
-	background: #f4f4f4;
+	background: var(--gray2);
 	border-radius: 3px;
 	margin: 0 auto;
 	padding: 20px;
@@ -31,7 +32,7 @@ a:hover	{
 }
 
 .auth-title{
-	color: #0059b3;
+	color: var(--blue);
 	font-size: 1.5em;
   font-weight: 500;
 	margin-bottom: 5px;
@@ -60,7 +61,7 @@ a:hover	{
 }
 
 .account-form input {
-  border: solid 1px #cccccc;
+  border: solid 1px var(--gray5);
   border-radius: 5px;
   display: block;
   font-size: 1em;
@@ -69,7 +70,6 @@ a:hover	{
 }
 
 .account-form ul {
-  /* margin: 20px 0 0 2px; */
   padding-left: 2px;
 }
 
@@ -84,7 +84,7 @@ a:hover	{
   color: var(--gray3);
   border-radius: 5px;
   font-size: 1em;
-  margin-top: 30px;
+  margin-top: 40px;
   padding: 7px 10px;
 }
 
