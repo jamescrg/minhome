@@ -95,17 +95,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'old': {
-        'ENGINE': 'django.db.backends.mysql',
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': settings_local.DB_NAME,
         'USER': settings_local.DB_USER,
         'PASSWORD': settings_local.DB_PASSWORD,
-    },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': settings_local.PG_DB_NAME,
-        'USER': settings_local.PG_DB_USER,
-        'PASSWORD': settings_local.PG_DB_PASSWORD,
         'HOST': 'localhost',
     }
 

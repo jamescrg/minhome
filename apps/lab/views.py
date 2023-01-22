@@ -1,15 +1,15 @@
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from apps.contacts.models import Contact
 
 
+
 @login_required
 def index(request):
-    from django.http import Http404, HttpResponse
-    raise Http404('bad link')
-    return HttpResponse('this is the response')
+    return HttpResponse('this is the response 11:20')
 
 
 @login_required
