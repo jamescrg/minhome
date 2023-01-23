@@ -21,8 +21,9 @@ links
 ------------------------------------------------*/
 
 a {
-    text-decoration: none;
     color: #0059b3;
+    outline: none;
+    text-decoration: none;
 }
 
 a:hover	{

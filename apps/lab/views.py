@@ -1,6 +1,7 @@
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 
 from apps.contacts.models import Contact
@@ -9,7 +10,8 @@ from apps.contacts.models import Contact
 
 @login_required
 def index(request):
-    return HttpResponse('this is the response 11:20')
+    test = ['this', 'that']
+    return HttpResponse(print(test))
 
 
 @login_required
