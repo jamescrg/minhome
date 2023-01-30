@@ -36,4 +36,5 @@ def note(user, folder1):
         selected=1,
         subject='Things I Like',
         note='Ice cream and cookies are nice',)
+    note.save()
     return note

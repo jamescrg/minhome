@@ -12,8 +12,9 @@ from apps.notes.models import Note
 # Once setup, the database is cached to be used for all subsequent tests
 # and rolls back transactions, to isolate tests from each other.
 # This is the same way the standard Django TestCase uses the database.
-# However pytest-django also caters for transaction test cases and allows you to
-# keep the test databases configured across different test runs.
+# However pytest-django also caters for transaction test cases and allows you
+# to keep the test databases configured across different test runs.
+
 pytestmark = pytest.mark.django_db
 
 
@@ -23,7 +24,7 @@ def test_note_string(note):
 
 
 def test_note_content(note, user, folder1):
-    note = Note.objects.get(subject='Things I like')
+    note = Note.objects.filter(subject='Things I Like').get()
     expectedValues = {
         'user': user,
         'folder': folder1,
