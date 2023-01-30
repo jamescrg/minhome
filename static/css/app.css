@@ -8,11 +8,11 @@ background and primary font
 
 html,
 body {
-    height: 100%;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
     background: #d4d4d4;
     color: #474747;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    height: 100%;
 }
 
 

@@ -7,7 +7,6 @@ from django.shortcuts import render
 from apps.contacts.models import Contact
 
 
-
 @login_required
 def index(request):
     test = ['this', 'that']
