@@ -74,6 +74,10 @@
 
 <div class="page-control">
 	<a href="javascript:showHide('folderCreateForm');">
-    Add Folder
+    {% if page == 'tasks' %}
+      Add List
+    {% else %}
+      Add Folder
+    {% endif %}
   </a>
 </div>
