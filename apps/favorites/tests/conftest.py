@@ -1,4 +1,3 @@
-
 import pytest
 
 from django.test import Client
@@ -10,20 +9,24 @@ from apps.folders.models import Folder
 
 @pytest.fixture
 def user():
-    user = CustomUser.objects.create_user('Ollie', 'ollie@gmail.com', 'clawboy')
+    user = CustomUser.objects.create_user("Ollie", "ollie@gmail.com", "clawboy")
     return user
 
 
 @pytest.fixture
 def folder1(user):
-    folder1 = Folder.objects.create(user=user, page='favorites', name='Meditation',)
+    folder1 = Folder.objects.create(
+        user=user,
+        page="favorites",
+        name="Meditation",
+    )
     return folder1
 
 
 @pytest.fixture
 def client(user):
     client = Client()
-    client.login(username='Ollie', password='clawboy')
+    client.login(username="Ollie", password="clawboy")
     return client
 
 
@@ -32,12 +35,12 @@ def favorite(user, folder1):
     contact = Favorite.objects.create(
         user=user,
         folder=folder1,
-        name='Meditation Posture',
-        url='http://meditationposture.net',
-        description='A website',
-        login='drachma',
-        root='rupee',
-        passkey='ruble',
+        name="Meditation Posture",
+        url="http://meditationposture.net",
+        description="A website",
+        login="drachma",
+        root="rupee",
+        passkey="ruble",
         selected=1,
     )
     return contact

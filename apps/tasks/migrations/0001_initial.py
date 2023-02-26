@@ -4,24 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('user_id', models.PositiveBigIntegerField()),
-                ('folder_id', models.BigIntegerField(blank=True, null=True)),
-                ('title', models.CharField(blank=True, max_length=200, null=True)),
-                ('status', models.IntegerField(blank=True, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("user_id", models.PositiveBigIntegerField()),
+                ("folder_id", models.BigIntegerField(blank=True, null=True)),
+                ("title", models.CharField(blank=True, max_length=200, null=True)),
+                ("status", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'app_task',
+                "db_table": "app_task",
             },
         ),
     ]

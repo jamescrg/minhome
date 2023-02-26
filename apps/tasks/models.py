@@ -1,4 +1,3 @@
-
 from django.db import models
 from apps.folders.models import Folder
 from accounts.models import CustomUser
@@ -24,7 +23,7 @@ class Task(models.Model):
     status = models.IntegerField(blank=True, null=True, default=0)
 
     def __str__(self):
-        return f'{self.title} : {self.id}'
+        return f"{self.title} : {self.id}"
 
     class Meta:
-        db_table = 'app_task'
+        db_table = "app_task"

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0006_rename_user_id_task_user'),
+        ("tasks", "0006_rename_user_id_task_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='status',
+            model_name="task",
+            name="status",
             field=models.IntegerField(blank=True, default=0, null=True),
         ),
     ]

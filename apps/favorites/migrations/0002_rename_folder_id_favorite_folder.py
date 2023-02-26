@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('favorites', '0001_initial'),
+        ("favorites", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='favorite',
-            old_name='folder_id',
-            new_name='folder',
+            model_name="favorite",
+            old_name="folder_id",
+            new_name="folder",
         ),
     ]

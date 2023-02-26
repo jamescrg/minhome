@@ -1,6 +1,3 @@
-
-
-
 import pytest
 
 from django.test import Client
@@ -12,32 +9,34 @@ from apps.tasks.models import Task
 
 @pytest.fixture
 def user():
-    user = CustomUser.objects.create_user('Ollie', 'ollie@gmail.com', 'clawboy')
+    user = CustomUser.objects.create_user("Ollie", "ollie@gmail.com", "clawboy")
     return user
 
 
 @pytest.fixture
 def client(user):
     client = Client()
-    client.login(username='Ollie', password='clawboy')
+    client.login(username="Ollie", password="clawboy")
     return client
 
 
 @pytest.fixture
 def folders(user):
     names = [
-        'Current',
-        'Chores',
-        'Writing',
-        'Monday',
+        "Current",
+        "Chores",
+        "Writing",
+        "Monday",
     ]
     folders = []
     for name in names:
-        folders.append(Folder.objects.create(
-            user=user,
-            page='tasks',
-            name=name,
-        ))
+        folders.append(
+            Folder.objects.create(
+                user=user,
+                page="tasks",
+                name=name,
+            )
+        )
     return folders
 
 
@@ -51,19 +50,21 @@ def folder(folders):
 @pytest.fixture
 def tasks(user, folder):
     descriptions = [
-        'Take out trash',
-        'Rake leaves',
-        'Sweep back porch',
-        'Scrub shower tile',
+        "Take out trash",
+        "Rake leaves",
+        "Sweep back porch",
+        "Scrub shower tile",
     ]
     tasks = []
     for description in descriptions:
-        tasks.append(Task.objects.create(
-            user=user,
-            folder=folder,
-            title=description,
-            status=0,
-        ))
+        tasks.append(
+            Task.objects.create(
+                user=user,
+                folder=folder,
+                title=description,
+                status=0,
+            )
+        )
     return tasks
 
 

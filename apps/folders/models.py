@@ -1,4 +1,3 @@
-
 from django.db import models
 from accounts.models import CustomUser
 
@@ -31,15 +30,15 @@ class Folder(models.Model):
     active = models.IntegerField(blank=True, null=True)
 
     fillable = [
-        'name',
-        'home_column',
-        'home_rank',
-        'selected',
-        'active',
+        "name",
+        "home_column",
+        "home_rank",
+        "selected",
+        "active",
     ]
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     class Meta:
-        db_table = 'app_folder'
+        db_table = "app_folder"

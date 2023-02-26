@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
@@ -26,33 +25,33 @@ def index(request):
     """
 
     user = request.user
-    page = 'notes'
+    page = "notes"
 
-    folders = Folder.objects.filter(user=user, page=page).order_by('name')
+    folders = Folder.objects.filter(user=user, page=page).order_by("name")
 
-    selected_folder = select_folders(request, 'notes')
+    selected_folder = select_folders(request, "notes")
 
     if selected_folder:
         notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
     else:
         notes = Note.objects.filter(user=user, folder_id__isnull=True)
 
-    notes = notes.order_by('subject')
+    notes = notes.order_by("subject")
 
     selected_note = Note.objects.filter(user=user, selected=1).first()
     if selected_note:
         selected_note.note = markdown.markdown(selected_note.note)
 
     context = {
-        'page': page,
-        'edit': False,
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'notes': notes,
-        'selected_note': selected_note,
+        "page": page,
+        "edit": False,
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "notes": notes,
+        "selected_note": selected_note,
     }
 
-    return render(request, 'notes/content.html', context)
+    return render(request, "notes/content.html", context)
 
 
 @login_required
@@ -68,7 +67,7 @@ def select(request, id):
     new = get_object_or_404(Note, pk=id)
     new.selected = 1
     new.save()
-    return redirect('/notes/')
+    return redirect("/notes/")
 
 
 @login_required
@@ -82,12 +81,11 @@ def add(request):
     """
 
     user = request.user
-    folders = Folder.objects.filter(user=user, page='notes').order_by('name')
+    folders = Folder.objects.filter(user=user, page="notes").order_by("name")
 
-    selected_folder = select_folders(request, 'notes')
+    selected_folder = select_folders(request, "notes")
 
-    if request.method == 'POST':
-
+    if request.method == "POST":
         # create a bound note form loaded with the post values
         # this will render even if the post values are invalid
         form = NoteForm(request.POST)
@@ -107,37 +105,37 @@ def add(request):
                 old.save()
 
             # select newest note for user
-            new = Note.objects.filter(user=user).latest('id')
+            new = Note.objects.filter(user=user).latest("id")
             new.selected = 1
             new.save()
 
-            return redirect('notes')
+            return redirect("notes")
 
     else:
-
         # request is a get request
         # create unbound note form
 
         if selected_folder:
-            form = NoteForm(initial={'folder': selected_folder.id})
+            form = NoteForm(initial={"folder": selected_folder.id})
         else:
             form = NoteForm()
 
     # set the initial range of values for folder attribute
-    form.fields['folder'].queryset = Folder.objects.filter(
-            user=user, page='notes').order_by('name')
+    form.fields["folder"].queryset = Folder.objects.filter(
+        user=user, page="notes"
+    ).order_by("name")
 
     context = {
-        'page': 'notes',
-        'edit': False,
-        'add': True,
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'action': '/notes/add',
-        'form': form,
+        "page": "notes",
+        "edit": False,
+        "add": True,
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "action": "/notes/add",
+        "form": form,
     }
 
-    return render(request, 'notes/content.html', context)
+    return render(request, "notes/content.html", context)
 
 
 @login_required
@@ -153,50 +151,48 @@ def edit(request, id):
     """
 
     user = request.user
-    folders = Folder.objects.filter(user=user, page='notes').order_by('name')
+    folders = Folder.objects.filter(user=user, page="notes").order_by("name")
 
-    selected_folder = select_folders(request, 'notes')
+    selected_folder = select_folders(request, "notes")
 
     note = get_object_or_404(Note, pk=id)
 
-    if request.method == 'POST':
-
+    if request.method == "POST":
         try:
             note = Note.objects.filter(user=request.user, pk=id).get()
         except ObjectDoesNotExist:
-            raise Http404('Record not found.')
+            raise Http404("Record not found.")
 
         form = NoteForm(request.POST, instance=note)
 
         if form.is_valid():
-
             note = form.save(commit=False)
             note.user = user
             note.save()
-            return redirect('notes')
+            return redirect("notes")
 
     else:
-
         if selected_folder:
-            form = NoteForm(instance=note, initial={'folder': selected_folder.id})
+            form = NoteForm(instance=note, initial={"folder": selected_folder.id})
         else:
             form = NoteForm(instance=note)
 
-    form.fields['folder'].queryset = Folder.objects.filter(
-            user=user, page='notes').order_by('name')
+    form.fields["folder"].queryset = Folder.objects.filter(
+        user=user, page="notes"
+    ).order_by("name")
 
     context = {
-        'page': 'notes',
-        'edit': True,
-        'add': False,
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'action': f'/notes/{id}/edit',
-        'form': form,
-        'note': note,
+        "page": "notes",
+        "edit": True,
+        "add": False,
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "action": f"/notes/{id}/edit",
+        "form": form,
+        "note": note,
     }
 
-    return render(request, 'notes/content.html', context)
+    return render(request, "notes/content.html", context)
 
 
 @login_required
@@ -210,6 +206,6 @@ def delete(request, id):
     try:
         note = Note.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
-        raise Http404('Record not found.')
+        raise Http404("Record not found.")
     note.delete()
-    return redirect('notes')
+    return redirect("notes")

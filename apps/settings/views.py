@@ -1,4 +1,3 @@
-
 import json
 import requests
 
@@ -25,10 +24,10 @@ def index(request):
         logged_in = False
 
     context = {
-        'page': 'settings',
-        'logged_in': logged_in,
+        "page": "settings",
+        "logged_in": logged_in,
     }
-    return render(request, 'settings/content.html', context)
+    return render(request, "settings/content.html", context)
 
 
 @login_required
@@ -41,14 +40,14 @@ def google_login(request):
     """
 
     # sets the url to return to when an authorization code has been obtained
-    redirect_uri = 'https://' + request.get_host() + '/settings/google/store'
+    redirect_uri = "https://" + request.get_host() + "/settings/google/store"
 
     # builds the url to go to in order to obtain the authorization code
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        '/home/james/.google/cp.json',
+        "/home/james/.google/cp.json",
         scopes=[
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/contacts',
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/contacts",
         ],
     )
     flow.redirect_uri = redirect_uri
@@ -56,14 +55,14 @@ def google_login(request):
     authorization_url, state = flow.authorization_url(
         # Enable offline access so that you can refresh an access token without
         # re-prompting the user for permission. Recommended for web server apps.
-        access_type='offline',
-        prompt='consent',
+        access_type="offline",
+        prompt="consent",
         # Enable incremental authorization. Recommended as a best practice.
-        include_granted_scopes='true',
+        include_granted_scopes="true",
     )
 
     # this is to prevent cross site scripting attacks
-    request.session['state'] = state
+    request.session["state"] = state
 
     return redirect(authorization_url)
 
@@ -77,15 +76,15 @@ def google_store(request):
         which is stored in the user's "google_credentials" attribute.
     """
 
-    redirect_uri = 'https://' + request.get_host() + '/settings/google/store'
+    redirect_uri = "https://" + request.get_host() + "/settings/google/store"
     pwd = settings.BASE_DIR
 
-    state = request.session['state']
+    state = request.session["state"]
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        '/home/james/.google/cp.json',
+        "/home/james/.google/cp.json",
         scopes=[
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/contacts',
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/contacts",
         ],
         state=state,
     )
@@ -103,7 +102,7 @@ def google_store(request):
     user.google_credentials = google_credentials_json
     user.save()
 
-    return redirect('/settings')
+    return redirect("/settings")
 
 
 @login_required
@@ -125,13 +124,13 @@ def google_logout(request):
 
     # use the credentials to revoke access
     requests.post(
-        'https://oauth2.googleapis.com/revoke',
-        params={'token': credentials.token},
-        headers={'content-type': 'application/x-www-form-urlencoded'},
+        "https://oauth2.googleapis.com/revoke",
+        params={"token": credentials.token},
+        headers={"content-type": "application/x-www-form-urlencoded"},
     )
 
     # delete the credentials from the database
     user.google_credentials = None
     user.save()
 
-    return redirect('/settings')
+    return redirect("/settings")

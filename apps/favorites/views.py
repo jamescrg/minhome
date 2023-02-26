@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
@@ -24,25 +23,25 @@ def index(request):
 
     user = request.user
 
-    folders = Folder.objects.filter(user=user, page='favorites').order_by('name')
+    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, 'favorites')
+    selected_folder = select_folders(request, "favorites")
 
     if selected_folder:
         favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
-    favorites = favorites.order_by('name')
+    favorites = favorites.order_by("name")
 
     context = {
-        'page': 'favorites',
-        'edit': False,
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'favorites': favorites,
+        "page": "favorites",
+        "edit": False,
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "favorites": favorites,
     }
-    return render(request, 'favorites/content.html', context)
+    return render(request, "favorites/content.html", context)
 
 
 @login_required
@@ -55,40 +54,39 @@ def add(request):
 
     """
     user = request.user
-    folders = Folder.objects.filter(user=user, page='favorites').order_by('name')
+    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, 'favorites')
+    selected_folder = select_folders(request, "favorites")
 
-    if request.method == 'POST':
-
+    if request.method == "POST":
         form = FavoriteForm(request.POST)
 
         if form.is_valid():
             favorite = form.save(commit=False)
             favorite.user = user
             favorite.save()
-            return redirect('favorites')
+            return redirect("favorites")
 
     else:
-
         if selected_folder:
-            form = FavoriteForm(initial={'folder': selected_folder.id})
+            form = FavoriteForm(initial={"folder": selected_folder.id})
         else:
             form = FavoriteForm()
 
-    form.fields['folder'].queryset = Folder.objects.filter(
-        user=user, page='favorites').order_by('name')
+    form.fields["folder"].queryset = Folder.objects.filter(
+        user=user, page="favorites"
+    ).order_by("name")
 
     context = {
-        'page': 'favorites',
-        'add': True,
-        'action': '/favorites/add',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'form': form,
+        "page": "favorites",
+        "add": True,
+        "action": "/favorites/add",
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "form": form,
     }
 
-    return render(request, 'favorites/content.html', context)
+    return render(request, "favorites/content.html", context)
 
 
 @login_required
@@ -102,19 +100,17 @@ def edit(request, id):
 
     """
     user = request.user
-    folders = Folder.objects.filter(
-        user=user, page='favorites').order_by('name')
+    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, 'favorites')
+    selected_folder = select_folders(request, "favorites")
 
     favorite = get_object_or_404(Favorite, pk=id)
 
-    if request.method == 'POST':
-
+    if request.method == "POST":
         try:
             favorite = get_object_or_404(Favorite, pk=id)
         except ObjectDoesNotExist:
-            raise Http404('Record note found.')
+            raise Http404("Record note found.")
 
         form = FavoriteForm(request.POST, instance=favorite)
 
@@ -122,29 +118,31 @@ def edit(request, id):
             favorite = form.save(commit=False)
             favorite.user = user
             favorite.save()
-            return redirect('favorites')
+            return redirect("favorites")
 
     else:
-
         if selected_folder:
-            form = FavoriteForm(instance=favorite, initial={'folder': selected_folder.id})
+            form = FavoriteForm(
+                instance=favorite, initial={"folder": selected_folder.id}
+            )
         else:
             form = FavoriteForm(instance=favorite)
 
-    form.fields['folder'].queryset = Folder.objects.filter(
-        user=user, page='favorites').order_by('name')
+    form.fields["folder"].queryset = Folder.objects.filter(
+        user=user, page="favorites"
+    ).order_by("name")
 
     context = {
-        'page': 'favorites',
-        'edit': True,
-        'add': False,
-        'action': f'/favorites/{id}/edit',
-        'folders': folders,
-        'selected_folder': selected_folder,
-        'form': form,
+        "page": "favorites",
+        "edit": True,
+        "add": False,
+        "action": f"/favorites/{id}/edit",
+        "folders": folders,
+        "selected_folder": selected_folder,
+        "form": form,
     }
 
-    return render(request, 'favorites/content.html', context)
+    return render(request, "favorites/content.html", context)
 
 
 @login_required
@@ -159,9 +157,9 @@ def delete(request, id):
     try:
         favorite = Favorite.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
-        raise Http404('Record not found.')
+        raise Http404("Record not found.")
     favorite.delete()
-    return redirect('favorites')
+    return redirect("favorites")
 
 
 @login_required
@@ -178,4 +176,4 @@ def home(request, id):
     else:
         favorite.home_rank = 1
     favorite.save()
-    return redirect('favorites')
+    return redirect("favorites")

@@ -4,27 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Folder',
+            name="Folder",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('user_id', models.PositiveBigIntegerField()),
-                ('page', models.CharField(max_length=50)),
-                ('name', models.CharField(max_length=50)),
-                ('home_column', models.IntegerField(blank=True, null=True)),
-                ('home_rank', models.IntegerField(blank=True, null=True)),
-                ('selected', models.IntegerField(blank=True, null=True)),
-                ('active', models.IntegerField(blank=True, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("user_id", models.PositiveBigIntegerField()),
+                ("page", models.CharField(max_length=50)),
+                ("name", models.CharField(max_length=50)),
+                ("home_column", models.IntegerField(blank=True, null=True)),
+                ("home_rank", models.IntegerField(blank=True, null=True)),
+                ("selected", models.IntegerField(blank=True, null=True)),
+                ("active", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'app_folder',
+                "db_table": "app_folder",
             },
         ),
     ]

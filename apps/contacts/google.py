@@ -1,4 +1,3 @@
-
 import json
 
 from django.shortcuts import get_object_or_404
@@ -33,7 +32,7 @@ def build_service(contact):
         credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(
             credentials
         )
-        service = build('people', 'v1', credentials=credentials)
+        service = build("people", "v1", credentials=credentials)
         return service
     else:
         return False
@@ -80,7 +79,7 @@ def add_contact(contact):
         result = service.people().createContact(body=new_contact).execute()
 
         if result:
-            google_id = result['resourceName']
+            google_id = result["resourceName"]
             return google_id
         else:
             return False
@@ -107,8 +106,7 @@ def delete_contact(contact):
 
     if service:
         result = (
-            service.people().deleteContact(
-                resourceName=contact.google_id).execute()
+            service.people().deleteContact(resourceName=contact.google_id).execute()
         )
 
         if result:

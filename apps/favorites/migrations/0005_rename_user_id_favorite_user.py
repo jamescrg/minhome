@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('favorites', '0004_auto_20211020_1026'),
+        ("favorites", "0004_auto_20211020_1026"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='favorite',
-            old_name='user_id',
-            new_name='user',
+            model_name="favorite",
+            old_name="user_id",
+            new_name="user",
         ),
     ]

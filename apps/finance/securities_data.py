@@ -1,20 +1,59 @@
-
 import requests
 
 from config import settings_local
 
 
 asset_list = [
-    {'symbol': 'GME', 'exchange': 'NYSE', 'name': 'Gamestop', },
-    {'symbol': 'TSLA', 'exchange': 'NASDAQ', 'name': 'Tesla', },
-    {'symbol': 'TLRY', 'exchange': 'NASDAQ', 'name': 'Tilray', },
-    {'symbol': 'SNDL', 'exchange': 'NASDAQ', 'name': 'Sundial', },
-    {'symbol': 'BBBY', 'exchange': 'NASDAQ', 'name': 'BBBY', },
-    {'symbol': 'O', 'exchange': 'NYSE', 'name': 'REIT', },
-    {'symbol': 'FXF', 'exchange': 'NYSEARCA', 'name': 'Swiss Francs', },
-    {'symbol': 'GLD', 'exchange': 'NSEARCA', 'name': 'Gold ETF', },
-    {'symbol': 'QQQ', 'exchange': 'NASDAQ', 'name': 'Invesco Tech', },
-    {'symbol': 'VTV', 'exchange': 'NYSEARCA', 'name': 'Vanguard Value', },
+    {
+        "symbol": "GME",
+        "exchange": "NYSE",
+        "name": "Gamestop",
+    },
+    {
+        "symbol": "TSLA",
+        "exchange": "NASDAQ",
+        "name": "Tesla",
+    },
+    {
+        "symbol": "TLRY",
+        "exchange": "NASDAQ",
+        "name": "Tilray",
+    },
+    {
+        "symbol": "SNDL",
+        "exchange": "NASDAQ",
+        "name": "Sundial",
+    },
+    {
+        "symbol": "BBBY",
+        "exchange": "NASDAQ",
+        "name": "BBBY",
+    },
+    {
+        "symbol": "O",
+        "exchange": "NYSE",
+        "name": "REIT",
+    },
+    {
+        "symbol": "FXF",
+        "exchange": "NYSEARCA",
+        "name": "Swiss Francs",
+    },
+    {
+        "symbol": "GLD",
+        "exchange": "NSEARCA",
+        "name": "Gold ETF",
+    },
+    {
+        "symbol": "QQQ",
+        "exchange": "NASDAQ",
+        "name": "Invesco Tech",
+    },
+    {
+        "symbol": "VTV",
+        "exchange": "NYSEARCA",
+        "name": "Vanguard Value",
+    },
 ]
 
 
@@ -26,10 +65,10 @@ def fetch(symbol):
 
     """
 
-    url = 'https://finnhub.io/api/v1/quote'
+    url = "https://finnhub.io/api/v1/quote"
     params = {
-        'symbol': symbol,
-        'token': settings_local.FINNHUB_API_KEY,
+        "symbol": symbol,
+        "token": settings_local.FINNHUB_API_KEY,
     }
     response = requests.get(url, params=params)
     quote = response.json()
@@ -48,14 +87,14 @@ def collect(assets):
     """
 
     for asset in assets:
-        quote = fetch(asset['symbol'])
-        asset['previous_close'] = quote['pc']
-        asset['open'] = quote['o']
-        asset['high'] = quote['h']
-        asset['low'] = quote['l']
-        asset['price'] = quote['c']
-        asset['change'] = quote['d']
-        asset['percent_change'] = quote['dp']
+        quote = fetch(asset["symbol"])
+        asset["previous_close"] = quote["pc"]
+        asset["open"] = quote["o"]
+        asset["high"] = quote["h"]
+        asset["low"] = quote["l"]
+        asset["price"] = quote["c"]
+        asset["change"] = quote["d"]
+        asset["percent_change"] = quote["dp"]
     return assets
 
 
@@ -71,7 +110,7 @@ def sort(data, ord):
 
     """
 
-    if (ord == 'percent_change'):
+    if ord == "percent_change":
         reverse = True
     else:
         reverse = False

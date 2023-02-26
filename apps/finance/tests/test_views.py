@@ -1,4 +1,3 @@
-
 import pytest
 
 from django.urls import reverse
@@ -9,27 +8,27 @@ pytestmark = pytest.mark.django_db
 
 
 def test_crypto(client):
-    response = client.get('/crypto/')
+    response = client.get("/crypto/")
     assert response.status_code == 200
-    assert response.context['page'] == 'crypto'
-    assert 'market_cap' in response.context['data'][0]
-    assertTemplateUsed(response, 'finance/crypto.html')
-    assertContains(response, 'BTC')
-    assertContains(response, 'Bitcoin')
-    assertContains(response, '24h Chg')
+    assert response.context["page"] == "crypto"
+    assert "market_cap" in response.context["data"][0]
+    assertTemplateUsed(response, "finance/crypto.html")
+    assertContains(response, "BTC")
+    assertContains(response, "Bitcoin")
+    assertContains(response, "24h Chg")
 
 
 def test_securities(client):
-    response = client.get('/securities/')
+    response = client.get("/securities/")
     assert response.status_code == 200
-    assert response.context['page'] == 'securities'
-    assert response.context['data'][0]['price'] > 0
-    assertTemplateUsed(response, 'finance/securities.html')
+    assert response.context["page"] == "securities"
+    assert response.context["data"][0]["price"] > 0
+    assertTemplateUsed(response, "finance/securities.html")
 
 
 def test_positions(client):
-    response = client.get('/positions/')
+    response = client.get("/positions/")
     assert response.status_code == 200
-    response = client.get(reverse('positions'))
+    response = client.get(reverse("positions"))
     assert response.status_code == 200
-    assertTemplateUsed(response, 'finance/positions.html')
+    assertTemplateUsed(response, "finance/positions.html")

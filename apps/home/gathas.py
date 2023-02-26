@@ -1,7 +1,7 @@
-
 gathas = []
 
-gathas.append("""
+gathas.append(
+    """
     ## Using the Telephone
 
     Words can travel thousands of miles.
@@ -11,9 +11,11 @@ gathas.append("""
     May they be as beautiful as gems,
 
     As lovely as cut flowers.
-""")
+"""
+)
 
-gathas.append("""
+gathas.append(
+    """
     ## Turning on the Computer
 
     Turning on the computer,
@@ -23,9 +25,11 @@ gathas.append("""
     I vow to transform habit energies,
 
     To help love and understanding grow.
-""")
+"""
+)
 
-gathas.append("""
+gathas.append(
+    """
     ## Waking Up
 
     Waking up this morning, I smile.
@@ -35,4 +39,5 @@ gathas.append("""
     I vow to live life fully in each moment,
 
     And to look at all beings with eyes of compassion.
-""")
+"""
+)

@@ -4,37 +4,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Contact',
+            name="Contact",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('user_id', models.PositiveBigIntegerField()),
-                ('folder_id', models.BigIntegerField()),
-                ('selected', models.IntegerField(blank=True, null=True)),
-                ('name', models.CharField(max_length=100)),
-                ('company', models.CharField(blank=True, max_length=100, null=True)),
-                ('address', models.CharField(blank=True, max_length=255, null=True)),
-                ('phone1', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone1_label', models.CharField(blank=True, max_length=10, null=True)),
-                ('phone2', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone2_label', models.CharField(blank=True, max_length=10, null=True)),
-                ('phone3', models.CharField(blank=True, max_length=50, null=True)),
-                ('phone3_label', models.CharField(blank=True, max_length=10, null=True)),
-                ('email', models.CharField(blank=True, max_length=100, null=True)),
-                ('website', models.CharField(blank=True, max_length=255, null=True)),
-                ('map', models.CharField(blank=True, max_length=255, null=True)),
-                ('notes', models.CharField(blank=True, max_length=255, null=True)),
-                ('google_id', models.CharField(blank=True, max_length=255, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("user_id", models.PositiveBigIntegerField()),
+                ("folder_id", models.BigIntegerField()),
+                ("selected", models.IntegerField(blank=True, null=True)),
+                ("name", models.CharField(max_length=100)),
+                ("company", models.CharField(blank=True, max_length=100, null=True)),
+                ("address", models.CharField(blank=True, max_length=255, null=True)),
+                ("phone1", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "phone1_label",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                ("phone2", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "phone2_label",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                ("phone3", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "phone3_label",
+                    models.CharField(blank=True, max_length=10, null=True),
+                ),
+                ("email", models.CharField(blank=True, max_length=100, null=True)),
+                ("website", models.CharField(blank=True, max_length=255, null=True)),
+                ("map", models.CharField(blank=True, max_length=255, null=True)),
+                ("notes", models.CharField(blank=True, max_length=255, null=True)),
+                ("google_id", models.CharField(blank=True, max_length=255, null=True)),
             ],
             options={
-                'db_table': 'app_contact',
+                "db_table": "app_contact",
             },
         ),
     ]

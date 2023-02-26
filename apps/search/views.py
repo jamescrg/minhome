@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q
@@ -11,14 +10,14 @@ from apps.favorites.models import Favorite
 
 @login_required
 def index(request):
-    """Display the form to enter a search query. """
+    """Display the form to enter a search query."""
 
     context = {
-        'page': 'search',
-        'action': '/search/results',
-        'results': False,
+        "page": "search",
+        "action": "/search/results",
+        "results": False,
     }
-    return render(request, 'search/content.html', context)
+    return render(request, "search/content.html", context)
 
 
 @login_required
@@ -26,14 +25,14 @@ def results(request):
     """Run the search query and display the results."""
 
     user = request.user
-    text = request.POST.get('search_text')
+    text = request.POST.get("search_text")
 
     favorites = Favorite.objects.filter(user=user)
     favorites = favorites.filter(
         Q(name__icontains=text)
         | Q(url__icontains=text)
         | Q(description__icontains=text)
-    ).order_by('name')
+    ).order_by("name")
     for favorite in favorites:
         favorite.folder = Folder.objects.filter(pk=favorite.folder_id).first()
 
@@ -48,24 +47,24 @@ def results(request):
         | Q(email__icontains=text)
         | Q(website__icontains=text)
         | Q(notes__icontains=text)
-    ).order_by('name')
+    ).order_by("name")
     for contact in contacts:
         contact.folder = Folder.objects.filter(pk=contact.folder_id).first()
 
     notes = Note.objects.filter(user=user)
     notes = notes.filter(Q(subject__icontains=text) | Q(note__icontains=text)).order_by(
-        'subject'
+        "subject"
     )
     for note in notes:
         note.folder = Folder.objects.filter(pk=note.folder_id).first()
 
     context = {
-        'page': 'search',
-        'action': '/search/results',
-        'results': True,
-        'favorites': favorites,
-        'contacts': contacts,
-        'notes': notes,
+        "page": "search",
+        "action": "/search/results",
+        "results": True,
+        "favorites": favorites,
+        "contacts": contacts,
+        "notes": notes,
     }
 
-    return render(request, 'search/content.html', context)
+    return render(request, "search/content.html", context)

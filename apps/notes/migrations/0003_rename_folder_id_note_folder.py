@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('notes', '0002_alter_note_folder_id'),
+        ("notes", "0002_alter_note_folder_id"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='note',
-            old_name='folder_id',
-            new_name='folder',
+            model_name="note",
+            old_name="folder_id",
+            new_name="folder",
         ),
     ]

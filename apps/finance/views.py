@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -7,7 +6,7 @@ import apps.finance.securities_data as securities_data
 
 
 @login_required
-def crypto(request, ord='market_cap'):
+def crypto(request, ord="market_cap"):
     """Retrieve and display crypto data.
 
     Args:
@@ -16,7 +15,7 @@ def crypto(request, ord='market_cap'):
     """
 
     # specify the list of assets to be viewed
-    symbols = 'ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR'
+    symbols = "ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR"
 
     # collect data from remote service
     data = crypto_data.collect(symbols)
@@ -29,15 +28,15 @@ def crypto(request, ord='market_cap'):
     data = crypto_data.sort(data, ord=ord)
 
     context = {
-        'page': 'crypto',
-        'ord': ord,
-        'data': data,
+        "page": "crypto",
+        "ord": ord,
+        "data": data,
     }
-    return render(request, 'finance/crypto.html', context)
+    return render(request, "finance/crypto.html", context)
 
 
 @login_required
-def securities(request, ord='name'):
+def securities(request, ord="name"):
     """Retrieve and display securities data.
 
     Args:
@@ -51,11 +50,11 @@ def securities(request, ord='name'):
     data = securities_data.sort(data, ord)
 
     context = {
-        'page': 'securities',
-        'ord': ord,
-        'data': data,
+        "page": "securities",
+        "ord": ord,
+        "data": data,
     }
-    return render(request, 'finance/securities.html', context)
+    return render(request, "finance/securities.html", context)
 
 
 @login_required
@@ -68,6 +67,6 @@ def positions(request):
     """
 
     context = {
-        'page': 'securities',
+        "page": "securities",
     }
-    return render(request, 'finance/positions.html', context)
+    return render(request, "finance/positions.html", context)

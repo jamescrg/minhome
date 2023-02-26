@@ -4,25 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Note',
+            name="Note",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('user_id', models.PositiveBigIntegerField()),
-                ('folder_id', models.BigIntegerField(blank=True, null=True)),
-                ('subject', models.CharField(blank=True, max_length=150, null=True)),
-                ('note', models.TextField(blank=True, null=True)),
-                ('selected', models.IntegerField(blank=True, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("user_id", models.PositiveBigIntegerField()),
+                ("folder_id", models.BigIntegerField(blank=True, null=True)),
+                ("subject", models.CharField(blank=True, max_length=150, null=True)),
+                ("note", models.TextField(blank=True, null=True)),
+                ("selected", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'app_note',
+                "db_table": "app_note",
             },
         ),
     ]

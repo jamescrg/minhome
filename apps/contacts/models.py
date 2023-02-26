@@ -1,4 +1,3 @@
-
 from django.db import models
 
 from accounts.models import CustomUser
@@ -50,24 +49,24 @@ class Contact(models.Model):
     google_id = models.CharField(max_length=255, blank=True, null=True)
 
     fillable = [
-        'folder_id',
-        'name',
-        'company',
-        'address',
-        'phone1',
-        'phone1_label',
-        'phone2',
-        'phone2_label',
-        'phone3',
-        'phone3_label',
-        'email',
-        'website',
-        'map',
-        'notes',
+        "folder_id",
+        "name",
+        "company",
+        "address",
+        "phone1",
+        "phone1_label",
+        "phone2",
+        "phone2_label",
+        "phone3",
+        "phone3_label",
+        "email",
+        "website",
+        "map",
+        "notes",
     ]
 
     def __str__(self):
-        return f'{self.name} : {self.id}'
+        return f"{self.name} : {self.id}"
 
     class Meta:
-        db_table = 'app_contact'
+        db_table = "app_contact"

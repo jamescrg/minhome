@@ -1,4 +1,3 @@
-
 import pytest
 
 from django.urls import reverse
@@ -14,60 +13,58 @@ pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 
 def test_index(user, client):
-
-    response = client.get('/search/')
+    response = client.get("/search/")
     assert response.status_code == 200
 
-    response = client.get(reverse('search'))
+    response = client.get(reverse("search"))
     assert response.status_code == 200
 
-    response = client.get(reverse('search'))
-    assertTemplateUsed(response, 'search/content.html')
-    assertTemplateUsed(response, 'search/form.html')
+    response = client.get(reverse("search"))
+    assertTemplateUsed(response, "search/content.html")
+    assertTemplateUsed(response, "search/form.html")
 
 
 def test_results(user, client):
-
-    favorite_folder = Folder.objects.create(user=user, name='Faves', page='favorites')
-    note_folder = Folder.objects.create(user=user, name='My Notes', page='notes')
-    contact_folder = Folder.objects.create(user=user, name='People', page='contacts')
+    favorite_folder = Folder.objects.create(user=user, name="Faves", page="favorites")
+    note_folder = Folder.objects.create(user=user, name="My Notes", page="notes")
+    contact_folder = Folder.objects.create(user=user, name="People", page="contacts")
 
     Favorite.objects.create(
         user=user,
-        name='Google',
+        name="Google",
         folder=favorite_folder,
-        description='Search enginge for james.',
+        description="Search enginge for james.",
     )
 
     Note.objects.create(
         user=user,
-        subject='Tasks for James',
+        subject="Tasks for James",
         folder=note_folder,
     )
 
     Contact.objects.create(
         user=user,
-        name='James Craig',
+        name="James Craig",
         folder=contact_folder,
     )
 
     data = {
-        'search_text': 'James',
+        "search_text": "James",
     }
 
-    response = client.post('/search/results', data)
+    response = client.post("/search/results", data)
     assert response.status_code == 200
-    assertTemplateUsed(response, 'search/content.html')
-    assertTemplateUsed(response, 'search/results.html')
+    assertTemplateUsed(response, "search/content.html")
+    assertTemplateUsed(response, "search/results.html")
 
-    favorites = response.context['favorites']
-    favorite = favorites.filter(name='Google').get()
-    assert favorite.name == 'Google'
+    favorites = response.context["favorites"]
+    favorite = favorites.filter(name="Google").get()
+    assert favorite.name == "Google"
 
-    note = response.context['notes']
+    note = response.context["notes"]
     note = note.filter(pk=1).get()
-    assert note.subject == 'Tasks for James'
+    assert note.subject == "Tasks for James"
 
-    contact = response.context['contacts']
-    contact = contact.filter(name='James Craig').get()
-    assert contact.name == 'James Craig'
+    contact = response.context["contacts"]
+    contact = contact.filter(name="James Craig").get()
+    assert contact.name == "James Craig"

@@ -1,4 +1,3 @@
-
 from django.db import models
 from apps.folders.models import Folder
 from accounts.models import CustomUser
@@ -24,8 +23,7 @@ class Note(models.Model):
     selected = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.subject}'
+        return f"{self.subject}"
 
     class Meta:
-        db_table = 'app_note'
-
+        db_table = "app_note"

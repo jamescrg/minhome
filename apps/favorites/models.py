@@ -1,4 +1,3 @@
-
 from django.db import models
 
 from accounts.models import CustomUser
@@ -36,7 +35,7 @@ class Favorite(models.Model):
     home_rank = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     class Meta:
-        db_table = 'app_favorite'
+        db_table = "app_favorite"

@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
@@ -26,9 +25,9 @@ def index(request):
 
     folders = get_task_folders(request)
 
-    selected_folders = select_folders(request, 'tasks')
+    selected_folders = select_folders(request, "tasks")
 
-    active_folder_id = request.session.get('active_folder_id')
+    active_folder_id = request.session.get("active_folder_id")
 
     if active_folder_id:
         active_folder = get_object_or_404(Folder, pk=active_folder_id)
@@ -38,21 +37,22 @@ def index(request):
     if selected_folders:
         for folder in selected_folders:
             tasks = Task.objects.filter(folder_id=folder.id)
-            tasks = tasks.order_by('status', 'title')
+            tasks = tasks.order_by("status", "title")
             folder.tasks = tasks
 
     if active_folder:
-        active_folder.tasks = Task.objects.filter(
-            folder_id=active_folder.id).order_by('status', 'title')
+        active_folder.tasks = Task.objects.filter(folder_id=active_folder.id).order_by(
+            "status", "title"
+        )
 
     context = {
-        'page': 'tasks',
-        'folders': folders,
-        'selected_folders': selected_folders,
-        'active_folder': active_folder,
+        "page": "tasks",
+        "folders": folders,
+        "selected_folders": selected_folders,
+        "active_folder": active_folder,
     }
 
-    return render(request, 'tasks/content.html', context)
+    return render(request, "tasks/content.html", context)
 
 
 @login_required
@@ -64,12 +64,12 @@ def activate(request, id):
         That means that new tasks created on the task page are added to this folder.
     """
 
-    request.session['active_folder_id'] = id
-    return redirect('/tasks/')
+    request.session["active_folder_id"] = id
+    return redirect("/tasks/")
 
 
 @login_required
-def status(request, id, origin='tasks'):
+def status(request, id, origin="tasks"):
     """Update a task status to complete / not complete
 
     Args:
@@ -100,15 +100,15 @@ def add(request):
         POST: Add task to database.
     """
 
-    if request.method == 'POST':
+    if request.method == "POST":
         task = Task()
         task.user = request.user
-        folder = get_object_or_404(Folder, pk=request.POST.get('folder_id'))
+        folder = get_object_or_404(Folder, pk=request.POST.get("folder_id"))
         task.folder = folder
-        task.title = request.POST.get('title')
+        task.title = request.POST.get("title")
         task.title = task.title[0].upper() + task.title[1:]
         task.save()
-        return redirect('tasks')
+        return redirect("tasks")
 
 
 @login_required
@@ -125,12 +125,11 @@ def edit(request, id):
 
     user = request.user
 
-    if request.method == 'POST':
-
+    if request.method == "POST":
         try:
             task = Task.objects.filter(pk=id).get()
         except ObjectDoesNotExist:
-            raise Http404('Record not found.')
+            raise Http404("Record not found.")
 
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
@@ -139,26 +138,25 @@ def edit(request, id):
             task.title = task.title[0].upper() + task.title[1:]
             task.save()
 
-        return redirect('tasks')
+        return redirect("tasks")
 
     else:
-
         task = get_object_or_404(Task, pk=id)
         folders = get_task_folders(request)
         selected_folder = folders.filter(id=task.folder.id).get()
 
-        form = TaskForm(instance=task, initial={'folder': selected_folder.id})
-        form.fields['folder'].queryset = folders
+        form = TaskForm(instance=task, initial={"folder": selected_folder.id})
+        form.fields["folder"].queryset = folders
 
         context = {
-            'page': 'tasks',
-            'edit': True,
-            'folders': folders,
-            'action': f'/tasks/{id}/edit',
-            'form': form,
+            "page": "tasks",
+            "edit": True,
+            "folders": folders,
+            "action": f"/tasks/{id}/edit",
+            "form": form,
         }
 
-        return render(request, 'tasks/content.html', context)
+        return render(request, "tasks/content.html", context)
 
 
 @login_required
@@ -172,4 +170,4 @@ def clear(request, folder_id):
     tasks = Task.objects.filter(folder_id=folder_id, status=1)
     for task in tasks:
         task.delete()
-    return redirect('/tasks/')
+    return redirect("/tasks/")
