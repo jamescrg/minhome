@@ -81,8 +81,8 @@ a:hover	{
 .account-form button {
   background: var(--gray6);
   border: solid 1px var(--gray6);
-  color: var(--gray3);
   border-radius: 5px;
+  color: var(--gray3);
   font-size: 1em;
   margin-top: 40px;
   padding: 7px 10px;

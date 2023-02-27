@@ -76,7 +76,7 @@ input:focus {
 }
 
 input[type=text] {
-  border: solid 1px #cccccc;	
+  border: solid 1px #cccccc;
   width: 350px;
 }
 
@@ -86,42 +86,42 @@ input[type=date] {
 }
 
 input[type=password] {
-  border: solid 1px #cccccc; 
+  border: solid 1px #cccccc;
   width: 200px;
 }
 
 input[type=submit] {
-  padding: 5px 7px; 
   border: solid 1px #cccccc;
+  padding: 5px 7px;
 }
 
-input.date {
+.date {
   width: 120px;
 }
 
-input.singleWord {
+.singleWord {
   width: 200px;
 }
 
-input.numeric  {
+.numeric  {
   text-align: right;
   width: 50px;
 }
 
-input.numericLong {
+.numericLong {
   text-align: right;
   width: 50px;
 }
 
-input.money  {
+.money  {
   text-align: right;
   width: 200px;
 }
 
 select {
   background: white;
-  border-radius: 4px;
   border: solid 1px #cccccc;
+  border-radius: 4px;
   font-family: 'Open Sans', sans-serif;
   font-size: 0.95em;
   margin: 0 0 15px 15px;
@@ -132,11 +132,11 @@ select {
 textarea {
   border: solid 1px #cccccc;
   border-radius: 4px;
-  outline:none;
   font-family: 'Open Sans', sans-serif;
   font-size: 0.95em;
   height: 100px;
   margin: 0 0 15px 15px;
+  outline:none;
   padding: 5px;
   width: 350px;
 }
@@ -160,6 +160,6 @@ general warning messages
 
 .warn {
   background: lightyellow;
-  padding: 10px;
   margin-bottom: 20px;
+  padding: 10px;
 }

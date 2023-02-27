@@ -26,9 +26,9 @@
 }
 
 .task-list-title{
-  border-top: none;
   border-left: none;
   border-right: none;
+  border-top: none;
   font-weight: 600;
   padding-left: 7px;
 }

@@ -1,62 +1,62 @@
 #favorites{
+	padding-bottom: 20px;
 	padding-left: 10px;
   padding-right: 10px;
-	padding-bottom: 20px;
 }
 
-	#favorites .list-group-item{
-		padding-top: 20px;
-		padding-bottom: 20px;
-	}
+#favorites .list-group-item{
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
 
 .favorite-icon{
 	float: left;
-	}
+}
 
 .home{
 	color: #760f13;
-	}
+}
 
 .favorite-text{
 	float: left;
 	margin-left: 20px;
-	}
+}
 
 .description{
 	font-size: 0.9em;
-	}
+}
 
 .credentials{
 	float: right;
 	text-align: right;
-	}
+}
 
 .credentialData{
 	margin-top: 10px;
 	font-size: 0.8em;
-	}
+}
 
 .favoriteMenu{
 	margin-top: 10px;
-	}
+}
 
-	.favoriteMenu ul {
-		margin: 15px 0 0 0;
-		padding: 0;
-	}
+.favoriteMenu ul {
+  margin: 15px 0 0 0;
+  padding: 0;
+}
 
-	.favoriteMenu ul li{
-		background: #e4e4e4;
-		display: inline;
-		margin-right: 10px;
-		padding: 5px 7px;
-		border-radius: 5px;
-	}
+.favoriteMenu ul li{
+  background: #e4e4e4;
+  border-radius: 5px;
+  display: inline;
+  margin-right: 10px;
+  padding: 5px 7px;
+}
 
-	.favoriteMenu a {
-		color: #760f13;
-		font-size: 0.85em;
-		}
+.favoriteMenu a {
+  color: #760f13;
+  font-size: 0.85em;
+}
 
 
 /* ------------------------------------------------------------------------- */

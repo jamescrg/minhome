@@ -46,7 +46,7 @@ footer
 
 #footer {
 	position: absolute;
-	bottom: 0px;
+	bottom: 0;
 	width: 100%;
 	background: #474747;
 	text-align: right;
@@ -54,19 +54,19 @@ footer
 	}
 
 #footer ul li{
-	list-style-type: none;
 	display: inline
+	list-style-type: none;
 }
 
 #footer ul {
-	padding: 0;
 	margin: 0;
+	padding: 0;
 	}
 
 #footer a {
+	color: #e4e4e4;
 	padding-left: 25px;
 	padding-right: 25px;
-	color: #e4e4e4;
 }
 
 /*------------------------------------------------
@@ -75,20 +75,17 @@ header / nav bar
 
 .navbar {
 	background: #474747;
-	border-radius: 0;
 	border: none;
+	border-radius: 0;
 	vertical-align: bottom;
-}
-
-.navbar .container {
 }
 
 .navbar .navbar-nav > li > a,
 .navbar .navbar-nav > li > a:hover,
 .navbar .navbar-nav > li > a:focus {
+	color: #e4e4e4;
 	padding-left: 25px;
 	padding-right: 25px;
-	color: #e4e4e4;
 }
 
 .navbar .navbar-nav > li.active > a,

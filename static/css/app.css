@@ -27,8 +27,8 @@ a {
 }
 
 a:hover	{
-	text-decoration: none;
 	color: green;
+	text-decoration: none;
 }
 
 
@@ -70,10 +70,7 @@ icons
 	color: #8c8c8c;
 	font-size: 0.9em;
 	}
-.glyphicon-folder-close,
-.glyphicon-th-list {
-	/*margin-right: 10px;*/
-}
+
 
 .glyphicon-bookmark {
 	font-size: 0.9em;

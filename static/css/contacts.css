@@ -1,8 +1,8 @@
 
 #contacts{
+	padding-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
-	padding-bottom: 20px;
 	}
 
 #contact{
@@ -11,20 +11,17 @@
 }
 
 
-div.contact{
+.contact{
 	background: #f4f4f4;
 	border-radius: 4px;
-	padding: 10px 15px;
 	margin-bottom: 20px;
+	padding: 10px 15px;
 	}
 
 .contact-item{
 	margin-top: 10px;
 	}
 
-textarea.form-control{
-
-	}
 
 
 /* ------------------------------------------------------------------------- */
@@ -42,8 +39,8 @@ textarea.form-control{
 }
 
 #address{
-    max-width: 400px;
     height: 100px;
+    max-width: 400px;
 }
 
 #folder_id,
