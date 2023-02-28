@@ -1,8 +1,8 @@
 import json
-import requests
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+import requests
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render

@@ -2,7 +2,6 @@ import pytest
 
 from apps.folders.models import Folder
 
-
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
 

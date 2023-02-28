@@ -1,8 +1,8 @@
 import json
 
-from django.shortcuts import get_object_or_404
 import google.oauth2.credentials
 from apiclient.discovery import build
+from django.shortcuts import get_object_or_404
 
 from accounts.models import CustomUser
 

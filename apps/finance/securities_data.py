@@ -2,7 +2,6 @@ import requests
 
 from config import settings_local
 
-
 asset_list = [
     {
         "symbol": "GME",

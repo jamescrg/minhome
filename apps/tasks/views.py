@@ -1,14 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.tasks.models import Task
-from apps.tasks.forms import TaskForm
+from apps.folders.folders import get_task_folders, select_folders
 from apps.folders.models import Folder
-from apps.folders.folders import select_folders
-from apps.folders.folders import get_task_folders
+from apps.tasks.forms import TaskForm
+from apps.tasks.models import Task
 
 
 @login_required

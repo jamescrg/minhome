@@ -1,5 +1,6 @@
-from apps.home.gathas import gathas
 import random
+
+from apps.home.gathas import gathas
 
 
 def test_gathas():

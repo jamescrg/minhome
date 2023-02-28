@@ -1,13 +1,11 @@
 import pytest
-
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-from apps.folders.models import Folder
-from apps.favorites.models import Favorite
-from apps.notes.models import Note
 from apps.contacts.models import Contact
-
+from apps.favorites.models import Favorite
+from apps.folders.models import Folder
+from apps.notes.models import Note
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 

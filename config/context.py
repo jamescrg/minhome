@@ -1,5 +1,4 @@
-from . import settings
-from . import settings_local
+from . import settings, settings_local
 
 
 def env(request):

@@ -1,7 +1,6 @@
 import pytest
-
-from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from apps.notes.models import Note

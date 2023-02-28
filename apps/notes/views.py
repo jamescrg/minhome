@@ -1,16 +1,13 @@
+import markdown
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-import markdown
-
-from apps.notes.models import Note
-from apps.notes.forms import NoteForm
-from apps.folders.models import Folder
 from apps.folders.folders import select_folders
+from apps.folders.models import Folder
+from apps.notes.forms import NoteForm
+from apps.notes.models import Note
 
 
 @login_required

@@ -1,14 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.favorites.models import Favorite
 from apps.favorites.forms import FavoriteForm
-from apps.folders.models import Folder
+from apps.favorites.models import Favorite
 from apps.folders.folders import select_folders
+from apps.folders.models import Folder
 
 
 @login_required

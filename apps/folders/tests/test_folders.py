@@ -1,10 +1,8 @@
 import pytest
-
 from django.test.client import RequestFactory
 
 from apps.contacts.models import Folder
 from apps.folders.folders import get_task_folders
-
 
 pytestmark = pytest.mark.django_db
 

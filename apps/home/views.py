@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
@@ -8,8 +9,6 @@ from apps.favorites.models import Favorite
 from apps.folders.models import Folder
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
-
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,17 +1,17 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
+from apps.contacts import views as contacts
+from apps.favorites import views as favorites
+from apps.finance import views as finance
 from apps.folders import views as folders
 from apps.home import views as home
-from apps.favorites import views as favorites
-from apps.tasks import views as tasks
-from apps.contacts import views as contacts
+from apps.lab import views as lab
 from apps.notes import views as notes
 from apps.search import views as search
 from apps.settings import views as settings
-from apps.finance import views as finance
+from apps.tasks import views as tasks
 from apps.weather import views as weather
-from apps.lab import views as lab
 
 urlpatterns = [
     path("admin/", admin.site.urls),

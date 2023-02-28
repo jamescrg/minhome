@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.db.models import Q
+from django.shortcuts import render
 
 from apps.contacts.models import Contact
-from apps.notes.models import Note
-from apps.folders.models import Folder
 from apps.favorites.models import Favorite
+from apps.folders.models import Folder
+from apps.notes.models import Note
 
 
 @login_required

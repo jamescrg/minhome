@@ -1,11 +1,9 @@
 import pytest
-
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
-
 
 pytestmark = pytest.mark.django_db
 

@@ -1,7 +1,6 @@
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from apps.contacts.models import Contact
@@ -19,6 +18,7 @@ def email_test(request):
 
     """
     from django.core.mail import send_mail
+
     from config import settings_local
 
     send_mail(

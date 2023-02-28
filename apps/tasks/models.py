@@ -1,6 +1,7 @@
 from django.db import models
-from apps.folders.models import Folder
+
 from accounts.models import CustomUser
+from apps.folders.models import Folder
 
 
 class Task(models.Model):

@@ -1,8 +1,9 @@
-import pytest
 import json
-import apps.finance.tests.sample_crypto_data as sample_data
 
+import pytest
 from django.test import Client
+
+import apps.finance.tests.sample_crypto_data as sample_data
 from accounts.models import CustomUser
 
 

@@ -1,11 +1,9 @@
 import pytest
-
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from apps.folders.models import Folder
 from apps.tasks.models import Task
-
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 
