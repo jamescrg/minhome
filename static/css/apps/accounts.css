@@ -1,68 +1,4 @@
 
-.prompt {
-  margin-bottom: 30px;
-}
-
-.account-form {
-  padding: 0 1em 1em 1em;
-}
-
-.account-form p {
-  margin: 0;
-  padding: 0;
-}
-
-.account-form label {
-  display: block;
-  font-size: 1em;
-  font-weight: normal;
-}
-
-.account-form input {
-  border: solid 1px var(--input-border);
-  border-radius: 5px;
-  display: block;
-  font-size: 1em;
-  margin-bottom: 1rem;
-  padding: 7px;
-  width: 100%;
-}
-
-.account-form ul {
-  padding-left: 2px;
-}
-
-.account-form ul li {
-  color: var(--red-dark);
-  margin-top: 5px;
-}
-
-.account-form button {
-  background: var(--button);
-  border: solid 1px var(--button);
-  border-radius: 5px;
-  color: var(--button-text);
-  padding: 7px 10px;
-}
-
-input {
-  filter: none;
-}
-
-input:focus {
-  outline: none;
-}
-
-.forgot {
-  text-align: right;
-}
-
-.helptext {
-  color: var(--red-dark);
-  display: inline-block;
-  margin: 5px 0 0 2px;
-}
-
 .login-bottom {
   align-items: flex-end;
   display: flex;
@@ -81,9 +17,4 @@ input:focus {
 
 .reset-complete {
   text-align: center;
-}
-
-.spam-folder {
-  color: var(--red-dark);
-  font-weight: 600;
 }

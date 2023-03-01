@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "mathfilters",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "accounts",
     "apps.folders",
     "apps.home",
@@ -182,3 +184,8 @@ ADMINS = settings_local.ADMINS
 SESSION_COOKIE_AGE = 1209600 * 4
 
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
