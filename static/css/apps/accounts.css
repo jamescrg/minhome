@@ -1,56 +1,14 @@
 
-
-body {
-	background: var(--gray4);
-	color: var(--gray7);
-	font-family: 'Open Sans', sans-serif;
-}
-
-a {
-	color: var(--blue);
-	text-decoration: none;
-}
-
-a:hover	{
-	color: var(--green);
-	text-decoration: none;
-}
-
-.vertical-center {
-	align-items: center;
-	display: flex;
-	min-height: 80%;  /* Fallback for browsers do NOT support vh unit */
-	min-height: 80vh; /* These two lines are counted as one :-)       */
-	}
-
-.auth-card{
-	background: var(--gray2);
-	border-radius: 3px;
-	margin: 0 auto;
-	padding: 20px;
-	width: 400px;
-}
-
-.auth-title{
-	color: var(--blue);
-	font-size: 1.5em;
-  font-weight: 500;
-	margin-bottom: 5px;
-	text-align: center;
-}
-
-.auth-subtitle{
-  font-size: 1em;
-  margin-top: 5px;
-	text-align: center;
-}
-
 .prompt {
   margin-bottom: 30px;
 }
 
+.account-form {
+  padding: 0 1em 1em 1em;
+}
+
 .account-form p {
-  margin: 30px 0 0 0;
+  margin: 0;
   padding: 0;
 }
 
@@ -61,10 +19,11 @@ a:hover	{
 }
 
 .account-form input {
-  border: solid 1px var(--gray5);
+  border: solid 1px var(--input-border);
   border-radius: 5px;
   display: block;
   font-size: 1em;
+  margin-bottom: 1rem;
   padding: 7px;
   width: 100%;
 }
@@ -79,12 +38,10 @@ a:hover	{
 }
 
 .account-form button {
-  background: var(--gray6);
-  border: solid 1px var(--gray6);
+  background: var(--button);
+  border: solid 1px var(--button);
   border-radius: 5px;
-  color: var(--gray3);
-  font-size: 1em;
-  margin-top: 40px;
+  color: var(--button-text);
   padding: 7px 10px;
 }
 
@@ -111,6 +68,7 @@ input:focus {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 1.5rem;
 }
 
 .login-bottom-right {
