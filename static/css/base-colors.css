@@ -7,6 +7,7 @@
   --warm-gray-600: #57534E;
   --warm-gray-500: #78716C;
   --warm-gray-400: #A8A29E;
+  --warm-gray-350: #C1C1C1;
   --warm-gray-300: #D6D3D1;
   --warm-gray-200: #E7E5E4;
   --warm-gray-100: #F5F5F4;
@@ -15,7 +16,15 @@
   --blue-800: #1E40AF;
   --blue-700: #1D4ED8;
   --blue-600: #2563EB;
+
+  --lime-900: #365314;
+  --lime-800: #3F6212;
+  --lime-700: #4D7C0F;
+  --lime-600: #65A30D;
+
   --purple-700: #7E22CE;
+
+  --red-700: #B91C1C;
 
   --rose-700: #BE123C;
 
