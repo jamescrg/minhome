@@ -47,6 +47,12 @@ a:hover	{
 	text-decoration: none;
 }
 
+.flx-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+}
 
 /*------------------------------------------------
  * cards
@@ -54,6 +60,12 @@ a:hover	{
 
 .card {
   background: var(--warm-gray-100);
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.card-close {
+  float: right;
 }
 
 .card-title {
@@ -75,6 +87,11 @@ a:hover	{
   text-align: center;
 }
 
+h1 {
+  font-size: 1.2em;
+  margin-bottom: 0;
+}
+
 strong{
   font-weight: bold;
 }
@@ -85,13 +102,20 @@ strong{
 
 
 .soon {
-  color: var(--rose-700);
+  color: var(--red-700);
 }
 
 .dev-flag {
   color: var(--red-700);
 }
 
+/*------------------------------------------------
+ * tables
+ * ------------------------------------------------*/
+
+th {
+  font-weight: 500;
+}
 
 /*------------------------------------------------
  * lists
@@ -101,8 +125,19 @@ li{
 	list-style-type: none;
 }
 
-.list-group-item{
-	background: #f5f5f5;
+.card > .list-group {
+  border: none;
+}
+
+.list-group-item {
+  background: inherit;
+}
+
+.task-list-title {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding-left: 0.25rem;
 }
 
 

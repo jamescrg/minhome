@@ -7,59 +7,60 @@
 
 {% if show_events and events %}
 
-  <div class="home-task-area">
+<div class="card">
 
-    <div class="home-task-area-title">
+  <div class="card-title flx-top">
 
-      <div class="section-title">
-        Pending Events
-      </div>
+    <h1>
+      Pending Events
+    </h1>
 
+    <div class="card-close">
 
-      <div class="home-task-hide">
-
-        <a href="/home/toggle/events">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-
-      </div>
+      <a href="/home/toggle/events">
+        <i class="bi bi-x-lg"></i>
+      </a>
 
     </div>
 
-    <div class="table-responsive">
-    <table class="table events">
+  </div>
 
-        <th>Date
-        <th>Month
-        <th>Weekday
-        <th>Summary
-        <th>Time
 
-        {% for event in events %}
+  <div class="table-responsive">
+  <table class="table">
 
-            <tr>
+      <th>Date
+      <th>Month
+      <th>Weekday
+      <th>Summary
+      <th>Time
 
-              <td class="event-date {{event.soon}}">
-                {{ event.date }}
+      {% for event in events %}
 
-              <td class="event-date {{event.soon}}">
-                {{ event.month }}
+          <tr>
 
-              <td class="event-date {{event.soon}}">
-                {{ event.weekday }}
+            <td class="event-date {{event.soon}}">
+              {{ event.date }}
 
-              <td class="description {{event.soon}}">
-                {{ event.summary }}
+            <td class="event-date {{event.soon}}">
+              {{ event.month }}
 
-              <td class="event-date {{event.soon}}">
-                {{ event.time }}
+            <td class="event-date {{event.soon}}">
+              {{ event.weekday }}
 
-        {% endfor %}
+            <td class="description {{event.soon}}">
+              {{ event.summary }}
+
+            <td class="event-date {{event.soon}}">
+              {{ event.time }}
+
+      {% endfor %}
 
   </table>
 
   </div>
-  </div>
+
+</div>
 
 {% endif %}
 
@@ -70,25 +71,23 @@
 
 {% if show_tasks and task_folders and some_tasks %}
 
-  <div class="home-task-area">
+<div class="card">
 
-    <div class="home-task-area-title">
+  <div class="card-title flx-top">
 
-      <div class="section-title">
+    <h1>
         Pending Tasks
-      </div>
+    </h1>
 
-
-      <div class="home-task-hide">
+    <div class="card-close">
 
         <a href="/home/toggle/tasks">
-          <span class="glyphicon glyphicon-remove"></span>
+          <i class="bi bi-x-lg"></i>
         </a>
 
-      </div>
-
-
     </div>
+
+  </div>
 
     {% if task_folders %}
 
@@ -100,7 +99,7 @@
 
     {% endif %}
 
-  </div>
+</div>
 
 {% endif %}
 
@@ -108,30 +107,23 @@
 {# ---- SEARCH ---- #}
 {# --------------------------------------------------- #}
 
-<form role="form" id="home-form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
-	<div class="row row-centered">
-		<div class="col-sm-8 col-sm-offset-2">
-			<div class="input-group input-group-md">
-				<input id="searchText" class="form-control" autofocus type="text"  maxLength="255" name="q" >
-				<div class="input-group-btn">
-					<button type="submit" class="btn btn-default" id="googleSearch" style=""><span class="glyphicon glyphicon-search"></span></button>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>
+<form role="form" class="home-form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
 
-<form role="form" id="home-form" action="https://{{ search_engine }}" method="get" class="hidden-sm hidden-md hidden-lg">
-	<div class="row row-centered">
-		<div class="col-sm-8 col-sm-offset-2">
-			<div class="input-group input-group-md">
-				<input id="searchText" class="form-control" type="text"  maxLength="255" name="q" >
-				<div class="input-group-btn">
-					<button type="submit" class="btn btn-default" id="googleSearch" style=""><span class="glyphicon glyphicon-search"></span></button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="row row-centered row-search">
+
+    <div class="input-group mb-3">
+
+      <input type="text"
+        autofocus
+        name="q"
+        class="form-control"
+        aria-label="Web search"
+        aria-describedby="google-logo">
+
+    </div>
+
+  </div>
+
 </form>
 
 
@@ -143,38 +135,45 @@
 
   {% for column in columns %}
 
-		<div class="col-sm-3 col-centered">
+		<div class="col-md-3 col-centered">
 
     {% for folder in column %}
 
-				<ul class="list-group home-list">
-				<li class="list-group-item home-folder-title">
-						<div class="home-control-launch">
-              <a href="javascript:showHideHomeControls('{{ folder.id }}');">
-								<span class="glyphicon glyphicon-retweet"></span>
-							</a>
-						</div>
-            <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
-            <i class="bi-alarm"></i>
-						<!-- home folder controls -->
-            <div class="home-folder-controls home-folder-controls-{{ folder.id }}" style="display: none;">
-              <a href="/home/folder/{{ folder.id }}/up"><span class="glyphicon glyphicon-arrow-up"></span></a>
-              <a href="/home/folder/{{ folder.id }}/down"><span class="glyphicon glyphicon-arrow-down"></span></a>
-              <a href="/home/folder/{{ folder.id }}/left"><span class="glyphicon glyphicon-arrow-left"></span></a>
-              <a href="/home/folder/{{ folder.id }}/right"><span class="glyphicon glyphicon-arrow-right"></span></a>
-						</div>
-				</li>
-        {% for favorite in folder.favorites %}
-          {% if favorite.folder_id == folder.id %}
-						<li class="list-group-item home-item">
-              <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/up"><span class="glyphicon glyphicon-arrow-up"></span></a>
-              <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/down"><span class="glyphicon glyphicon-arrow-down"></span></a>
-              <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
-						</li>
+        <div class="card home-card">
 
-          {% endif %}
-        {% endfor %}
-				</ul>
+          <ul class="list-group home-list">
+
+          <li class="list-group-item home-folder-title">
+
+              <div class="home-control-launch">
+                <a href="javascript:showHideHomeControls('{{ folder.id }}');">
+                  <i class="bi-columns"></i>
+                </a>
+              </div>
+              <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
+
+              <!-- home folder controls -->
+              <div class="home-folder-controls home-folder-controls-{{ folder.id }}" style="display: none;">
+                <a href="/home/folder/{{ folder.id }}/up"><i class="bi bi-box-arrow-up"></i></a>
+                <a href="/home/folder/{{ folder.id }}/down"><i class="bi bi-box-arrow-down"></i></a>
+                <a href="/home/folder/{{ folder.id }}/left"><i class="bi bi-box-arrow-left"></i></a>
+                <a href="/home/folder/{{ folder.id }}/right"><i class="bi bi-box-arrow-right"></i></a>
+              </div>
+
+          </li>
+
+          {% for favorite in folder.favorites %}
+            {% if favorite.folder_id == folder.id %}
+              <li class="list-group-item home-item">
+                <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/up"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/down"><span class="glyphicon glyphicon-arrow-down"></span></a>
+                <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
+              </li>
+
+            {% endif %}
+          {% endfor %}
+          </ul>
+        </div>
 
     {% endfor %}
 		</div>
