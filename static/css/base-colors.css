@@ -1,19 +1,22 @@
 
 :root {
 
-  --body: #d5d5d5;
-  --text: #454545;
+  /* tailwindcolor.com */
 
-  --a: #0059b3;
-  --a-hover: green;
+  --warm-gray-700: #44403C;
+  --warm-gray-600: #57534E;
+  --warm-gray-500: #78716C;
+  --warm-gray-400: #A8A29E;
+  --warm-gray-300: #D6D3D1;
+  --warm-gray-200: #E7E5E4;
+  --warm-gray-100: #F5F5F4;
+  --warm-gray-50: #FAFAF9;
 
-  --alert: darkred;
-  --yellow-light2: #ffecb3;
+  --blue-800: #1E40AF;
+  --blue-700: #1D4ED8;
+  --blue-600: #2563EB;
+  --purple-700: #7E22CE;
 
-  --input-border: #c5c5c5;
-
-  --button: #555555;
-  --button-text: #e5e5e5;
+  --rose-700: #BE123C;
 
 }
-
