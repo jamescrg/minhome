@@ -55,6 +55,7 @@ a:hover	{
   background: var(--warm-gray-100);
   margin-bottom: 2rem;
   padding: 1rem;
+  padding-bottom: em;
 }
 
 .card-close {
@@ -150,6 +151,12 @@ li {
   color: var(--warm-gray-200);
 }
 
+.btn-icon {
+  background: none;
+  border: none;
+  padding: none;
+}
+
 
 /*------------------------------------------------
  * utilities
@@ -162,7 +169,7 @@ li {
   justify-content: space-between;
 }
 
-.mh-fm {
+.mh-fc {
   align-items: center;
   display: flex;
   flex-direction: row;

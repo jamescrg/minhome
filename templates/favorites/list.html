@@ -1,7 +1,7 @@
 
 <div class="card favorites">
 
-  <div class="card-title mh-fm">
+  <div class="card-title mh-fc">
     <h1>
 
       {% if  selected_folder %}
@@ -30,11 +30,7 @@
 
         <div class="favorite-icon">
             <a href="javascript:showHide('favorite-menu-{{ favorite.id }}');">
-              {% if favorite.home_rank %}
                 <i class="bi bi-star-fill"></i>
-              {% else %}
-                <i class="bi bi-star"></i>
-              {% endif %}
             </a>
         </div>
 

@@ -1,4 +1,10 @@
 
+
+
+/*------------------------------------------------
+ * folder list
+ * ------------------------------------------------*/
+
 .folders {
 	margin-bottom: 1rem;
   padding-left: 1rem;
@@ -6,46 +12,61 @@
 }
 
 .folder-icon {
-  color: var(--warm-gray-400);
+  color: var(--yellow-600);
+  opacity: 0.5;
+  margin-right: 0.5rem;
 }
 
 .folders .list-group-item {
   padding-left: 0.2rem;
+  padding-right: 0;
 }
 
 .folder-link {
-  margin-left: 0.5rem;
 }
 
-.folder-menu {
-	margin: 5px 0 0 35px;
-	padding: 0;
+.folder-menu-icon {
+  color: var(--warm-gray-300);
 }
 
-.folder-menu li {
-  background: #e4e4e4;
-  border-radius: 5px;
-  margin-top: 10px;
-  padding: 5px 10px;
-}
 
-.folder-menu li a {
-	font-size: 0.85em;
-}
+/*------------------------------------------------
+ * edit folder form
+ * ------------------------------------------------*/
 
 .edit-folder {
-	display: inline;
-	padding: 0;
+  display: none;
+}
+
+.edit-folder-form {
+	padding-left: 0.5em;
 	text-align: left;
 }
 
-.edit-folder input {
-	background: #f8f8f8;
-	border: none;
-	display: inline;
-	margin-left: 15px;
-	padding: 3px;
-	padding-left: 5px;
+.edit-folder-form input,
+.edit-folder-form input:focus {
+  border: none;
+  background: none;
+  font-size: inherit;
+  padding: 0;
+}
+
+.edit-folder-form input:focus {
+  outline: none;
+}
+
+.folder-menu {
+  display:none;
+  margin: 0.7rem 0 0 0;
+  text-align: right;
+}
+
+.folder-menu a.home{
+  color: var(--warm-gray-500);
+}
+
+.folder-menu a.delete{
+  color: var(--warm-gray-500);
 }
 
 #folder-create-form{
@@ -61,4 +82,34 @@
 	display: inline;
 	padding: 3px;
 	padding-left: 5px;
+}
+
+#add-folder-item {
+  display: none;
+}
+
+.edit-folder {
+  display: none;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.folder-form input {
+  background: inherit;
+  border: none;
+	display: inline;
+	margin: 0;
+  padding: 0;
+	width: 100%;
+}
+.folder-form {
+	padding: 0;
+  margin: 0;
+	text-align: left;
+  width: 100%;
+}
+
+.delete-folder {
+  color: var(--red-dark);
+  margin: 0;
 }

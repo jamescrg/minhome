@@ -1,26 +1,23 @@
 
-<li class="list-group-item" id="folderForm-{{ folder.id }}" style="display: none;">
+<div class="edit-folder">
 
-	<a href="javascript:showHideFolder('{{ folder.id }}');">
-      {% if page == 'tasks' %}
-        <span class="glyphicon glyphicon-th-list"></span>
-      {% else %}
-        <span class="glyphicon glyphicon-folder-close"></span>
-      {% endif %}
-	</a>
-
-	<form class="edit-folder" action="/folders/update/{{ folder.id }}/{{ page }}" method="post">
+	<form class="edit-folder-form"
+    action="/folders/update/{{ folder.id }}/{{ page }}"
+    method="post">
 
 	{% csrf_token %}
 
-	<input class="form-horizontal"
+	<input class="form-control"
 		   autofocus
 		   type="text"
 		   name="name"
 		   onchange="submit()"
 		   value="{{ folder.name }}">
+
 	</form>
 
+</div>
+  <!--
 	<ul id="folderInput-{{ folder.id }}" class="folder-menu">
 
 		{% if page == 'favorites' or page == 'tasks' %}
@@ -34,6 +31,6 @@
 			   onclick="javascript: return confirm('Are you sure you want to delete this folder?')">Delete
 			</a>
     </li>
+  </ul>
+  -->
 
-	</ul>
-</li>
