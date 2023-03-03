@@ -89,7 +89,7 @@ def index(request):
         "columns": columns,
     }
 
-    return render(request, "home/index.html", context)
+    return render(request, "home/content.html", context)
 
 
 @login_required

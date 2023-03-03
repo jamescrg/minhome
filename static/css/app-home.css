@@ -1,106 +1,79 @@
 
+/*------------------------------------------------
+ * layout
+ * ------------------------------------------------*/
+
 .row {
 	margin: 0 auto;
 	max-width: 1000px;
 }
 
+
+/*------------------------------------------------
+ * tasks and events
+ * ------------------------------------------------*/
+
+.task-list-title {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding-left: 0.25rem;
+}
+
+
 /*------------------------------------------------
  * search
  * ------------------------------------------------*/
 
-.home-form {
+.search {
+  margin-bottom: 1rem;
+  max-width: 800px;
+}
+
+.search form {
 	margin-bottom: 1rem;
 	text-align: center;
 }
 
-.row-search {
-  max-width: 800px;
-}
-
-.home-form .form-control {
+.search .form-control {
   background: var(--warm-gray-50);
 }
 
 
 
 /*------------------------------------------------
- * favorites layout
+ * favorites
  * ------------------------------------------------*/
 
-.wrapper {
-	text-align: center;
-}
-
-.home-column {
-	margin: 0 10px;
-}
-
-
-/*------------------------------------------------
- * favorites cards
- * ------------------------------------------------*/
-
-.home-card {
+.folder {
   padding: 0.5rem 1rem;
 }
 
-.home-card .list-group-item {
-	border: none;
+.folder .card-title {
+  margin-bottom: 0;
 	padding: 0.15rem 0;
 }
 
-.home-card-title a {
+.folder .card-title a {
 	font-weight: 500;
 	color: var(--warm-gray-600);
 }
 
-.home-control-icon {
-  float: right;
+.folder .list-group-item {
+	border: none;
+	padding: 0.15rem 0;
+}
+
+.folder-icon {
   opacity: 0.4;
 }
 
-.home-folder-controls {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0.25em;
+.folder-controls {
+  padding: 0.5em;
 }
 
-.home-folder-controls a {
-  opacity: 0.8;
-}
 
-.home-link-controls {
-	color: var(--warm-gray-600);
-  padding-right: 0.5rem;
-}
-
-.home-task-area-title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-top: 0.5rem;
-}
-
-.home-task-area-title .section-title {
-  margin: 0;
-}
-
-.home-task-hide {
-  margin: 5px 5px 0 0;
-}
-
-.task-list-title {
-  font-weight: 600;
-}
-
-.table {
-  background: #f5f5f5;
-  margin-bottom: 0;
-  width: 100%;
-}
-
-.event-date {
-  width: 120px;
+.folder-controls a,
+.favorite-controls {
+	color: var(--lime-600);
 }

@@ -1,0 +1,28 @@
+
+<div class="card">
+
+  <div class="card-title mh-ft">
+
+    <h1>
+        Pending Tasks
+    </h1>
+
+    <div class="card-close">
+
+        <a href="/home/toggle/tasks">
+          <i class="bi bi-x-lg"></i>
+        </a>
+
+    </div>
+
+  </div>
+
+    {% if task_folders %}
+    {% for folder in task_folders  %}
+
+      {% include 'tasks/task_list.html' %}
+
+    {% endfor %}
+    {% endif %}
+
+</div>

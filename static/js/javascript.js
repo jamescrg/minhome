@@ -23,7 +23,7 @@ function showHideFolder(folder_id)
 
 function showHideHomeFolderControls(folder_id)
 {
-    var x = document.getElementsByClassName("home-folder-controls-"+folder_id);
+    var x = document.getElementsByClassName("folder-"+folder_id);
     var i;
     for (i = 0; i < x.length; i++) {
         if ( x[i].style.display == 'none' ) {

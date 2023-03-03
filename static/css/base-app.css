@@ -47,13 +47,6 @@ a:hover	{
 	text-decoration: none;
 }
 
-.flx-top {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: start;
-}
-
 /*------------------------------------------------
  * cards
  * ------------------------------------------------*/
@@ -72,6 +65,10 @@ a:hover	{
   margin-bottom: 1rem;
 }
 
+.card > .list-group {
+  border: none;
+}
+
 
 /*------------------------------------------------
  * typography
@@ -88,7 +85,7 @@ a:hover	{
 }
 
 h1 {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin-bottom: 0;
 }
 
@@ -121,25 +118,17 @@ th {
  * lists
  * ------------------------------------------------*/
 
-li{
+li {
 	list-style-type: none;
 }
 
-.card > .list-group {
+.list-group {
   border: none;
 }
 
 .list-group-item {
-  background: inherit;
+  background: none;
 }
-
-.task-list-title {
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  padding-left: 0.25rem;
-}
-
 
 
 /*------------------------------------------------
@@ -157,3 +146,30 @@ li{
   border: none;
   color: var(--warm-gray-200);
 }
+
+
+/*------------------------------------------------
+ * utilities
+ * ------------------------------------------------*/
+
+.mh-ft {
+  align-items: start;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.mh-fm {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.mh-fe {
+  align-items: end;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+

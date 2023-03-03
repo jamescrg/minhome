@@ -1,0 +1,66 @@
+
+<div class="row row-centered">
+
+{% for column in columns %}
+<div class="col-md-3 col-centered">
+
+  {% for folder in column %}
+    <div class="card folder">
+
+      {# card title #}
+
+      <div class="card-title mh-fm">
+
+        <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
+
+        <a class="folder-icon" href="javascript:showHideHomeControls('{{ folder.id }}');">
+          <i class="bi-columns"></i>
+        </a>
+
+      </div>
+
+
+      {# folder controls #}
+
+      <div class="folder-controls mh-fm folder-{{ folder.id }}" style="display: none;">
+
+        <a href="/home/folder/{{ folder.id }}/left"><i class="bi bi-box-arrow-left"></i></a>
+        <a href="/home/folder/{{ folder.id }}/up"><i class="bi bi-box-arrow-up"></i></a>
+        <a href="/home/folder/{{ folder.id }}/down"><i class="bi bi-box-arrow-down"></i></a>
+        <a href="/home/folder/{{ folder.id }}/right"><i class="bi bi-box-arrow-right"></i></a>
+
+      </div>
+
+
+      {# favorites #}
+
+      <ul class="list-group">
+
+        {% for favorite in folder.favorites %}
+          {% if favorite.folder_id == folder.id %}
+
+            <li class="list-group-item home-item mh-fe">
+
+              <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
+
+              <a class="favorite-controls home-link-controls-{{ folder.id }}"
+                style="display:none;"
+                href="/home/favorite/{{ favorite.id }}/up">
+
+                  <i class="bi bi-arrow-bar-up"></i>
+
+              </a>
+            </li>
+
+          {% endif %}
+        {% endfor %}
+
+      </ul>
+
+    </div> {# folders #}
+    {% endfor %}
+
+</div> {# columns #}
+{% endfor %}
+
+</div> {# row-centered #}

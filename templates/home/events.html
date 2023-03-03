@@ -1,0 +1,53 @@
+
+<div class="card">
+
+  <div class="card-title mh-ft">
+
+    <h1>
+      Pending Events
+    </h1>
+
+    <div class="card-close">
+
+      <a href="/home/toggle/events">
+        <i class="bi bi-x-lg"></i>
+      </a>
+
+    </div>
+
+  </div>
+
+  <div class="table-responsive">
+  <table class="table">
+
+    <th>Date
+    <th>Month
+    <th>Weekday
+    <th>Summary
+    <th>Time
+
+    {% for event in events %}
+
+      <tr>
+
+        <td class="event-date {{event.soon}}">
+          {{ event.date }}
+
+        <td class="event-date {{event.soon}}">
+          {{ event.month }}
+
+        <td class="event-date {{event.soon}}">
+          {{ event.weekday }}
+
+        <td class="description {{event.soon}}">
+          {{ event.summary }}
+
+        <td class="event-date {{event.soon}}">
+          {{ event.time }}
+
+    {% endfor %}
+
+  </table>
+  </div>
+
+</div>
