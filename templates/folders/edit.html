@@ -9,7 +9,7 @@
       {% endif %}
 	</a>
 
-	<form class="editFolder" action="/folders/update/{{ folder.id }}/{{ page }}" method="post">
+	<form class="edit-folder" action="/folders/update/{{ folder.id }}/{{ page }}" method="post">
 
 	{% csrf_token %}
 
@@ -21,7 +21,7 @@
 		   value="{{ folder.name }}">
 	</form>
 
-	<ul id="folderInput-{{ folder.id }}" class="folderMenu">
+	<ul id="folderInput-{{ folder.id }}" class="folder-menu">
 
 		{% if page == 'favorites' or page == 'tasks' %}
 

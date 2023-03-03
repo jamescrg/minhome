@@ -1,38 +1,45 @@
 
-#folders{
-	margin-bottom: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
+.folders {
+	margin-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.folderLink{
-  margin-left: 15px;
+.folder-icon {
+  color: var(--warm-gray-400);
 }
 
-.folderMenu{
+.folders .list-group-item {
+  padding-left: 0.2rem;
+}
+
+.folder-link {
+  margin-left: 0.5rem;
+}
+
+.folder-menu {
 	margin: 5px 0 0 35px;
 	padding: 0;
 }
 
-.folderMenu li {
+.folder-menu li {
   background: #e4e4e4;
   border-radius: 5px;
   margin-top: 10px;
   padding: 5px 10px;
 }
 
-.folderMenu li a {
-	color: #760f13;
+.folder-menu li a {
 	font-size: 0.85em;
 }
 
-.editFolder{
+.edit-folder {
 	display: inline;
 	padding: 0;
 	text-align: left;
 }
 
-.editFolder input {
+.edit-folder input {
 	background: #f8f8f8;
 	border: none;
 	display: inline;
@@ -41,14 +48,14 @@
 	padding-left: 5px;
 }
 
-#folderCreateForm{
+#folder-create-form{
 	background: none;
 	margin-top: 20px;
 	padding: 0;
 	text-align: left;
 }
 
-#addFolder {
+#add-folder {
 	background: #f8f8f8;
 	border: none;
 	display: inline;

@@ -1,68 +1,71 @@
 
-<div class="section-title">
+<div class="card favorites">
 
-	{% if  selected_folder %}
+  <div class="card-title mh-fm">
+    <h1>
 
-		{{ selected_folder.name }}
+      {% if  selected_folder %}
 
-	{% else %}
+        {{ selected_folder.name }}
 
-		Uncategorized
+      {% else %}
 
-	{% endif %}
+        Uncategorized
 
-</div>
+      {% endif %}
 
-<ul class="list-group">
+    </h1>
 
-	{% for favorite in favorites %}
+    <a href="/favorites/add">
+      <i class="bi bi-plus-lg"></i>
+    </a>
 
-		<li class="list-group-item">
+  </div>
 
-			<div class="favorite-icon">
-					<a href="javascript:showHide('favoriteMenu-{{ favorite.id }}');">
-						<span class="glyphicon glyphicon-bookmark" {% if  favorite.home_rank > 0  %} style="color: #760f13;" {% endif %}>
-						</span>
-					</a>
-			</div>
+  <ul class="list-group">
 
-			<div class="favorite-text">
-				<div class="link">
-					<a href="{{ favorite.url }}">{{ favorite.name }}</a>
-				</div>
-				<div class="description">
-					{{ favorite.description|default_if_none:'' }}
-				</div>
-				<div id="favoriteMenu-{{ favorite.id }}" class="favoriteMenu" style="display: none;">
-					{% include 'favorites/menu.html' %}
-				</div>
-			</div>
+    {% for favorite in favorites %}
 
-			{% if favorite.login %}
+      <li class="list-group-item">
 
-				<div class="credentials">
-					<div id="credentialHint-{{ favorite.id }}">
-						<a href="javascript:showHideCredentials('{{ favorite.id }}');"><span  class="glyphicon glyphicon-briefcase"></span></a>
-					</div>
-					<div id="credentialData-{{ favorite.id }}" class="credentialData" style="display:none;">
-						{{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
-					</div>
-				</div>
+        <div class="favorite-icon">
+            <a href="javascript:showHide('favorite-menu-{{ favorite.id }}');">
+              {% if favorite.home_rank %}
+                <i class="bi bi-star-fill"></i>
+              {% else %}
+                <i class="bi bi-star"></i>
+              {% endif %}
+            </a>
+        </div>
 
-			{% endif %}
+        <div class="favorite-text">
+          <div class="link">
+            <a href="{{ favorite.url }}">{{ favorite.name }}</a>
+          </div>
+          <div id="favorite-menu-{{ favorite.id }}" class="favorite-menu" style="display: none;">
+            {% include 'favorites/menu.html' %}
+          </div>
+        </div>
 
-			<div style="clear:both"></div>
+        {% if favorite.login %}
 
-		</li>
+          <div class="credentials">
+            <div id="credentialHint-{{ favorite.id }}">
+              <a href="javascript:showHideCredentials('{{ favorite.id }}');"><span  class="glyphicon glyphicon-briefcase"></span></a>
+            </div>
+            <div id="credential-data-{{ favorite.id }}" class="credential-data" style="display:none;">
+              {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
+            </div>
+          </div>
 
-	{% endfor %}
+        {% endif %}
 
-</ul>
+        <div style="clear:both"></div>
 
-<div class="page-control">
+      </li>
 
-  <a href="/favorites/add">
-    Add Favorite
-  </a>
+    {% endfor %}
+
+  </ul>
 
 </div>

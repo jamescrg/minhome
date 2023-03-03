@@ -1,11 +1,11 @@
 
-<form id="folderCreateForm" 
-      action="/folders/insert/{{ page }}" 
+<form id="folder-create-form"
+      action="/folders/insert/{{ page }}"
       method="post" style="display: none;">
 
 	{% csrf_token %}
 
-	<input class="form-control" id="addFolder" 
+	<input class="form-control" id="add-folder"
         type="text" name="name" onchange="submit()" value="">
 
 </form>

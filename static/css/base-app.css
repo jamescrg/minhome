@@ -85,6 +85,7 @@ a:hover	{
 }
 
 h1 {
+  color: var(--warm-gray-700);
   font-size: 1.1em;
   margin-bottom: 0;
 }
@@ -128,6 +129,8 @@ li {
 
 .list-group-item {
   background: none;
+  border-left: none;
+  border-right: none;
 }
 
 
@@ -173,3 +176,7 @@ li {
   justify-content: space-between;
 }
 
+.mh-bottom-right {
+  margin-top: 1rem;
+  text-align: right;
+}
