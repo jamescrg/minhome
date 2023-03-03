@@ -41,32 +41,38 @@
  * ------------------------------------------------*/
 
 .home-card {
-  padding: 0.5em;
+  padding: 0.5rem 1rem;
 }
 
 .home-card .list-group-item {
 	border: none;
-	padding: 0.2rem 1rem;
+	padding: 0.15rem 0;
 }
 
-.home-folder-title a {
+.home-card-title a {
 	font-weight: 500;
 	color: var(--warm-gray-600);
 }
 
-.home-control-launch {
-	float: right;
+.home-control-icon {
+  float: right;
   opacity: 0.4;
 }
 
 .home-folder-controls {
-  text-align: center;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.25em;
 }
 
 .home-folder-controls a {
-  margin-right: 1.5rem;
-  opacity: 0.6;
-  padding: 0.5rem 0;
+  opacity: 0.8;
+}
+
+.home-link-controls {
+	color: var(--warm-gray-600);
+  padding-right: 0.5rem;
 }
 
 .home-task-area-title {

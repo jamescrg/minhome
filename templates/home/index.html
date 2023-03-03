@@ -118,9 +118,12 @@
         name="q"
         class="form-control"
         aria-label="Web search"
+        placeholder="Google search . . ."
         aria-describedby="google-logo">
 
     </div>
+
+
 
   </div>
 
@@ -141,11 +144,11 @@
 
         <div class="card home-card">
 
-          <ul class="list-group home-list">
+          <ul class="list-group">
 
-          <li class="list-group-item home-folder-title">
+          <li class="list-group-item home-card-title">
 
-              <div class="home-control-launch">
+              <div class="home-control-icon">
                 <a href="javascript:showHideHomeControls('{{ folder.id }}');">
                   <i class="bi-columns"></i>
                 </a>
@@ -154,9 +157,9 @@
 
               <!-- home folder controls -->
               <div class="home-folder-controls home-folder-controls-{{ folder.id }}" style="display: none;">
+                <a href="/home/folder/{{ folder.id }}/left"><i class="bi bi-box-arrow-left"></i></a>
                 <a href="/home/folder/{{ folder.id }}/up"><i class="bi bi-box-arrow-up"></i></a>
                 <a href="/home/folder/{{ folder.id }}/down"><i class="bi bi-box-arrow-down"></i></a>
-                <a href="/home/folder/{{ folder.id }}/left"><i class="bi bi-box-arrow-left"></i></a>
                 <a href="/home/folder/{{ folder.id }}/right"><i class="bi bi-box-arrow-right"></i></a>
               </div>
 
@@ -165,8 +168,7 @@
           {% for favorite in folder.favorites %}
             {% if favorite.folder_id == folder.id %}
               <li class="list-group-item home-item">
-                <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/up"><span class="glyphicon glyphicon-arrow-up"></span></a>
-                <a class="home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/down"><span class="glyphicon glyphicon-arrow-down"></span></a>
+                <a class="home-link-controls home-link-controls-{{ folder.id }}" style="display:none;" href="/home/favorite/{{ favorite.id }}/up"><i class="bi bi-arrow-bar-up"></i></a>
                 <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
               </li>
 

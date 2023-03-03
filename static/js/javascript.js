@@ -27,7 +27,7 @@ function showHideHomeFolderControls(folder_id)
     var i;
     for (i = 0; i < x.length; i++) {
         if ( x[i].style.display == 'none' ) {
-            x[i].style.display = 'block';
+            x[i].style.display = 'flex';
         } else {
             x[i].style.display = 'none';
         }

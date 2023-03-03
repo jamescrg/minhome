@@ -10,7 +10,7 @@
 
 body {
   background: var(--warm-gray-300);
-  color: var(--warm-gray-600);
+  color: var(--warm-gray-800);
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
 }
@@ -139,8 +139,6 @@ li{
   border-top: none;
   padding-left: 0.25rem;
 }
-
-
 
 
 
