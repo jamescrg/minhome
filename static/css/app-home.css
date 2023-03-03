@@ -5,7 +5,6 @@
 
 .row {
 	margin: 0 auto;
-	max-width: 1000px;
 }
 
 
@@ -51,7 +50,7 @@
 
 .folder .card-title {
   margin-bottom: 0;
-	padding: 0.15rem 0;
+	padding: 0.2rem 0;
 }
 
 .folder .card-title a {
@@ -61,7 +60,7 @@
 
 .folder .list-group-item {
 	border: none;
-	padding: 0.15rem 0;
+	padding: 0.2rem 0;
 }
 
 .folder-icon {

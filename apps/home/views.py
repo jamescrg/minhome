@@ -68,11 +68,13 @@ def index(request):
     # ----------------
 
     columns = []
-    for i in range(1, 5):
-        folders = Folder.objects.filter(user=user, page="favorites", home_column=i)
+    for i in range(1, 6):
+        folders = Folder.objects.filter(
+            user=user, page="favorites", home_column=i)
         folders = folders.order_by("home_rank")
         for folder in folders:
-            favorites = Favorite.objects.filter(folder_id=folder.id, home_rank__gt=0)
+            favorites = Favorite.objects.filter(
+                folder_id=folder.id, home_rank__gt=0)
             favorites = favorites.order_by("home_rank")
             folder.favorites = favorites
         columns.append(folders)
@@ -189,7 +191,7 @@ def folder(request, id, direction):
 
         if direction == "left" and origin_column > 1:
             destination_column = origin_column - 1
-        elif direction == "right" and origin_column < 4:
+        elif direction == "right" and origin_column < 5:
             destination_column = origin_column + 1
         else:
             destination_column = origin_column
@@ -202,7 +204,10 @@ def folder(request, id, direction):
                 .order_by("-home_rank")
                 .first()
             )
-            bottom_rank = bottom_folder.home_rank
+            if bottom_folder:
+                bottom_rank = bottom_folder.home_rank
+            else:
+                bottom_rank = 0
             origin_folder.home_column = destination_column
             origin_folder.home_rank = bottom_rank + 1
 
