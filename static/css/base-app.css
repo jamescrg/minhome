@@ -10,7 +10,7 @@
 
 body {
   background: var(--warm-gray-300);
-  color: var(--warm-gray-800);
+  color: var(--warm-gray-700);
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
 }
@@ -83,7 +83,6 @@ a:hover {
 }
 
 h1 {
-  color: var(--warm-gray-700);
   font-weight: normal;
   font-size: 1.15em;
   margin-bottom: 0;

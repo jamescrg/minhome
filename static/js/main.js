@@ -8,6 +8,7 @@ function hide(elementId){
 function showHide(elementId)
 {
     var item = document.getElementById(elementId);
+    console.log(item)
     if (item) {
         if (item.style.display == 'none') {
             item.style.display = 'block';
@@ -55,9 +56,9 @@ function showHideHomeControls(folder_id)
 
 function showHideCredentials(favorite_id)
 {
-    var elementId = "credentialHint-"+favorite_id;
+    var elementId = "credential-hint-"+favorite_id;
     showHide(elementId);
-    var elementId = "credentialData-"+favorite_id;
+    var elementId = "credential-data-"+favorite_id;
     showHide(elementId);
 
 }

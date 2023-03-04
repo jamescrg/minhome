@@ -3,12 +3,25 @@
   display: none;
 }
 
+.form-control,
 .form-control:focus {
-  border-color: var(--warm-gray-300);
-  box-shadow: none;
+  background: var(--warm-gray-50);
+  /* background: white; */
+  font-size: 1.05em;
+  padding: 0.5rem;
 }
 
-.form-control {
-  font-size: 1.05em;
-  padding: 0.6rem;
+.form-control:focus {
+  border-color: var(--warm-gray-300);
+  box-shadow: 0 0 6px var(--lime-800);
+}
+
+.form-label {
+  color: inherit;
+  margin-bottom: 0.3rem;
+  margin-top: 0.6rem;
+}
+
+.form-select {
+  font-size: inherit;
 }

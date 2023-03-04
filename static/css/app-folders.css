@@ -11,12 +11,15 @@
   opacity: 0.5;
 }
 
-.folders .list-group-item {
-}
-
 .menu-icon {
   color: var(--warm-gray-300);
   padding: 0;
+}
+
+.folders input,
+.folders input:focus {
+  box-shadow: none;
+  outline: none;
 }
 
 
@@ -24,18 +27,18 @@
  * add folder
  * ------------------------------------------------*/
 
-.add-folder {
+.folder-add {
   display: none;
 }
 
-.add-folder form {
+.folder-add form {
 	background: none;
 	padding: 0;
 	text-align: left;
 }
 
-.add-folder input,
-.add-folder input:focus {
+.folder-add input,
+.folder-add input:focus {
   background: inherit;
   border: none;
   padding: 0;

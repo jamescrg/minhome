@@ -38,8 +38,8 @@
 }
 
 .credential-data{
+  color: var(--warm-gray-500);
 	font-size: 0.8em;
-	margin-top: 10px;
 }
 
 .favorite-menu {
@@ -52,30 +52,37 @@
 /* favorites form */
 /* ------------------------------------------------------------------------- */
 
-.form-control{
-	background: #ffffe6;
+.favorite-add {
+  margin-left: 0.5rem;
 }
+
 
 #id_folder {
   max-width: 250px;
 }
 
+
+#id_name {
+  max-width: 400px;
+}
+
 #id_url {
-  width: 550px;
+  max-width: 1000px;
 }
 
 #id_description{
-    height: 100px;
+  height: 100px;
 }
 
 #id_login {
-  max-width: 350px;
+  max-width: 450px;
 }
+
 #id_root,
 #id_passkey {
 	max-width: 150px;
-	}
+}
 
-.form-control{
-	background: #ffffe6;
+.btn {
+  margin-top: 0.5rem;
 }

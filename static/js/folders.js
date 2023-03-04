@@ -1,16 +1,16 @@
 
 
 function showAddFolderForm() {
-    addFolderItem = document.querySelector('#add-folder');
+    addFolderItem = document.querySelector('#folder-add');
     addFolderItem.style.display = 'flex';
-    addFolderItem.querySelector('#add-folder-input').focus();
+    addFolderItem.querySelector('#folder-add-input').focus();
 }
 
 
 function hideAddFolderForm(){
 
     setTimeout(function () {
-        element = document.querySelector('#add-folder');
+        element = document.querySelector('#folder-add');
         element.style.display = 'none';
     }, 1000);
 }
