@@ -61,27 +61,27 @@
   text-align: right;
 }
 
-.folder-menu a.home{
-  color: var(--warm-gray-500);
+
+
+/*------------------------------------------------
+ * add folder form
+ * ------------------------------------------------*/
+
+.add-folder {
+  display: none;
 }
 
-.folder-menu a.delete{
-  color: var(--warm-gray-500);
-}
-
-#folder-create-form{
+.add-folder form {
 	background: none;
-	margin-top: 20px;
 	padding: 0;
 	text-align: left;
 }
 
-#add-folder {
-	background: #f8f8f8;
-	border: none;
-	display: inline;
-	padding: 3px;
-	padding-left: 5px;
+.add-folder input,
+.add-folder input:focus {
+  background: inherit;
+  border: none;
+  padding: 0;
 }
 
 #add-folder-item {

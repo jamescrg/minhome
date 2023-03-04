@@ -1,4 +1,10 @@
 
+function hide(elementId){
+    var item = document.getElementById(elementId);
+    item.style.display = 'none';
+}
+
+
 function showHide(elementId)
 {
     var item = document.getElementById(elementId);
@@ -11,15 +17,6 @@ function showHide(elementId)
     }
 }
 
-function showHideFolder(folder_id)
-{
-    var elementId = "folderItem-"+folder_id;
-    showHide(elementId);
-    var elementId = "folderForm-"+folder_id;
-    showHide(elementId);
-    var elementId = "folderInput-"+folder_id;
-    document.getElementById(elementId).focus();
-}
 
 function showHideHomeFolderControls(folder_id)
 {
@@ -34,6 +31,7 @@ function showHideHomeFolderControls(folder_id)
     }
 }
 
+
 function showHideHomeLinkControls(folder_id)
 {
     var x = document.getElementsByClassName("home-link-controls-"+folder_id);
@@ -47,11 +45,13 @@ function showHideHomeLinkControls(folder_id)
     }
 }
 
+
 function showHideHomeControls(folder_id)
 {
     showHideHomeFolderControls(folder_id);
     showHideHomeLinkControls(folder_id);
 }
+
 
 function showHideCredentials(favorite_id)
 {

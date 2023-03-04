@@ -55,7 +55,7 @@ a:hover	{
   background: var(--warm-gray-100);
   margin-bottom: 2rem;
   padding: 1rem;
-  padding-bottom: em;
+  padding-bottom: 1.5rem;
 }
 
 .card-close {
@@ -87,16 +87,17 @@ a:hover	{
 
 h1 {
   color: var(--warm-gray-700);
-  font-size: 1.1em;
+  font-weight: normal;
+  font-size: 1.15em;
   margin-bottom: 0;
 }
 
 strong{
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .strong {
-	font-weight: bold;
+	font-weight: 600;
 }
 
 

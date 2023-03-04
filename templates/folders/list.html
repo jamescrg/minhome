@@ -4,20 +4,46 @@
 <div class="card-title mh-fc">
 
   <h1>
+
     {% if page == 'tasks' %}
       Lists
     {% else %}
       Folders
     {% endif %}
+
   </h1>
 
-  <a href="javascript:showHide('folderCreateForm');">
+  <a href="javascript:showAddFolderForm();">
       <i class="bi bi-plus-lg"></i>
   </a>
 
 </div>
 
+<form id="add-folder"
+      class="list-group-item add-folder mh-fc"
+      style="border-bottom: none;"
+      action="/folders/insert/{{ page }}"
+      method="post">
+
+  <div class="folder-icon">
+    <i class="bi bi-folder-fill"></i>
+  </div>
+
+  {% csrf_token %}
+
+  <input class="form-control"
+      id="add-folder-input"
+      autofocus
+      type="text"
+      name="name"
+      onchange="submit()"
+      onblur="hideAddFolderForm()"
+      value="{{ folder.name }}">
+
+</form>
+
 <ul class="list-group">
+
 
   {% if folders %}
 	{% for folder in folders %}
@@ -29,20 +55,16 @@
         <div class="folder-icon-and-link">
 
           <span class="folder-icon">
-            {% if page == 'tasks' %}
-            <i class="bi bi-grid-fill"></i>
-            {% else %}
             <i class="bi bi-folder-fill"></i>
-            {% endif %}
           </span>
 
           <a class="folder-link"
              href="/folders/{{ folder.id }}/{{ page }}"
              {% if page != tasks and folder.id == selected_folder.id %}
-             style="font-weight: bold;"
+             style="font-weight: 600;"
              {% endif %};
              {% if page == 'tasks' and folder in selected_folders %}
-             style="font-weight: bold;"
+             style="font-weight: 600;"
              {% endif %};
              >
 
@@ -64,6 +86,7 @@
               autofocus
               type="text"
               name="name"
+              onblur="hideEditFolderForm({{ folder.id }})"
               onchange="submit()"
               value="{{ folder.name }}">
 
@@ -76,6 +99,7 @@
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="showEditFolderForm({{ folder.id }})">Edit</a></li>
             <li><a class="dropdown-item"
                     href="/folders/home/{{ folder.id }}/{{ page }}">
                   {% if not folder.home_rank %}
@@ -91,7 +115,6 @@
                   Delete
                 </a>
             </li>
-            <li><a class="dropdown-item" href="#" onclick="showEditFolderForm({{ folder.id }})">Edit</a></li>
           </ul>
         </div>
 
@@ -105,7 +128,7 @@
 
 	{% if page != 'tasks' %}
 
-		<li class="list-group-item" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+		<li class="list-group-item">
 
       <i class="bi bi-folder-fill folder-icon"></i>
 
