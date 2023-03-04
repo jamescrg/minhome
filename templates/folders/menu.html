@@ -1,0 +1,25 @@
+
+<div class="dropdown">
+  <button class="btn-icon menu-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-three-dots-vertical"></i>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#" onclick="showEditFolderForm({{ folder.id }})">Edit</a></li>
+    <li><a class="dropdown-item"
+            href="/folders/home/{{ folder.id }}/{{ page }}">
+          {% if not folder.home_rank %}
+            Add to Home
+          {% else %}
+            Remove from Home
+          {% endif %}
+        </a>
+    </li>
+    <li><a class="dropdown-item"
+        href="/folders/delete/{{ folder.id }}/{{ page }}"
+        onclick="javascript: return confirm('Are you sure you want to delete this folder?')">
+          Delete
+        </a>
+    </li>
+  </ul>
+</div>
+

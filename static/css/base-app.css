@@ -36,16 +36,13 @@ body {
  * links
  * ------------------------------------------------*/
 
-a {
+a,
+a:hover {
   color: var(--lime-900);
   outline: none;
   text-decoration: none;
 }
 
-a:hover	{
-	color: var(--lime-600);
-	text-decoration: none;
-}
 
 /*------------------------------------------------
  * cards
@@ -133,6 +130,7 @@ li {
   background: none;
   border-left: none;
   border-right: none;
+  padding: 0.5rem 0rem 0.5rem 0.5rem;
 }
 
 

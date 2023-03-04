@@ -1,32 +1,40 @@
 
+/* ------------------------------------------------------------------------- */
+/* favorites list */
+/* ------------------------------------------------------------------------- */
 
 .favorites .list-group-item{
-  padding-bottom: 1rem;
-  padding-top: 1rem;
   border-left: none;
   border-right: none;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
 }
 
 .favorite-icon{
-	float: left;
-}
-
-.favorite-icon a {
   color: var(--warm-gray-400);
+	float: left;
+  font-size: 0.98rem;
+  margin-top: 0.2rem;
 }
 
 .favorite-text{
 	float: left;
-	margin-left: 20px;
+  margin-left: 0.8rem;
 }
 
 .description{
 	font-size: 0.9em;
+  margin-left: 0.1rem;
 }
 
 .credentials{
 	float: right;
+  margin-right: 1rem;
 	text-align: right;
+}
+
+.credentials a {
+  color: var(--warm-gray-300);
 }
 
 .credential-data{
@@ -34,25 +42,9 @@
 	margin-top: 10px;
 }
 
-.favorite-menu{
-	margin-top: 10px;
-}
-
-.favorite-menu ul {
-  margin: 15px 0 0 0;
-  padding: 0;
-}
-
-.favorite-menu ul li{
-  background: #e4e4e4;
-  border-radius: 5px;
-  display: inline;
-  margin-right: 10px;
-  padding: 5px 7px;
-}
-
-.favorite-menu a {
-  font-size: 0.85em;
+.favorite-menu {
+  float: right;
+  text-align: right;
 }
 
 

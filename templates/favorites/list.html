@@ -29,25 +29,32 @@
       <li class="list-group-item">
 
         <div class="favorite-icon">
-            <a href="javascript:showHide('favorite-menu-{{ favorite.id }}');">
-                <i class="bi bi-star-fill"></i>
-            </a>
+          {% if favorite.home_rank %}
+            <i class="bi bi-bookmark-fill"></i>
+          {% else %}
+            <i class="bi bi-bookmark"></i>
+          {% endif %}
         </div>
 
         <div class="favorite-text">
           <div class="link">
             <a href="{{ favorite.url }}">{{ favorite.name }}</a>
           </div>
-          <div id="favorite-menu-{{ favorite.id }}" class="favorite-menu" style="display: none;">
-            {% include 'favorites/menu.html' %}
+
+          <div class="description">
+            {{ favorite.description|default:"" }}
           </div>
         </div>
+
+        {% include "favorites/menu.html" %}
 
         {% if favorite.login %}
 
           <div class="credentials">
             <div id="credentialHint-{{ favorite.id }}">
-              <a href="javascript:showHideCredentials('{{ favorite.id }}');"><span  class="glyphicon glyphicon-briefcase"></span></a>
+              <a href="javascript:showHideCredentials('{{ favorite.id }}');">
+                <i class="bi bi-briefcase-fill"></i>
+              </a>
             </div>
             <div id="credential-data-{{ favorite.id }}" class="credential-data" style="display:none;">
               {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}

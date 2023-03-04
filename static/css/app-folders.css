@@ -5,66 +5,23 @@
  * folder list
  * ------------------------------------------------*/
 
-.folders {
-	margin-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
 .folder-icon {
   color: var(--yellow-600);
-  opacity: 0.5;
   margin-right: 0.5rem;
+  opacity: 0.5;
 }
 
 .folders .list-group-item {
-  padding-left: 0.2rem;
-  padding-right: 0;
 }
 
-.folder-link {
-}
-
-.folder-menu-icon {
+.menu-icon {
   color: var(--warm-gray-300);
-}
-
-
-/*------------------------------------------------
- * edit folder form
- * ------------------------------------------------*/
-
-.edit-folder {
-  display: none;
-}
-
-.edit-folder-form {
-	padding-left: 0.5em;
-	text-align: left;
-}
-
-.edit-folder-form input,
-.edit-folder-form input:focus {
-  border: none;
-  background: none;
-  font-size: inherit;
   padding: 0;
 }
 
-.edit-folder-form input:focus {
-  outline: none;
-}
-
-.folder-menu {
-  display:none;
-  margin: 0.7rem 0 0 0;
-  text-align: right;
-}
-
-
 
 /*------------------------------------------------
- * add folder form
+ * add folder
  * ------------------------------------------------*/
 
 .add-folder {
@@ -84,9 +41,10 @@
   padding: 0;
 }
 
-#add-folder-item {
-  display: none;
-}
+
+/*------------------------------------------------
+ * edit folder form
+ * ------------------------------------------------*/
 
 .edit-folder {
   display: none;
@@ -94,22 +52,10 @@
   width: 100%;
 }
 
-.folder-form input {
+.edit-folder input,
+.edit-folder input:focus {
   background: inherit;
   border: none;
-	display: inline;
-	margin: 0;
   padding: 0;
-	width: 100%;
-}
-.folder-form {
-	padding: 0;
-  margin: 0;
-	text-align: left;
-  width: 100%;
-}
-
-.delete-folder {
-  color: var(--red-dark);
-  margin: 0;
+  margin-left: 0.5rem;
 }

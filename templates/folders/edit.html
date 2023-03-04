@@ -1,36 +1,18 @@
 
-<div class="edit-folder">
 
-	<form class="edit-folder-form"
+  <form class="edit-folder"
     action="/folders/update/{{ folder.id }}/{{ page }}"
     method="post">
 
-	{% csrf_token %}
+  {% csrf_token %}
 
-	<input class="form-control"
-		   autofocus
-		   type="text"
-		   name="name"
-		   onchange="submit()"
-		   value="{{ folder.name }}">
+  <input class="form-control"
+      autofocus
+      type="text"
+      name="name"
+      onblur="hideEditFolderForm({{ folder.id }})"
+      onchange="submit()"
+      value="{{ folder.name }}">
 
-	</form>
-
-</div>
-  <!--
-	<ul id="folderInput-{{ folder.id }}" class="folder-menu">
-
-		{% if page == 'favorites' or page == 'tasks' %}
-
-			<li><a href="/folders/home/{{ folder.id }}/{{ page }}"> {% if folder.home_column > 0 %} Remove from {% else %} Add to {% endif %} Home </a></li>
-
-		{% endif %}
-
-		<li>
-      <a href="/folders/delete/{{ folder.id }}/{{ page }}"
-			   onclick="javascript: return confirm('Are you sure you want to delete this folder?')">Delete
-			</a>
-    </li>
-  </ul>
-  -->
+  </form>
 

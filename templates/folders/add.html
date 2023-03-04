@@ -1,11 +1,23 @@
 
-<form id="folder-create-form"
+<form id="add-folder"
+      class="list-group-item add-folder mh-fc"
+      style="border-bottom: none;"
       action="/folders/insert/{{ page }}"
-      method="post" style="display: none;">
+      method="post">
 
-	{% csrf_token %}
+  <div class="folder-icon">
+    <i class="bi bi-folder-fill"></i>
+  </div>
 
-	<input class="form-control" id="add-folder"
-        type="text" name="name" onchange="submit()" value="">
+  {% csrf_token %}
+
+  <input class="form-control"
+      id="add-folder-input"
+      autofocus
+      type="text"
+      name="name"
+      onchange="submit()"
+      onblur="hideAddFolderForm()"
+      value="{{ folder.name }}">
 
 </form>
