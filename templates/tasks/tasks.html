@@ -1,9 +1,11 @@
 
-<div class="section-title">
-	Tasks
-</div>
+<div class="card">
 
-<div id="tasks">
+  <div class="card-title">
+    <h1>
+      Tasks
+    </h1>
+  </div>
 
 {% if active_folder %}
 
@@ -15,10 +17,10 @@
 
   {% endwith %}
 
-  <div id="clear" style="text-align: right;">
+  <div style="margin-top: 1rem; text-align: right;">
 
     <a href="/tasks/{{ active_folder.id }}/clear">
-      Clear Complete
+      Clear Checked
     </a>
 
   </div>

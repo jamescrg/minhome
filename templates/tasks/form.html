@@ -1,23 +1,19 @@
 
-<div class="section-title">
+{% load crispy_forms_tags %}
 
-		Edit Task
+<div class="card">
 
-</div>
+  <div class="card-title">
+    <h1>
+      Edit Task
+    </h1>
+  </div>
 
-<form action="{{ action }}" id="task-edit" class="form-horizontal" method="post" role="form">
+  <form action="{{ action }}" id="task-edit" class="form-horizontal" method="post" role="form">
 
     {% csrf_token %}
 
-    <table>
+    {{ form|crispy }}
 
-      {{ form.as_table }}
-
-      <tr>
-        <td>
-        <td>
-          <input type="submit" value="Submit" class="btn btn-default">
-
-    </table>
-
-</form>
+  </form>
+</div>

@@ -3,15 +3,21 @@
   display: none;
 }
 
-.form-control,
 .form-control:focus {
   background: var(--warm-gray-50);
-  /* background: white; */
   font-size: 1.05em;
   padding: 0.5rem;
 }
 
-.form-control:focus {
+.form-control,
+.form-select {
+  background-color: var(--warm-gray-50);
+  font-size: 1.05em;
+  padding: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
   border-color: var(--warm-gray-300);
   box-shadow: 0 0 6px var(--lime-800);
 }

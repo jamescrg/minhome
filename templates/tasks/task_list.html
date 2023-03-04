@@ -15,26 +15,34 @@
 
   {% for task in folder.tasks %}
 
-    <li class="list-group-item">
+    <li class="list-group-item mh-fcl">
 
-      <a href="/tasks/{{ task.id }}/complete{% if origin %}/{{origin}}{%endif%}">
+      <div class="task-checkbox">
 
-        {% if task.status == 1 %}
+        <a href="/tasks/{{ task.id }}/complete{% if origin %}/{{origin}}{%endif%}">
 
-          <img class="task-done" src="/static/images/icons/task-done.png">
+          {% if task.status == 1 %}
 
-        {% else %}
+            <i class="bi bi-check-square"></i>
 
-          <img class="task-pending" src="/static/images/icons/task.png">
+          {% else %}
 
-        {% endif %}
+            <i class="bi bi-square"></i>
 
-      </a>
-      &nbsp;&nbsp;
-      <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
-        style="text-decoration: line-through; color: gray;" {% endif %}>
-        {{ task.title}}
-      </a>
+          {% endif %}
+
+        </a>
+
+      </div>
+
+      <div class="task-title">
+
+        <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
+          style="text-decoration: line-through; color: gray;" {% endif %}>
+          {{ task.title}}
+        </a>
+
+      </div>
 
     </li>
 

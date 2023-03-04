@@ -1,21 +1,11 @@
 
-<form role="form" id="tasks-form" method="post" action="/tasks/add" >
+<form role="form" class="task-add" method="post" action="/tasks/add" >
 
   {% csrf_token %}
 
 	<input type="hidden" name="folder_id" value="{{ active_folder.id }}">
 
-	<div class="input-group input-group-md">
-
-		<input class="form-control" 
+		<input class="form-control"
     type="text"  maxLength="255" name="title" autofocus required>
-
-		<div class="input-group-btn">
-			<button type="submit" class="btn btn-default" id="btn-tasks-add">
-        <span class="glyphicon glyphicon-plus"></span>
-      </button>
-		</div>
-
-	</div>
 
 </form>
