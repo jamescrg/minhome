@@ -1,97 +1,93 @@
 
-<div class="section-title">
+<div class="card mh-pb0">
 
-	{{ selected_contact.name }}
+  <div class="card-title mh-fc">
+    <h1>
+      {{ selected_contact.name }}
+    </h1>
 
-</div>
+    {% include "contacts/menu.html" %}
 
-<div class="contact">
+  </div>
 
-  <div style="float: right;">
-    <a href="/contacts/{{ selected_contact.id }}/edit">
-      Edit
+  <div class="contact-item">
+
+    {{ selected_contact.name }}
+
+    {% if selected_contact.company %}
+      <br>{{ selected_contact.company }}
+    {% endif %}
+
+    {% if selected_contact.address %}
+      <br>{{ selected_contact.address|linebreaks }}
+    {% endif %}
+
+  </div>
+
+  {% if selected_contact.phone1 %}
+
+    <div class="contact-item">
+      {{ selected_contact.phone1 }} - {{ selected_contact.phone1_label|lower }}
+    </div>
+
+  {% endif %}
+
+  {% if selected_contact.phone2 %}
+
+  <div class="contact-item">
+    {{ selected_contact.phone2 }} - {{ selected_contact.phone2_label|lower }}
+  </div>
+
+  {% endif %}
+
+  {% if selected_contact.phone3  %}
+
+  <div class="contact-item">
+    {{ selected_contact.phone3 }} - {{ selected_contact.phone3_label|lower }}
+  </div>
+
+  {% endif %}
+
+  {% if selected_contact.email != null %}
+
+  <div class="contact-item">
+    {{ selected_contact.email }}
+  </div>
+
+  {% endif %}
+
+  {% if selected_contact.website %}
+
+  <div class="contact-item">
+    <a href="{{ selected_contact.website }}">
+      {{ selected_contact.website  }}
     </a>
   </div>
 
-	<div class="contact-item">
+  {% endif %}
 
-		{{ selected_contact.name }} <br>
+  {% if selected_contact.map %}
 
-		{% if selected_contact.company %} 
-      {{ selected_contact.company }} 	<br> 
-    {% endif %}
-
-		{% if selected_contact.address %}
-      {{ selected_contact.address|linebreaks }} <br> 
-    {% endif %}
-
-	</div>
-
-	{% if selected_contact.phone1 %}
-
-    <div class="contact-item"> 
-      {{ selected_contact.phone1 }} - {{ selected_contact.phone1_label|lower }} 
-    </div>
+  <div class="contact-item">
+    <a href="{{ selected_contact.map }}"> Map </a>
+  </div>
 
   {% endif %}
 
-	{% if selected_contact.phone2 %}
+  {% if selected_contact.notes %}
 
-    <div class="contact-item"> 
-      {{ selected_contact.phone2 }} - {{ selected_contact.phone2_label|lower }} 
-    </div>
-
-  {% endif %}
-
-	{% if selected_contact.phone3  %}
-
-    <div class="contact-item"> 
-      {{ selected_contact.phone3 }} - {{ selected_contact.phone3_label|lower }} 
-    </div>
+  <div class="contact-item">
+    {{ selected_contact.notes|linebreaks }}
+  </div>
 
   {% endif %}
 
-	{% if selected_contact.email != null %}
+  {% if google and not selected_contact.google_id %}
 
-    <div class="contact-item">
-      {{ selected_contact.email }}
-    </div>
-
-  {% endif %}
-
-	{% if selected_contact.website %}
-
-    <div class="contact-item"> 
-      <a href="{{ selected_contact.website }}"> 
-        {{ selected_contact.website  }} 
-      </a>
-    </div>
+  <div class="contact-item">
+    <a href="/contacts/{{ selected_contact.id }}/google" style="color: darkred">Add to Google Contacts</a>
+  </div>
 
   {% endif %}
 
-	{% if selected_contact.map %}
-
-    <div class="contact-item"> 
-      <a href="{{ selected_contact.map }}"> Map </a>  
-    </div>
-
-  {% endif %}
-
-	{% if selected_contact.notes %}
-
-    <div class="contact-item"> 
-      {{ selected_contact.notes|linebreaks }}  
-    </div>
-
-  {% endif %}
-
-	{% if google and not selected_contact.google_id %}
-
-    <div class="contact-item">
-      <a href="/contacts/{{ selected_contact.id }}/google" style="color: darkred">Add to Google Contacts</a>
-    </div>
-
-  {% endif %}
-
-	</div>
-
+</div>

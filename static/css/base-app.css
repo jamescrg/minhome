@@ -113,6 +113,7 @@ th {
   font-weight: 500;
 }
 
+
 /*------------------------------------------------
  * lists
  * ------------------------------------------------*/
@@ -157,6 +158,26 @@ li {
 
 
 /*------------------------------------------------
+ * dropdowns
+ * ------------------------------------------------*/
+
+.menu-icon {
+  color: var(--warm-gray-350);
+  padding: 0;
+}
+
+.dropdown-menu {
+  background: var(--warm-gray-100);
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background: var(--warm-gray-200);
+}
+
+
+
+/*------------------------------------------------
  * utilities
  * ------------------------------------------------*/
 
@@ -165,6 +186,12 @@ li {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.mh-ftl {
+  align-items: start;
+  display: flex;
+  flex-direction: row;
 }
 
 .mh-fc {
@@ -201,4 +228,12 @@ li {
 .mh-ps {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.mh-pb {
+  padding-bottom: 1rem;
+}
+
+.mh-pb0 {
+  padding-bottom: 0;
 }

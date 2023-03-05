@@ -1,19 +1,32 @@
-{# django template #}
+<div class="card mh-nps">
 
-<ul class="list-group">
+  <div class="card-title mh-fc mh-ps">
+    <h1>
+      Contacts
+    </h1>
 
-	{% if contacts %}
+    <a href="/contacts/add">
+      <i class="bi bi-plus-lg"></i>
+    </a>
 
-		{% for contact in contacts %}
+  </div>
 
-			<li class="list-group-item">
-				<a href="/contacts/{{ contact.id }}" 
-          {% if selected_contact and selected_contact.id == contact.id %} class="strong" {% endif %}>
-          {{ contact.name }}</a>
-			</li>
+  <ul class="list-group">
 
-		{% endfor %}
+    {% if contacts %}
 
-	{% endif %}
+    {% for contact in contacts %}
 
-</ul>
+    <li class="list-group-item mh-ps">
+      <a href="/contacts/{{ contact.id }}"
+        {% if selected_contact and selected_contact.id == contact.id %} class="strong" {% endif %}>
+        {{ contact.name }}</a>
+    </li>
+
+    {% endfor %}
+
+    {% endif %}
+
+  </ul>
+
+</div>

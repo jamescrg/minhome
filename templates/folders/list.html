@@ -24,16 +24,27 @@
     {% for folder in folders %}
     <li class="list-group-item mh-fc mh-ps" id="folder-{{ folder.id }}">
 
-      <div class="folder-show">
+      <div class="folder-show mh-fc">
 
         {% if folder.home_column %}
           <span class="folder-icon-home">
             <i class="bi bi-house-fill"></i>
           </span>
         {% else %}
-          <span class="folder-icon">
-            <i class="bi bi-folder-fill"></i>
-          </span>
+
+          {% if page == "tasks" %}
+
+            <span class="folder-icon task-icon">
+              <span class="material-icons">view_list</span>
+            </span>
+
+          {% else %}
+
+            <span class="folder-icon">
+              <i class="bi bi-folder-fill"></i>
+            </span>
+
+          {% endif %}
 
         {% endif %}
 
@@ -62,7 +73,7 @@
     {% endif %}
 
     {% if page != 'tasks' %}
-    <li class="list-group-item">
+    <li class="list-group-item mh-ps">
 
       <i class="bi bi-folder-fill folder-icon"></i>
 

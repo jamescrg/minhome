@@ -11,7 +11,7 @@
 }
 
 .favorite-icon{
-  color: var(--warm-gray-300);
+  color: var(--warm-gray-400);
 	float: left;
   margin-top: 0.2rem;
 }
@@ -55,11 +55,6 @@
 /* ------------------------------------------------------------------------- */
 /* favorites form */
 /* ------------------------------------------------------------------------- */
-
-.favorite-add {
-  margin-left: 0.5rem;
-}
-
 
 #id_folder {
   max-width: 250px;

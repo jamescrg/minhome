@@ -31,3 +31,7 @@
 .form-select {
   font-size: inherit;
 }
+
+.large-form {
+  padding-left: 0.8rem;
+}

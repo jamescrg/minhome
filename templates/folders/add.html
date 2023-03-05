@@ -5,9 +5,19 @@
       action="/folders/insert/{{ page }}"
       method="post">
 
-  <div class="folder-icon">
-    <i class="bi bi-folder-fill"></i>
-  </div>
+  {% if page == "tasks" %}
+
+      <span class="folder-icon task-icon">
+        <span class="material-icons">view_list</span>
+      </span>
+
+  {% else %}
+
+    <div class="folder-icon">
+      <i class="bi bi-folder-fill"></i>
+    </div>
+
+  {% endif %}
 
   {% csrf_token %}
 

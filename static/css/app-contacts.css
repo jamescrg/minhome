@@ -1,26 +1,9 @@
 
-#contacts{
-	padding-bottom: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-	}
-
-#contact{
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-
-.contact{
-	background: #f4f4f4;
-	border-radius: 4px;
-	margin-bottom: 20px;
-	padding: 10px 15px;
-	}
 
 .contact-item{
-	margin-top: 10px;
-	}
+	margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
 
 
 
@@ -28,28 +11,26 @@
 /* contacts form */
 /* ------------------------------------------------------------------------- */
 
-.form-control{
-	background: #ffffe6;
+#id_name,
+#id_email,
+#id_company,
+#id_notes {
+  max-width: 600px;
 }
 
-#name,
-#email,
-#notes {
-    max-width: 400px;
+#id_address,
+#id_notes {
+  height: 150px;
+  max-width: 600px;
 }
 
-#address{
-    height: 100px;
-    max-width: 400px;
+#id_folder,
+#id_phone1,
+#id_phone2,
+#id_phone3,
+#id_phone1_label,
+#id_phone2_label,
+#id_phone3_label {
+	max-width: 300px;
 }
-
-#folder_id,
-#phone1,
-#phone2,
-#phone3,
-#phone1_label,
-#phone2_label,
-#phone3_label {
-	max-width: 250px;
-	}
 

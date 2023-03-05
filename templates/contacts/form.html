@@ -1,52 +1,44 @@
+{% load crispy_forms_tags %}
 
-<div class="col-sm-9 col-sm-push-3">
+<div class="col-lg-9 order-lg-2">
 
-	<div class="section-title">
+  <div class="card">
 
-		{% if not edit %}
+    <div class="card-title mh-fc">
+      <h1>
+        {% if not edit %}
 
-			Add Contact
+        Add Contact
 
-		{% else %}
+        {% else %}
 
-			Edit Contact
+        Edit Contact
 
-		{% endif %}
+        {% endif %}
+      </h1>
 
-	</div>
+      <a href="/contacts">
+        <i class="bi bi-arrow-return-left"></i>
+      </a>
+    </div>
 
-{% if user.id == 1 and not user.google_credentials %}
 
-  <div class="warn">
-    Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="/settings">here</a> to connect.
-  </div>
+    {% if user.id == 1 and not user.google_credentials %}
 
-{% endif %}
-
-	<form action="{{ action }}" class="form-horizontal" method="post" role="form">
-
-    {% csrf_token %}
-
-    {% if edit %}
-
-      <div style="float: right;">
-        <a href="/contacts/{{ contact.id }}/delete"
-          onclick="javascript: return confirm('Are you sure you want to delete this contact?')"
-          >Delete Contact</a>
-      </div>
+    <div class="warn">
+      Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="/settings">here</a> to connect.
+    </div>
 
     {% endif %}
 
-    <table>
+    <form action="{{ action }}" class="large-form" method="post" role="form">
 
-      {{ form.as_table }}
+      {% csrf_token %}
 
-      <tr>
-        <td>
-        <td>
-          <input type="submit" value="Submit" class="btn btn-default">
+      {{ form|crispy }}
 
-    </table>
+      <button class="btn btn-primary" type="submit">Submit</button>
 
-	</form>
+    </form>
+  </div>
 </div>
