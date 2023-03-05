@@ -1,17 +1,31 @@
 
-<ul class="list-group">
+<div class="card mh-nps">
 
-	{% for note in notes %}
+  <div class="card-title mh-fc mh-ps">
+    <h1>
+      Notes
+    </h1>
 
-		<li class="list-group-item">
+    <a href="/notes/add">
+      <i class="bi bi-plus-lg"></i>
+    </a>
 
-			<a href="/notes/{{ note.id }}" 
+  </div>
+
+  <ul class="list-group">
+
+    {% for note in notes %}
+
+    <li class="list-group-item mh-ps">
+
+      <a href="/notes/{{ note.id }}"
         {% if selected_note and selected_note.id == note.id %} class="strong"{% endif %}>
         {{ note.subject }}
       </a>
 
-		</li>
+    </li>
 
-	{% endfor %}
+    {% endfor %}
 
-</ul>
+  </ul>
+</div>

@@ -1,13 +1,19 @@
 
-<div class="section-title">
-	{{ selected_note.subject }}
-</div>
+<div class="card">
 
-<div class="note">
-  <div style="float: right">
-    <a id="note-edit-link" href="/notes/{{ selected_note.id }}/edit">
-      Edit
-    </a>
+  <div class="card-title mh-fc">
+    <h1>
+      {{ selected_note.subject }}
+    </h1>
+
+    {% include "notes/menu.html" %}
+
   </div>
-	{{ selected_note.note|safe }}
+
+  <div class="note">
+
+    {{ selected_note.note|safe }}
+
+  </div>
+
 </div>

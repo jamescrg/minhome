@@ -1,0 +1,19 @@
+
+<div class="dropdown">
+  <button class="btn-icon menu-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-three-dots-vertical"></i>
+  </button>
+  <ul class="dropdown-menu">
+    <li>
+      <a class="dropdown-item" href="/notes/{{ selected_note.id }}/edit">
+        Edit
+      </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+          href="/notes/{{ selected_note.id }}/delete"
+          onclick="javascript: return confirm('Are you sure you want to delete this note?')"
+          >Delete Note</a>
+    </li>
+  </ul>
+</div>

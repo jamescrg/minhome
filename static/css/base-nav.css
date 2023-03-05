@@ -8,6 +8,7 @@
 
 .navbar-expand-lg .navbar-nav .nav-link {
   color: var(--warm-gray-600);
+  /* color: var(--lime-900); */
   padding: 0.75rem 1.5rem;
 }
 

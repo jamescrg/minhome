@@ -10,7 +10,7 @@
 
 body {
   background: var(--warm-gray-300);
-  color: var(--warm-gray-700);
+  color: var(--warm-gray-600);
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
 }
@@ -130,6 +130,7 @@ li {
   background: none;
   border-left: none;
   border-right: none;
+  color: inherit;
   padding: 0.5rem 0rem 0.5rem 0.5rem;
 }
 
@@ -145,9 +146,9 @@ li {
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--warm-gray-600);
+  background: var(--lime-900);
   border: none;
-  color: var(--warm-gray-200);
+  color: var(--warm-gray-300);
 }
 
 .btn-icon {
@@ -220,7 +221,6 @@ li {
 }
 
 .mh-nps {
-  padding-bottom: 0;
   padding-left: 0;
   padding-right: 0;
 }

@@ -1,25 +1,15 @@
 
-<div id="note" class="col-sm-6 col-sm-push-6">
+<div id="note" class="col-lg-6 order-lg-3">
 
 	{% if selected_note  %}
 
 		{% include 'notes/note.html' %}
 
 	{% endif %}
-  
-  <div class="page-control">
-      <a href="/{{ page }}/add">
-        Add Note
-      </a>
-  </div>
 
 </div>
 
-<div id="notes" class="col-sm-3 col-sm-pull-3">
-
-	<div class="section-title">
-		Notes
-	</div>
+<div id="notes" class="col-lg-3 order-lg-2">
 
 	{% if notes %}
 
