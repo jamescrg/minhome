@@ -1,7 +1,7 @@
 
-<div class="card favorites">
+<div class="card favorites mh-nps">
 
-  <div class="card-title mh-fc">
+  <div class="card-title mh-fc mh-ps">
     <h1>
 
       {% if  selected_folder %}
@@ -26,15 +26,17 @@
 
     {% for favorite in favorites %}
 
-      <li class="list-group-item">
+      <li class="list-group-item mh-ps">
 
-        <div class="favorite-icon">
           {% if favorite.home_rank %}
-            <i class="bi bi-bookmark-fill"></i>
+            <div class="favorite-icon-home">
+              <i class="bi bi-house-fill"></i>
+            </div>
           {% else %}
-            <i class="bi bi-bookmark"></i>
+            <div class="favorite-icon">
+              <i class="bi bi-bookmark-fill"></i>
+            </div>
           {% endif %}
-        </div>
 
         <div class="favorite-text">
           <div class="link">

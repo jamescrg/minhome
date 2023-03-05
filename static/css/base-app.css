@@ -191,3 +191,14 @@ li {
   margin-top: 1rem;
   text-align: right;
 }
+
+.mh-nps {
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.mh-ps {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}

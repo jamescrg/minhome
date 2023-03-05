@@ -2,7 +2,7 @@
 
 <div class="card">
 
-  <div class="card-title">
+  <div class="card-title mh-fc">
     <h1>
       {% if edit %}
 
@@ -15,6 +15,10 @@
       {% endif %}
 
     </h1>
+
+    <a href="/favorites">
+      <i class="bi bi-arrow-return-left"></i>
+    </a>
   </div>
 
   <form class="favorite-add" action="{{ action }}" method="post" role="form">

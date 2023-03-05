@@ -6,9 +6,13 @@
  * ------------------------------------------------*/
 
 .folder-icon {
-  color: var(--yellow-600);
+  color: var(--warm-gray-300);
   margin-right: 0.5rem;
-  opacity: 0.5;
+}
+
+.folder-icon-home {
+  color: var(--warm-gray-500);
+  margin-right: 0.5rem;
 }
 
 .menu-icon {
@@ -49,14 +53,14 @@
  * edit folder form
  * ------------------------------------------------*/
 
-.edit-folder {
+.folder-edit {
   display: none;
   justify-content: space-between;
   width: 100%;
 }
 
-.edit-folder input,
-.edit-folder input:focus {
+.folder-edit input,
+.folder-edit input:focus {
   background: inherit;
   border: none;
   padding: 0;

@@ -1,7 +1,7 @@
 
-<div class="card folders">
+<div class="card folders mh-nps">
 
-  <div class="card-title mh-fc">
+  <div class="card-title mh-fc mh-ps">
 
     <h1>
       {% if page == 'tasks' %}
@@ -22,13 +22,20 @@
   <ul class="list-group">
     {% if folders %}
     {% for folder in folders %}
-    <li class="list-group-item mh-fc" id="folder-{{ folder.id }}">
+    <li class="list-group-item mh-fc mh-ps" id="folder-{{ folder.id }}">
 
-      <div class="folder-icon-and-link">
+      <div class="folder-show">
 
-        <span class="folder-icon">
-          <i class="bi bi-folder-fill"></i>
-        </span>
+        {% if folder.home_column %}
+          <span class="folder-icon-home">
+            <i class="bi bi-house-fill"></i>
+          </span>
+        {% else %}
+          <span class="folder-icon">
+            <i class="bi bi-folder-fill"></i>
+          </span>
+
+        {% endif %}
 
         <a class="folder-link"
             href="/folders/{{ folder.id }}/{{ page }}"

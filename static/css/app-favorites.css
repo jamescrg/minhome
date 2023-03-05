@@ -11,10 +11,14 @@
 }
 
 .favorite-icon{
-  color: var(--warm-gray-400);
+  color: var(--warm-gray-300);
 	float: left;
-  font-size: 0.98rem;
   margin-top: 0.2rem;
+}
+
+.favorite-icon-home{
+  color: var(--warm-gray-500);
+	float: left;
 }
 
 .favorite-text{

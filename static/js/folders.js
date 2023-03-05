@@ -27,7 +27,7 @@ function showEditFolderForm(folderId){
     folderLink.style.display = 'none';
 
     // display the folder edit form and delete icon
-    var editFolder = folderItem.querySelector('.edit-folder');
+    var editFolder = folderItem.querySelector('.folder-edit');
     editFolder.style.display = 'flex';
 
     // focus on the edit folder input
@@ -49,7 +49,7 @@ function hideEditFolderForm(folderId){
         folderLink.style.display = 'inline';
 
         // display the folder edit form and delete icon
-        var editFolder = folderItem.querySelector('.edit-folder');
+        var editFolder = folderItem.querySelector('.folder-edit');
         editFolder.style.display = 'none';
 
     }, 1000);
