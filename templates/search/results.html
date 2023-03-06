@@ -1,21 +1,29 @@
 
-<div class="col-sm-10 col-sm-push-1">
+<div class="row">
 
-	<div class="search-results-title">
-		Favorites
-	</div>
+	<div class="card">
 
-	<div class="search-results">
+    <div class="card-title">
+      <h1>
+        Favorites
+      </h1>
+    </div>
 
 		{% if favorites %}
 
-      <table class="table borderless">
+      <table class="table">
+
+        <tr>
+          <th>Folder
+          <th>Favorite
+          <th>Description
+          <th>
 
         {% for favorite in favorites %}
 
           <tr>
 
-            <td class="favoriteFolder">
+            <td class="folder">
 
               {% if favorite.folder.name %}
 
@@ -29,28 +37,32 @@
 
               {% endif %}
 
-            <td class="favoriteName">
+            <td class="favorite-name">
 
               <a href="{{ favorite.url }}">{{ favorite.name}}</a>
 
-            {% if favorite.login  %}
+            <td class="favorite-description">
 
-              <td  class="favoriteCredentials">
+              {{ favorite.description|slice:"0:50"|default:"" }}
 
-                <div id="credentialHint-{{ favorite.id }}">
+              <td  class="credentials">
 
-                  <a href="javascript:showHideCredentials('{{ favorite.id }}');">
-                    <span  class="glyphicon glyphicon-briefcase"></span>
-                  </a>
+                {% if favorite.login  %}
 
-                </div>
+                  <div id="credential-hint-{{ favorite.id }}">
 
-                <div id="credentialData-{{ favorite.id }}" class="credentialData" 
-                  style="display:none;">
-                  {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
-                </div>
+                    <a href="javascript:showHideCredentials('{{ favorite.id }}');">
+                      <i class="bi bi-briefcase-fill"></i>
+                    </a>
 
-            {% endif %}
+                  </div>
+
+                  <div id="credential-data-{{ favorite.id }}" class="credential-data"
+                    style="display:none;">
+                    {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
+                  </div>
+
+                {% endif %}
 
           </tr>
 
@@ -62,20 +74,28 @@
 
   </div>
 
-	<div class="search-results-title">
-		Contacts
-	</div>
+	<div class="card">
 
-	<div class="search-results">
+    <div class="card-title">
+      <h1>
+        Contacts
+      </h1>
+    </div>
 
 		{% if contacts %}
 
-      <table class="table borderless">
+      <table class="table">
+
+        <tr>
+          <th>Folder
+          <th>Name
+          <th>Phone1
+          <th>Email
 
         {% for contact in contacts %}
 
           <tr>
-            <td class="contactFolder">
+            <td class="folder">
               {% if contact.folder %}
                 <a href="/folders/{{ contact.folder.id }}/contacts">
                   {{ contact.folder.name }}
@@ -84,12 +104,14 @@
                 <a href="/folders/0/contacts">Uncategorized</a>
               {% endif %}
 
-            <td class="contactName">
+            <td class="contact-name">
               <a href="/contacts/{{ contact.id }}">{{ contact.name }}</a>
-            
-            <td class="contactPhone1">{{ contact.phone1 }}
-            <td class="contactEmail">{{ contact.email }}
-          </tr>
+
+            <td class="contact-phone1">
+              {{ contact.phone1 }}
+
+            <td class="contact-email">
+              {{ contact.email|default:"" }}
 
         {% endfor %}
 
@@ -99,31 +121,37 @@
 
 	</div>
 
-	<div class="search-results-title">
-		Notes
-	</div>
+	<div class="card">
 
-	<div class="search-results">
+    <div class="card-title">
+      <h1>
+        Notes
+      </h1>
+    </div>
 
 		{% if notes %}
 
-      <table class="table borderless">
+      <table class="table">
+
+        <th>Folder
+        <th>Subject
+        <th>Preview (Raw Text)
 
         {% for note in notes %}
 
           <tr>
 
-            <td class="noteFolder">
+            <td class="folder">
               {% if note.folder %}
                 <a href="/folders/{{ note.folder.id }}/notes">{{ note.folder.name }}</a>
               {% else %}
                 <a href="/folders/0/notes">Uncategorized</a>
               {% endif %}
-            
 
-            <td class="noteSubject">
+
+            <td class="note-subject">
               <a href="/notes/{{ note.id }}">{{ note.subject }}</a>
-            <td class="noteNote">{{ note.note }}
+            <td class="note-note">{{ note.note|slice:":160" }}
 
           </tr>
 

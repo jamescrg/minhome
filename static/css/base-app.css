@@ -109,6 +109,10 @@ strong{
  * tables
  * ------------------------------------------------*/
 
+.table {
+  color: inherit;
+}
+
 th {
   font-weight: 500;
 }

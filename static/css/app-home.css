@@ -35,7 +35,6 @@
 }
 
 .search .form-control {
-  background: var(--warm-gray-50);
   box-shadow: none;
   outline: none;
 }
