@@ -50,9 +50,19 @@
           </a>
 
         <li {% if page == 'settings' %} class="nav-active" {% endif %}>
-          <a class="nav-link" href="/settings">
-            <i class="bi bi-gear-fill"></i>
-          </a>
+          <div class="dropdown favorite-menu">
+            <button class="btn-nav" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/settings">Settings</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+              </li>
+            </ul>
+          </div>
 
 			</ul>
 

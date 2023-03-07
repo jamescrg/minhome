@@ -151,7 +151,7 @@
 
             <td class="note-subject">
               <a href="/notes/{{ note.id }}">{{ note.subject }}</a>
-            <td class="note-note">{{ note.note|slice:":160" }}
+            <td class="note">{{ note.note|slice:":300"|safe }}
 
           </tr>
 

@@ -1,3 +1,4 @@
+import markdown
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
@@ -57,6 +58,7 @@ def results(request):
     )
     for note in notes:
         note.folder = Folder.objects.filter(pk=note.folder_id).first()
+        note.note = markdown.markdown(note.note)
 
     context = {
         "page": "search",

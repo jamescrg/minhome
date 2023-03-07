@@ -21,6 +21,7 @@ function showEditFolderForm(folderId){
 
     // get the folder list item
     folderItem = document.querySelector('#folder-' + folderId);
+    folderItem.classList.add('mh-wg-50');
 
     // hide the folder icon and link
     var folderLink = folderItem.querySelector('.folder-link');
@@ -51,6 +52,8 @@ function hideEditFolderForm(folderId){
         // display the folder edit form and delete icon
         var editFolder = folderItem.querySelector('.folder-edit');
         editFolder.style.display = 'none';
+
+        folderItem.classList.remove('mh-wg-50');
 
     }, 1000);
 }

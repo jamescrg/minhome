@@ -33,6 +33,15 @@ body {
 
 
 /*------------------------------------------------
+ * colors
+ * ------------------------------------------------*/
+
+.mh-wg-50 {
+  background: black; !important
+}
+
+
+/*------------------------------------------------
  * links
  * ------------------------------------------------*/
 
@@ -161,6 +170,14 @@ li {
   padding: none;
 }
 
+.btn-nav {
+  background: inherit;
+  border: none;
+  color: var(--warm-gray-600);
+  display: inline;
+  padding: 0.75rem 1.5rem;
+}
+
 
 /*------------------------------------------------
  * dropdowns
@@ -225,6 +242,7 @@ li {
 }
 
 .mh-nps {
+  padding-bottom: 0;
   padding-left: 0;
   padding-right: 0;
 }
@@ -240,4 +258,8 @@ li {
 
 .mh-pb0 {
   padding-bottom: 0;
+}
+
+.mh-wg-50 {
+  background: var(--warm-gray-50);
 }
