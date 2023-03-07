@@ -1,0 +1,73 @@
+
+
+a,
+a:hover {
+  color: #0059b3;
+}
+
+.navbar {
+  background: var(--warm-gray-700);
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  color: var(--warm-gray-300);
+}
+
+.nav-active a {
+  color: var(--warm-gray-600) !important;
+}
+
+.btn-nav {
+  color: var(--warm-gray-200);
+}
+
+.folder-controls a,
+.favorite-controls {
+	color: var(--warm-gray-600);
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--warm-gray-600);
+  border: none;
+  color: var(--warm-gray-300);
+}
+
+.menu-icon {
+  color: var(--warm-gray-350);
+  padding: 0;
+}
+
+.dropdown-menu {
+  background: var(--warm-gray-100);
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background: var(--warm-gray-200);
+}
+
+.mh-folder-edit {
+  background: var(--warm-gray-50);
+}
+
+.form-control:focus {
+  background: var(--warm-gray-50);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--warm-gray-50);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--warm-gray-300);
+  box-shadow: 0 0 6px var(--blue-800);
+}
+
+.mh-no-shadow {
+  box-shadow: none !important;
+  outline: none !important;
+}

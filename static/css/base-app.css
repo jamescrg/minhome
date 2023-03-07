@@ -32,14 +32,6 @@ body {
 }
 
 
-/*------------------------------------------------
- * colors
- * ------------------------------------------------*/
-
-.mh-wg-50 {
-  background: black; !important
-}
-
 
 /*------------------------------------------------
  * links
@@ -260,6 +252,11 @@ li {
   padding-bottom: 0;
 }
 
-.mh-wg-50 {
+.mh-folder-edit {
   background: var(--warm-gray-50);
+}
+
+.mh-no-shadow {
+  box-shadow: none !important;
+  outline: none !important;
 }

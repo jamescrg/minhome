@@ -1,0 +1,73 @@
+
+
+body {
+  background: var(--warm-gray-300);
+  color: var(--warm-gray-600);
+}
+
+a,
+a:hover {
+  color: var(--lime-900);
+}
+
+.navbar {
+  background: var(--warm-gray-350);
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  color: var(--warm-gray-600);
+}
+
+.nav-active {
+  background: var(--warm-gray-300);
+}
+
+.card {
+  background: var(--warm-gray-100);
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--lime-900);
+  border: none;
+  color: var(--warm-gray-300);
+}
+
+.menu-icon {
+  color: var(--warm-gray-350);
+  padding: 0;
+}
+
+.dropdown-menu {
+  background: var(--warm-gray-100);
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background: var(--warm-gray-200);
+}
+
+.mh-folder-edit {
+  background: var(--warm-gray-50);
+}
+
+.form-control:focus {
+  background: var(--warm-gray-50);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--warm-gray-50);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--warm-gray-300);
+  box-shadow: 0 0 6px var(--lime-800);
+}
+
+.mh-no-shadow {
+  box-shadow: none !important;
+  outline: none !important;
+}
