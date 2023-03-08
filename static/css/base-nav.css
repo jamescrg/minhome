@@ -1,19 +1,18 @@
 
 .navbar {
-  background: var(--warm-gray-350);
+  background: var(--true-gray-350);
   margin-bottom: 2rem;
   padding-bottom: 0;
   padding-top: 0;
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  color: var(--warm-gray-600);
-  /* color: var(--lime-900); */
-  padding: 0.75rem 1.5rem;
+  color: var(--true-gray-600);
+  padding: 1rem 1.5rem;
 }
 
 .nav-active {
-  background: var(--warm-gray-300);
+  background: var(--true-gray-300);
 }
 
 .navbar-toggler-icon {
@@ -28,4 +27,13 @@
 .navbar-toggler:active {
   outline: none;
   box-shadow: none;
+}
+
+.btn-nav {
+  background: inherit;
+  border: none;
+  color: var(--true-gray-600);
+  display: inline;
+  font-size: 1.5rem;
+  padding: 0.7rem 1.5rem;
 }

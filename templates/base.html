@@ -23,7 +23,9 @@
 {% if page %}
   <link rel="stylesheet" href="/static/css/app-{{page}}.css">
 {% endif %}
-<link rel="stylesheet" href="/static/css/theme-sky.css">
+{% if user.theme %}
+  <link rel="stylesheet" href="/static/css/theme-{{ user.theme }}.css">
+{% endif %}
 
 
 {% include 'nav.html' %}

@@ -11,7 +11,6 @@
 }
 
 #current-weather {
-  background: #f5f5f5;
   margin-top: 20px;
   width: 100%;
 }
@@ -22,7 +21,6 @@
 }
 
 #forecast-weather {
-  background: #f5f5f5;
   margin-top: 20px;
   width: 100%;
 }

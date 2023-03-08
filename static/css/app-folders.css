@@ -6,7 +6,7 @@
  * ------------------------------------------------*/
 
 .folder-icon {
-  color: var(--warm-gray-400);
+  color: var(--true-gray-400);
   margin-right: 1rem;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .folder-icon-home {
-  color: var(--warm-gray-500);
+  color: var(--true-gray-500);
   margin-right: 1rem;
 }
 
@@ -68,4 +68,9 @@
   border: none;
   padding: 0;
   margin-left: 0.5rem;
+}
+
+/* for the entire list item when editing is turned on */
+.li-folder-edit {
+  background: var(--true-gray-50);
 }

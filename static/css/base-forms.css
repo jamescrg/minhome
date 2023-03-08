@@ -19,7 +19,8 @@
 .form-control:focus,
 .form-select:focus {
   border-color: var(--warm-gray-300);
-  box-shadow: 0 0 6px var(--lime-800);
+  box-shadow: none;
+  outline: none;
 }
 
 .form-label {

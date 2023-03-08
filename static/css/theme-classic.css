@@ -1,0 +1,38 @@
+
+
+a,
+a:hover {
+  color: #0059b3;
+}
+
+.navbar {
+  background: #474747;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  color: #e4e4e4;
+}
+
+.nav-active {
+  background: #555555;
+}
+
+
+.btn-nav {
+  color: #e4e4e4;
+}
+
+
+.folder-controls a,
+.favorite-controls {
+	color: #555555;
+}
+
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus {
+  background: #474747;
+  border: none;
+  color: #e4e4e4;
+}

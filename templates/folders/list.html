@@ -1,7 +1,7 @@
 
-<div class="card folders mh-nps">
+<div class="card folders">
 
-  <div class="card-title mh-fc mh-ps mh-pb0">
+  <div class="card-title mh-fc">
 
     <h1>
       {% if page == 'tasks' %}
@@ -22,7 +22,7 @@
   <ul class="list-group">
     {% if folders %}
     {% for folder in folders %}
-    <li class="list-group-item mh-fc mh-ps" id="folder-{{ folder.id }}">
+    <li class="list-group-item mh-fc" id="folder-{{ folder.id }}">
 
       <div class="folder-show mh-fc">
 
@@ -73,7 +73,7 @@
     {% endif %}
 
     {% if page != 'tasks' %}
-    <li class="list-group-item mh-ps">
+    <li class="list-group-item">
 
       <i class="bi bi-folder-fill folder-icon"></i>
 

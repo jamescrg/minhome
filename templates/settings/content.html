@@ -1,23 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="section-title">
-  Settings
+
+<div class="card">
+  <div class="card-title">
+
+    <h1>
+      Light Theme
+    </h1>
+
+  </div>
+
+  <p class="card-text">Set the theme to be used in light mode.
+  </p>
+
+  <form action="/settings/theme" method="post">
+
+    {% csrf_token %}
+
+    <select class="select form-select theme-select"
+      onchange="submit()"
+      name="theme">
+
+      <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>
+        Matcha
+      </option>
+      <option value="classic" {% if user.theme == "classic" %}selected{% endif %}>
+        Classic
+      </option>
+
+    </select>
+
+  </form>
+
 </div>
-<ul id="settings-menu">
 
-  <li>
+<div class="card">
 
-    {% if logged_in %}
+  <div class="card-title">
+    <h1>
+      Google Account
+    </h1>
+  </div>
 
-      <a href="/settings/google/logout">Disconnect Google Account</a>
+  <p class="card-text">Connect a Google account to syncronize contacts and/or view calendar events on your home page.
+  </p>
+
+  {% if logged_in %}
+
+  <p class="card-text">
+
+    <a href="/settings/google/logout">Disconnect</a>
 
     {% else %}
 
-      <a href="/settings/google/login">Connect Google Account</a>
+    <a href="/settings/google/login">Connect</a>
 
-    {% endif %}
+  </p>
 
-</ul>
+  {% endif %}
+</div>
+
 
 {% endblock content %}

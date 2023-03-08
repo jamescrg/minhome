@@ -134,3 +134,17 @@ def google_logout(request):
     user.save()
 
     return redirect("/settings")
+
+
+@login_required
+def theme(request):
+    """Sets the user's preferred light theme.
+
+    Notes:
+        Choices are 'Matcha' and Sky'
+    """
+
+    user = request.user
+    user.theme = request.POST['theme']
+    user.save()
+    return redirect("/settings")
