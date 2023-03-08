@@ -29,7 +29,10 @@ def index(request):
     # ----------------
 
     # check whether events are shown are hidden
-    show_events = show_section(session, "events")
+    if user.settings["home"]["events"] == "enabled":
+        show_events = show_section(session, "events")
+    else:
+        show_events = False
 
     # if events are shown, load them
     if show_events:
@@ -44,7 +47,10 @@ def index(request):
     # ----------------
 
     # check whether tasks are shown or hidden
-    show_tasks = show_section(session, "tasks")
+    if user.settings["home"]["tasks"] == "enabled":
+        show_tasks = show_section(session, "tasks")
+    else:
+        show_tasks = False
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1)

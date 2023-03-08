@@ -6,32 +6,124 @@
   <div class="card-title">
 
     <h1>
-      Light Theme
+      Theme
     </h1>
 
   </div>
 
-  <p class="card-text">Set the theme to be used in light mode.
+  <p class="card-text">Set the theme for the application.
   </p>
 
-  <form action="/settings/theme" method="post">
+  <table class="options">
+    <tr>
+      <td class="setting-label">Theme:
+      <td class="setting-control">
+        <form action="/settings/theme" method="post">
 
-    {% csrf_token %}
+          {% csrf_token %}
 
-    <select class="select form-select theme-select"
-      onchange="submit()"
-      name="theme">
+          <select class="select form-select theme-select"
+            onchange="submit()"
+            name="theme">
 
-      <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>
-        Matcha
-      </option>
-      <option value="classic" {% if user.theme == "classic" %}selected{% endif %}>
-        Classic
-      </option>
+            <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>
+              Matcha
+            </option>
+            <option value="classic" {% if user.theme == "classic" %}selected{% endif %}>
+              Classic
+            </option>
 
-    </select>
+          </select>
 
-  </form>
+        </form>
+
+  </table>
+
+</div>
+
+<div class="card">
+  <div class="card-title">
+
+    <h1>
+      Location
+    </h1>
+
+  </div>
+
+  <p class="card-text">Set your location for weather data.
+  </p>
+
+  <table class="options">
+    <tr>
+      <td class="setting-label">Zip Code:
+      <td class="setting-control">
+
+        {% if user.settings.zip %}
+
+        {{ user.settings.zip }}
+        <a href="/settings/zip-remove" style="margin-left: 1rem; color:darkred;">
+          <i class="bi bi-x-circle-fill"></i>
+        </a>
+
+        {% else %}
+
+        <form action="/settings/zip" method="post">
+
+          {% csrf_token %}
+
+        <input class="form-control zip-input"
+            type="text"
+            name="zip"
+            onchange="submit()"
+            value="">
+
+        </form>
+
+        {% endif %}
+
+  </table>
+
+</div>
+
+<div class="card">
+  <div class="card-title">
+
+    <h1>
+      Home Page Features
+    </h1>
+
+  </div>
+
+  <p class="card-text">Enable or disable optional home page features.
+  </p>
+
+  <table class="options">
+    <tr>
+      <td class="setting-label">Tasks:
+      <td class="setting-control">
+        {% if user.settings.home.tasks == "enabled" %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/disabled">
+            Disable
+          </a>
+        {% else %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/enabled">
+            Enable
+          </a>
+        {% endif %}
+    <tr>
+      <td class="setting-label">Events:
+      <td class="setting-control">
+        {% if user.settings.home.events == "enabled" %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/disabled">
+            Disable
+          </a>
+        {% else %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/enabled">
+            Enable
+          </a>
+        {% endif %}
+  </table>
+
 
 </div>
 
@@ -46,20 +138,40 @@
   <p class="card-text">Connect a Google account to syncronize contacts and/or view calendar events on your home page.
   </p>
 
-  {% if logged_in %}
 
-  <p class="card-text">
+  <table class="options">
+    <tr>
+      <td class="setting-label">Connection:
+      <td>
+        {% if logged_in %}
+          <a class="btn btn-primary" href="/settings/google/logout">Disconnect</a>
+        {% else %}
+          <a class="btn btn-primary" href="/settings/google/login">Connect</a>
+        {% endif %}
+      </td>
 
-    <a href="/settings/google/logout">Disconnect</a>
+  </table>
 
-    {% else %}
-
-    <a href="/settings/google/login">Connect</a>
-
-  </p>
-
-  {% endif %}
 </div>
 
 
+<div class="card">
+
+  <div class="card-title">
+    <h1>
+      Log Out
+    </h1>
+  </div>
+
+  <p class="card-text">Log out of all sessions on all devices.
+  </p>
+
+  <table class="options">
+    <tr>
+      <td class="setting-label">Session:
+      <td>
+      <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+  </table>
+
+</div>
 {% endblock content %}

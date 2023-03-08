@@ -39,7 +39,7 @@ body {
 
 a,
 a:hover {
-  color: var(--lime-900);
+  color: var(--lime-800);
   outline: none;
   text-decoration: none;
 }
@@ -61,6 +61,10 @@ a:hover {
 }
 
 .card-title {
+  margin-bottom: 1rem;
+}
+
+.card-text {
   margin-bottom: 1rem;
 }
 
@@ -97,12 +101,7 @@ strong{
 	font-weight: 600;
 }
 
-
-.soon {
-  color: var(--red-700);
-}
-
-.dev-flag {
+.mh-alert {
   color: var(--red-700);
 }
 
@@ -161,6 +160,11 @@ li {
   background: none;
   border: none;
   padding: none;
+}
+
+.btn-slim {
+  font-size: 0.97rem;
+  padding: 0.1rem 0.4rem;
 }
 
 
@@ -226,3 +230,4 @@ li {
   margin-top: 1rem;
   text-align: right;
 }
+

@@ -1,36 +1,31 @@
-.city {
-  float: left;
-  font-size: 1.4em;
-  margin-right: 60px;
-  padding-top: 8px;
+.wicon {
+  font-size: 1.5em;
 }
 
-.weather-subtitle {
-  font-size: 1.2em;
-  margin: 35px 0 15px 0;
+
+.table td, th {
+  border: solid 1px var(--true-gray-200);
 }
 
-#current-weather {
-  margin-top: 20px;
-  width: 100%;
+.card-title h1 {
+  font-size: 1.5rem;
 }
 
-#current-weather td {
-  border: solid 1px #e4e4e4;
-  padding: 8px 5px;
+.weather-data h1 {
+  margin-bottom: 1rem;
 }
 
-#forecast-weather {
-  margin-top: 20px;
-  width: 100%;
-}
-
-#forecast-weather td {
-  border: solid 1px #e4e4e4;
-  padding: 8px 5px;
-}
 
 .weather-label {
   font-weight: 600;
 }
+
+.table .forecast-description {
+  border-right: none;
+}
+
+.table .forecast-icon {
+  border-left: none;
+}
+
 

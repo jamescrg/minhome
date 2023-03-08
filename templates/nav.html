@@ -36,7 +36,7 @@
 
         {% if env and env == 'dev' %}
           <li class="nav-item">
-            <a class="nav-link dev-flag" href=""><span class="dev-flag">{{ env }}<span></a>
+            <a class="nav-link mh-alert" href=""><span class="dev-flag">{{ env }}<span></a>
 
         {% endif %}
 
@@ -50,19 +50,9 @@
           </a>
 
         <li {% if page == 'settings' %} class="nav-active" {% endif %}>
-          <div class="dropdown favorite-menu">
-            <button class="btn-nav" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link settings-link" href="/settings">
               <i class="bi bi-person-circle"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/settings">Settings</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-              </li>
-            </ul>
-          </div>
+          </a>
 
 			</ul>
 

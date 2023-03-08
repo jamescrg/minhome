@@ -24,6 +24,10 @@
   font-weight: 600;
 }
 
+.task-list {
+  margin-bottom: 1.5rem;
+}
+
 .task-checkbox {
   font-size: 0.96rem;
   margin-right: 1rem;
@@ -34,6 +38,9 @@
   color: var(--true-gray-600);
 }
 
+.clear {
+  text-align: right;
+}
 
 /* ------------------------------------------------------------------------- */
 /* task edit form */

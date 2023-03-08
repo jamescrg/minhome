@@ -138,13 +138,45 @@ def google_logout(request):
 
 @login_required
 def theme(request):
-    """Sets the user's preferred light theme.
+    """Sets the user's preferred  theme.
 
-    Notes:
-        Choices are 'Matcha' and Sky'
     """
 
     user = request.user
     user.theme = request.POST['theme']
+    user.save()
+    return redirect("/settings")
+
+@login_required
+def home_options(request, option, value):
+    """Sets the user's home page options
+    """
+    user = request.user
+
+    if not 'home' in user.settings:
+        user.settings['home'] = {}
+
+    user.settings['home'][option] = value
+    user.save()
+    return redirect("/settings")
+
+
+@login_required
+def zip(request):
+    """Sets the user's zip code.
+
+    """
+    user = request.user
+    user.settings['zip'] = request.POST['zip']
+    user.save()
+    return redirect("/settings")
+
+@login_required
+def zip_remove(request):
+    """Removes the user's zip code.
+
+    """
+    user = request.user
+    del user.settings['zip']
     user.save()
     return redirect("/settings")

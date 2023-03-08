@@ -3,69 +3,74 @@
 {% block content %}
 {% load humanize %}
 
-  <div class="section-title">
-    Current Crypto Prices
+<div class="card">
+
+  <div class="card-title">
+    <h1>
+      Current Crypto Prices
+    </h1>
   </div>
 
 
   <div class="table-responsive">
-  <table id="crypto" class="table">
 
-    <tr>
+    <table class="table crypto">
 
-      <th>Name
-      <th>Symbol
-      <th class="numeric">
-        <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">
+      <tr>
+        <th>Name
+        <th>Symbol
+        <th class="numeric">
+          <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
+        <th class="numeric">
           <a class="sort" href="market_cap">Mkt Cap&nbsp;
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">
+          <span class="glyphicon glyphicon-chevron-down"></span></a>
+        <th class="numeric">
           <a class="sort" href="percent_change_24h">24h Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">
+        <th class="numeric">
           <a class="sort" href="percent_change_7d">7d Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">
+        <th class="numeric">
           <a class="sort" href="percent_change_30d">30d Chg&nbsp
             <span class="glyphicon glyphicon-chevron-down"></span></a>
-      <th class="numeric">
+        <th class="numeric">
           <a class="sort" href="percent_change_90d">90d Chg&nbsp;
             <span class="glyphicon glyphicon-chevron-down"></span></a>
 
-    {% for token in data %}
+        {% for token in data %}
 
-      <tr>
+        <tr>
 
-        <td class="name"><a href="https://coinmarketcap.com/currencies/{{ token.slug }}">{{ token.name }}</a>
-        <td class="symbol">{{ token.symbol }}
-        <td class="numeric">${{ token.price|floatformat:"2"|intcomma }}
-        <td class="numeric">${{ token.market_cap|floatformat:"1"|intcomma }}B
-        <td class="numeric"
-          {% if token.percent_change_24h < 0 %} style="color: darkred"
-          {% else %} style="color: green"
-          {% endif %}>
-          {{ token.percent_change_24h|floatformat:"1" }}%
-        <td class="numeric"
-          {% if token.percent_change_7d < 0 %} style="color: darkred"
-          {% else %} style="color: green"
-          {% endif %}>
-          {{ token.percent_change_7d|floatformat:"1" }}%
-        <td class="numeric"
-          {% if token.percent_change_30d < 0 %} style="color: darkred"
-          {% else %} style="color: green"
-          {% endif %}>
-          {{ token.percent_change_30d|floatformat:"1" }}%
-        <td class="numeric"
-          {% if token.percent_change_90d < 0 %} style="color: darkred"
-          {% else %} style="color: green"
-          {% endif %}>
-          {{ token.percent_change_90d|floatformat:"1" }}%
+          <td class="name"><a href="https://coinmarketcap.com/currencies/{{ token.slug }}">{{ token.name }}</a>
+            <td class="symbol">{{ token.symbol }}
+            <td class="numeric">${{ token.price|floatformat:"2"|intcomma }}
+            <td class="numeric">${{ token.market_cap|floatformat:"1"|intcomma }}B
+            <td class="numeric"
+              {% if token.percent_change_24h < 0 %} style="color: darkred"
+              {% else %} style="color: green"
+              {% endif %}>
+                {{ token.percent_change_24h|floatformat:"1" }}%
+            <td class="numeric"
+              {% if token.percent_change_7d < 0 %} style="color: darkred"
+              {% else %} style="color: green"
+              {% endif %}>
+              {{ token.percent_change_7d|floatformat:"1" }}%
+            <td class="numeric"
+              {% if token.percent_change_30d < 0 %} style="color: darkred"
+              {% else %} style="color: green"
+              {% endif %}>
+              {{ token.percent_change_30d|floatformat:"1" }}%
+            <td class="numeric"
+              {% if token.percent_change_90d < 0 %} style="color: darkred"
+              {% else %} style="color: green"
+              {% endif %}>
+              {{ token.percent_change_90d|floatformat:"1" }}%
 
-    {% endfor %}
+        {% endfor %}
 
-  </table>
+    </table>
   </div>
+</div>
 
 
 {% endblock content %}

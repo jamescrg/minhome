@@ -4,7 +4,27 @@
 
 <div class="row">
 
-  {% include 'weather/data.html' %}
+  {% if current or forecast %}
+
+    {% include 'weather/data.html' %}
+
+  {% else %}
+
+  <div class="card">
+
+    <div class="card-title">
+      <h1>Weather</h1>
+    </div>
+
+    <div class="card-text">
+
+      Location data required for weather data. Enter a zip code on the <a href="/settings">settings</a> page.
+
+    </div>
+
+  </div>
+
+  {% endif %}
 
 </div>
 {% endblock content %}
