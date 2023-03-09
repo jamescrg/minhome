@@ -1,18 +1,18 @@
 
 .navbar {
-  background: var(--true-gray-350);
+  background: var(--warm-gray-350);
   margin-bottom: 2rem;
   padding-bottom: 0;
   padding-top: 0;
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  color: var(--true-gray-600);
+  color: var(--warm-gray-600);
   padding: 1rem 1.5rem;
 }
 
 .nav-active {
-  background: var(--true-gray-300);
+  background: var(--warm-gray-300);
 }
 
 .navbar-toggler-icon {

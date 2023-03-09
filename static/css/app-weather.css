@@ -1,10 +1,13 @@
 .wicon {
-  font-size: 1.5em;
+  font-size: 1.9rem;
 }
 
+.table {
+  margin-bottom: 2rem;
+}
 
 .table td, th {
-  border: solid 1px var(--true-gray-200);
+  border: solid 1px var(--warm-gray-200);
 }
 
 .card-title h1 {
@@ -14,7 +17,6 @@
 .weather-data h1 {
   margin-bottom: 1rem;
 }
-
 
 .weather-label {
   font-weight: 600;
@@ -26,6 +28,14 @@
 
 .table .forecast-icon {
   border-left: none;
+}
+
+.forecast-icon-image {
+
+}
+
+.current-icon-image {
+  margin-left: 3rem;
 }
 
 

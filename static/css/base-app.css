@@ -9,8 +9,8 @@
  * ------------------------------------------------*/
 
 body {
-  background: var(--true-gray-300);
-  color: var(--true-gray-600);
+  background: var(--warm-gray-300);
+  color: var(--warm-gray-600);
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
 }
@@ -153,7 +153,7 @@ li {
 .btn-primary:focus {
   background: var(--lime-900);
   border: none;
-  color: var(--true-gray-300);
+  color: var(--warm-gray-300);
 }
 
 .btn-icon {
@@ -174,7 +174,7 @@ li {
  * ------------------------------------------------*/
 
 .menu-icon {
-  color: var(--true-gray-350);
+  color: var(--warm-gray-350);
   padding: 0;
 }
 
@@ -184,7 +184,7 @@ li {
 
 .dropdown-item:focus,
 .dropdown-item:hover {
-  background: var(--true-gray-200);
+  background: var(--warm-gray-200);
 }
 
 

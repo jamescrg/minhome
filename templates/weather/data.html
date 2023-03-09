@@ -1,12 +1,12 @@
 
 <div class="card">
 
-    <div class="card-title mh-fc" >
+    <div class="card-title mh-fcl" >
       <h1>
         {{ current.name }}
       </h1>
       <span class="">
-            <img id="wicon"
+            <img class="current-icon-image"
             src="https://openweathermap.org/img/w/{{ current.weather.0.icon }}.png"
             alt="Weather icon">
       </span>
@@ -71,7 +71,7 @@
               <td class="forecast-description">
                   {{ hour.weather.0.description }}
               <td class="forecast-icon">
-                  <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;"
+                  <img class="forecast-icon-image"
                   src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png"
                   alt="Weather icon">
             {% endfor %}
@@ -101,7 +101,7 @@
               <td class="forecast-description">
                   {{ day.weather.0.description }}
               <td class="forecast-icon">
-                  <img id="wicon" class="forecast-icon" style="width: 40px; height; 40px;"
+                  <img id="wicon" class="forecast-icon-image"
                   src="https://openweathermap.org/img/w/{{ day.weather.0.icon }}.png"
                   alt="Weather icon">
             {% endfor %}

@@ -39,11 +39,11 @@
 }
 
 .credentials a {
-  color: var(--true-gray-300);
+  color: var(--warm-gray-300);
 }
 
 .credential-data{
-  color: var(--true-gray-500);
+  color: var(--warm-gray-500);
 	font-size: 0.8em;
 }
 

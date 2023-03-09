@@ -1,5 +1,10 @@
 
 
+body {
+  background: var(--true-gray-300);
+  color: #474747;
+}
+
 a,
 a:hover {
   color: #0059b3;
@@ -35,4 +40,8 @@ a:hover {
   background: #474747;
   border: none;
   color: #e4e4e4;
+}
+
+.bi-plus-lg {
+  color: var(--lime-700);
 }

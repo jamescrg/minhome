@@ -6,7 +6,7 @@
  * ------------------------------------------------*/
 
 .folder-icon {
-  color: var(--true-gray-400);
+  color: var(--warm-gray-400);
   margin-right: 1rem;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .folder-icon-home {
-  color: var(--true-gray-500);
+  color: var(--warm-gray-500);
   margin-right: 1rem;
 }
 
