@@ -5,6 +5,12 @@ function hide(elementId){
 }
 
 
+function show(elementId){
+    var item = document.getElementById(elementId);
+    item.style.display = 'block';
+}
+
+
 function showHide(elementId)
 {
     var item = document.getElementById(elementId);

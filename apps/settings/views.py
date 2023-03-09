@@ -161,22 +161,4 @@ def home_options(request, option, value):
     return redirect("/settings")
 
 
-@login_required
-def zip(request):
-    """Sets the user's zip code.
 
-    """
-    user = request.user
-    user.settings['zip'] = request.POST['zip']
-    user.save()
-    return redirect("/settings")
-
-@login_required
-def zip_remove(request):
-    """Removes the user's zip code.
-
-    """
-    user = request.user
-    del user.settings['zip']
-    user.save()
-    return redirect("/settings")

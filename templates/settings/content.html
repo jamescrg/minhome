@@ -45,50 +45,6 @@
   <div class="card-title">
 
     <h1>
-      Location
-    </h1>
-
-  </div>
-
-  <p class="card-text">Set your location for weather data.
-  </p>
-
-  <table class="options">
-    <tr>
-      <td class="setting-label">Zip Code:
-      <td class="setting-control">
-
-        {% if user.settings.zip %}
-
-        {{ user.settings.zip }}
-        <a href="/settings/zip-remove" style="margin-left: 1rem; color:darkred;">
-          <i class="bi bi-x-circle-fill"></i>
-        </a>
-
-        {% else %}
-
-        <form action="/settings/zip" method="post">
-
-          {% csrf_token %}
-
-        <input class="form-control zip-input"
-            type="text"
-            name="zip"
-            onchange="submit()"
-            value="">
-
-        </form>
-
-        {% endif %}
-
-  </table>
-
-</div>
-
-<div class="card">
-  <div class="card-title">
-
-    <h1>
       Home Page Features
     </h1>
 

@@ -60,6 +60,7 @@ urlpatterns = [
     path("notes/<int:id>/delete", notes.delete, name="notes-delete"),
     # weather
     path("weather/", weather.index, name="weather"),
+    path("weather/zip", weather.zip, name="weather-zip"),
     # finance
     path("crypto/", finance.crypto, name="crypto"),
     path("crypto/<str:ord>", finance.crypto, name="crypto"),
@@ -78,8 +79,6 @@ urlpatterns = [
     ),
     path("settings/theme", settings.theme, name="settings-theme"),
     path("settings/home-options/<str:option>/<str:value>", settings.home_options, name="settings-home-options"),
-    path("settings/zip", settings.zip, name="settings-zip"),
-    path("settings/zip-remove", settings.zip_remove, name="settings-zip-remove"),
     # lab
     path("lab/", lab.index, name="lab"),
     path("lab/email", lab.email_test, name="email-test"),

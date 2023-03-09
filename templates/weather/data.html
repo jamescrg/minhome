@@ -1,24 +1,58 @@
 
-<div class="card">
 
-    <div class="card-title mh-fcl" >
-      <h1>
-        {{ current.name }}
-      </h1>
-      <span class="">
+<div class="row weather-data">
+
+  <div class="col current-conditions">
+    <div class="card weather-title">
+
+      <div class="mh-ft">
+
+        <div class="location">
+
+          <div class="location-title">
+            {{ current.name }}
+          </div>
+
+          <div class="location-zip">
+            {{ user.settings.zip }}
+            <a class="location-edit-icon"
+              href="javascript:showHide('edit-form')"
+              >
+              <i class="bi bi-pencil-fill"></i>
+            </a>
+          </div>
+
+        </div>
+
+          <div class="location-info">
+
+          <div class="location-icon">
             <img class="current-icon-image"
             src="https://openweathermap.org/img/w/{{ current.weather.0.icon }}.png"
             alt="Weather icon">
-      </span>
+          </div>
+
+          <div class="location-temp">
+            {{ current.main.temp|floatformat:"0" }}&deg;
+          </div>
+
+        </div>
+      </div>
+
+      <div class="edit-location">
+        <div id="edit-form" class="edit-form" style="display: none;">
+          {% include "weather/form.html" %}
+        </div>
+      </div>
+
     </div>
+      <div class="card">
 
-    <div class="row weather-data">
-
-      <div class="col">
-
+        <div class="card-title">
           <h1>
             Current Conditions
           </h1>
+        </div>
 
           <table class="table">
             <tr>
@@ -27,12 +61,6 @@
             <tr>
               <th>Temp
               <td class="weather-data">{{ current.main.temp|floatformat:"0" }}&deg;
-            <tr>
-              <th>High
-              <td class="weather-data">{{ current.main.temp_max|floatformat:"0" }}&deg;
-            <tr>
-              <th>Low
-              <td class="weather-data">{{ current.main.temp_min|floatformat:"0" }}&deg;
             <tr>
               <th>Humidity
               <td class="weather-data">{{ current.main.humidity }}%
@@ -48,67 +76,75 @@
           </table>
 
       </div>
-
-      <div class="col-lg-4">
-
-          <h1>
-            Forecast - Hourly
-          </h1>
-
-          <table class="table">
-            <tr>
-              <th> Hour
-              <th> Temp
-              <th> Wind
-              <th class="forecast-description"> Conditions
-              <th class="forecast-icon">
-
-            {% for hour in forecast.hourly %}
-            <tr>
-              <td class="forecast-date">{{ hour.hour_time }}
-              <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
-              <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
-              <td class="forecast-description">
-                  {{ hour.weather.0.description }}
-              <td class="forecast-icon">
-                  <img class="forecast-icon-image"
-                  src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png"
-                  alt="Weather icon">
-            {% endfor %}
-          </table>
-
       </div>
 
-      <div class="col-lg-4">
+  <div class="col forecast-hourly">
+  <div class="card">
 
-          <h1>
-            Forecast - Daily
-          </h1>
-
-          <table class="table">
-            <tr>
-              <th> Day
-              <th> High
-              <th> Low
-              <th class="forecast-description"> Conditions
-              <th class="forecast-icon">
-
-            {% for day in forecast.daily %}
-            <tr>
-              <td class="forecast-date">{{ day.date_string }}
-              <td class="forecast-max">{{ day.temp.max|floatformat:"0" }}&deg;
-              <td class="forecast-min">{{ day.temp.min|floatformat:"0" }}&deg;
-              <td class="forecast-description">
-                  {{ day.weather.0.description }}
-              <td class="forecast-icon">
-                  <img id="wicon" class="forecast-icon-image"
-                  src="https://openweathermap.org/img/w/{{ day.weather.0.icon }}.png"
-                  alt="Weather icon">
-            {% endfor %}
-          </table>
-
-      </div>
-
+    <div class="card-title">
+      <h1>
+        Hourly Forecast
+      </h1>
     </div>
 
+      <table class="table">
+        <tr>
+          <th> Hour
+          <th> Temp
+          <th> Wind
+          <th class="forecast-description"> Conditions
+          <th class="forecast-icon">
+
+        {% for hour in forecast.hourly %}
+        <tr>
+          <td class="forecast-date">{{ hour.hour_time }}
+          <td class="forecast-max">{{ hour.temp|floatformat:"0" }}&deg;
+          <td class="forecast-min">{{ hour.wind_speed|floatformat:"0" }} mph
+          <td class="forecast-description">
+              {{ hour.weather.0.description }}
+          <td class="forecast-icon">
+              <img class="forecast-icon-image"
+              src="https://openweathermap.org/img/w/{{ hour.weather.0.icon }}.png"
+              alt="Weather icon">
+        {% endfor %}
+      </table>
+
+  </div>
+  </div>
+
+  <div class="col forecast-daily">
+  <div class="card">
+
+    <div class="card-title">
+      <h1>
+        Next Few Days
+      </h1>
+    </div>
+
+      <table class="table">
+        <tr>
+          <th> Day
+          <th> High
+          <th> Low
+          <th class="forecast-description"> Conditions
+          <th class="forecast-icon">
+
+        {% for day in forecast.daily %}
+        <tr>
+          <td class="forecast-date">{{ day.date_string }}
+          <td class="forecast-max">{{ day.temp.max|floatformat:"0" }}&deg;
+          <td class="forecast-min">{{ day.temp.min|floatformat:"0" }}&deg;
+          <td class="forecast-description">
+              {{ day.weather.0.description }}
+          <td class="forecast-icon">
+              <img id="wicon" class="forecast-icon-image"
+              src="https://openweathermap.org/img/w/{{ day.weather.0.icon }}.png"
+              alt="Weather icon">
+        {% endfor %}
+      </table>
+
+  </div>
+  </div>
+
 </div>
+

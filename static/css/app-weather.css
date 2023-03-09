@@ -1,13 +1,50 @@
-.wicon {
-  font-size: 1.9rem;
+
+.location-title {
+  font-size: 1.7rem;
+}
+
+.location-temp {
+  text-align: center;
+}
+
+.location-zip {
+  margin-left: 0.5rem;
+}
+
+.location-edit-icon {
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+}
+
+.zip-input {
+  max-width: 100px;
+}
+
+
+@media screen and (min-width: 750px) {
+
+  .current-conditions {
+    max-width: 330px;
+  }
+
+}
+
+.current-icon-image {
+  width: 60px;
+  height: 60px;
+}
+
+.edit-link {
 }
 
 .table {
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .table td, th {
   border: solid 1px var(--warm-gray-200);
+  border-left: none;
+  border-right: none;
 }
 
 .card-title h1 {
@@ -34,8 +71,5 @@
 
 }
 
-.current-icon-image {
-  margin-left: 3rem;
-}
 
 

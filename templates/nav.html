@@ -34,6 +34,9 @@
         <li class="nav-item {% if page == 'notes' %}nav-active{% endif %}" >
           <a class="nav-link" href="/notes">Notes</a>
 
+        <li class="nav-item {% if page == 'weather' %}nav-active{% endif %}" >
+          <a class="nav-link" href="/weather">Weather</a>
+
         {% if env and env == 'dev' %}
           <li class="nav-item">
             <a class="nav-link mh-alert" href=""><span class="mh-alert">{{ env }}<span></a>
