@@ -15,13 +15,13 @@ a:hover {
 }
 
 .navbar {
-  background-color: var(--warm-gray-200);
-  background-image: url("../images/backgrounds/tatami.png");
+  background-color: var(--warm-gray-300);
+  background-image: url("../images/backgrounds/tatami-nav.png");
 }
 
 .nav-active {
-  background: var(--warm-gray-300);
-  background-image: url("../images/backgrounds/tatami.png");
+  background: var(--warm-gray-200);
+  background-image: url("../images/backgrounds/tatami-nav.png");
 }
 
 .card {
