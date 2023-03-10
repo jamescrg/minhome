@@ -1,16 +1,39 @@
 
-<div class="row justify-content-center search">
+<div class="row justify-content-center search g-1">
 
-  <form role="form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
+  <div class="col-lg-9">
 
-    <input class="form-control mh-no-shadow"
-      type="text"
-      autofocus
-      name="q"
-      placeholder="Google search . . ."
-      aria-label="Web search"
-      aria-describedby="google-logo">
+    <form role="form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
 
-  </form>
+      <input class="form-control mh-no-shadow"
+        type="text"
+        autofocus
+        name="{% if user.search_engine == "wikipedia" %}search{% else %}q{% endif %}"
+        placeholder="Web search . . ."
+        aria-label="Web search"
+        aria-describedby="">
+
+      </div>
+
+    </form>
+
+  <div class="col-lg-3">
+
+    <form action="/settings/search-engine" method="post">
+
+      {% csrf_token %}
+
+      <select class="select form-select"
+        onchange="submit()"
+        name="search_engine">
+
+        <option value="google"{% if user.search_engine == "google" %}selected{% endif %}>Google</option>
+        <option value="wikipedia"{% if user.search_engine == "wikipedia" %}selected{% endif %}>Wikipedia</option>
+        <option value="duckduckgo"{% if user.search_engine == "duckduckgo" %}selected{% endif %}>DuckDuckGo</option>
+        <option value="bing"{% if user.search_engine == "bing" %}selected{% endif %}>Bing</option>
+
+      </select>
+
+  </div>
 
 </div>

@@ -31,7 +31,7 @@
 }
 
 .search form {
-	margin-bottom: 1rem;
+	margin-bottom: 1em;
 	text-align: center;
 }
 
@@ -40,6 +40,9 @@
   outline: none;
 }
 
+.form-select {
+  font-size: 1.05em;
+}
 
 
 /*------------------------------------------------

@@ -78,6 +78,7 @@ urlpatterns = [
         "settings/google/logout", settings.google_logout, name="settings-google-logout"
     ),
     path("settings/theme", settings.theme, name="settings-theme"),
+    path("settings/search-engine", settings.search_engine, name="settings-search-engine"),
     path("settings/home-options/<str:option>/<str:value>", settings.home_options, name="settings-home-options"),
     # lab
     path("lab/", lab.index, name="lab"),

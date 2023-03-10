@@ -147,6 +147,18 @@ def theme(request):
     user.save()
     return redirect("/settings")
 
+
+@login_required
+def search_engine(request):
+    """Sets the user's preferred search engine.
+
+    """
+    user = request.user
+    user.search_engine = request.POST['search_engine']
+    user.save()
+    return redirect("/home")
+
+
 @login_required
 def home_options(request, option, value):
     """Sets the user's home page options

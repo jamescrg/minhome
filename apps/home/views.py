@@ -50,9 +50,10 @@ def index(request):
         show_events = False
         events = None
 
+
+
     # TASKS
     # ----------------
-
 
     # check whether tasks are shown or hidden
     if "home" in user.settings and "tasks" in user.settings["home"]:
@@ -88,6 +89,19 @@ def index(request):
         task_folders = None
         some_tasks = None
 
+    # SEARCH
+    # ----------------
+
+    engines = {
+        "google": "google.com/search",
+        "duckduckgo": "duckduckgo.com/",
+        "bing": "bing.com/",
+        "wikipedia": "en.wikipedia.org/w/index.php",
+    }
+
+    search_engine = engines[user.search_engine];
+
+
     # FAVORITES
     # ----------------
 
@@ -106,7 +120,7 @@ def index(request):
     context = {
         "page": "home",
         "origin": "home",
-        "search_engine": "google.com/search",
+        "search_engine": search_engine,
         "show_tasks": show_tasks,
         "task_folders": task_folders,
         "some_tasks": some_tasks,
