@@ -26,7 +26,11 @@ a:hover {
 .card {
   background: white;
   color: var(--warm-gray-700);
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+.search {
+  opacity: 0.85;
 }
 
 
