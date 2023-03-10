@@ -29,46 +29,64 @@ def index(request):
     # ----------------
 
     # check whether events are shown are hidden
-    if user.settings["home"]["events"] == "enabled":
-        show_events = show_section(session, "events")
-    else:
-        show_events = False
+    if "home" in user.settings and "events" in user.settings["home"]:
 
-    # if events are shown, load them
-    if show_events:
-        if user.google_credentials:
-            events = google.get_events(user.id)
+        if user.settings["home"]["events"] == "enabled":
+            show_events = show_section(session, "events")
+        else:
+            show_events = False
+
+        # if events are shown, load them
+        if show_events:
+            if user.google_credentials:
+                events = google.get_events(user.id)
+            else:
+                events = None
         else:
             events = None
+
     else:
+
+        show_events = False
         events = None
 
     # TASKS
     # ----------------
 
+
     # check whether tasks are shown or hidden
-    if user.settings["home"]["tasks"] == "enabled":
-        show_tasks = show_section(session, "tasks")
+    if "home" in user.settings and "tasks" in user.settings["home"]:
+        if user.settings["home"]["tasks"] == "enabled":
+            show_tasks = show_section(session, "tasks")
+        else:
+            show_tasks = False
     else:
         show_tasks = False
 
-    # if tasks are shown, check for task_folders
-    task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1)
-    if task_folders:
-        for folder in task_folders:
-            tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
-            tasks = tasks.order_by("status", "title")
-            folder.tasks = tasks
+    if show_tasks:
 
-    # check whether there are some tasks in any of the folders
-    # if so, flag as true
-    # the purpose of this flag is to show the tasks area
-    # only if there are at least some unchecked tasks to display
-    some_tasks = False
-    if task_folders:
-        for folder in task_folders:
-            if folder.tasks:
-                some_tasks = True
+        # if tasks are shown, check for task_folders
+        task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1)
+        if task_folders:
+            for folder in task_folders:
+                tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
+                tasks = tasks.order_by("status", "title")
+                folder.tasks = tasks
+
+        # check whether there are some tasks in any of the folders
+        # if so, flag as true
+        # the purpose of this flag is to show the tasks area
+        # only if there are at least some unchecked tasks to display
+        some_tasks = False
+        if task_folders:
+            for folder in task_folders:
+                if folder.tasks:
+                    some_tasks = True
+
+    else:
+
+        task_folders = None
+        some_tasks = None
 
     # FAVORITES
     # ----------------
