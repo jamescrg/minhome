@@ -11,17 +11,45 @@
 
 <div id="contacts" class="col-lg-3 order-lg-2">
 
+<div class="card">
 
-	{% if contacts %}
+  <div class="card-title mh-fc">
+    <h1>
+      Contacts
+    </h1>
 
-		{% include 'contacts/list.html' %}
+    <a href="/contacts/add">
+      <i class="bi bi-plus-lg"></i>
+    </a>
+
+  </div>
+
+
+    {% if contacts %}
+
+      <ul class="list-group">
+      {% for contact in contacts %}
+
+        <li class="list-group-item">
+          <a href="/contacts/{{ contact.id }}"
+            {% if selected_contact and selected_contact.id == contact.id %} class="strong" {% endif %}>
+            {{ contact.name }}</a>
+        </li>
+
+      {% endfor %}
+      </ul>
 
 	{% else %}
 
-	<ul class="list-group">
-		<li class="list-group-item">No contacts selected.</li>
-	</ul>
+    <div class="no-contacts">
+
+        <i class="bi bi-person-lines-fill"></i>
+
+    </div>
 
 	{% endif %}
+
+
+</div>
 
 </div>
