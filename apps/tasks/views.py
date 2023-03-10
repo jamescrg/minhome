@@ -24,7 +24,7 @@ def index(request):
 
     selected_folders = select_folders(request, "tasks")
 
-    active_folder_id = request.session.get("active_folder_id")
+    active_folder_id = request.user.tasks_active_folder
 
     if active_folder_id:
         active_folder = get_object_or_404(Folder, pk=active_folder_id)
@@ -61,7 +61,9 @@ def activate(request, id):
         That means that new tasks created on the task page are added to this folder.
     """
 
-    request.session["active_folder_id"] = id
+    user = request.user
+    user.tasks_active_folder = id
+    user.save()
     return redirect("/tasks/")
 
 

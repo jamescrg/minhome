@@ -32,7 +32,12 @@ def index(request):
 
     contacts = contacts.order_by("name")
 
-    selected_contact = Contact.objects.filter(user=request.user, selected=1).first()
+    selected_contact_id = request.user.contacts_contact
+
+    try:
+        selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
+    except ObjectDoesNotExist:
+        selected_contact = None
 
     if request.user.google_credentials:
         google = True
@@ -62,10 +67,8 @@ def select(request, id):
     """
 
     user = request.user
-    Contact.objects.filter(user=user, selected=1).update(selected=0)
-    new = get_object_or_404(Contact, pk=id)
-    new.selected = 1
-    new.save()
+    user.contacts_contact = id
+    user.save()
     return redirect("/contacts/")
 
 

@@ -16,29 +16,25 @@ def select(request, id, page):
 
     """
 
-    if not request.session.get("selected_folders"):
-        request.session["selected_folders"] = {}
+    user = request.user
 
     if page != "tasks":
-        request.session["selected_folders"][page] = id
+        setattr(user, page + "_folder", id)
 
     if page == "tasks":
-        # if there are no selected task folders, initialize a list
-        if not request.session["selected_folders"].get("tasks"):
-            request.session["selected_folders"]["tasks"] = []
-
         # if the folder is on the list, remove it
-        if id in request.session["selected_folders"]["tasks"]:
-            request.session["selected_folders"]["tasks"].remove(id)
+        if id in user.tasks_folders:
+            user.tasks_folders.remove(id)
+
+        # and deactivate it
+            if user.tasks_active_folder == id:
+                user.tasks_active_folder = 0
 
         # if the folder is not on the list, add it
         else:
-            request.session["selected_folders"]["tasks"].append(id)
+            user.tasks_folders.append(id)
 
-        # if the folder is active, deactivate it
-        if request.session.get("active_folder_id"):
-            if request.session.get("active_folder_id") == id:
-                del request.session["active_folder_id"]
+    user.save()
 
     return redirect(page)
 

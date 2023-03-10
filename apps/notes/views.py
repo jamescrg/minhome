@@ -35,7 +35,13 @@ def index(request):
 
     notes = notes.order_by("subject")
 
-    selected_note = Note.objects.filter(user=user, selected=1).first()
+    selected_note_id = request.user.notes_note
+
+    try:
+        selected_note = Note.objects.filter(pk=selected_note_id).get()
+    except ObjectDoesNotExist:
+        selected_note = None
+
     if selected_note:
         selected_note.note = markdown.markdown(selected_note.note)
 
@@ -60,10 +66,8 @@ def select(request, id):
 
     """
     user = request.user
-    old = Note.objects.filter(user=user, selected=1).update(selected=0)
-    new = get_object_or_404(Note, pk=id)
-    new.selected = 1
-    new.save()
+    user.notes_note = id
+    user.save()
     return redirect("/notes/")
 
 
