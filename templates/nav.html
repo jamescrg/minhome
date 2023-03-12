@@ -22,6 +22,7 @@
         {% if env and env == 'dev' %}
           <li class="nav-item">
             <a class="nav-link mh-alert" href=""><span class="mh-alert">{{ env }}<span></a>
+        {% endif %}
 
         <li class="nav-item {% if page == 'home' %}nav-active{% endif %}" >
           <a class="nav-link" href="/home">Home</a>
@@ -41,7 +42,6 @@
         <li class="nav-item {% if page == 'weather' %}nav-active{% endif %}" >
           <a class="nav-link" href="/weather">Weather</a>
 
-        {% endif %}
 
 			</ul>
 
