@@ -22,6 +22,7 @@ def index(request):
 
     """
 
+    print("aaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     user = request.user
     session = request.session
 

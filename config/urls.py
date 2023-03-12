@@ -12,6 +12,7 @@ from apps.search import views as search
 from apps.settings import views as settings
 from apps.tasks import views as tasks
 from apps.weather import views as weather
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -84,3 +85,5 @@ urlpatterns = [
     path("lab/", lab.index, name="lab"),
     path("lab/email", lab.email_test, name="email-test"),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

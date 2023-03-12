@@ -29,11 +29,12 @@ function showEditFolderForm(folderId){
 
     // display the folder edit form and delete icon
     var editFolder = folderItem.querySelector('.folder-edit');
-    editFolder.style.display = 'flex';
+    editFolder.style.display = 'block';
 
     // focus on the edit folder input
     var input = editFolder.querySelector('.form-control');
-    input.focus();
+
+    event.preventDefault();
 
 }
 

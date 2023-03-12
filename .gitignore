@@ -10,4 +10,5 @@ tags*
 .coveragerc
 apps/lab
 gunicorn.conf.py
+gunicorn_local.conf.py
 logs/
