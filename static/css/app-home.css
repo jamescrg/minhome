@@ -82,4 +82,5 @@
 .folder-controls a,
 .favorite-controls {
 	color: var(--lime-600);
+  font-size: 1.3rem;
 }
