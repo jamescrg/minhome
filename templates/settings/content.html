@@ -56,24 +56,24 @@
     <tr>
       <td class="setting-label">Tasks:
       <td class="setting-control">
-        {% if user.settings.home.tasks == "enabled" %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/disabled">
+        {% if user.home_tasks %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/disable">
             Disable
           </a>
         {% else %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/enabled">
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/enable">
             Enable
           </a>
         {% endif %}
     <tr>
       <td class="setting-label">Events:
       <td class="setting-control">
-        {% if user.settings.home.events == "enabled" %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/disabled">
+        {% if user.home_events %}
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/disable">
             Disable
           </a>
         {% else %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/enabled">
+          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/enable">
             Enable
           </a>
         {% endif %}

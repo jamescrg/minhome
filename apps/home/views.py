@@ -10,8 +10,6 @@ from apps.folders.models import Folder
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
 
-logger = logging.getLogger(__name__)
-
 
 @login_required
 def index(request):
@@ -25,11 +23,13 @@ def index(request):
     user = request.user
     session = request.session
 
+    print('this ran')
+
     # EVENTS
     # ----------------
 
     # check whether events are shown are hidden
-    show_events = show_section(session, "events")
+    show_events = show_section(user, "events")
 
     # if events are shown, load them
     if show_events:
@@ -45,7 +45,7 @@ def index(request):
     # ----------------
 
     # check whether tasks are shown or hidden
-    show_tasks = show_section(session, "tasks")
+    show_tasks = show_section(user, "tasks")
 
     # if tasks are shown, check for task_folders
     task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1)
@@ -76,8 +76,7 @@ def index(request):
         "wikipedia": "en.wikipedia.org/w/index.php",
     }
 
-    search_engine = engines[user.search_engine];
-
+    search_engine = engines[user.search_engine]
 
     # FAVORITES
     # ----------------
@@ -124,20 +123,16 @@ def toggle(request, section):
 
     """
 
-    allowed_sections = ["events", "tasks", "gathas"]
+    user = request.user
 
-    if section in allowed_sections:
-        # set the section name to use for the session key
-        flag = "show_" + section
-        exp = section + "_hide_expire"
+    attrib = (f"home_{section}_hidden")
+    if getattr(user, attrib):
+        setattr(user, attrib, None)
+    else:
+        setattr(user, attrib, date.today())
 
-        show_section = request.session.get(flag, True)
 
-        if show_section:
-            request.session[flag] = False
-            request.session[exp] = date.today().strftime("%s")
-        else:
-            request.session[flag] = True
+    user.save()
 
     return redirect("/home/")
 

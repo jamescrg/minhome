@@ -4,7 +4,7 @@
 reload = True
 
 # Redirect stdout/stderr to specified file in errorlog
-# capture_output = True
+capture_output = True
 
 # set log file locations
 accesslog = "-"

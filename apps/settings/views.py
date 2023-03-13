@@ -165,10 +165,16 @@ def home_options(request, option, value):
     """
     user = request.user
 
-    if not 'home' in user.settings:
-        user.settings['home'] = {}
+    if value == "enable":
+        value = 1
+    else:
+        value = 0
 
-    user.settings['home'][option] = value
+    if option == "events":
+        user.home_events = value
+    if option == "tasks":
+        user.home_tasks = value
+
     user.save()
     return redirect("/settings")
 

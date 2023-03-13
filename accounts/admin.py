@@ -13,6 +13,20 @@ class CustomUserAdmin(UserAdmin):
         "email",
         "username",
         "is_staff",
+        "theme",
+        "search_engine",
+        "home_events",
+        "home_events_hidden",
+        "home_tasks",
+        "home_tasks_hidden",
+        "home_search",
+        "favorites_folder",
+        "contacts_folder",
+        "contacts_contact",
+        "notes_folder",
+        "notes_note",
+        "tasks_folders",
+        "tasks_active_folder",
     ]
     fieldsets = UserAdmin.fieldsets
 

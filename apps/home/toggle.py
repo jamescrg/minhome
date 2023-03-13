@@ -3,45 +3,77 @@ from datetime import date, datetime
 import pytz
 
 
-def show_section(session, section):
+def check_if_enabled(user, section):
+    """Checks whether a home page feature is enabled.
+
+    Args:
+        user : a request customuser
+        section (str): a home page feature (section of home page)
+
+    Returns:
+        enabled (bool): whether the section is shown or hidden
+
+    """
+    attrib = (f"home_{section}")
+    enabled = getattr(user, attrib)
+    return enabled
+
+
+def check_if_hidden(user, section):
+    """Checks whether a home page feature is hidden.
+
+    Args:
+        user : a request customuser
+        section (str): a home page feature (section of home page)
+
+    Returns:
+        hidden (datetime.date): the date the section was hidden, or None
+
+    """
+    attrib = (f"home_{section}_hidden")
+    hidden = getattr(user, attrib)
+    return hidden
+
+
+def check_if_hidden_expired(user, section, hidden):
+    """Checks whether the interval for which the feature was hidden has expired
+
+    Args:
+        user : a request customuser
+        section (str): a home page feature (section of home page)
+        hidden (datetime.date): the date the section was hidden
+
+    Returns:
+        expired (bool): whether the hidden interval has expired
+
+    """
+    now = datetime.now(pytz.timezone("US/Eastern"))
+    today = now.date()
+    return today > hidden
+
+
+def show_section(user, section):
     """shows or hides a given section on the home page
 
     Args:
-        session : a Django session
+        user : a request customuser
         section (str): the section to be shown or hidden
 
     Returns:
         show_section (bool): whether the section is shown or hidden
 
-    Side Effect: ???
-        sets the session value for that section
     """
 
-    flag = "show_" + section
-    exp = section + "_hide_expire"
+    enabled = check_if_enabled(user, section)
+    if not enabled:
+        return False
 
-    show_section = session.get(flag, True)
+    hidden = check_if_hidden(user, section)
+    if not hidden:
+        return True
 
-    # if events are hidden, check the date they were hidden
-    # if that date is less than today, show them
-    if not show_section:
-        # get current day
-        now = datetime.now(pytz.timezone("US/Eastern"))
-        today = now.date()
-
-        # get day events were previously hidden
-        timestamp = int(session.get(exp))
-        old_date = date.fromtimestamp(timestamp)
-
-        # set events to shown only if today is greater than the old date
-        if today > old_date:
-            show_section = True
-            session[flag] = True
-
-    return show_section
-
-
-def change_session(session):
-    """a sample function that changes session data"""
-    session["motto"] = "Stuff happens."
-    return True
+    expired = check_if_hidden_expired(user, section, hidden)
+    if expired:
+        return True
+    else:
+        return False
