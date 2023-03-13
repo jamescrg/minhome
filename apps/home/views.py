@@ -33,8 +33,13 @@ def index(request):
 
     # if events are shown, load them
     if show_events:
+
+        # only show events if the user has connected a Google account
         if user.google_credentials:
+
+            # load the events from Google
             events = google.get_events(user.id)
+
         else:
             events = None
     else:
@@ -69,14 +74,34 @@ def index(request):
     # SEARCH
     # ----------------
 
-    engines = {
-        "google": "google.com/search",
-        "duckduckgo": "duckduckgo.com/",
-        "bing": "bing.com/",
-        "wikipedia": "en.wikipedia.org/w/index.php",
-    }
+    engines = [
+        {
+            "id": "google",
+            "name": "Google",
+            "url": "google.com/search"
+        },
+        {
+            "id": "duckduckgo",
+            "name": "DuckDuckGo",
+            "url": "duckduckgo.com/"
+        },
+        {
+            "id": "wikipedia",
+            "name": "Wikipedia",
+            "url": "en.wikipedia.org/w/index.php"
+        },
+        {
+            "id": "bing",
+            "name": "Bing",
+            "url": "bing.com/"
+        },
+    ]
 
-    search_engine = engines[user.search_engine]
+
+    search_engine = "google"
+    for engine in engines:
+        if engine["id"] == user.search_engine:
+            search_engine = engine
 
     # FAVORITES
     # ----------------
@@ -96,6 +121,7 @@ def index(request):
     context = {
         "page": "home",
         "origin": "home",
+        "engines": engines,
         "search_engine": search_engine,
         "show_tasks": show_tasks,
         "task_folders": task_folders,

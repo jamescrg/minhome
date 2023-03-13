@@ -3,7 +3,7 @@
 
   <div class="col-lg-9">
 
-    <form role="form" action="https://{{ search_engine }}" method="get" class="hidden-xs">
+    <form role="form" action="https://{{ search_engine.url }}" method="get" class="hidden-xs">
 
       <input class="form-control mh-no-shadow"
         type="text"
@@ -27,10 +27,11 @@
         onchange="submit()"
         name="search_engine">
 
-        <option value="google"{% if user.search_engine == "google" %}selected{% endif %}>Google</option>
-        <option value="wikipedia"{% if user.search_engine == "wikipedia" %}selected{% endif %}>Wikipedia</option>
-        <option value="duckduckgo"{% if user.search_engine == "duckduckgo" %}selected{% endif %}>DuckDuckGo</option>
-        <option value="bing"{% if user.search_engine == "bing" %}selected{% endif %}>Bing</option>
+        {% for engine in engines %}
+        <option value="{{ engine.id }}" {% if engine.id == search_engine.id %}selected{% endif %}>
+            {{ engine.name }}
+          </option>
+        {% endfor %}
 
       </select>
 
