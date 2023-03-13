@@ -121,21 +121,26 @@ def home(request, id, page):
     """
 
     user = request.user
-    folder = get_object_or_404(Folder, pk=id)
+    add_folder = get_object_or_404(Folder, pk=id)
+    destination_column = 5
 
-    if folder.home_column:
-        folder.home_column = 0
-        folder.home_rank = 0
-    else:
-        folder.home_column = 4
-        ranked_folders = Folder.objects.filter(user=user, home_column=4).order_by(
-            "-home_rank"
-        )
-        if ranked_folders:
-            max_rank = ranked_folders[0].home_rank
-        else:
-            max_rank = 0
-        folder.home_rank = max_rank + 1
+    # sequence destination column
+    # make sure the folders are sequential and adjacent
+    folders = Folder.objects.filter(user=user, home_column=destination_column)
+    folders = folders.order_by("home_rank")
+    count = 1
+    for folder in folders:
+        folder.home_rank = count
+        folder.save()
+        count += 1
 
-    folder.save()
+    # increment all up by one
+    for folder in folders:
+        folder.home_rank = folder.home_rank + 1
+        folder.save()
+
+    add_folder.home_column = destination_column
+    add_folder.home_rank = 1
+
+    add_folder.save()
     return redirect(page)

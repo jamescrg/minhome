@@ -232,23 +232,29 @@ def folder(request, id, direction):
         else:
             destination_column = origin_column
 
-        # identify the bottom folder in the destination column
-        # move over origin folder to destination column and place at bottom
         if destination_column != origin_column:
-            bottom_folder = (
-                Folder.objects.filter(user=user, home_column=destination_column)
-                .order_by("-home_rank")
-                .first()
-            )
-            if bottom_folder:
-                bottom_rank = bottom_folder.home_rank
-            else:
-                bottom_rank = 0
-            origin_folder.home_column = destination_column
-            origin_folder.home_rank = bottom_rank + 1
 
-        # persist changes
-        origin_folder.save()
+            # sequence destination column
+            # make sure the folders are sequential and adjacent
+            folders = Folder.objects.filter(user=user, home_column=destination_column)
+            folders = folders.order_by("home_rank")
+            count = 1
+            for folder in folders:
+                folder.home_rank = count
+                folder.save()
+                count += 1
+
+            # increment all up by one
+            for folder in folders:
+                folder.home_rank = folder.home_rank + 1
+                folder.save()
+
+            # move over origin folder to destination column in first position
+            origin_folder.home_column = destination_column
+            origin_folder.home_rank = 1
+            origin_folder.save()
+
+
 
         # resequence origin column
         # make sure the folders are sequential and adjacent
