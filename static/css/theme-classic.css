@@ -22,6 +22,9 @@ a:hover {
   background: #555555;
 }
 
+.navbar-toggler-icon {
+  color: var(--warm-gray-600);
+}
 
 .btn-nav {
   color: #e4e4e4;

@@ -28,9 +28,28 @@
   margin-bottom: 1.5rem;
 }
 
+@media (max-width: 768px) {
+
+  .task-list li {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .task-checkbox {
+    margin-top: 0.1rem;
+    padding-top: 0;
+  }
+
+  .task-checkbox a {
+    font-size: 1.1rem;
+  }
+
+}
+
 .task-checkbox {
   font-size: 0.96rem;
   margin-right: 1rem;
+  margin-top: 0.2rem;
 }
 
 .task-checkbox a,

@@ -16,11 +16,19 @@
 }
 
 .navbar-toggler-icon {
-  font-size: 1.5em;
+  font-size: 1.8rem;
+  color: var(--lime-700);
+}
+
+.navbar-toggler-chevron {
+  font-size: 1rem;
+  color: var(--lime-700);
 }
 
 .navbar-toggler {
-  padding-top: 0.8rem;
+  padding-bottom: 0;
+  padding-left: 0.5rem;
+  padding-top: 1rem;
 }
 
 .navbar-toggler:focus,
