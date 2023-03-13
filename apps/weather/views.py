@@ -16,11 +16,9 @@ def index(request):
 
     # get zip code
     user = request.user
-    zip = None
+    zip = user.zip
     zip_valid = True
 
-    if "zip" in user.settings:
-        zip = user.settings["zip"]
 
     # if zip code is a nonzero value, fetch data
     if zip:
@@ -109,6 +107,6 @@ def zip(request):
 
     """
     user = request.user
-    user.settings['zip'] = request.POST['zip']
+    user.zip = request.POST['zip']
     user.save()
     return redirect("/weather")
