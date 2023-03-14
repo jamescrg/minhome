@@ -1,4 +1,3 @@
-import logging
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
@@ -7,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.home.google as google
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
+from apps.home.movement import sequence
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
 
@@ -23,9 +23,6 @@ def index(request):
     user = request.user
     session = request.session
 
-    print('this ran')
-
-    # EVENTS
     # ----------------
 
     # check whether events are shown are hidden
@@ -192,13 +189,7 @@ def folder(request, id, direction):
         origin_column = moved_folder.home_column
 
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(user=user, home_column=origin_column)
-        folders = folders.order_by("home_rank")
-        count = 1
-        for folder in folders:
-            folder.home_rank = count
-            folder.save()
-            count += 1
+        sequence(user, origin_column)
 
         # identify the origin rank as modified by the sequence operation
         origin_rank = moved_folder.home_rank
@@ -212,7 +203,8 @@ def folder(request, id, direction):
         # identify the folder to be displaced
         try:
             displaced_folder = Folder.objects.filter(
-                user=user, home_column=origin_column, home_rank=destination_rank
+                user=user, page="favorites",
+                home_column=origin_column, home_rank=destination_rank
             ).get()
         except Folder.DoesNotExist:
             displaced_folder = False
@@ -241,13 +233,7 @@ def folder(request, id, direction):
 
             # sequence destination column
             # make sure the folders are sequential and adjacent
-            folders = Folder.objects.filter(user=user, home_column=destination_column)
-            folders = folders.order_by("home_rank")
-            count = 1
-            for folder in folders:
-                folder.home_rank = count
-                folder.save()
-                count += 1
+            folders = sequence(user, destination_column)
 
             # increment all up by one if greater than or equal to moved_folder
             for folder in folders:
@@ -262,13 +248,7 @@ def folder(request, id, direction):
 
         # resequence origin column
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(user=user, home_column=origin_column)
-        folders = folders.order_by("home_rank")
-        count = 1
-        for folder in folders:
-            folder.home_rank = count
-            folder.save()
-            count += 1
+        sequence(user, origin_column)
 
     # save the id of the moved folder for the next page view
     request.session["moved_folder"] = moved_folder.id

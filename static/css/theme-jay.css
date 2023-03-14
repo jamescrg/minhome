@@ -1,0 +1,32 @@
+
+a,
+a:hover {
+  color: var(--light-blue-700);
+}
+
+.folder-controls a,
+.favorite-controls {
+	color: var(--light-blue-600);
+}
+
+.page-vertical-centered h1 {
+  color: var(--light-blue-900);
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--light-blue-900);
+}
+
+.error-link {
+  color: var(--light-blue-800);
+}
+
+.navbar-toggler-icon {
+  color: var(--light-blue-700);
+}
+
+.navbar-toggler-chevron {
+  color: var(--light-blue-700);
+}
