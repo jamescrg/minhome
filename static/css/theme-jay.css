@@ -1,16 +1,16 @@
 
 a,
 a:hover {
-  color: var(--light-blue-700);
+  color: #0059b3;
 }
 
 .folder-controls a,
 .favorite-controls {
-	color: var(--light-blue-600);
+  color: #0059b3;
 }
 
 .page-vertical-centered h1 {
-  color: var(--light-blue-900);
+  color: #0059b3;
 }
 
 .btn-primary,
@@ -20,13 +20,13 @@ a:hover {
 }
 
 .error-link {
-  color: var(--light-blue-800);
+  color: #0059b3;
 }
 
 .navbar-toggler-icon {
-  color: var(--light-blue-700);
+  color: #474747;
 }
 
 .navbar-toggler-chevron {
-  color: var(--light-blue-700);
+  color: #474747;
 }
