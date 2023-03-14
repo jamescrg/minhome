@@ -55,6 +55,7 @@ function showHideHomeLinkControls(folder_id)
 
 function showHideHomeControls(folder_id)
 {
+    console.log("this ran on load");
     showHideHomeFolderControls(folder_id);
     showHideHomeLinkControls(folder_id);
 }

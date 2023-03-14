@@ -118,6 +118,10 @@ def index(request):
             folder.favorites = favorites
         columns.append(folders)
 
+    moved_folder = request.session.get("moved_folder", 0)
+    if moved_folder:
+        request.session["moved_folder"] = 0
+
     context = {
         "page": "home",
         "origin": "home",
@@ -129,6 +133,7 @@ def index(request):
         "events": events,
         "show_events": show_events,
         "columns": columns,
+        "moved_folder": moved_folder,
     }
 
     return render(request, "home/content.html", context)
@@ -183,8 +188,8 @@ def folder(request, id, direction):
     if direction == "up" or direction == "down":
         # get the folder to be moved
         # identify the column to which it belongs
-        origin_folder = get_object_or_404(Folder, pk=id)
-        origin_column = origin_folder.home_column
+        moved_folder = get_object_or_404(Folder, pk=id)
+        origin_column = moved_folder.home_column
 
         # make sure the folders are sequential and adjacent
         folders = Folder.objects.filter(user=user, home_column=origin_column)
@@ -196,7 +201,7 @@ def folder(request, id, direction):
             count += 1
 
         # identify the origin rank as modified by the sequence operation
-        origin_rank = origin_folder.home_rank
+        origin_rank = moved_folder.home_rank
 
         # identify the destination rank
         if direction == "up":
@@ -214,16 +219,16 @@ def folder(request, id, direction):
 
         # if a folder is being displaced, move it and the original folder
         if displaced_folder:
-            origin_folder.home_rank = destination_rank
-            origin_folder.save()
+            moved_folder.home_rank = destination_rank
+            moved_folder.save()
             displaced_folder.home_rank = origin_rank
             displaced_folder.save()
 
     # if the column is being changed
     if direction == "left" or direction == "right":
         # get the folder to be moved, along with its column and rank
-        origin_folder = get_object_or_404(Folder, pk=id)
-        origin_column = origin_folder.home_column
+        moved_folder = get_object_or_404(Folder, pk=id)
+        origin_column = moved_folder.home_column
 
         if direction == "left" and origin_column > 1:
             destination_column = origin_column - 1
@@ -244,17 +249,16 @@ def folder(request, id, direction):
                 folder.save()
                 count += 1
 
-            # increment all up by one
+            # increment all up by one if greater than or equal to moved_folder
             for folder in folders:
-                folder.home_rank = folder.home_rank + 1
-                folder.save()
+                if folder.home_rank >= moved_folder.home_rank:
+                    folder.home_rank = folder.home_rank + 1
+                    folder.save()
 
             # move over origin folder to destination column in first position
-            origin_folder.home_column = destination_column
-            origin_folder.home_rank = 1
-            origin_folder.save()
-
-
+            moved_folder.home_column = destination_column
+            # moved_folder.home_rank = 1
+            moved_folder.save()
 
         # resequence origin column
         # make sure the folders are sequential and adjacent
@@ -265,6 +269,9 @@ def folder(request, id, direction):
             folder.home_rank = count
             folder.save()
             count += 1
+
+    # save the id of the moved folder for the next page view
+    request.session["moved_folder"] = moved_folder.id
 
     return redirect("/home/")
 
@@ -282,8 +289,8 @@ def favorite(request, id, direction):
     user = request.user
 
     # get the favorite to be moved
-    origin_favorite = get_object_or_404(Favorite, pk=id)
-    folder_id = origin_favorite.folder_id
+    moved_favorite = get_object_or_404(Favorite, pk=id)
+    folder_id = moved_favorite.folder_id
 
     # make sure the favorites are sequential and adjacent
     favorites = Favorite.objects.filter(user=user, folder_id=folder_id, home_rank__gt=0)
@@ -299,8 +306,8 @@ def favorite(request, id, direction):
     favorites = favorites.order_by("home_rank")
 
     # identify the origin rank as modified by the sequence operation
-    origin_favorite = get_object_or_404(Favorite, pk=id)
-    origin_rank = origin_favorite.home_rank
+    moved_favorite = get_object_or_404(Favorite, pk=id)
+    origin_rank = moved_favorite.home_rank
 
     # identify the destination rank
     if direction == "up":
@@ -318,11 +325,14 @@ def favorite(request, id, direction):
 
     # make sure the top favorite doesn't move if the user attempts to move it up
     if destination_rank > 0:
-        origin_favorite.home_rank = destination_rank
-        origin_favorite.save()
+        moved_favorite.home_rank = destination_rank
+        moved_favorite.save()
 
     if displaced_favorite:
         displaced_favorite.home_rank = origin_rank
         displaced_favorite.save()
+
+    # save the id of the moved folder for the next page view
+    request.session["moved_folder"] = moved_favorite.folder.id
 
     return redirect("/home/")
