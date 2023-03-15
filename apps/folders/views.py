@@ -109,7 +109,6 @@ def delete(request, id, page):
     return redirect(page)
 
 
-# sets a folder to show on the home page
 @login_required
 def home(request, id, page):
     """Add a folder to the home page.
@@ -121,26 +120,34 @@ def home(request, id, page):
     """
 
     user = request.user
-    add_folder = get_object_or_404(Folder, pk=id)
-    destination_column = 5
+    home_folder = get_object_or_404(Folder, pk=id)
 
-    # sequence destination column
-    # make sure the folders are sequential and adjacent
-    folders = Folder.objects.filter(user=user, home_column=destination_column)
-    folders = folders.order_by("home_rank")
-    count = 1
-    for folder in folders:
-        folder.home_rank = count
-        folder.save()
-        count += 1
+    if not home_folder.home_column:
 
-    # increment all up by one
-    for folder in folders:
-        folder.home_rank = folder.home_rank + 1
-        folder.save()
+        destination_column = 5
 
-    add_folder.home_column = destination_column
-    add_folder.home_rank = 1
+        # sequence destination column
+        # make sure the folders are sequential and adjacent
+        folders = Folder.objects.filter(user=user, home_column=destination_column)
+        folders = folders.order_by("home_rank")
+        count = 1
+        for folder in folders:
+            folder.home_rank = count
+            folder.save()
+            count += 1
 
-    add_folder.save()
+        # increment all up by one
+        for folder in folders:
+            folder.home_rank = folder.home_rank + 1
+            folder.save()
+
+        home_folder.home_column = destination_column
+        home_folder.home_rank = 1
+
+    else:
+
+        home_folder.home_rank = 0
+        home_folder.home_column = 0
+
+    home_folder.save()
     return redirect(page)
