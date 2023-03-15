@@ -46,6 +46,12 @@ urlpatterns = [
     path("tasks/<int:id>/complete", tasks.status, name="tasks-complete"),
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
     path("tasks/<int:folder_id>/clear", tasks.clear, name="tasks-clear"),
+    path(
+        "tasks/add-editor/<int:folder_id>/<int:user_id>",
+        tasks.add_editor, name="folder-add-editor"),
+    path(
+        "tasks/remove-editor/<int:folder_id>/<int:user_id>",
+        tasks.remove_editor, name="folder-remove-editor"),
     # contacts
     path("contacts/", contacts.index, name="contacts"),
     path("contacts/<int:id>", contacts.select, name="contacts-select"),

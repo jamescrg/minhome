@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from apps.folders.models import Folder
 from accounts.models import CustomUser
@@ -7,14 +8,17 @@ from accounts.models import CustomUser
 def get_task_folders(request):
     user = request.user
 
-    folders = Folder.objects.filter(user=user, page="tasks").order_by("name")
+    # get the task folders
+    folders = Folder.objects.filter(page="tasks")
 
-    # include my groceries lists in katie's folder list
-    if user.username == 'katie':
-        james_folders = Folder.objects.filter(id__in=[380, 354])
-        folders = folders | james_folders
-        folders.order_by("name")
-
+    # narrow down to the folders that are:
+    # 1. owned by the user and
+    # 2. edited by the user,
+    # and then order the folders by name
+    folders = folders.filter(
+        Q(user=user)
+        | Q(editors=user)
+    ).order_by("name")
     return folders
 
 

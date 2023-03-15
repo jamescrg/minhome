@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
 
+from accounts.models import CustomUser
 from apps.folders.folders import get_task_folders, select_folders
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
@@ -169,4 +170,22 @@ def clear(request, folder_id):
     tasks = Task.objects.filter(folder_id=folder_id, status=1)
     for task in tasks:
         task.delete()
+    return redirect("/tasks/")
+
+
+@login_required
+def add_editor(request, folder_id, user_id):
+    folder = get_object_or_404(Folder, pk=folder_id)
+    user = get_object_or_404(CustomUser, pk=user_id)
+    folder.editors.add(user)
+    folder.save()
+    return redirect("/tasks/")
+
+
+@login_required
+def remove_editor(request, folder_id, user_id):
+    folder = get_object_or_404(Folder, pk=folder_id)
+    user = get_object_or_404(CustomUser, pk=user_id)
+    folder.editors.remove(user)
+    folder.save()
     return redirect("/tasks/")

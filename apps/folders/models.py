@@ -19,16 +19,19 @@ class Folder(models.Model):
             whether the folder has been selected to be displayed
         active (int): for task folders,
             whether the folder is active for new task entries
+        editors: the list of users with access to edit the contents of the folder
     """
 
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="folder_owner")
     page = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     home_column = models.IntegerField(blank=True, null=True)
     home_rank = models.IntegerField(blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
     active = models.IntegerField(blank=True, null=True)
+    editors = models.ManyToManyField(CustomUser, related_name="folder_editors")
 
     fillable = [
         "name",
