@@ -23,6 +23,7 @@ def index(request):
     user = request.user
     session = request.session
 
+    # EVENTS
     # ----------------
 
     # check whether events are shown are hidden
@@ -50,8 +51,16 @@ def index(request):
     show_tasks = show_section(user, "tasks")
 
     # if tasks are shown, check for task_folders
-    task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1)
+    task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1).order_by("name")
     if task_folders:
+
+        # eliminate folders with no tasks
+        for folder in task_folders:
+            tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
+            if not tasks:
+                task_folders = task_folders.exclude(id=folder.id)
+
+        # attatch tasks to folders with tasks
         for folder in task_folders:
             tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
             tasks = tasks.order_by("status", "title")
