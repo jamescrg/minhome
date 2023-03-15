@@ -69,8 +69,8 @@ def show_section(user, section):
         return False
 
     hidden = check_if_hidden(user, section)
-    if hidden:
-        return False
+    if not hidden:
+        return True
 
     expired = check_if_hidden_expired(user, section, hidden)
     if not expired:
