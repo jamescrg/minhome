@@ -53,7 +53,7 @@ def check_if_hidden_expired(user, section, hidden):
 
 
 def show_section(user, section):
-    """shows or hides a given section on the home page
+    """Sets the value of show section variable
 
     Args:
         user : a request customuser
@@ -61,6 +61,10 @@ def show_section(user, section):
 
     Returns:
         show_section (bool): whether the section is shown or hidden
+
+    Notes:
+        False means don't show the section
+        True means shows the section
 
     """
 
@@ -72,8 +76,12 @@ def show_section(user, section):
     if not hidden:
         return True
 
-    expired = check_if_hidden_expired(user, section, hidden)
-    if not expired:
-        return False
+    hidden_expired = check_if_hidden_expired(user, section, hidden)
+    if hidden_expired:
+        attrib = (f"home_{section}_hidden")
+        setattr(user, attrib, None)
+        user.save()
+        return True
 
-    return True
+    else:
+        return False

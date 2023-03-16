@@ -168,7 +168,6 @@ def toggle(request, section):
     else:
         setattr(user, attrib, date.today())
 
-
     user.save()
 
     return redirect("/home/")
