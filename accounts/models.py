@@ -17,5 +17,6 @@ class CustomUser(AbstractUser):
     contacts_contact = models.IntegerField(default=0)
     notes_folder = models.IntegerField(default=0)
     notes_note = models.IntegerField(default=0)
+    tasks_folder = models.IntegerField(default=0)
     tasks_folders = models.JSONField(default=list)
     tasks_active_folder = models.IntegerField(default=0)

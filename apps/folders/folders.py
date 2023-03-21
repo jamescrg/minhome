@@ -22,27 +22,15 @@ def get_task_folders(request):
     return folders
 
 
-def select_folders(request, page):
+def select_folder(request, page):
 
     user = request.user
 
-    if page == "tasks":
-        folder_ids = user.tasks_folders
+    folder_id = getattr(user, page + "_folder")
 
-        if folder_ids:
-            folders = Folder.objects.filter(pk__in=folder_ids).order_by("name")
-        else:
-            folders = []
-
-        return folders
-
+    if folder_id:
+        folder = get_object_or_404(Folder, pk=folder_id)
     else:
+        folder = None
 
-        folder_id = getattr(user, page + "_folder")
-
-        if folder_id:
-            folder = get_object_or_404(Folder, pk=folder_id)
-        else:
-            folder = None
-
-        return folder
+    return folder

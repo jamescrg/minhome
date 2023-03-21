@@ -3,17 +3,17 @@
 
   <li class="list-group-item task-list-title">
 
-    {% if folder.id == active_folder.id %}
+  {% if selected_folder %}
 
-      {{ folder.name }}
+    {{ selected_folder.name }}
 
-    {% else %}
+  {% else %}
 
-      <a href="/tasks/{{ folder.id }}/activate">{{ folder.name }}</a></li>
+    Unsorted Tasks
 
-    {% endif %}
+  {% endif %}
 
-  {% for task in folder.tasks %}
+  {% for task in tasks %}
 
     <li class="list-group-item mh-ftl">
 
@@ -49,3 +49,12 @@
   {% endfor %}
 
 </ul>
+
+<div class="clear">
+
+  <a href="/tasks/clear">
+    Clear Checked
+  </a>
+
+</div>
+

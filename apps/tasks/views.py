@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
-from apps.folders.folders import get_task_folders, select_folders
+from apps.folders.folders import get_task_folders, select_folder
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
@@ -23,49 +23,26 @@ def index(request):
 
     folders = get_task_folders(request)
 
-    selected_folders = select_folders(request, "tasks")
+    selected_folder = select_folder(request, "tasks")
 
-    active_folder_id = request.user.tasks_active_folder
-
-    if active_folder_id:
-        active_folder = get_object_or_404(Folder, pk=active_folder_id)
-    else:
-        active_folder = None
-
-    if selected_folders:
-        for folder in selected_folders:
-            tasks = Task.objects.filter(folder_id=folder.id)
-            tasks = tasks.order_by("status", "title")
-            folder.tasks = tasks
-
-    if active_folder:
-        active_folder.tasks = Task.objects.filter(folder_id=active_folder.id).order_by(
+    if selected_folder:
+        tasks = Task.objects.filter(folder_id=selected_folder.id).order_by(
             "status", "title"
         )
+    else:
+        tasks = Task.objects.filter(user=request.user, folder__isnull=True).order_by(
+            "status", "title"
+        )
+
 
     context = {
         "page": "tasks",
         "folders": folders,
-        "selected_folders": selected_folders,
-        "active_folder": active_folder,
+        "selected_folder": selected_folder,
+        "tasks": tasks,
     }
 
     return render(request, "tasks/content.html", context)
-
-
-@login_required
-def activate(request, id):
-    """Activate a folder.
-
-    Notes:
-        This makes the folder the "active" folder for task entry.
-        That means that new tasks created on the task page are added to this folder.
-    """
-
-    user = request.user
-    user.tasks_active_folder = id
-    user.save()
-    return redirect("/tasks/")
 
 
 @login_required
@@ -160,16 +137,24 @@ def edit(request, id):
 
 
 @login_required
-def clear(request, folder_id):
+def clear(request):
     """Delete all completed tasks in the active folder.
 
     Args:
         folder_id (int): the folder where tasks should be deleted
     """
 
-    tasks = Task.objects.filter(folder_id=folder_id, status=1)
+    selected_folder = select_folder(request, "tasks")
+
+    if selected_folder:
+        tasks = Task.objects.filter(folder=selected_folder, status=1)
+    else:
+        tasks = Task.objects.filter(
+            user=request.user, folder__isnull=True, status=1)
+
     for task in tasks:
         task.delete()
+
     return redirect("/tasks/")
 
 

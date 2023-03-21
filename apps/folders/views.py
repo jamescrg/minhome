@@ -15,27 +15,9 @@ def select(request, id, page):
         page (int): the page to which the folder belongs
 
     """
-
     user = request.user
-
-    if page != "tasks":
-        setattr(user, page + "_folder", id)
-
-    if page == "tasks":
-        # if the folder is on the list, remove it
-        if id in user.tasks_folders:
-            user.tasks_folders.remove(id)
-
-        # and deactivate it
-            if user.tasks_active_folder == id:
-                user.tasks_active_folder = 0
-
-        # if the folder is not on the list, add it
-        else:
-            user.tasks_folders.append(id)
-
+    setattr(user, page + "_folder", id)
     user.save()
-
     return redirect(page)
 
 
@@ -71,7 +53,6 @@ def update(request, id, page):
         Only accepts post requests
 
     """
-
     try:
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -91,7 +72,6 @@ def delete(request, id, page):
         page (str): the page to which the delete function should redirection
 
     """
-
     try:
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
@@ -99,20 +79,11 @@ def delete(request, id, page):
 
     user = request.user
 
-    if page != "tasks":
-        attr = f"{page}_folder"
-        selected_folder_id = getattr(user, attr)
-        if folder.id == selected_folder_id:
-            setattr(user, attr, 0)
-            user.save()
-
-    if page == "tasks":
-        attr = f"{page}_folders"
-        selected_folder_ids = getattr(user, attr)
-        if folder.id in selected_folder_id:
-            selected_folder_ids.remove(folder.id)
-            setattr(user, attr, selected_folder_ids)
-            user.save()
+    attr = f"{page}_folder"
+    selected_folder_id = getattr(user, attr)
+    if folder.id == selected_folder_id:
+        setattr(user, attr, 0)
+        user.save()
 
     folder.delete()
     return redirect(page)

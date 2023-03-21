@@ -7,34 +7,8 @@
     </h1>
   </div>
 
-{% if active_folder %}
-
 	{% include 'tasks/taskform.html' %}
 
-  {% with folder=active_folder %}
-
-    {% include 'tasks/task_list.html' %}
-
-  {% endwith %}
-
-  <div class="clear">
-
-    <a href="/tasks/{{ active_folder.id }}/clear">
-      Clear Checked
-    </a>
-
-  </div>
-
-{% endif %}
-
-{% for folder in selected_folders  %}
-
-  {% if folder != active_folder %}
-
-    {% include 'tasks/task_list.html' %}
-
-  {% endif %}
-
-{% endfor %}
+  {% include 'tasks/task_list.html' %}
 
 </div>

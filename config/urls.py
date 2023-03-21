@@ -40,12 +40,11 @@ urlpatterns = [
     path("favorites/home/<int:id>", favorites.home, name="favorites-home"),
     # tasks
     path("tasks/", tasks.index, name="tasks"),
-    path("tasks/<int:id>/activate", tasks.activate, name="tasks-activate"),
     path("tasks/add", tasks.add, name="tasks-add"),
     path("tasks/<int:id>/edit", tasks.edit, name="tasks-edit"),
     path("tasks/<int:id>/complete", tasks.status, name="tasks-complete"),
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
-    path("tasks/<int:folder_id>/clear", tasks.clear, name="tasks-clear"),
+    path("tasks/clear", tasks.clear, name="tasks-clear"),
     path(
         "tasks/add-editor/<int:folder_id>/<int:user_id>",
         tasks.add_editor, name="folder-add-editor"),

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folders
+from apps.folders.folders import select_folder
 from apps.folders.models import Folder
 
 
@@ -23,7 +23,7 @@ def index(request):
 
     folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, "favorites")
+    selected_folder = select_folder(request, "favorites")
 
     if selected_folder:
         favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
@@ -54,7 +54,7 @@ def add(request):
     user = request.user
     folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, "favorites")
+    selected_folder = select_folder(request, "favorites")
 
     if request.method == "POST":
         form = FavoriteForm(request.POST)
@@ -100,7 +100,7 @@ def edit(request, id):
     user = request.user
     folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
 
-    selected_folder = select_folders(request, "favorites")
+    selected_folder = select_folder(request, "favorites")
 
     favorite = get_object_or_404(Favorite, pk=id)
 

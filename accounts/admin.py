@@ -25,6 +25,7 @@ class CustomUserAdmin(UserAdmin):
         "contacts_contact",
         "notes_folder",
         "notes_note",
+        "tasks_folder",
         "tasks_folders",
         "tasks_active_folder",
     ]

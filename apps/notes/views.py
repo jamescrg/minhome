@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.folders.folders import select_folders
+from apps.folders.folders import select_folder
 from apps.folders.models import Folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
@@ -26,7 +26,7 @@ def index(request):
 
     folders = Folder.objects.filter(user=user, page=page).order_by("name")
 
-    selected_folder = select_folders(request, "notes")
+    selected_folder = select_folder(request, "notes")
 
     if selected_folder:
         notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
@@ -84,7 +84,7 @@ def add(request):
     user = request.user
     folders = Folder.objects.filter(user=user, page="notes").order_by("name")
 
-    selected_folder = select_folders(request, "notes")
+    selected_folder = select_folder(request, "notes")
 
     if request.method == "POST":
         # create a bound note form loaded with the post values
@@ -154,7 +154,7 @@ def edit(request, id):
     user = request.user
     folders = Folder.objects.filter(user=user, page="notes").order_by("name")
 
-    selected_folder = select_folders(request, "notes")
+    selected_folder = select_folder(request, "notes")
 
     note = get_object_or_404(Note, pk=id)
 

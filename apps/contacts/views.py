@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folders
+from apps.folders.folders import select_folder
 from apps.folders.models import Folder
 
 
@@ -21,14 +21,17 @@ def index(request):
 
     """
 
-    folders = Folder.objects.filter(user=request.user, page="contacts").order_by("name")
+    folders = Folder.objects.filter(
+        user=request.user, page="contacts").order_by("name")
 
-    selected_folder = select_folders(request, "contacts")
+    selected_folder = select_folder(request, "contacts")
 
     if selected_folder:
-        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
+        contacts = Contact.objects.filter(
+            user=request.user, folder=selected_folder)
     else:
-        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
+        contacts = Contact.objects.filter(
+            user=request.user, folder_id__isnull=True)
 
     contacts = contacts.order_by("name")
 
@@ -86,7 +89,7 @@ def add(request):
     user = request.user
     folders = Folder.objects.filter(user=user, page="contacts").order_by("name")
 
-    selected_folder = select_folders(request, "contacts")
+    selected_folder = select_folder(request, "contacts")
 
     # if applicable, process any post data submitted by user
     if request.method == "POST":
@@ -159,7 +162,7 @@ def edit(request, id):
     user = request.user
     folders = Folder.objects.filter(user=user, page="contacts").order_by("name")
 
-    selected_folder = select_folders(request, "contacts")
+    selected_folder = select_folder(request, "contacts")
 
     contact = get_object_or_404(Contact, pk=id)
 
