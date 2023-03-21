@@ -2,58 +2,7 @@ import requests
 
 from config import settings_local
 
-asset_list = [
-    {
-        "symbol": "GME",
-        "exchange": "NYSE",
-        "name": "Gamestop",
-    },
-    {
-        "symbol": "TSLA",
-        "exchange": "NASDAQ",
-        "name": "Tesla",
-    },
-    {
-        "symbol": "TLRY",
-        "exchange": "NASDAQ",
-        "name": "Tilray",
-    },
-    {
-        "symbol": "SNDL",
-        "exchange": "NASDAQ",
-        "name": "Sundial",
-    },
-    {
-        "symbol": "BBBY",
-        "exchange": "NASDAQ",
-        "name": "BBBY",
-    },
-    {
-        "symbol": "O",
-        "exchange": "NYSE",
-        "name": "REIT",
-    },
-    {
-        "symbol": "FXF",
-        "exchange": "NYSEARCA",
-        "name": "Swiss Francs",
-    },
-    {
-        "symbol": "GLD",
-        "exchange": "NSEARCA",
-        "name": "Gold ETF",
-    },
-    {
-        "symbol": "QQQ",
-        "exchange": "NASDAQ",
-        "name": "Invesco Tech",
-    },
-    {
-        "symbol": "VTV",
-        "exchange": "NYSEARCA",
-        "name": "Vanguard Value",
-    },
-]
+asset_list = settings_local.SECURITIES_ASSET_LIST
 
 
 def fetch(symbol):

@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 import apps.finance.crypto_data as crypto_data
 import apps.finance.securities_data as securities_data
+from config import settings_local
 
 
 @login_required
@@ -15,7 +16,7 @@ def crypto(request, ord="market_cap"):
     """
 
     # specify the list of assets to be viewed
-    symbols = "ADA,ALGO,APE,ATOM,BTC,DOT,ETH,IMX,MATIC,SOL,SUSHI,LRC,XCH,XLM,XMR"
+    symbols = settings_local.CRYPTO_SYMBOLS
 
     # collect data from remote service
     data = crypto_data.collect(symbols)
