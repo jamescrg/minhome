@@ -120,15 +120,23 @@ def edit(request, id):
     else:
         task = get_object_or_404(Task, pk=id)
         folders = get_task_folders(request)
-        selected_folder = folders.filter(id=task.folder.id).get()
+        try:
+            selected_folder = folders.filter(id=task.folder.id).get()
+        except AttributeError:
+            selected_folder = None
 
-        form = TaskForm(instance=task, initial={"folder": selected_folder.id})
+        if selected_folder:
+            form = TaskForm(instance=task, initial={"folder": selected_folder.id})
+        else:
+            form = TaskForm(instance=task)
+
         form.fields["folder"].queryset = folders
 
         context = {
             "page": "tasks",
             "edit": True,
             "folders": folders,
+            "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
             "form": form,
         }
