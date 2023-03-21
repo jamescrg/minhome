@@ -96,16 +96,25 @@ def delete(request, id, page):
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
-    folder.delete()
+
+    user = request.user
+
     if page != "tasks":
-        if "selected_folders" in request.session:
-            if page in request.session["selected_folders"]:
-                del request.session["selected_folders"][page]
+        attr = f"{page}_folder"
+        selected_folder_id = getattr(user, attr)
+        if folder.id == selected_folder_id:
+            setattr(user, attr, 0)
+            user.save()
+
     if page == "tasks":
-        if "selected_folders" in request.session:
-            if "tasks" in request.session["selected_folders"]:
-                if id in request.session["selected_folders"]["tasks"]:
-                    request.session["selected_folders"]["tasks"].remove(id)
+        attr = f"{page}_folders"
+        selected_folder_ids = getattr(user, attr)
+        if folder.id in selected_folder_id:
+            selected_folder_ids.remove(folder.id)
+            setattr(user, attr, selected_folder_ids)
+            user.save()
+
+    folder.delete()
     return redirect(page)
 
 

@@ -33,7 +33,7 @@
 
               {% else %}
 
-                <a href="/folders/0/favorites">Uncategorized</a>
+                <a href="/folders/0/favorites">Unsorted</a>
 
               {% endif %}
 
@@ -101,7 +101,7 @@
                   {{ contact.folder.name }}
                 </a>
               {% else %}
-                <a href="/folders/0/contacts">Uncategorized</a>
+                <a href="/folders/0/contacts">Unsorted</a>
               {% endif %}
 
             <td class="contact-name">
@@ -145,7 +145,7 @@
               {% if note.folder %}
                 <a href="/folders/{{ note.folder.id }}/notes">{{ note.folder.name }}</a>
               {% else %}
-                <a href="/folders/0/notes">Uncategorized</a>
+                <a href="/folders/0/notes">Unsorted</a>
               {% endif %}
 
 
