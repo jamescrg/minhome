@@ -3,7 +3,7 @@
 
   {% csrf_token %}
 
-	<input type="hidden" name="folder_id" value="{{ active_folder.id }}">
+	<input type="hidden" name="folder_id" value="{{ selected_folder.id }}">
 
 		<input class="form-control mh-no-shadow"
     type="text" name="title" autofocus required>
