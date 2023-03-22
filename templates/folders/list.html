@@ -4,11 +4,7 @@
   <div class="card-title mh-fc">
 
     <h1>
-      {% if page == 'tasks' %}
-        Lists
-      {% else %}
         Folders
-      {% endif %}
     </h1>
 
     <a href="javascript:showAddFolderForm();">
@@ -27,24 +23,16 @@
       <div class="folder-show mh-fc">
 
         {% if folder.home_column and folder.user == user %}
+
           <span class="folder-icon-home">
-            <i class="bi bi-house-door-fill"></i>
+            <i class="bi bi-house-door"></i>
           </span>
+
         {% else %}
 
-          {% if page == "tasks" %}
-
-            <span class="folder-icon task-icon">
-              <span class="material-icons">view_list</span>
-            </span>
-
-          {% else %}
-
-            <span class="folder-icon">
-              <i class="bi bi-folder-fill"></i>
-            </span>
-
-          {% endif %}
+          <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+          </span>
 
         {% endif %}
 
@@ -72,21 +60,31 @@
     {% endfor %}
     {% endif %}
 
-    {% if page != "tasks" %}
+    <li class="list-group-item mh-ft">
 
-      <li class="list-group-item mh-ft">
+      <div class="folder-show mh-fc">
 
-        <div class="folder-show mh-fc">
+        {% if folder.home_column and folder.user == user %}
 
-          <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %};>
-            Unsorted
-          </a>
+          <span class="folder-icon-home">
+            <i class="bi bi-house-door"></i>
+          </span>
 
-        </div>
+        {% else %}
 
-      </li>
+          <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+          </span>
 
-    {% endif %}
+        {% endif %}
+
+        <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %};>
+          Unsorted
+        </a>
+
+      </div>
+
+    </li>
 
   </ul>
 

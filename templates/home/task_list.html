@@ -1,4 +1,5 @@
 
+
 <ul class="list-group task-list">
 
   <li class="list-group-item task-list-title">
@@ -7,13 +8,9 @@
 
     {{ selected_folder.name }}
 
-  {% else %}
-
-    Unsorted
-
   {% endif %}
 
-  {% for task in tasks %}
+  {% for task in selected_folder.tasks %}
 
     <li class="list-group-item mh-ftl">
 

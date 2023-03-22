@@ -21,18 +21,23 @@ def index(request):
           folder system for the whole site.
     """
 
+    user = request.user
     folders = get_task_folders(request)
 
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        selected_folder.tasks = Task.objects.filter(
-            folder=selected_folder).order_by("status", "title")
+        tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
+    else:
+        tasks = Task.objects.filter(
+            user=user, folder__isnull=True).order_by("status", "title")
+
 
     context = {
         "page": "tasks",
         "folders": folders,
         "selected_folder": selected_folder,
+        "tasks": tasks,
     }
 
     return render(request, "tasks/content.html", context)
@@ -72,12 +77,19 @@ def add(request):
 
     if request.method == "POST":
         task = Task()
+
         task.user = request.user
-        folder = get_object_or_404(Folder, pk=request.POST.get("folder_id"))
-        task.folder = folder
         task.title = request.POST.get("title")
         task.title = task.title[0].upper() + task.title[1:]
-        task.save()
+
+        try:
+            folder = Folder.objects.filter(pk=request.POST.get("folder_id")).get()
+            task.folder = folder
+            task.save()
+
+        except ValueError:
+            task.save()
+
         return redirect("tasks")
 
 
