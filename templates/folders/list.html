@@ -72,31 +72,21 @@
     {% endfor %}
     {% endif %}
 
-    <li class="list-group-item mh-ft">
+    {% if page != "tasks" %}
 
-      <div class="folder-show mh-fc">
+      <li class="list-group-item mh-ft">
 
-        {% if page == "tasks" %}
+        <div class="folder-show mh-fc">
 
-          <span class="folder-icon task-icon">
-            <span class="material-icons">view_list</span>
-          </span>
+          <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %};>
+            Unsorted
+          </a>
 
-        {% else %}
+        </div>
 
-          <span class="folder-icon">
-            <i class="bi bi-folder-fill"></i>
-          </span>
+      </li>
 
-        {% endif %}
-
-        <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %};>
-          Unsorted
-        </a>
-
-      </div>
-
-    </li>
+    {% endif %}
 
   </ul>
 

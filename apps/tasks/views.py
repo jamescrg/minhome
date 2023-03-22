@@ -26,20 +26,13 @@ def index(request):
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(folder_id=selected_folder.id).order_by(
-            "status", "title"
-        )
-    else:
-        tasks = Task.objects.filter(user=request.user, folder__isnull=True).order_by(
-            "status", "title"
-        )
-
+        selected_folder.tasks = Task.objects.filter(
+            folder=selected_folder).order_by("status", "title")
 
     context = {
         "page": "tasks",
         "folders": folders,
         "selected_folder": selected_folder,
-        "tasks": tasks,
     }
 
     return render(request, "tasks/content.html", context)
