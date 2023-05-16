@@ -8,11 +8,16 @@
  * body, layout
  * ------------------------------------------------*/
 
+html {
+  height: 100%;
+}
+
 body {
   background: var(--warm-gray-300);
   color: var(--warm-gray-600);
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
+  min-height: 100%;
 }
 
 .page-vertical-centered {
