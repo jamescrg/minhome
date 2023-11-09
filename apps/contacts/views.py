@@ -99,11 +99,7 @@ def add(request):
             contact = form.save(commit=False)
             contact.user = user
 
-            # add to google account
-            if user.google_credentials:
-                contact.google_id = google.add_contact(contact)
-
-            # save contact to database with google id
+            # save contact to database
             contact.save()
 
             # deselect previously selected contact, if one exists
