@@ -57,7 +57,8 @@ urlpatterns = [
     path("contacts/add", contacts.add, name="contacts-add"),
     path("contacts/<int:id>/edit", contacts.edit, name="contacts-edit"),
     path("contacts/<int:id>/delete", contacts.delete, name="contacts-delete"),
-    path("contacts/<int:id>/google", contacts.google_sync, name="contacts-google"),
+    path("contacts/<int:id>/google-toggle", contacts.google_toggle, name="contacts-google-toggle"),
+    path("contacts/google-list", contacts.google_list, name="contacts-google-list"),
     # notes
     path("notes/", notes.index, name="notes"),
     path("notes/<int:id>", notes.select, name="notes-select"),

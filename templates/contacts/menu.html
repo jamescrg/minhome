@@ -15,5 +15,18 @@
           onclick="javascript: return confirm('Are you sure you want to delete this contact?')"
           >Delete Contact</a>
     </li>
+    {% if google %}
+    <li>
+        <a class="dropdown-item"
+           href="/contacts/{{ selected_contact.id }}/google-toggle">
+          {% if selected_contact.google_id %}
+            Remove from Google Contacts
+          {% else %}
+            Add to Google Contacts
+          {% endif %}
+        </a>
+
+    </li>
+    {% endif %}
   </ul>
 </div>

@@ -1,0 +1,25 @@
+
+
+{% block 'content' %}
+
+<div class="row">
+
+  List of Contacts
+
+<table>
+  {% for contact in contacts %}
+  <tr>
+    <td>{{ contact.name }}</td>
+    <td>
+      <a href="/contacts/{{ contact.id }}/google_toggle">
+          <span class="material-icons">sync</span>
+      </a>
+    </td>
+  </tr>
+
+  {% endfor %}
+</table>
+
+</div>
+
+{% endblock 'content' %}

@@ -233,7 +233,7 @@ def delete(request, id):
 
 
 @login_required
-def google_sync(request, id):
+def google_toggle(request, id):
     """Add a contact to Google account, update the contact with its google_id.
 
     Args:
@@ -246,6 +246,29 @@ def google_sync(request, id):
     """
 
     contact = get_object_or_404(Contact, pk=id)
-    contact.google_id = google.add_contact(contact)
+    if contact.google_id:
+        google.delete_contact(contact)
+        contact.google_id = ""
+    else:
+        contact.google_id = google.add_contact(contact)
+
     contact.save()
     return redirect("contacts")
+
+
+@login_required
+def google_list(request):
+
+    contacts = Contact.objects.all()
+    # for contact in contacts:
+    #     contact.google_id = ""
+    #     contact.save()
+
+    context = {
+        "page": "contacts",
+        "contacts": contacts,
+    }
+
+    return render(request, "contacts/google.html", context)
+
+

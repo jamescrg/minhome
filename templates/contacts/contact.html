@@ -84,9 +84,9 @@
 
   {% if google and not selected_contact.google_id %}
 
-  <div class="contact-item">
-    <a href="/contacts/{{ selected_contact.id }}/google" style="color: darkred">Add to Google Contacts</a>
-  </div>
+    <div class="contact-item">
+      <a href="/contacts/{{ selected_contact.id }}/google-toggle" style="color: darkred">Add to Google Contacts</a>
+    </div>
 
   {% endif %}
 
