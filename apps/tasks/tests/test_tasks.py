@@ -86,6 +86,6 @@ def test_edit_data(user, client, folder, task):
 
 def test_clear(client, folder):
     tasks = Task.objects.filter(folder=folder).update(status=1)
-    client.get(f"/tasks/{folder.id}/clear")
+    client.get(f"/tasks/clear")
     tasks = Task.objects.filter(folder=folder)
     assert not tasks

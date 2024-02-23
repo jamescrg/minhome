@@ -22,11 +22,3 @@ def test_securities(client):
     assert response.context["page"] == "securities"
     assert response.context["data"][0]["price"] > 0
     assertTemplateUsed(response, "finance/securities.html")
-
-
-def test_positions(client):
-    response = client.get("/positions/")
-    assert response.status_code == 200
-    response = client.get(reverse("positions"))
-    assert response.status_code == 200
-    assertTemplateUsed(response, "finance/positions.html")

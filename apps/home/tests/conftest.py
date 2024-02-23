@@ -8,7 +8,25 @@ from apps.folders.models import Folder
 
 @pytest.fixture
 def user():
-    user = CustomUser.objects.create_user("Ollie", "ollie@gmail.com", "clawboy")
+    user = CustomUser.objects.create_user(
+        username="Ollie",
+        email="ollie@gmail.com",
+        password="clawboy",
+        search_engine="",
+        home_events=1,
+        home_events_hidden="1980-01-01",
+        home_tasks=1,
+        home_tasks_hidden="1980-01-01",
+        home_search=0,
+        favorites_folder=0,
+        contacts_folder=0,
+        contacts_contact=0,
+        notes_folder=0,
+        notes_note=0,
+        tasks_folder=0,
+        tasks_folders="",
+        tasks_active_folder=0,
+    )
     return user
 
 
@@ -105,6 +123,17 @@ def folders(user):
             "name": "Annoying",
             "home_column": 4,
             "home_rank": 4,
+        },
+        # column 5
+        {
+            "name": "German",
+            "home_column": 5,
+            "home_rank": 1,
+        },
+        {
+            "name": "Swiss",
+            "home_column": 5,
+            "home_rank": 2,
         },
     ]
 

@@ -73,20 +73,20 @@ def test_left_from_far_left(client, folders):
 
 
 def test_left_from_middle_left(client, folders):
-    client.get(f"/home/folder/{folders[4].id}/left/")
-    folder = Folder.objects.get(pk=folders[4].id)
+    client.get(f"/home/folder/{folders[5].id}/left/")
+    folder = Folder.objects.get(pk=folders[5].id)
     assert folder.home_column == 1
-    assert folder.home_rank == 5
+    assert folder.home_rank == 1
 
 
 def test_right_from_middle_right(client, folders):
     client.get(f"/home/folder/{folders[8].id}/right/")
     folder = Folder.objects.get(pk=folders[8].id)
     assert folder.home_column == 4
-    assert folder.home_rank == 5
+    assert folder.home_rank == 1
 
 
 def test_right_from_far_right(client, folders):
-    client.get(f"/home/folder/{folders[12].id}/right/")
-    folder = Folder.objects.get(pk=folders[12].id)
-    assert folder.home_column == 4
+    client.get(f"/home/folder/{folders[16].id}/right/")
+    folder = Folder.objects.get(pk=folders[16].id)
+    assert folder.home_column == 5

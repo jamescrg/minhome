@@ -18,61 +18,59 @@
       <tr>
 
         <th>
-          <a class="sort" href="name">Name&nbsp;
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
-          <th>
-            <a class="sort" href="symbol">Symbol&nbsp;
-              <span class="glyphicon glyphicon-chevron-down"></span></a>
-            <th class="numeric">
-              <a class="sort" href="price">Price&nbsp;
-                <span class="glyphicon glyphicon-chevron-down"></span></a>
-              <th class="numeric">Prev Close
-                <th class="numeric">Open
-                  <th class="numeric">High
-                    <th class="numeric">Low
-                      <th class="numeric">Change
-                        <th class="numeric">
-                          <a class="sort" href="percent_change">% Chg&nbsp;
-                            <span class="glyphicon glyphicon-chevron-down"></span></a>
+          <a class="sort" href="name">Name
+          </a>
+        <th>
+          <a class="sort" href="symbol">Symbol
+          </a>
+        <th class="numeric">
+          <a class="sort" href="price">Price
+          </a>
+        <th class="numeric">Prev Close
+        <th class="numeric">Open
+        <th class="numeric">High
+        <th class="numeric">Low
+        <th class="numeric">Change
+        <th class="numeric">% Chg
 
-                          {% for asset in data %}
+      {% for asset in data %}
 
-                          <tr>
+      <tr>
 
-                            <td class="name">
-                              <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
-                                {{ asset.name }}
-                              </a>
+      <td class="name">
+        <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
+        {{ asset.name }}
+        </a>
 
-                              <td class="symbol">{{ asset.symbol }}
+        <td class="symbol">{{ asset.symbol }}
 
-                                <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
 
-                                  <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
+        <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
 
-                                    <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
 
-                                      <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
 
-                                        <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
+        <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
 
-                                          <td class="numeric"
-                                              {% if asset.change < 0 %} style="color: darkred"
-                                                                        {% else %} style="color: green"
-                                                                        {% endif %}>
-                                            {% if asset.change < 0 %}
-                                            -${{ asset.change|abs|floatformat:"2"|intcomma }}
-                                            {% else %}
-                                            ${{ asset.change|floatformat:"2"|intcomma }}
-                                            {% endif %}
+        <td class="numeric"
+          {% if asset.change < 0 %} style="color: darkred"
+                                    {% else %} style="color: green"
+                                    {% endif %}>
+          {% if asset.change < 0 %}
+          -${{ asset.change|abs|floatformat:"2"|intcomma }}
+          {% else %}
+          ${{ asset.change|floatformat:"2"|intcomma }}
+          {% endif %}
 
-                                            <td class="numeric"
-                                                {% if asset.percent_change < 0 %} style="color: darkred"
-                                                                                  {% else %} style="color: green"
-                                                                                  {% endif %}>
-                                              {{ asset.percent_change|floatformat:"1"|intcomma }}%
+        <td class="numeric"
+            {% if asset.percent_change < 0 %} style="color: darkred"
+                                              {% else %} style="color: green"
+                                              {% endif %}>
+          {{ asset.percent_change|floatformat:"1"|intcomma }}%
 
-                                              {% endfor %}
+      {% endfor %}
 
     </table>
   </div>

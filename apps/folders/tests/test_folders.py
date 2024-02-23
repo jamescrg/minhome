@@ -31,7 +31,7 @@ def test_home(client, folder):
     response = client.get(f"/folders/home/{folder.id}/notes")
     assert response.status_code == 302
     folder = Folder.objects.filter(pk=folder.id).get()
-    assert folder.home_column == 4
+    assert folder.home_column == 5
     assert folder.home_rank == 1
 
 
@@ -46,16 +46,14 @@ def test_select_folder(client, folders):
 def test_select_task_folders(client, task_folders):
     folder1 = Folder.objects.filter(pk=task_folders[0].id).get()
     response = client.get(f"/folders/{folder1.id}/tasks")
-
     assert response.status_code == 302
+
     folder2 = Folder.objects.filter(pk=task_folders[1].id).get()
     response = client.get(f"/folders/{folder2.id}/tasks")
-
     assert response.status_code == 302
-    response = client.get("/tasks/")
 
-    assert folder1 in response.context["selected_folders"]
-    assert folder2 in response.context["selected_folders"]
+    response = client.get("/tasks/")
+    assert folder2 == response.context["selected_folder"]
 
 
 def test_insert(client):

@@ -37,6 +37,7 @@ def test_results(user, client):
     Note.objects.create(
         user=user,
         subject="Tasks for James",
+        note="Some randome text that I put in here",
         folder=note_folder,
     )
 

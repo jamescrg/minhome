@@ -21,7 +21,6 @@ def index(request):
     """
 
     user = request.user
-    session = request.session
 
     # EVENTS
     # ----------------
@@ -251,7 +250,7 @@ def folder(request, id, direction):
 
             # move over origin folder to destination column in first position
             moved_folder.home_column = destination_column
-            # moved_folder.home_rank = 1
+            moved_folder.home_rank = 1
             moved_folder.save()
 
         # resequence origin column

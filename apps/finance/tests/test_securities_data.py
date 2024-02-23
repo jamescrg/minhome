@@ -28,5 +28,3 @@ def test_sort():
     sorted_data = securities_data.sort(data, "name")
     assert sorted_data[0]["name"] == "BBBY"
     assert sorted_data[-1]["name"] == "Vanguard Value"
-    sorted_data = securities_data.sort(data, "percent_change")
-    assert sorted_data

@@ -5,6 +5,7 @@ from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from apps.contacts.models import Contact
+from accounts.models import CustomUser
 
 pytestmark = pytest.mark.django_db
 
@@ -30,8 +31,8 @@ def test_index(client, folder1, contact):
 def test_select(client, user, folder1, contact):
     response = client.get(f"/contacts/{contact.id}")
     assert response.status_code == 302
-    selected_contact = get_object_or_404(Contact, pk=contact.id)
-    assert selected_contact.selected == 1
+    user = get_object_or_404(CustomUser, pk=user.id)
+    assert user.contacts_contact == contact.id
 
 
 def test_add_get(client, folder1):

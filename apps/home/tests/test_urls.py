@@ -22,4 +22,4 @@ def test_named_route(client):
 
 def test_correct_template(client):
     response = client.get(reverse("home"))
-    assertTemplateUsed(response, "home/index.html")
+    assertTemplateUsed(response, "home/content.html")

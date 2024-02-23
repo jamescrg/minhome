@@ -108,7 +108,8 @@ def home(request, id, page):
 
         # sequence destination column
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(user=user, home_column=destination_column)
+        folders = Folder.objects.filter(
+            user=user, home_column=destination_column)
         folders = folders.order_by("home_rank")
         count = 1
         for folder in folders:
