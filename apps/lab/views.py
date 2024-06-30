@@ -9,7 +9,11 @@ from apps.contacts.models import Contact
 @login_required
 def index(request):
     test = ['this', 'that']
-    return HttpResponse(print(test))
+    count = 7
+    context = {
+        "count": count,
+            }
+    return render(request, 'lab/content.html', context)
 
 
 @login_required

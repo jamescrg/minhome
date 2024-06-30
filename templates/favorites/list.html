@@ -62,21 +62,6 @@
 
         <div class="favorite-right mh-ftl">
 
-          {% if favorite.login %}
-
-            <div class="credentials">
-              <div id="credential-hint-{{ favorite.id }}">
-                <a href="javascript:showHideCredentials('{{ favorite.id }}');">
-                  <i class="bi bi-briefcase-fill"></i>
-                </a>
-              </div>
-              <div id="credential-data-{{ favorite.id }}" class="credential-data" style="display:none;">
-                {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
-              </div>
-            </div>
-
-          {% endif %}
-
           {% include "favorites/menu.html" %}
 
         </div>

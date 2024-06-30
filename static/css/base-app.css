@@ -1,12 +1,11 @@
 
+/*------------------------------------------------
+background and primary font
+------------------------------------------------*/
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
 
-
-/*------------------------------------------------
- * body, layout
- * ------------------------------------------------*/
 
 html {
   height: 100%;
@@ -16,7 +15,7 @@ body {
   background: var(--warm-gray-300);
   color: var(--warm-gray-600);
   font-family: 'Open Sans', sans-serif;
-  font-size: 18px;
+  font-size: 1em;
   min-height: 100%;
 }
 
@@ -94,7 +93,7 @@ a:hover {
 
 h1 {
   font-weight: normal;
-  font-size: 1.15em;
+  font-size: 1.15rem;
   margin-bottom: 0;
 }
 

@@ -174,7 +174,8 @@ def edit(request, id):
 
     else:
         if selected_folder:
-            form = NoteForm(instance=note, initial={"folder": selected_folder.id})
+            form = NoteForm(
+                instance=note, initial={"folder": selected_folder.id})
         else:
             form = NoteForm(instance=note)
 

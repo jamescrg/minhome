@@ -14,9 +14,6 @@ class Favorite(models.Model):
         name (str): the name or title of the favorite url
         url (str): a web url
         description (str): a description of the site
-        login (str): the username to log in
-        root (str): a credential root
-        passkey (str): a credential key
         selected (int): whether the favorite has been selected to be displayed
         home_rank (int): whether the favorite should be displayed on the home page, and
             if so, what rank it should have within its folder
@@ -28,9 +25,6 @@ class Favorite(models.Model):
     name = models.CharField(max_length=100)
     url = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
-    login = models.CharField(max_length=50, blank=True, null=True)
-    root = models.CharField(max_length=50, blank=True, null=True)
-    passkey = models.CharField(max_length=50, blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
     home_rank = models.IntegerField(blank=True, null=True)
 

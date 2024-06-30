@@ -37,9 +37,6 @@ def favorite(user, folder1):
         name="Meditation Posture",
         url="http://meditationposture.net",
         description="A website",
-        login="drachma",
-        root="rupee",
-        passkey="ruble",
         selected=1,
     )
     return contact

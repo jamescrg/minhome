@@ -1,10 +1,41 @@
-{% extends 'base.html' %}
-{% block content %}
+<html>
+<head>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
 
-<div class="row">
+    <h1 x-data="{ message: 'I like Alpine' }" x-text="message"></h1>
 
-  <p>This is the {{ page }}.</p>
+    <br>
+    <br>
 
+    <div x-data="{ count: {{ count }} }">
 
-</div>
-{% endblock content %}
+      <button x-on:mouseenter="count++">Increment</button>
+
+      <span x-text="count"></span>
+
+    </div>
+
+    <br>
+    <br>
+
+    <div x-data="{ edit: false }">
+
+        <button
+          @click="edit = true"
+          x-show="! edit"
+        >
+          Record
+        </button>
+
+        <input
+          autofocus
+          x-show="edit"
+          @click.outside="edit = false"
+        />
+
+    </div>
+
+</body>
+</html>

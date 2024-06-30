@@ -22,9 +22,6 @@ def test_favorite_content(client, user, favorite):
         "name": "Meditation Posture",
         "url": "http://meditationposture.net",
         "description": "A website",
-        "login": "drachma",
-        "root": "rupee",
-        "passkey": "ruble",
         "selected": 1,
     }
     for key, val in expectedValues.items():
