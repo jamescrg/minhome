@@ -19,7 +19,6 @@ def index(request):
     zip = user.zip
     zip_valid = True
 
-
     # if zip code is a nonzero value, fetch data
     if zip:
 
@@ -49,7 +48,7 @@ def index(request):
             current["sunset"] = sunset.strftime("%I:%M %p")
 
             # fetch forecast data
-            url = "https://api.openweathermap.org/data/2.5/onecall"
+            url = "https://api.openweathermap.org/data/3.0/onecall"
             params["lon"] = current["coord"]["lon"]
             params["lat"] = current["coord"]["lat"]
             params["exclude"] = "minutely"
