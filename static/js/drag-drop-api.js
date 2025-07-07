@@ -189,7 +189,9 @@ function insertFavoriteBelowFavorite(draggedFavoriteId, targetFavoriteId) {
 function moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFolderId) {
     const formData = new FormData();
     formData.append('dragged_favorite_id', draggedFavoriteId);
-    formData.append('target_favorite_id', targetFavoriteId);
+    if (targetFavoriteId) {
+        formData.append('target_favorite_id', targetFavoriteId);
+    }
     formData.append('target_folder_id', targetFolderId);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     
@@ -209,5 +211,63 @@ function moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFold
     .catch(error => {
         console.error('Error:', error);
         alert('Error moving favorite');
+    });
+}
+
+/**
+ * Move favorite to a folder (end of folder)
+ */
+function moveFavoriteToFolder(draggedFavoriteId, targetFolderId) {
+    const formData = new FormData();
+    formData.append('dragged_favorite_id', draggedFavoriteId);
+    formData.append('target_folder_id', targetFolderId);
+    formData.append('move_to_end', 'true'); // Indicate we want to move to end of folder
+    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    
+    fetch('/home/move-favorite-to-folder/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            console.error('Error moving favorite:', data.error);
+            alert('Error moving favorite: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error moving favorite');
+    });
+}
+
+/**
+ * Move favorite to an empty folder - send -1 as target_favorite_id to indicate empty folder
+ */
+function moveFavoriteToEmptyFolder(draggedFavoriteId, targetFolderId) {
+    const formData = new FormData();
+    formData.append('dragged_favorite_id', draggedFavoriteId);
+    formData.append('target_favorite_id', '-1'); // Special value to indicate empty folder
+    formData.append('target_folder_id', targetFolderId);
+    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    
+    fetch('/home/move-favorite-to-folder/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            console.error('Error moving favorite to empty folder:', data.error);
+            alert('Error moving favorite to empty folder: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error moving favorite to empty folder');
     });
 }

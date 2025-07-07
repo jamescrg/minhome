@@ -19,27 +19,6 @@
 
       </div>
 
-
-      {# folder controls #}
-
-      <div class="folder-controls mh-fc folder-{{ folder.id }}" style="display: none;">
-
-        <a href="/home/folder/{{ folder.id }}/left">
-          <i class="bi bi-arrow-left-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/up">
-          <i class="bi bi-arrow-up-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/down">
-          <i class="bi bi-arrow-down-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/right">
-          <i class="bi bi-arrow-right-square"></i>
-        </a>
-
-      </div>
-
-
       {# favorites #}
 
       <ul class="list-group">
@@ -51,13 +30,6 @@
 
               <a class="home-link favorite-drag-link" href="{{ favorite.url }}" data-favorite-id="{{ favorite.id }}" data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
 
-              <a class="favorite-controls home-link-controls-{{ folder.id }}"
-                style="display:none;"
-                href="/home/favorite/{{ favorite.id }}/up">
-
-                  <i class="bi bi-arrow-bar-up"></i>
-
-              </a>
             </li>
 
           {% endif %}

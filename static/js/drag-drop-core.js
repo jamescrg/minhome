@@ -25,6 +25,13 @@ function initializeDragDrop() {
         // Add folder event listeners (drop only, not drag)
         folder.addEventListener('dragover', handleFolderDragOver);
         folder.addEventListener('drop', handleFolderDrop);
+        
+        // Set up card title as drop zone for favorites
+        const cardTitle = folder.querySelector('.card-title');
+        if (cardTitle) {
+            cardTitle.addEventListener('dragover', handleCardTitleDragOver);
+            cardTitle.addEventListener('drop', handleCardTitleDrop);
+        }
     });
     
     // Continue with the rest of initialization
@@ -141,6 +148,55 @@ function createExtendedDropZone(folder, index) {
     // Position the folder relatively and append the extended zone
     folder.style.position = 'relative';
     folder.appendChild(extendedZone);
+}
+
+/**
+ * Handle drag over for card title (favorite drop zone)
+ */
+function handleCardTitleDragOver(e) {
+    // Only handle favorite drops, not folder drops
+    if (draggedFavorite !== null && draggedFolder === null) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+}
+
+/**
+ * Handle drop on card title (move favorite to folder)
+ */
+function handleCardTitleDrop(e) {
+    // Only handle favorite drops, not folder drops
+    if (draggedFavorite !== null && draggedFolder === null) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        
+        const folder = this.closest('.folder');
+        if (folder) {
+            const draggedFavoriteId = draggedFavorite.getAttribute('data-favorite-id');
+            const targetFolderId = folder.getAttribute('data-folder-id');
+            
+            // Validate IDs before making API call
+            if (draggedFavoriteId && targetFolderId) {
+                // Find the last favorite in the target folder
+                const lastFavorite = folder.querySelector('.favorite-item:last-child');
+                
+                if (lastFavorite) {
+                    // If folder has favorites, move below the last one using cross-folder move
+                    const lastFavoriteId = lastFavorite.getAttribute('data-favorite-id');
+                    moveFavoriteToNewFolder(draggedFavoriteId, lastFavoriteId, targetFolderId);
+                } else {
+                    // If folder is empty, use a simple update approach
+                    moveFavoriteToEmptyFolder(draggedFavoriteId, targetFolderId);
+                }
+            }
+        }
+        
+        return false;
+    }
 }
 
 /**

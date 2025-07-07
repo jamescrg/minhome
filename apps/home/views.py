@@ -738,8 +738,42 @@ def move_favorite_to_folder(request):
         
         # Get the favorites and folder, ensure they belong to the user
         dragged_favorite = get_object_or_404(Favorite, pk=dragged_favorite_id, user=request.user)
-        target_favorite = get_object_or_404(Favorite, pk=target_favorite_id, user=request.user)
         target_folder = get_object_or_404(Folder, pk=target_folder_id, user=request.user)
+        
+        # Handle empty folder case (target_favorite_id = -1)
+        if target_favorite_id == -1:
+            # Move to empty folder - just update folder and set home_rank to 1
+            original_folder_id = dragged_favorite.folder_id
+            dragged_favorite.folder_id = target_folder_id
+            if hasattr(dragged_favorite, 'home_rank'):
+                dragged_favorite.home_rank = 1
+            dragged_favorite.save()
+            
+            # Resequence the original folder if it's different
+            if original_folder_id != target_folder_id:
+                original_favorites = Favorite.objects.filter(
+                    user=request.user,
+                    folder_id=original_folder_id,
+                    home_rank__gt=0
+                ).order_by('home_rank')
+                
+                for index, fav in enumerate(original_favorites):
+                    fav.home_rank = index + 1
+                    fav.save()
+                    
+            return JsonResponse({
+                'success': True,
+                'message': f'Moved favorite to empty folder {target_folder_id}',
+                'moved_favorite': {
+                    'id': dragged_favorite.id,
+                    'name': dragged_favorite.name,
+                    'new_folder_id': target_folder_id,
+                    'new_rank': getattr(dragged_favorite, 'home_rank', None)
+                }
+            })
+        
+        # Normal case with target favorite
+        target_favorite = get_object_or_404(Favorite, pk=target_favorite_id, user=request.user)
         
         # Ensure target favorite is in the target folder
         if target_favorite.folder_id != target_folder_id:
