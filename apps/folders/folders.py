@@ -22,6 +22,21 @@ def get_task_folders(request):
     return folders
 
 
+def get_folders_for_page(request, page):
+    """Get folders for a specific page that the user owns or has edit access to."""
+    user = request.user
+    
+    folders = Folder.objects.filter(page=page)
+    
+    # Get folders that are owned by the user or shared with them
+    folders = folders.filter(
+        Q(user=user)
+        | Q(editors=user)
+    ).order_by("name")
+    
+    return folders
+
+
 def select_folder(request, page):
 
     user = request.user

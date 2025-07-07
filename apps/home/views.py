@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.home.google as google
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
+from apps.folders.folders import get_folders_for_page
 from apps.home.movement import sequence
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
@@ -50,7 +51,9 @@ def index(request):
     show_tasks = show_section(user, "tasks")
 
     # if tasks are shown, check for task_folders
-    task_folders = Folder.objects.filter(user=user, page="tasks", home_column__gt=1).order_by("name")
+    # Get all task folders that user has access to (owned or shared)
+    all_task_folders = get_folders_for_page(request, "tasks")
+    task_folders = all_task_folders.filter(home_column__gt=1)
     if task_folders:
 
         # eliminate folders with no tasks
@@ -113,8 +116,9 @@ def index(request):
 
     columns = []
     for i in range(1, 6):
-        folders = Folder.objects.filter(
-            user=user, page="favorites", home_column=i)
+        # Get all favorites folders that user has access to (owned or shared)
+        all_favorites_folders = get_folders_for_page(request, "favorites")
+        folders = all_favorites_folders.filter(home_column=i)
         folders = folders.order_by("home_rank")
         for folder in folders:
             favorites = Favorite.objects.filter(

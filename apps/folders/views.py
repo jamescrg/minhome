@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.folders.models import Folder
+from accounts.models import CustomUser
 
 
 @login_required
@@ -132,3 +133,47 @@ def home(request, id, page):
 
     home_folder.save()
     return redirect(page)
+
+
+@login_required
+def share(request, id, page):
+    """Manage sharing for a folder.
+    
+    Args:
+        id (int): a Folder instance id
+        page (str): the page to which the folder belongs
+    """
+    try:
+        folder = Folder.objects.filter(user=request.user, pk=id).get()
+    except ObjectDoesNotExist:
+        raise Http404("Record not found.")
+    
+    if request.method == 'POST':
+        # Handle adding/removing users from sharing
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
+        
+        if user_id and action:
+            try:
+                user = CustomUser.objects.get(pk=user_id)
+                if action == 'add':
+                    folder.editors.add(user)
+                elif action == 'remove':
+                    folder.editors.remove(user)
+                return JsonResponse({'status': 'success'})
+            except CustomUser.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'User not found'})
+    
+    # Get all users for sharing dropdown
+    all_users = CustomUser.objects.exclude(pk=request.user.pk)
+    current_editors = folder.editors.all()
+    available_users = all_users.exclude(pk__in=current_editors.values_list('pk', flat=True))
+    
+    context = {
+        'folder': folder,
+        'page': page,
+        'current_editors': current_editors,
+        'available_users': available_users,
+    }
+    
+    return render(request, 'folders/share.html', context)
