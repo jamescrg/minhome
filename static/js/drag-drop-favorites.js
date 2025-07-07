@@ -148,6 +148,11 @@ function handleFavoriteDragOver(e) {
  * Handle favorite drop
  */
 function handleFavoriteDrop(e) {
+    // If a folder is being dragged, don't handle this in the favorite drop handler
+    if (draggedFolder !== null) {
+        return; // Let the folder drop handler take care of it
+    }
+    
     if (e.stopPropagation) {
         e.stopPropagation();
     }
