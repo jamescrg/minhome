@@ -182,22 +182,35 @@
 
 .drag-handle {
   cursor: grab;
-  opacity: 0.6;
+  opacity: 0.8;
   transition: opacity 0.2s ease, color 0.2s ease;
   padding: 4px;
   border-radius: 3px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   line-height: 1;
+  text-decoration: none;
 }
 
 .drag-handle:hover {
   opacity: 1;
   color: #007bff !important;
   background-color: rgba(0, 123, 255, 0.1);
+  text-decoration: none;
 }
 
 .drag-handle:active {
   cursor: grabbing;
+}
+
+.drag-handle-icon {
+  margin-right: 6px;
+  opacity: 0.6;
+  font-size: 0.9em;
+}
+
+.drag-handle:hover .drag-handle-icon {
+  opacity: 1;
 }
 
 .folder.drag-over-top {

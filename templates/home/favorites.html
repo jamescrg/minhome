@@ -11,10 +11,9 @@
 
       <div class="card-title mh-fc">
 
-        <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
-
-        <a class="folder-icon drag-handle" href="javascript:void(0);">
-          <i class="bi-columns"></i>
+        <a href="/folders/{{ folder.id }}/favorites" class="drag-handle">
+          <i class="bi-grip-vertical drag-handle-icon"></i>
+          {{ folder.name }}
         </a>
 
       </div>

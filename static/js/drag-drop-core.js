@@ -38,13 +38,52 @@ function initializeDragDrop() {
  * Continue initialization after folder setup
  */
 function continueInitialization(dragHandles, dropZones) {
-    // Make only the drag handles draggable
+    // Set up drag handles with click/drag detection
     dragHandles.forEach((handle, index) => {
-        handle.draggable = true;
+        let dragTimeout;
+        let isDragging = false;
         
-        // Add drag handle event listeners
+        // Mouse down starts potential drag
+        handle.addEventListener('mousedown', function(e) {
+            dragTimeout = setTimeout(() => {
+                // After delay, enable dragging
+                handle.draggable = true;
+                isDragging = true;
+                handle.style.cursor = 'grabbing';
+            }, 150); // 150ms delay before drag starts
+        });
+        
+        // Mouse up cancels drag or allows navigation
+        handle.addEventListener('mouseup', function(e) {
+            clearTimeout(dragTimeout);
+            if (!isDragging) {
+                // Short click - allow navigation
+                window.location.href = handle.href;
+            } else {
+                // Was dragging - clean up
+                handle.draggable = false;
+                isDragging = false;
+                handle.style.cursor = 'grab';
+            }
+        });
+        
+        // Prevent default link behavior during drag
+        handle.addEventListener('click', function(e) {
+            if (isDragging) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Add drag event listeners
         handle.addEventListener('dragstart', handleDragHandleDragStart);
-        handle.addEventListener('dragend', handleDragHandleDragEnd);
+        handle.addEventListener('dragend', function(e) {
+            handleDragHandleDragEnd.call(this, e);
+            // Clean up drag state
+            handle.draggable = false;
+            isDragging = false;
+            handle.style.cursor = 'grab';
+        });
     });
     
     // Calculate optimal drop zone height
