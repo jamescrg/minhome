@@ -38,52 +38,64 @@ function initializeDragDrop() {
  * Continue initialization after folder setup
  */
 function continueInitialization(dragHandles, dropZones) {
-    // Set up drag handles with click/drag detection
+    // Set up drag handles with different behavior based on type
     dragHandles.forEach((handle, index) => {
-        let dragTimeout;
-        let isDragging = false;
+        const isNavigationLink = handle.href && !handle.href.includes('javascript:void(0)');
         
-        // Mouse down starts potential drag
-        handle.addEventListener('mousedown', function(e) {
-            dragTimeout = setTimeout(() => {
-                // After delay, enable dragging
-                handle.draggable = true;
-                isDragging = true;
-                handle.style.cursor = 'grabbing';
-            }, 150); // 150ms delay before drag starts
-        });
-        
-        // Mouse up cancels drag or allows navigation
-        handle.addEventListener('mouseup', function(e) {
-            clearTimeout(dragTimeout);
-            if (!isDragging) {
-                // Short click - allow navigation
-                window.location.href = handle.href;
-            } else {
-                // Was dragging - clean up
+        if (isNavigationLink) {
+            // Folder title link - needs click/drag detection
+            let dragTimeout;
+            let isDragging = false;
+            
+            // Mouse down starts potential drag
+            handle.addEventListener('mousedown', function(e) {
+                dragTimeout = setTimeout(() => {
+                    // After delay, enable dragging
+                    handle.draggable = true;
+                    isDragging = true;
+                    handle.style.cursor = 'grabbing';
+                }, 150); // 150ms delay before drag starts
+            });
+            
+            // Mouse up cancels drag or allows navigation
+            handle.addEventListener('mouseup', function(e) {
+                clearTimeout(dragTimeout);
+                if (!isDragging) {
+                    // Short click - allow navigation
+                    window.location.href = handle.href;
+                } else {
+                    // Was dragging - clean up
+                    handle.draggable = false;
+                    isDragging = false;
+                    handle.style.cursor = 'grab';
+                }
+            });
+            
+            // Prevent default link behavior during drag
+            handle.addEventListener('click', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Add drag event listeners
+            handle.addEventListener('dragstart', handleDragHandleDragStart);
+            handle.addEventListener('dragend', function(e) {
+                handleDragHandleDragEnd.call(this, e);
+                // Clean up drag state
                 handle.draggable = false;
                 isDragging = false;
                 handle.style.cursor = 'grab';
-            }
-        });
-        
-        // Prevent default link behavior during drag
-        handle.addEventListener('click', function(e) {
-            if (isDragging) {
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        // Add drag event listeners
-        handle.addEventListener('dragstart', handleDragHandleDragStart);
-        handle.addEventListener('dragend', function(e) {
-            handleDragHandleDragEnd.call(this, e);
-            // Clean up drag state
-            handle.draggable = false;
-            isDragging = false;
-            handle.style.cursor = 'grab';
-        });
+            });
+        } else {
+            // Folder icon - always draggable, no navigation
+            handle.draggable = true;
+            
+            // Add drag event listeners
+            handle.addEventListener('dragstart', handleDragHandleDragStart);
+            handle.addEventListener('dragend', handleDragHandleDragEnd);
+        }
     });
     
     // Calculate optimal drop zone height

@@ -182,18 +182,15 @@
 
 .drag-handle {
   cursor: grab;
-  opacity: 0.8;
   transition: opacity 0.2s ease, color 0.2s ease;
   padding: 4px;
   border-radius: 3px;
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   line-height: 1;
   text-decoration: none;
 }
 
 .drag-handle:hover {
-  opacity: 1;
   color: #007bff !important;
   background-color: rgba(0, 123, 255, 0.1);
   text-decoration: none;
@@ -203,13 +200,21 @@
   cursor: grabbing;
 }
 
-.drag-handle-icon {
-  margin-right: 6px;
-  opacity: 0.6;
-  font-size: 0.9em;
+/* Folder title drag handle */
+.card-title .drag-handle {
+  opacity: 0.8;
 }
 
-.drag-handle:hover .drag-handle-icon {
+.card-title .drag-handle:hover {
+  opacity: 1;
+}
+
+/* Folder icon drag handle */
+.folder-icon.drag-handle {
+  opacity: 0.4;
+}
+
+.folder-icon.drag-handle:hover {
   opacity: 1;
 }
 
