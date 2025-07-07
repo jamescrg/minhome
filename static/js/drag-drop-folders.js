@@ -92,28 +92,8 @@ function handleFolderDrop(e) {
         const targetFolderId = this.getAttribute('data-folder-id');
         const targetColumn = parseInt(this.getAttribute('data-current-column'));
         
-        // Check if we're dropping on an extended drop zone (the gap area)
-        const isExtendedZone = this.classList.contains('folder-extended-drop-zone');
-        
-        if (draggedColumn === targetColumn) {
-            // Same column
-            if (isExtendedZone) {
-                // Dropping in gap - place below the target folder
-                insertBelowFolder(draggedFolderId, targetFolderId, targetColumn);
-            } else {
-                // Dropping on folder - swap positions
-                swapFolderPositions(draggedFolderId, targetFolderId);
-            }
-        } else {
-            // Cross-column drop
-            if (isExtendedZone) {
-                // Dropping in gap - place below the target folder
-                insertBelowFolder(draggedFolderId, targetFolderId, targetColumn);
-            } else {
-                // Dropping on folder - insert at target folder's position
-                insertFolderAtPosition(draggedFolderId, targetFolderId, targetColumn);
-            }
-        }
+        // Always insert below the target folder when dropping on any folder or its extended zone
+        insertBelowFolder(draggedFolderId, targetFolderId, targetColumn);
     }
     
     return false;
