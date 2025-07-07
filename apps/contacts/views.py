@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folder
+from apps.folders.folders import select_folder, get_folders_for_page
 from apps.folders.models import Folder
 
 
@@ -21,8 +21,7 @@ def index(request):
 
     """
 
-    folders = Folder.objects.filter(
-        user=request.user, page="contacts").order_by("name")
+    folders = get_folders_for_page(request, "contacts")
 
     selected_folder = select_folder(request, "contacts")
 
@@ -87,7 +86,7 @@ def add(request):
 
     # load initial page values (user, folders, selected folder)
     user = request.user
-    folders = Folder.objects.filter(user=user, page="contacts").order_by("name")
+    folders = get_folders_for_page(request, "contacts")
 
     selected_folder = select_folder(request, "contacts")
 
@@ -125,9 +124,7 @@ def add(request):
         else:
             form = ContactForm()
 
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="contacts"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "contacts")
 
     context = {
         "page": "contacts",
@@ -156,7 +153,7 @@ def edit(request, id):
     """
 
     user = request.user
-    folders = Folder.objects.filter(user=user, page="contacts").order_by("name")
+    folders = get_folders_for_page(request, "contacts")
 
     selected_folder = select_folder(request, "contacts")
 
@@ -191,9 +188,7 @@ def edit(request, id):
         else:
             form = ContactForm(instance=contact)
 
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="contacts"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "contacts")
 
     context = {
         "page": "contacts",

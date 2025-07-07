@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folder
+from apps.folders.folders import select_folder, get_folders_for_page
 from apps.folders.models import Folder
 
 
@@ -21,7 +21,7 @@ def index(request):
 
     user = request.user
 
-    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
+    folders = get_folders_for_page(request, "favorites")
 
     selected_folder = select_folder(request, "favorites")
 
@@ -52,7 +52,7 @@ def add(request):
 
     """
     user = request.user
-    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
+    folders = get_folders_for_page(request, "favorites")
 
     selected_folder = select_folder(request, "favorites")
 
@@ -71,9 +71,7 @@ def add(request):
         else:
             form = FavoriteForm()
 
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="favorites"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
     context = {
         "page": "favorites",
@@ -98,7 +96,7 @@ def edit(request, id):
 
     """
     user = request.user
-    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
+    folders = get_folders_for_page(request, "favorites")
 
     selected_folder = select_folder(request, "favorites")
 
@@ -126,9 +124,7 @@ def edit(request, id):
         else:
             form = FavoriteForm(instance=favorite)
 
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="favorites"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
     context = {
         "page": "favorites",

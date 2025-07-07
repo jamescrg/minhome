@@ -24,6 +24,7 @@ urlpatterns = [
     path("folders/insert/<str:page>", folders.insert, name="folder-insert"),
     path("folders/update/<int:id>/<str:page>", folders.update, name="folder-update"),
     path("folders/delete/<int:id>/<str:page>", folders.delete, name="folder-delete"),
+    path("folders/share/<int:id>/<str:page>", folders.share, name="folder-share"),
     # home
     path("", home.index, name="home-index"),
     path("home/", home.index, name="home"),

@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.folders.folders import select_folder
+from apps.folders.folders import select_folder, get_folders_for_page
 from apps.folders.models import Folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
@@ -24,7 +24,7 @@ def index(request):
     user = request.user
     page = "notes"
 
-    folders = Folder.objects.filter(user=user, page=page).order_by("name")
+    folders = get_folders_for_page(request, page)
 
     selected_folder = select_folder(request, "notes")
 
@@ -82,7 +82,7 @@ def add(request):
     """
 
     user = request.user
-    folders = Folder.objects.filter(user=user, page="notes").order_by("name")
+    folders = get_folders_for_page(request, "notes")
 
     selected_folder = select_folder(request, "notes")
 
@@ -122,9 +122,7 @@ def add(request):
             form = NoteForm()
 
     # set the initial range of values for folder attribute
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="notes"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
 
     context = {
         "page": "notes",
@@ -152,7 +150,7 @@ def edit(request, id):
     """
 
     user = request.user
-    folders = Folder.objects.filter(user=user, page="notes").order_by("name")
+    folders = get_folders_for_page(request, "notes")
 
     selected_folder = select_folder(request, "notes")
 
@@ -179,9 +177,7 @@ def edit(request, id):
         else:
             form = NoteForm(instance=note)
 
-    form.fields["folder"].queryset = Folder.objects.filter(
-        user=user, page="notes"
-    ).order_by("name")
+    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
 
     context = {
         "page": "notes",

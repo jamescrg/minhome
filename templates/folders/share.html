@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Share Folder - {{ folder.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Share Folder: {{ folder.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Manage who can access and edit this folder.</p>
+                    
+                    <!-- Current shared users -->
+                    <h5>Currently Shared With:</h5>
+                    {% if current_editors %}
+                        <div class="list-group mb-3">
+                            {% for editor in current_editors %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-person-fill me-2"></i>
+                                        {{ editor.email }}
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="removeAccess({{ editor.id }})">
+                                        Remove
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">This folder is not shared with anyone.</p>
+                    {% endif %}
+                    
+                    <!-- Add new user -->
+                    <h5>Add New User:</h5>
+                    {% if available_users %}
+                        <div class="input-group mb-3">
+                            <select class="form-select" id="userSelect">
+                                <option value="">Select a user...</option>
+                                {% for user in available_users %}
+                                    <option value="{{ user.id }}">{{ user.email }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-primary" onclick="addAccess()">
+                                Add User
+                            </button>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No additional users available to share with.</p>
+                    {% endif %}
+                    
+                    <!-- Action buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/{{ page }}/" class="btn btn-secondary">Back to {{ page|title }}</a>
+                        <div class="text-muted small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Users with access can view and edit all items in this folder
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addAccess() {
+    const userSelect = document.getElementById('userSelect');
+    const userId = userSelect.value;
+    
+    if (!userId) {
+        alert('Please select a user to add.');
+        return;
+    }
+    
+    fetch(`/folders/share/{{ folder.id }}/{{ page }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `user_id=${userId}&action=add`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            alert('Error adding user: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding user');
+    });
+}
+
+function removeAccess(userId) {
+    if (!confirm('Are you sure you want to remove this user\'s access?')) {
+        return;
+    }
+    
+    fetch(`/folders/share/{{ folder.id }}/{{ page }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `user_id=${userId}&action=remove`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            alert('Error removing user: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error removing user');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}
