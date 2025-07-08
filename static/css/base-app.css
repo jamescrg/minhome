@@ -36,7 +36,6 @@ body {
 }
 
 
-
 /*------------------------------------------------
  * links
  * ------------------------------------------------*/
@@ -162,6 +161,14 @@ li {
   background: var(--lime-900);
   border: none;
   color: var(--warm-gray-300);
+}
+
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: var(--warm-gray-500);
+  border: none;
+  color: var(--warm-gray-100);
 }
 
 .btn-icon {
