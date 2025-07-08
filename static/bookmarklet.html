@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Favorites Bookmarklet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .bookmarklet {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .bookmarklet a {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .bookmarklet a:hover {
+            background: #0056b3;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .instructions {
+            background: #e9f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add to Favorites Bookmarklet</h1>
+
+    <div class="instructions">
+        <h3>📋 How to Install the Bookmarklet:</h3>
+        <ol>
+            <li><strong>Update the domain:</strong> Edit the JavaScript below and replace <code>YOUR_DOMAIN</code> with your actual domain (e.g., <code>localhost:8000</code> or <code>example.com</code>)</li>
+            <li><strong>Drag to bookmarks bar:</strong> Drag the "Add to Favorites" link below to your browser's bookmarks bar</li>
+            <li><strong>Use it:</strong> Visit any webpage and click the bookmark to add it to your favorites</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ Important:</strong> You must be logged into your app for the bookmarklet to work!
+    </div>
+
+    <h2>Bookmarklet</h2>
+    <div class="bookmarklet">
+        <a href="javascript:(function(){var d='dev.minhome.app',u=location.href,t=document.title,nm=prompt('Name:',t),ur=prompt('URL:',u);if(nm){var w=window.open('','_blank','width=400,height=300');w.document.write('<form method=post action=https://'+d+'/favorites/add><input name=name value=\"'+nm.replace(/\"/g,'&quot;')+'\" readonly><input name=url value=\"'+ur+'\" readonly><input type=submit value=\"Save Favorite\"></form>');w.document.close()}})()">
+            ⭐ Add to Favorites (Simple)
+        </a>
+    </div>
+    
+    <div class="bookmarklet">
+        <a href="javascript:(function(){var d='dev.minhome.app',u=location.href,t=document.title,nm=prompt('Name:',t),ur=prompt('URL:',u);if(nm){window.open('https://'+d+'/favorites/add?name='+encodeURIComponent(nm)+'&url='+encodeURIComponent(ur),'_blank','width=500,height=400')}})()">
+            📝 Add to Favorites (Opens Form)
+        </a>
+    </div>
+    
+    <div class="bookmarklet">
+        <a href="javascript:(function(){var d='dev.minhome.app',u=location.href,t=document.title;window.open('https://'+d+'/favorites/bookmarklet?name='+encodeURIComponent(t)+'&url='+encodeURIComponent(u),'_blank','width=450,height=550')})()">
+            🚀 Quick Add (Clean Form)
+        </a>
+    </div>
+    
+    <p><strong>👆 Drag the blue button above to your bookmarks bar!</strong></p>
+
+    <h2>Manual Installation</h2>
+    <p>If drag-and-drop doesn't work, you can manually create a bookmark:</p>
+    <ol>
+        <li>Create a new bookmark in your browser</li>
+        <li>Set the name to: <code>Add to Favorites</code></li>
+        <li>Copy the JavaScript code below and paste it as the URL (make sure to replace YOUR_DOMAIN first)</li>
+    </ol>
+
+    <h3>Formatted JavaScript Code (for debugging):</h3>
+    <textarea readonly style="width: 100%; height: 300px; font-family: monospace; font-size: 12px;">javascript:(function() {
+    var domain = 'dev.minhome.app'; // ⚠️ CHANGE THIS TO YOUR DOMAIN
+    var url = window.location.href;
+    var title = document.title || url;
+
+    // Create modal
+    var modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;';
+
+    var form = document.createElement('div');
+    form.style.cssText = 'background:white;padding:30px;border-radius:10px;width:400px;max-width:90%;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+
+    form.innerHTML = '<h3 style="margin:0 0 20px 0;color:#333;">Add to Favorites</h3>' +
+        '<div style="margin-bottom:15px;"><label style="display:block;margin-bottom:5px;font-weight:bold;">Name:</label>' +
+        '<input type="text" id="fav-name" value="' + title.replace(/"/g, '&quot;') + '" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;"></div>' +
+        '<div style="margin-bottom:15px;"><label style="display:block;margin-bottom:5px;font-weight:bold;">URL:</label>' +
+        '<input type="text" id="fav-url" value="' + url + '" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;"></div>' +
+        '<div style="margin-bottom:20px;"><label style="display:block;margin-bottom:5px;font-weight:bold;">Folder:</label>' +
+        '<select id="fav-folder" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;"><option value="">Loading folders...</option></select></div>' +
+        '<div style="text-align:right;"><button id="cancel-btn" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px;margin-right:10px;cursor:pointer;">Cancel</button>' +
+        '<button id="save-btn" style="background:#007bff;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Save</button></div>' +
+        '<div id="status" style="margin-top:15px;text-align:center;font-weight:bold;"></div>';
+
+    modal.appendChild(form);
+    document.body.appendChild(modal);
+
+    // Load folders
+    fetch('https://' + domain + '/favorites/api/folders', {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        var select = document.getElementById('fav-folder');
+        if (data.success) {
+            select.innerHTML = '<option value="">No folder (ungrouped)</option>';
+            data.folders.forEach(function(folder) {
+                select.innerHTML += '<option value="' + folder.id + '">' + folder.name + '</option>';
+            });
+        } else {
+            select.innerHTML = '<option value="">Error loading folders</option>';
+        }
+    })
+    .catch(function(error) {
+        document.getElementById('fav-folder').innerHTML = '<option value="">Error loading folders</option>';
+    });
+
+    // Event handlers
+    document.getElementById('cancel-btn').onclick = function() {
+        document.body.removeChild(modal);
+    };
+
+    document.getElementById('save-btn').onclick = function() {
+        var name = document.getElementById('fav-name').value.trim();
+        var url = document.getElementById('fav-url').value.trim();
+        var folderId = document.getElementById('fav-folder').value;
+
+        if (!name) {
+            document.getElementById('status').innerHTML = '<span style="color:red;">Name is required</span>';
+            return;
+        }
+
+        document.getElementById('status').innerHTML = '<span style="color:blue;">Saving...</span>';
+
+        var formData = new FormData();
+        formData.append('name', name);
+        formData.append('url', url);
+        if (folderId) formData.append('folder_id', folderId);
+
+        fetch('https://' + domain + '/favorites/api/add', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.success) {
+                document.getElementById('status').innerHTML = '<span style="color:green;">✓ Saved successfully!</span>';
+                setTimeout(function() {
+                    document.body.removeChild(modal);
+                }, 1500);
+            } else {
+                document.getElementById('status').innerHTML = '<span style="color:red;">Error: ' + data.error + '</span>';
+            }
+        })
+        .catch(function(error) {
+            document.getElementById('status').innerHTML = '<span style="color:red;">Network error</span>';
+        });
+    };
+
+    // Close on escape
+    var escapeHandler = function(e) {
+        if (e.key === 'Escape' && document.body.contains(modal)) {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+})();</textarea>
+
+    <h2>Features</h2>
+    <ul>
+        <li>✅ <strong>Auto-fills:</strong> Page title and URL</li>
+        <li>✅ <strong>Folder selection:</strong> Choose which folder to save to</li>
+        <li>✅ <strong>Edit before saving:</strong> Modify the name or URL</li>
+        <li>✅ <strong>Clean UI:</strong> Modal popup that doesn't interfere with the page</li>
+        <li>✅ <strong>Keyboard shortcuts:</strong> Press Escape to cancel</li>
+        <li>✅ <strong>Error handling:</strong> Shows helpful error messages</li>
+        <li>✅ <strong>Auto-shows on home:</strong> New favorites automatically appear on your home page</li>
+    </ul>
+
+    <h2>How It Works</h2>
+    <ol>
+        <li>When you click the bookmarklet, it creates a modal popup</li>
+        <li>It fetches your folders from your app</li>
+        <li>You can edit the name, URL, and choose a folder</li>
+        <li>It sends the data to your app's API to create the favorite</li>
+        <li>The favorite will appear on your home page and in the favorites section</li>
+    </ol>
+
+    <div class="warning">
+        <strong>🔒 Security Note:</strong> This bookmarklet only works on sites that allow cross-origin requests to your domain. If you encounter CORS errors, you may need to configure your Django app's CORS settings.
+    </div>
+
+</body>
+</html>

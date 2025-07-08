@@ -1,12 +1,26 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
 from apps.folders.folders import select_folder, get_folders_for_page
 from apps.folders.models import Folder
+
+
+def cors_headers(view_func):
+    """Decorator to add CORS headers for extension requests"""
+    def wrapper(request, *args, **kwargs):
+        response = view_func(request, *args, **kwargs)
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRFToken'
+        response['Access-Control-Allow-Credentials'] = 'true'
+        return response
+    return wrapper
 
 
 @login_required
@@ -66,10 +80,20 @@ def add(request):
             return redirect("favorites")
 
     else:
+        # Pre-fill form with URL parameters if provided (for bookmarklet)
+        initial_data = {}
         if selected_folder:
-            form = FavoriteForm(initial={"folder": selected_folder.id})
-        else:
-            form = FavoriteForm()
+            initial_data["folder"] = selected_folder.id
+        
+        # Check for extension parameters
+        name = request.GET.get('name', '').strip()
+        url = request.GET.get('url', '').strip()
+        if name:
+            initial_data['name'] = name
+        if url:
+            initial_data['url'] = url
+            
+        form = FavoriteForm(initial=initial_data)
 
     form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
@@ -171,3 +195,140 @@ def home(request, id):
         favorite.home_rank = 1
     favorite.save()
     return redirect("favorites")
+
+
+@cors_headers
+@csrf_exempt
+def api_add(request):
+    """API endpoint to add a favorite via extension
+    
+    Expected POST data:
+        name: The name/title of the favorite
+        url: The URL to save
+        folder_id: (optional) ID of folder to save to
+    """
+    # Handle OPTIONS request for CORS preflight
+    if request.method == 'OPTIONS':
+        return JsonResponse({})
+    
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required'})
+    
+    try:
+        name = request.POST.get('name', '').strip()
+        url = request.POST.get('url', '').strip()
+        folder_id = request.POST.get('folder_id', '').strip()
+        
+        # Validate required fields
+        if not name or len(name) < 2:
+            return JsonResponse({'success': False, 'error': 'Name is required and must be at least 2 characters'})
+        
+        if len(name) > 100:
+            return JsonResponse({'success': False, 'error': 'Name must be 100 characters or less'})
+            
+        if url and len(url) > 255:
+            return JsonResponse({'success': False, 'error': 'URL must be 255 characters or less'})
+        
+        # Create the favorite
+        favorite = Favorite(
+            user=request.user,
+            name=name,
+            url=url
+        )
+        
+        # Set folder if provided
+        if folder_id:
+            try:
+                folder_id = int(folder_id)
+                folder = Folder.objects.get(pk=folder_id, user=request.user)
+                favorite.folder = folder
+            except (ValueError, Folder.DoesNotExist):
+                return JsonResponse({'success': False, 'error': 'Invalid folder ID'})
+        
+        # Set home_rank to 1 to make it visible on home page
+        favorite.home_rank = 1
+        favorite.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Favorite added successfully',
+            'favorite': {
+                'id': favorite.id,
+                'name': favorite.name,
+                'url': favorite.url,
+                'folder_id': favorite.folder_id if favorite.folder else None
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@cors_headers
+@csrf_exempt
+def api_folders(request):
+    """API endpoint to get user's folders for extension"""
+    # Handle OPTIONS request for CORS preflight
+    if request.method == 'OPTIONS':
+        return JsonResponse({})
+        
+    if request.method != 'GET':
+        return JsonResponse({'success': False, 'error': 'Only GET method allowed'})
+    
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required'})
+    
+    try:
+        folders = get_folders_for_page(request, "favorites")
+        folder_list = [{'id': folder.id, 'name': folder.name} for folder in folders]
+        
+        return JsonResponse({
+            'success': True,
+            'folders': folder_list
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@login_required
+def extension_add(request):
+    """Minimal extension form without site layout"""
+    if request.method == "POST":
+        form = FavoriteForm(request.POST)
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.user = request.user
+            favorite.home_rank = 1  # Show on home page
+            favorite.save()
+            # Return a simple success page
+            return render(request, "favorites/extension_success.html", {
+                'favorite': favorite
+            })
+        # If form is not valid, it will fall through and re-render with errors
+    else:
+        # Pre-fill form with URL parameters
+        initial_data = {}
+        name = request.GET.get('name', '').strip()
+        url = request.GET.get('url', '').strip()
+        if name:
+            initial_data['name'] = name
+        if url:
+            initial_data['url'] = url
+            
+        form = FavoriteForm(initial=initial_data)
+
+    form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
+    
+    context = {
+        'form': form,
+        'page_title': 'Add Favorite',
+        'name': request.GET.get('name', ''),
+        'url': request.GET.get('url', ''),
+    }
+    return render(request, "favorites/extension_form.html", context)

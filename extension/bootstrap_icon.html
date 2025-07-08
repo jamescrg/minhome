@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Bookmark-Fill Icon - Lime-800</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        canvas { 
+            border: 2px solid #ddd; 
+            margin: 20px 10px; 
+            border-radius: 8px;
+        }
+        .icon-set { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .download-btn {
+            background: #365314;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .download-btn:hover {
+            background: #4d7c0f;
+        }
+        h1 { color: #365314; text-align: center; }
+        h3 { color: #65a30d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Bootstrap Bookmark-Fill Icon</h1>
+        <p>Exact Bootstrap bookmark-fill icon in lime-800 color.</p>
+        
+        <div class="icon-set">
+            <h3>16x16 - Toolbar Icon</h3>
+            <canvas id="icon16" width="16" height="16"></canvas>
+            <button class="download-btn" onclick="downloadIcon('icon16', 'icon-16.png')">📥 Download 16x16</button>
+        </div>
+        
+        <div class="icon-set">
+            <h3>32x32 - Standard Icon</h3>
+            <canvas id="icon32" width="32" height="32"></canvas>
+            <button class="download-btn" onclick="downloadIcon('icon32', 'icon-32.png')">📥 Download 32x32</button>
+        </div>
+        
+        <div class="icon-set">
+            <h3>48x48 - Main Extension Icon</h3>
+            <canvas id="icon48" width="48" height="48"></canvas>
+            <button class="download-btn" onclick="downloadIcon('icon48', 'icon.png')">📥 Download 48x48 (Main)</button>
+        </div>
+        
+        <div class="icon-set">
+            <h3>128x128 - Store Listing</h3>
+            <canvas id="icon128" width="128" height="128"></canvas>
+            <button class="download-btn" onclick="downloadIcon('icon128', 'icon-128.png')">📥 Download 128x128</button>
+        </div>
+    </div>
+
+    <script>
+        function drawBootstrapBookmarkFill(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Bootstrap bookmark-fill SVG path: 
+            // "M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"
+            // Original viewBox is 0 0 16 16
+            
+            const scale = size / 16;
+            const limeGreen = '#365314'; // lime-800
+            
+            ctx.fillStyle = limeGreen;
+            ctx.beginPath();
+            
+            // Scale the path coordinates
+            ctx.moveTo(2 * scale, 2 * scale);
+            ctx.lineTo(2 * scale, 15.5 * scale);
+            
+            // Curve for the .5.5 0 0 0 .74.439 part (approximated)
+            ctx.lineTo(2.74 * scale, 15.939 * scale);
+            ctx.lineTo(8 * scale, 13.069 * scale);
+            ctx.lineTo(13.26 * scale, 15.939 * scale);
+            
+            // Curve for the .5.5 0 0 0 part (approximated) 
+            ctx.lineTo(14 * scale, 15.5 * scale);
+            ctx.lineTo(14 * scale, 2 * scale);
+            
+            // Rounded top corners (2 2 0 0 0-2-2)
+            ctx.arcTo(14 * scale, 0 * scale, 12 * scale, 0 * scale, 2 * scale);
+            ctx.lineTo(4 * scale, 0 * scale);
+            ctx.arcTo(2 * scale, 0 * scale, 2 * scale, 2 * scale, 2 * scale);
+            
+            ctx.closePath();
+            ctx.fill();
+            
+            return canvas;
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Generate all icons on load
+        window.onload = function() {
+            drawBootstrapBookmarkFill('icon16', 16);
+            drawBootstrapBookmarkFill('icon32', 32);
+            drawBootstrapBookmarkFill('icon48', 48);
+            drawBootstrapBookmarkFill('icon128', 128);
+        };
+    </script>
+</body>
+</html>
