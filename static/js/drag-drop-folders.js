@@ -92,8 +92,8 @@ function handleFolderDrop(e) {
         const targetFolderId = this.getAttribute('data-folder-id');
         const targetColumn = parseInt(this.getAttribute('data-current-column'));
         
-        // Always insert below the target folder when dropping on any folder or its extended zone
-        insertBelowFolder(draggedFolderId, targetFolderId, targetColumn);
+        // Always insert above the target folder when dropping on any folder or its extended zone
+        insertAboveFolder(draggedFolderId, targetFolderId, targetColumn);
     }
     
     return false;

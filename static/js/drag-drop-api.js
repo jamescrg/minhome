@@ -33,14 +33,14 @@ function swapFolderPositions(draggedFolderId, targetFolderId) {
 }
 
 /**
- * Insert folder below another folder (gap drop)
+ * Insert folder above another folder
  */
-function insertBelowFolder(draggedFolderId, targetFolderId, targetColumn) {
+function insertAboveFolder(draggedFolderId, targetFolderId, targetColumn) {
     const formData = new FormData();
     formData.append('dragged_folder_id', draggedFolderId);
     formData.append('target_folder_id', targetFolderId);
     formData.append('target_column', targetColumn);
-    formData.append('insert_below', 'true');
+    formData.append('insert_below', 'false');
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     
     fetch('/home/insert-folder-at-position/', {
@@ -53,13 +53,13 @@ function insertBelowFolder(draggedFolderId, targetFolderId, targetColumn) {
             // Reload the page to reflect the changes
             window.location.reload();
         } else {
-            console.error('Error inserting folder below:', data.error);
-            alert('Error inserting folder below: ' + data.error);
+            console.error('Error inserting folder above:', data.error);
+            alert('Error inserting folder above: ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error inserting folder below');
+        alert('Error inserting folder above');
     });
 }
 
