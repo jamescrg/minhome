@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
-from apps.folders.folders import get_task_folders, select_folder
+from apps.folders.folders import get_task_folders, select_folder, get_breadcrumbs
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
@@ -22,22 +22,28 @@ def index(request):
     """
 
     user = request.user
-    folders = get_task_folders(request)
-
     selected_folder = select_folder(request, "tasks")
+    
+    # Get child folders of the selected folder, or root folders if none selected
+    folders = get_task_folders(request, parent=selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = get_breadcrumbs(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
+        # Get tasks from selected folder and all its descendants
+        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
+        tasks = Task.objects.filter(folder__id__in=folder_ids).order_by("status", "title")
     else:
         tasks = Task.objects.filter(
             user=user, folder__isnull=True).order_by("status", "title")
-
 
     context = {
         "page": "tasks",
         "folders": folders,
         "selected_folder": selected_folder,
         "tasks": tasks,
+        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "tasks/content.html", context)

@@ -1,4 +1,3 @@
-
 <div class="card folders">
 
   <div class="card-title mh-fc">
@@ -22,32 +21,33 @@
 
       <div class="folder-show mh-fc">
 
-        {% if folder.home_column and folder.user == user %}
-
+        {% if folder.children.exists %}
+          <span class="folder-icon">
+            <i class="bi bi-folder-fill"></i>
+          </span>
+        {% elif folder.home_column and folder.user == user %}
           <span class="folder-icon-home">
             <i class="bi bi-house-door"></i>
           </span>
-
         {% else %}
-
           <span class="folder-icon">
             <i class="bi bi-folder"></i>
           </span>
-
         {% endif %}
 
         <a class="folder-link"
             href="/folders/{{ folder.id }}/{{ page }}"
-            {% if page != tasks and folder.id == selected_folder.id %}
+            {% if page != 'tasks' and folder.id == selected_folder.id %}
             style="font-weight: 600;"
-            {% endif %};
+            {% endif %}
             {% if page == 'tasks' and folder in selected_folders %}
             style="font-weight: 600;"
-            {% endif %};
+            {% endif %}
             >
-
             {{ folder.name }}
-
+            {% if folder.children.exists %}
+              <span class="text-muted small">({{ folder.children.count }})</span>
+            {% endif %}
         </a>
       </div>
 
@@ -63,21 +63,11 @@
 
       <div class="folder-show mh-fc">
 
-        {% if folder.home_column and folder.user == user %}
+        <span class="folder-icon">
+          <i class="bi bi-folder"></i>
+        </span>
 
-          <span class="folder-icon-home">
-            <i class="bi bi-house-door"></i>
-          </span>
-
-        {% else %}
-
-          <span class="folder-icon">
-            <i class="bi bi-folder"></i>
-          </span>
-
-        {% endif %}
-
-        <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %};>
+        <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %}>
           Unsorted
         </a>
 

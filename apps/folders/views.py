@@ -19,6 +19,17 @@ def select(request, id, page):
     user = request.user
     setattr(user, page + "_folder", id)
     user.save()
+    
+    # Store the current folder path for breadcrumbs
+    if id and id != "0":
+        try:
+            folder = Folder.objects.get(pk=id)
+            request.session[f"{page}_folder_path"] = [f.id for f in folder.get_ancestors()] + [folder.id]
+        except Folder.DoesNotExist:
+            request.session[f"{page}_folder_path"] = []
+    else:
+        request.session[f"{page}_folder_path"] = []
+    
     return redirect(page)
 
 
@@ -37,7 +48,14 @@ def insert(request, page):
     folder.user = request.user
     folder.page = page
     for field in folder.fillable:
-        setattr(folder, field, request.POST.get(field))
+        value = request.POST.get(field)
+        if field == 'parent' and value:
+            # Convert parent ID to actual Folder instance
+            try:
+                value = Folder.objects.get(pk=value, user=request.user, page=page)
+            except Folder.DoesNotExist:
+                value = None
+        setattr(folder, field, value)
     folder.save()
     return redirect(page)
 
@@ -59,7 +77,17 @@ def update(request, id, page):
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
     for field in folder.fillable:
-        setattr(folder, field, request.POST.get(field))
+        value = request.POST.get(field)
+        if field == 'parent' and value:
+            # Convert parent ID to actual Folder instance
+            try:
+                value = Folder.objects.get(pk=value, user=request.user, page=page)
+                # Prevent setting a folder as its own parent or a descendant as parent
+                if value.id == folder.id or folder in value.get_ancestors():
+                    value = folder.parent  # Keep current parent
+            except Folder.DoesNotExist:
+                value = None
+        setattr(folder, field, value)
     folder.save()
     return redirect(page)
 

@@ -11,6 +11,7 @@ class Folder(models.Model):
         user (int): the user who created and owns the folder
         page (str): the page to which the folder belongs
         name (str): the name or title of the folder
+        parent (Folder): parent folder for nesting (optional)
         home_column (int): whether the folder should be displayed on the home page, and
             if so, what rank it should have within its folder
         home_rank (int): whether the folder should be displayed on the home page, and
@@ -27,6 +28,9 @@ class Folder(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="folder_owner")
     page = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, related_name="children", 
+        blank=True, null=True, db_index=True)
     home_column = models.IntegerField(blank=True, null=True)
     home_rank = models.IntegerField(blank=True, null=True)
     selected = models.IntegerField(blank=True, null=True)
@@ -35,6 +39,7 @@ class Folder(models.Model):
 
     fillable = [
         "name",
+        "parent",
         "home_column",
         "home_rank",
         "selected",
@@ -43,6 +48,23 @@ class Folder(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+    def get_ancestors(self):
+        """Get all parent folders up to root."""
+        ancestors = []
+        current = self.parent
+        while current:
+            ancestors.insert(0, current)
+            current = current.parent
+        return ancestors
+    
+    def get_descendants(self):
+        """Get all child folders recursively."""
+        descendants = []
+        for child in self.children.all():
+            descendants.append(child)
+            descendants.extend(child.get_descendants())
+        return descendants
 
     class Meta:
         db_table = "app_folder"

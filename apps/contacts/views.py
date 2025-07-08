@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folder, get_folders_for_page
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
 from apps.folders.models import Folder
 
 
@@ -21,13 +21,19 @@ def index(request):
 
     """
 
-    folders = get_folders_for_page(request, "contacts")
-
     selected_folder = select_folder(request, "contacts")
+    
+    # Get child folders of the selected folder, or root folders if none selected
+    folders = get_folders_for_page(request, "contacts", parent=selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = get_breadcrumbs(request, "contacts")
 
     if selected_folder:
+        # Get contacts from selected folder and all its descendants
+        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
         contacts = Contact.objects.filter(
-            user=request.user, folder=selected_folder)
+            user=request.user, folder__id__in=folder_ids)
     else:
         contacts = Contact.objects.filter(
             user=request.user, folder_id__isnull=True)
@@ -54,6 +60,7 @@ def index(request):
         "contacts": contacts,
         "selected_contact": selected_contact,
         "google": google,
+        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "contacts/content.html", context)

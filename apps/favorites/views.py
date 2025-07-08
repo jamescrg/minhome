@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folder, get_folders_for_page
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
 from apps.folders.models import Folder
 
 
@@ -35,12 +35,18 @@ def index(request):
 
     user = request.user
 
-    folders = get_folders_for_page(request, "favorites")
-
     selected_folder = select_folder(request, "favorites")
+    
+    # Get child folders of the selected folder, or root folders if none selected
+    folders = get_folders_for_page(request, "favorites", parent=selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = get_breadcrumbs(request, "favorites")
 
     if selected_folder:
-        favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
+        # Get favorites from selected folder and all its descendants
+        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
+        favorites = Favorite.objects.filter(user=user, folder_id__in=folder_ids)
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
@@ -52,6 +58,7 @@ def index(request):
         "folders": folders,
         "selected_folder": selected_folder,
         "favorites": favorites,
+        "breadcrumbs": breadcrumbs,
     }
     return render(request, "favorites/content.html", context)
 

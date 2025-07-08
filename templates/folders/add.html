@@ -29,5 +29,9 @@
       onchange="submit()"
       onblur="hideAddFolderForm()"
       value="{{ folder.name }}">
+  
+  {% if selected_folder %}
+  <input type="hidden" name="parent" value="{{ selected_folder.id }}">
+  {% endif %}
 
 </form>

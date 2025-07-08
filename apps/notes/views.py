@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.folders.folders import select_folder, get_folders_for_page
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
 from apps.folders.models import Folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
@@ -23,13 +23,19 @@ def index(request):
 
     user = request.user
     page = "notes"
-
-    folders = get_folders_for_page(request, page)
-
+    
     selected_folder = select_folder(request, "notes")
+    
+    # Get child folders of the selected folder, or root folders if none selected
+    folders = get_folders_for_page(request, page, parent=selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = get_breadcrumbs(request, page)
 
     if selected_folder:
-        notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
+        # Get notes from selected folder and all its descendants
+        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
+        notes = Note.objects.filter(user=user, folder_id__in=folder_ids)
     else:
         notes = Note.objects.filter(user=user, folder_id__isnull=True)
 
@@ -52,6 +58,7 @@ def index(request):
         "selected_folder": selected_folder,
         "notes": notes,
         "selected_note": selected_note,
+        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "notes/content.html", context)
