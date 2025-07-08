@@ -8,27 +8,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://minhome.app/static/css/base-colors.css">
-    <link rel="stylesheet" href="https://minhome.app/static/css/extension-success.css">
+    <link rel="stylesheet" href="https://minhome.app/static/css/extension.css">
 </head>
 <body>
     <div class="container">
         <div class="success-icon">✅</div>
         <h2>Favorite Saved!</h2>
-        
+
         <div class="favorite-info">
             <div class="favorite-name">{{ favorite.name }}</div>
             <div class="favorite-url">{{ favorite.url }}</div>
         </div>
-        
+
         <p>Your favorite has been saved and will appear on your home page.</p>
-        
+
         <a href="https://minhome.app/" class="btn" target="_blank">🏠 Go to Home</a>
         <button type="button" class="btn btn-secondary" onclick="closeWindow()">❌ Close</button>
-        
+
         <script>
             function closeWindow() {
                 console.log('Close button clicked');
-                
+
                 // Use the function injected by the content script
                 if (typeof window.closeExtensionPopup === 'function') {
                     console.log('Using extension close function');

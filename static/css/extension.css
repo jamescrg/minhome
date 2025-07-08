@@ -1,3 +1,4 @@
+
 /* Extension Form Styles - Match main application card layout */
 
 body {
@@ -38,8 +39,34 @@ body {
     margin-right: 8px;
 }
 
+.success-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
 
-/* Adjust field sizes for smaller extension window */
+
+.favorite-info {
+    background: var(--warm-gray-50);
+    padding: 15px;
+    border-radius: 6px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.favorite-name {
+    font-weight: 600;
+    color: var(--warm-gray-700);
+    margin-bottom: 5px;
+}
+
+.favorite-url {
+    color: var(--warm-gray-500);
+    font-size: 14px;
+    word-break: break-all;
+}
+
+/* form elements */
+/* Adjust form field sizes for smaller extension window */
 #id_name,
 #id_url,
 #id_folder,
