@@ -24,6 +24,7 @@ function initializeDragDrop() {
         
         // Add folder event listeners (drop only, not drag)
         folder.addEventListener('dragover', handleFolderDragOver);
+        folder.addEventListener('dragleave', handleFolderDragLeave);
         folder.addEventListener('drop', handleFolderDrop);
         
         // Set up card title as drop zone for favorites

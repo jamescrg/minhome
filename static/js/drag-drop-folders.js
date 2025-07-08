@@ -36,7 +36,13 @@ function handleDragHandleDragEnd(e) {
     
     const folders = document.querySelectorAll('.folder');
     folders.forEach(folder => {
-        folder.classList.remove('drag-over-top', 'drag-over-bottom', 'drop-target-active');
+        folder.classList.remove('drag-over-top', 'drag-over-bottom', 'drop-target-active', 'insertion-target');
+    });
+    
+    // Remove any insertion indicators from anywhere in the document
+    const existingIndicators = document.querySelectorAll('.insertion-indicator');
+    existingIndicators.forEach(indicator => {
+        indicator.remove();
     });
 }
 
@@ -53,24 +59,25 @@ function handleFolderDragOver(e) {
         return false;
     }
     
-    // Clear previous hover states
+    // Clear previous hover states and insertion indicators
     const folders = document.querySelectorAll('.folder');
     folders.forEach(folder => {
-        folder.classList.remove('drag-over-top', 'drag-over-bottom');
+        folder.classList.remove('drag-over-top', 'drag-over-bottom', 'insertion-target');
     });
     
-    // Determine if we're in the top or bottom half of the folder
-    const rect = this.getBoundingClientRect();
-    const midY = rect.top + rect.height / 2;
-    
-    if (e.clientY < midY) {
-        this.classList.add('drag-over-top');
-    } else {
-        this.classList.add('drag-over-bottom');
-    }
+    // Add a simple CSS class to show insertion point
+    this.classList.add('insertion-target');
     
     e.dataTransfer.dropEffect = 'move';
     return false;
+}
+
+/**
+ * Handle drag leave for folders
+ */
+function handleFolderDragLeave(e) {
+    // Remove the insertion indicator when leaving the folder
+    this.classList.remove('insertion-target');
 }
 
 /**
@@ -106,6 +113,14 @@ function handleDragOver(e) {
     if (e.preventDefault) {
         e.preventDefault();
     }
+    
+    // Temporarily disabled - this might be removing indicators too aggressively
+    // Clear insertion indicators when dragging over drop zones
+    // const existingIndicators = document.querySelectorAll('.insertion-indicator');
+    // existingIndicators.forEach(indicator => {
+    //     indicator.remove();
+    // });
+    
     e.dataTransfer.dropEffect = 'move';
     return false;
 }
