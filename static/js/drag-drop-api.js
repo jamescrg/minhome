@@ -155,6 +155,35 @@ function swapFavoritePositions(draggedFavoriteId, targetFavoriteId) {
 }
 
 /**
+ * Insert favorite above another favorite
+ */
+function insertFavoriteAboveFavorite(draggedFavoriteId, targetFavoriteId) {
+    const formData = new FormData();
+    formData.append('dragged_favorite_id', draggedFavoriteId);
+    formData.append('target_favorite_id', targetFavoriteId);
+    formData.append('insert_below', 'false');
+    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    
+    fetch('/home/insert-favorite-at-position/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            console.error('Error inserting favorite above:', data.error);
+            alert('Error inserting favorite above: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error inserting favorite above');
+    });
+}
+
+/**
  * Insert favorite below another favorite
  */
 function insertFavoriteBelowFavorite(draggedFavoriteId, targetFavoriteId) {
@@ -184,7 +213,7 @@ function insertFavoriteBelowFavorite(draggedFavoriteId, targetFavoriteId) {
 }
 
 /**
- * Move favorite to a new folder
+ * Move favorite to a new folder above target
  */
 function moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFolderId) {
     const formData = new FormData();
@@ -193,6 +222,7 @@ function moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFold
         formData.append('target_favorite_id', targetFavoriteId);
     }
     formData.append('target_folder_id', targetFolderId);
+    formData.append('insert_below', 'false'); // Insert above target
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     
     fetch('/home/move-favorite-to-folder/', {

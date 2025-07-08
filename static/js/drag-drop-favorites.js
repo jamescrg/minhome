@@ -204,10 +204,10 @@ function handleFavoriteDrop(e) {
         }
         
         if (draggedFolderId === targetFolderId) {
-            // Same folder - place below the target favorite
-            insertFavoriteBelowFavorite(draggedFavoriteId, targetFavoriteId);
+            // Same folder - place above the target favorite
+            insertFavoriteAboveFavorite(draggedFavoriteId, targetFavoriteId);
         } else {
-            // Cross-folder drop - move to new folder and place below target
+            // Cross-folder drop - move to new folder and place above target
             moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFolderId);
         }
     }

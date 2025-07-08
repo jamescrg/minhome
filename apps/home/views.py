@@ -660,6 +660,7 @@ def insert_favorite_at_position(request):
     try:
         dragged_favorite_id = int(request.POST.get('dragged_favorite_id'))
         target_favorite_id = int(request.POST.get('target_favorite_id'))
+        insert_below = request.POST.get('insert_below') == 'true'
 
         # Import the Favorite model
         from apps.favorites.models import Favorite
@@ -675,6 +676,10 @@ def insert_favorite_at_position(request):
         # Handle positioning using home_rank field
         if hasattr(dragged_favorite, 'home_rank') and hasattr(target_favorite, 'home_rank'):
             target_rank = target_favorite.home_rank
+            
+            # If inserting below, adjust the target rank
+            if insert_below:
+                target_rank = target_favorite.home_rank + 1
 
             # Shift other favorites to make room
             favorites_to_shift = Favorite.objects.filter(
@@ -726,6 +731,7 @@ def move_favorite_to_folder(request):
         dragged_favorite_id = int(request.POST.get('dragged_favorite_id'))
         target_favorite_id = int(request.POST.get('target_favorite_id'))
         target_folder_id = int(request.POST.get('target_folder_id'))
+        insert_below = request.POST.get('insert_below') == 'true'
 
         # Import the Favorite model
         from apps.favorites.models import Favorite
@@ -779,7 +785,11 @@ def move_favorite_to_folder(request):
 
         # Handle positioning using home_rank field
         if hasattr(dragged_favorite, 'home_rank') and hasattr(target_favorite, 'home_rank'):
-            target_rank = target_favorite.home_rank + 1  # Always place below target
+            target_rank = target_favorite.home_rank
+            
+            # If inserting below, adjust the target rank
+            if insert_below:
+                target_rank = target_favorite.home_rank + 1
 
             # Shift other favorites in target folder to make room
             favorites_to_shift = Favorite.objects.filter(
