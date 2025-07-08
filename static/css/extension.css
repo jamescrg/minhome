@@ -53,6 +53,10 @@ body {
     text-align: left;
 }
 
+.favorite-folder {
+    margin-bottom: 5px;
+}
+
 .favorite-name {
     font-weight: 600;
     color: var(--warm-gray-700);
