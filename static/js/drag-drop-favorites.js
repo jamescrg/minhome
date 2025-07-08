@@ -130,6 +130,13 @@ function handleFavoriteDragEnd(e) {
     }
     favoriteItem.draggable = false;
     favoriteItem.style.cursor = '';
+    
+    // Clear all insertion indicators from favorites
+    const favoriteItems = document.querySelectorAll('.favorite-item');
+    favoriteItems.forEach(item => {
+        item.classList.remove('insertion-target');
+    });
+    
     draggedFavorite = null;
 }
 
@@ -137,9 +144,32 @@ function handleFavoriteDragEnd(e) {
  * Handle favorite drag over
  */
 function handleFavoriteDragOver(e) {
+    // Only handle favorite drags, ignore folder drags completely
+    if (draggedFolder !== null) {
+        return; // Let folder handlers deal with it
+    }
+    
     if (e.preventDefault) {
         e.preventDefault();
     }
+    
+    // Only show indicator when dragging favorites
+    if (draggedFavorite !== null) {
+        // Don't allow dropping on self
+        if (this === draggedFavorite?.closest('.favorite-item')) {
+            return false;
+        }
+        
+        // Clear previous indicators from all favorites
+        const favoriteItems = document.querySelectorAll('.favorite-item');
+        favoriteItems.forEach(item => {
+            item.classList.remove('insertion-target');
+        });
+        
+        // Add insertion indicator to this favorite
+        this.classList.add('insertion-target');
+    }
+    
     e.dataTransfer.dropEffect = 'move';
     return false;
 }

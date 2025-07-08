@@ -54,6 +54,10 @@
   border-top: 4px solid #65A30D !important;
 }
 
+.favorite-item.insertion-target {
+  border-top: 4px solid #65A30D !important;
+}
+
 
 /*------------------------------------------------
  * favorites

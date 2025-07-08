@@ -50,6 +50,11 @@ function handleDragHandleDragEnd(e) {
  * Handle drag over for folders
  */
 function handleFolderDragOver(e) {
+    // Only handle folder drags, ignore favorite drags completely
+    if (draggedFavorite !== null) {
+        return; // Let favorite handlers deal with it
+    }
+    
     if (e.preventDefault) {
         e.preventDefault();
     }
@@ -59,14 +64,17 @@ function handleFolderDragOver(e) {
         return false;
     }
     
-    // Clear previous hover states and insertion indicators
-    const folders = document.querySelectorAll('.folder');
-    folders.forEach(folder => {
-        folder.classList.remove('drag-over-top', 'drag-over-bottom', 'insertion-target');
-    });
-    
-    // Add a simple CSS class to show insertion point
-    this.classList.add('insertion-target');
+    // Only show indicator when dragging folders
+    if (draggedFolder !== null) {
+        // Clear previous hover states and insertion indicators
+        const folders = document.querySelectorAll('.folder');
+        folders.forEach(folder => {
+            folder.classList.remove('drag-over-top', 'drag-over-bottom', 'insertion-target');
+        });
+        
+        // Add a simple CSS class to show insertion point
+        this.classList.add('insertion-target');
+    }
     
     e.dataTransfer.dropEffect = 'move';
     return false;
