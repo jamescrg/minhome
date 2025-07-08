@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "apps.tasks",
     "apps.contacts",
     "apps.lab",
+    "apps.management",
     "apps.notes",
     "apps.search",
     "apps.settings",
@@ -93,6 +94,9 @@ TEMPLATES = [
                 "config.context.site_handle",
             ],
             "loaders": default_loaders if DEBUG else cached_loaders,
+            "libraries": {
+                "cache_buster": "apps.management.templatetags.cache_buster",
+            },
         },
     },
 ]
