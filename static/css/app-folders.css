@@ -126,3 +126,46 @@
   content: "/";
   color: var(--stone-400);
 }
+
+/*------------------------------------------------
+ * Drag and Drop styles
+ * ------------------------------------------------*/
+
+.folder-item {
+  cursor: move;
+  transition: all 0.2s ease;
+}
+
+.folder-item:hover {
+  background-color: var(--stone-50);
+}
+
+.folder-item.dragging {
+  opacity: 0.5;
+  background-color: var(--blue-50);
+  border: 2px dashed var(--blue-300);
+}
+
+.folder-item.drop-target {
+  background-color: var(--green-50);
+  border: 2px solid var(--green-300);
+  border-radius: 4px;
+  position: relative;
+}
+
+.folder-item.drop-target::after {
+  content: "Drop here";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: var(--green-100);
+  color: var(--green-700);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}

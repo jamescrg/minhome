@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -53,7 +54,10 @@ def index(request):
 
     # if tasks are shown, check for task_folders
     # Get all task folders that user has access to (owned or shared)
-    all_task_folders = get_folders_for_page(request, "tasks")
+    # Include all folders to show child folders with home_column values
+    all_task_folders = Folder.objects.filter(page="tasks").filter(
+        Q(user=user) | Q(editors=user)
+    )
     task_folders = all_task_folders.filter(home_column__gt=1)
     if task_folders:
 
@@ -118,7 +122,10 @@ def index(request):
     columns = []
     for i in range(1, 6):
         # Get all favorites folders that user has access to (owned or shared)
-        all_favorites_folders = get_folders_for_page(request, "favorites")
+        # Include all folders to show child folders with home_column values
+        all_favorites_folders = Folder.objects.filter(page="favorites").filter(
+            Q(user=user) | Q(editors=user)
+        )
         folders = all_favorites_folders.filter(home_column=i)
         folders = folders.order_by("home_rank")
         for folder in folders:

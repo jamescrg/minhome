@@ -54,4 +54,7 @@
 <script src="{% static_v 'js/drag-drop-folders.js' %}"></script>
 <script src="{% static_v 'js/drag-drop-favorites.js' %}"></script>
 <script src="{% static_v 'js/drag-drop-api.js' %}"></script>
+{% elif page in "favorites,contacts,notes,tasks" %}
+<!-- Drag-and-drop functionality for folder hierarchy -->
+<script src="{% static_v 'js/folder-hierarchy-drag-drop.js' %}"></script>
 {% endif %}

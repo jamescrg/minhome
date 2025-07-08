@@ -12,7 +12,6 @@ class ContactForm(forms.ModelForm):
         model = Contact
 
         fields = (
-            "folder",
             "name",
             "company",
             "address",

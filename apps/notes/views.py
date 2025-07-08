@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
 from apps.folders.models import Folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
@@ -26,11 +26,8 @@ def index(request):
     
     selected_folder = select_folder(request, "notes")
     
-    # Get child folders of the selected folder, or root folders if none selected
-    folders = get_folders_for_page(request, page, parent=selected_folder)
-    
-    # Get breadcrumbs for navigation
-    breadcrumbs = get_breadcrumbs(request, page)
+    # Get folder tree starting from selected folder
+    folder_tree = get_folder_tree(request, page, selected_folder)
 
     if selected_folder:
         # Get notes from selected folder and all its descendants
@@ -54,11 +51,10 @@ def index(request):
     context = {
         "page": page,
         "edit": False,
-        "folders": folders,
+        "folder_tree": folder_tree,
         "selected_folder": selected_folder,
         "notes": notes,
         "selected_note": selected_note,
-        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "notes/content.html", context)
@@ -101,6 +97,7 @@ def add(request):
         if form.is_valid():
             note = form.save(commit=False)
             note.user = user
+            note.folder = selected_folder  # Always assign to selected folder
             note.save()
 
             # deselect previously selected note
@@ -122,14 +119,7 @@ def add(request):
     else:
         # request is a get request
         # create unbound note form
-
-        if selected_folder:
-            form = NoteForm(initial={"folder": selected_folder.id})
-        else:
-            form = NoteForm()
-
-    # set the initial range of values for folder attribute
-    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
+        form = NoteForm()
 
     context = {
         "page": "notes",

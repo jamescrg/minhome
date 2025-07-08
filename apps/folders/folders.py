@@ -69,3 +69,54 @@ def get_breadcrumbs(request, page):
                 breadcrumbs.append(folder_dict[folder_id])
     
     return breadcrumbs
+
+
+def get_folder_tree(request, page, selected_folder=None, max_depth=5):
+    """Get folder tree in breadcrumb style: shows ancestors, current, and children."""
+    user = request.user
+    
+    def get_folder_children(parent_folder):
+        """Get direct children of a folder."""
+        return Folder.objects.filter(
+            page=page, 
+            parent=parent_folder
+        ).filter(
+            Q(user=user) | Q(editors=user)
+        ).order_by("name")
+    
+    if not selected_folder:
+        # If no folder is selected, show root level folders
+        root_folders = get_folder_children(None)
+        return [{'folder': folder, 'level': 0, 'children': []} for folder in root_folders]
+    
+    # Get the path from root to selected folder
+    ancestors = selected_folder.get_ancestors()
+    
+    # Build the breadcrumb-style tree
+    tree = []
+    
+    # Add ancestors (starting from root)
+    for i, ancestor in enumerate(ancestors):
+        tree.append({
+            'folder': ancestor,
+            'level': i,
+            'children': []
+        })
+    
+    # Add the selected folder
+    tree.append({
+        'folder': selected_folder,
+        'level': len(ancestors),
+        'children': []
+    })
+    
+    # Add children of the selected folder
+    children = get_folder_children(selected_folder)
+    for child in children:
+        tree.append({
+            'folder': child,
+            'level': len(ancestors) + 1,
+            'children': []
+        })
+    
+    return tree

@@ -1,0 +1,32 @@
+<li class="list-group-item mh-ft folder-item" 
+    id="folder-{{ folder_data.folder.id }}" 
+    data-folder-id="{{ folder_data.folder.id }}"
+    data-folder-name="{{ folder_data.folder.name }}"
+    data-level="{{ folder_data.level }}"
+    draggable="true"
+    style="padding-left: {{ folder_data.level|add:1 }}rem;">
+
+  <div class="folder-show mh-fc">
+
+    {% if folder_data.folder.home_column and folder_data.folder.user == user %}
+      <span class="folder-icon-home">
+        <i class="bi bi-house-door"></i>
+      </span>
+    {% else %}
+      <span class="folder-icon">
+        <i class="bi bi-folder"></i>
+      </span>
+    {% endif %}
+
+    <a class="folder-link"
+        href="/folders/{{ folder_data.folder.id }}/{{ page }}"
+        >
+        {{ folder_data.folder.name }}
+    </a>
+  </div>
+
+  {% include "folders/edit.html" with folder=folder_data.folder %}
+
+  {% include "folders/menu.html" with folder=folder_data.folder %}
+
+</li>

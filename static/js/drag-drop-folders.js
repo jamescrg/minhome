@@ -1,6 +1,6 @@
 /**
  * Folder drag-and-drop functionality
- * Handles folder dragging between and within columns
+ * Handles folder dragging between and within columns (HOME PAGE ONLY)
  */
 
 /**

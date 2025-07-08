@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
 from apps.folders.models import Folder
 
 
@@ -23,11 +23,8 @@ def index(request):
 
     selected_folder = select_folder(request, "contacts")
     
-    # Get child folders of the selected folder, or root folders if none selected
-    folders = get_folders_for_page(request, "contacts", parent=selected_folder)
-    
-    # Get breadcrumbs for navigation
-    breadcrumbs = get_breadcrumbs(request, "contacts")
+    # Get folder tree starting from selected folder
+    folder_tree = get_folder_tree(request, "contacts", selected_folder)
 
     if selected_folder:
         # Get contacts from selected folder and all its descendants
@@ -55,12 +52,11 @@ def index(request):
     context = {
         "page": "contacts",
         "edit": False,
-        "folders": folders,
+        "folder_tree": folder_tree,
         "selected_folder": selected_folder,
         "contacts": contacts,
         "selected_contact": selected_contact,
         "google": google,
-        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "contacts/content.html", context)
@@ -104,6 +100,7 @@ def add(request):
             # initialize contact data
             contact = form.save(commit=False)
             contact.user = user
+            contact.folder = selected_folder  # Always assign to selected folder
 
             # save contact to database
             contact.save()
@@ -126,12 +123,7 @@ def add(request):
 
     # if no post data has been submitted, show the contact form
     else:
-        if selected_folder:
-            form = ContactForm(initial={"folder": selected_folder.id})
-        else:
-            form = ContactForm()
-
-    form.fields["folder"].queryset = get_folders_for_page(request, "contacts")
+        form = ContactForm()
 
     context = {
         "page": "contacts",

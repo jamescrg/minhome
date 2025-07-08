@@ -6,6 +6,14 @@
         Folders
     </h1>
 
+    <div style="margin-left: 2rem;">
+      {% if selected_folder %}
+        <a href="/folders/{% if selected_folder.parent %}{{ selected_folder.parent.id }}{% else %}0{% endif %}/{{ page }}" title="Go up one level">
+          <i class="bi bi-arrow-up"></i>
+        </a>
+      {% endif %}
+    </div>
+
     <a href="javascript:showAddFolderForm();">
         <i class="bi bi-plus-lg"></i>
     </a>
@@ -15,66 +23,9 @@
   {% include "folders/add.html" %}
 
   <ul class="list-group">
-    {% if folders %}
-    {% for folder in folders %}
-    <li class="list-group-item mh-ft" id="folder-{{ folder.id }}">
-
-      <div class="folder-show mh-fc">
-
-        {% if folder.children.exists %}
-          <span class="folder-icon">
-            <i class="bi bi-folder-fill"></i>
-          </span>
-        {% elif folder.home_column and folder.user == user %}
-          <span class="folder-icon-home">
-            <i class="bi bi-house-door"></i>
-          </span>
-        {% else %}
-          <span class="folder-icon">
-            <i class="bi bi-folder"></i>
-          </span>
-        {% endif %}
-
-        <a class="folder-link"
-            href="/folders/{{ folder.id }}/{{ page }}"
-            {% if page != 'tasks' and folder.id == selected_folder.id %}
-            style="font-weight: 600;"
-            {% endif %}
-            {% if page == 'tasks' and folder in selected_folders %}
-            style="font-weight: 600;"
-            {% endif %}
-            >
-            {{ folder.name }}
-            {% if folder.children.exists %}
-              <span class="text-muted small">({{ folder.children.count }})</span>
-            {% endif %}
-        </a>
-      </div>
-
-      {% include "folders/edit.html" %}
-
-      {% include "folders/menu.html" %}
-
-    </li>
+    {% for folder_data in folder_tree %}
+      {% include "folders/tree_item.html" with folder_data=folder_data %}
     {% endfor %}
-    {% endif %}
-
-    <li class="list-group-item mh-ft">
-
-      <div class="folder-show mh-fc">
-
-        <span class="folder-icon">
-          <i class="bi bi-folder"></i>
-        </span>
-
-        <a class="folder-link" href="/folders/0/{{ page }}" {% if not selected_folder %} style="font-weight: bold;"{% endif %}>
-          Unsorted
-        </a>
-
-      </div>
-
-    </li>
-
   </ul>
 
 </div>

@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs
+from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
 from apps.folders.models import Folder
 
 
@@ -37,11 +37,8 @@ def index(request):
 
     selected_folder = select_folder(request, "favorites")
     
-    # Get child folders of the selected folder, or root folders if none selected
-    folders = get_folders_for_page(request, "favorites", parent=selected_folder)
-    
-    # Get breadcrumbs for navigation
-    breadcrumbs = get_breadcrumbs(request, "favorites")
+    # Get folder tree starting from selected folder
+    folder_tree = get_folder_tree(request, "favorites", selected_folder)
 
     if selected_folder:
         # Get favorites from selected folder and all its descendants
@@ -55,10 +52,9 @@ def index(request):
     context = {
         "page": "favorites",
         "edit": False,
-        "folders": folders,
+        "folder_tree": folder_tree,
         "selected_folder": selected_folder,
         "favorites": favorites,
-        "breadcrumbs": breadcrumbs,
     }
     return render(request, "favorites/content.html", context)
 
@@ -83,14 +79,13 @@ def add(request):
         if form.is_valid():
             favorite = form.save(commit=False)
             favorite.user = user
+            favorite.folder = selected_folder  # Always assign to selected folder
             favorite.save()
             return redirect("favorites")
 
     else:
         # Pre-fill form with URL parameters if provided (for bookmarklet)
         initial_data = {}
-        if selected_folder:
-            initial_data["folder"] = selected_folder.id
         
         # Check for extension parameters
         name = request.GET.get('name', '').strip()
@@ -101,8 +96,6 @@ def add(request):
             initial_data['url'] = url
             
         form = FavoriteForm(initial=initial_data)
-
-    form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
     context = {
         "page": "favorites",
@@ -306,11 +299,14 @@ def api_folders(request):
 @login_required
 def extension_add(request):
     """Minimal extension form without site layout"""
+    selected_folder = select_folder(request, "favorites")
+    
     if request.method == "POST":
         form = FavoriteForm(request.POST)
         if form.is_valid():
             favorite = form.save(commit=False)
             favorite.user = request.user
+            favorite.folder = selected_folder  # Always assign to selected folder
             favorite.home_rank = 1  # Show on home page
             favorite.save()
             # Return a simple success page
@@ -329,8 +325,6 @@ def extension_add(request):
             initial_data['url'] = url
             
         form = FavoriteForm(initial=initial_data)
-
-    form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
     
     context = {
         'form': form,

@@ -2,8 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from apps.folders.models import Folder
+from apps.folders.folders import select_folder
 from accounts.models import CustomUser
 
 
@@ -47,6 +50,11 @@ def insert(request, page):
     folder = Folder()
     folder.user = request.user
     folder.page = page
+    
+    # Always set parent to the currently selected folder
+    selected_folder = select_folder(request, page)
+    folder.parent = selected_folder
+    
     for field in folder.fillable:
         value = request.POST.get(field)
         if field == 'parent' and value:
@@ -54,7 +62,10 @@ def insert(request, page):
             try:
                 value = Folder.objects.get(pk=value, user=request.user, page=page)
             except Folder.DoesNotExist:
-                value = None
+                value = selected_folder  # Fall back to selected folder
+        elif field == 'parent':
+            # If no parent specified, use selected folder
+            value = selected_folder
         setattr(folder, field, value)
     folder.save()
     return redirect(page)
@@ -77,16 +88,10 @@ def update(request, id, page):
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
     for field in folder.fillable:
+        if field == 'parent':
+            # Skip parent field - keep folder in the same parent
+            continue
         value = request.POST.get(field)
-        if field == 'parent' and value:
-            # Convert parent ID to actual Folder instance
-            try:
-                value = Folder.objects.get(pk=value, user=request.user, page=page)
-                # Prevent setting a folder as its own parent or a descendant as parent
-                if value.id == folder.id or folder in value.get_ancestors():
-                    value = folder.parent  # Keep current parent
-            except Folder.DoesNotExist:
-                value = None
         setattr(folder, field, value)
     folder.save()
     return redirect(page)
@@ -205,3 +210,54 @@ def share(request, id, page):
     }
     
     return render(request, 'folders/share.html', context)
+
+
+@login_required
+@csrf_exempt
+def move(request, id, page):
+    """Move a folder to a new parent.
+    
+    Args:
+        id (int): The folder ID to move
+        page (str): The page type (favorites, contacts, notes, tasks)
+    
+    Returns:
+        JsonResponse with success/error status
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'POST request required'})
+    
+    try:
+        # Get the folder to move
+        folder = Folder.objects.get(pk=id, user=request.user, page=page)
+        
+        # Parse the request body
+        data = json.loads(request.body)
+        new_parent_id = data.get('new_parent_id')
+        
+        # Get the new parent folder
+        if new_parent_id:
+            try:
+                new_parent = Folder.objects.get(pk=new_parent_id, user=request.user, page=page)
+                
+                # Prevent moving a folder into one of its descendants
+                if folder in new_parent.get_ancestors() or folder.id == new_parent.id:
+                    return JsonResponse({'success': False, 'error': 'Cannot move folder into its descendant or itself'})
+                
+                folder.parent = new_parent
+            except Folder.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Target folder not found'})
+        else:
+            # Move to root level
+            folder.parent = None
+        
+        folder.save()
+        
+        return JsonResponse({'success': True})
+        
+    except Folder.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Folder not found'})
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
