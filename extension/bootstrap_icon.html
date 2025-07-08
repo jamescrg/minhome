@@ -3,9 +3,9 @@
 <head>
     <title>Bootstrap Bookmark-Fill Icon - Lime-600</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            padding: 20px; 
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
             background: #f5f5f5;
         }
         .container {
@@ -16,13 +16,13 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        canvas { 
-            border: 2px solid #ddd; 
-            margin: 20px 10px; 
+        canvas {
+            border: 2px solid #ddd;
+            margin: 20px 10px;
             border-radius: 8px;
         }
-        .icon-set { 
-            margin: 30px 0; 
+        .icon-set {
+            margin: 30px 0;
             text-align: center;
         }
         .download-btn {
@@ -45,25 +45,25 @@
     <div class="container">
         <h1>📚 Bootstrap Bookmark-Fill Icon</h1>
         <p>Exact Bootstrap bookmark-fill icon in lime-600 color.</p>
-        
+
         <div class="icon-set">
             <h3>16x16 - Toolbar Icon</h3>
             <canvas id="icon16" width="16" height="16"></canvas>
             <button class="download-btn" onclick="downloadIcon('icon16', 'icon-16.png')">📥 Download 16x16</button>
         </div>
-        
+
         <div class="icon-set">
             <h3>32x32 - Standard Icon</h3>
             <canvas id="icon32" width="32" height="32"></canvas>
             <button class="download-btn" onclick="downloadIcon('icon32', 'icon-32.png')">📥 Download 32x32</button>
         </div>
-        
+
         <div class="icon-set">
             <h3>48x48 - Main Extension Icon</h3>
             <canvas id="icon48" width="48" height="48"></canvas>
             <button class="download-btn" onclick="downloadIcon('icon48', 'icon.png')">📥 Download 48x48 (Main)</button>
         </div>
-        
+
         <div class="icon-set">
             <h3>128x128 - Store Listing</h3>
             <canvas id="icon128" width="128" height="128"></canvas>
@@ -75,29 +75,29 @@
         function drawBootstrapBookmarkFill(canvasId, size) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
-            
+
             // Clear canvas
             ctx.clearRect(0, 0, size, size);
-            
+
             // Bootstrap bookmark-fill SVG path
             const path = "M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2";
-            
+
             const scale = size / 16;
             const limeGreen = '#65A30D'; // lime-600
-            
+
             ctx.save();
             ctx.scale(scale, scale);
             ctx.fillStyle = limeGreen;
-            
+
             // Create and draw the path
             const p = new Path2D(path);
             ctx.fill(p);
-            
+
             ctx.restore();
-            
+
             return canvas;
         }
-        
+
         function downloadIcon(canvasId, filename) {
             const canvas = document.getElementById(canvasId);
             const link = document.createElement('a');

@@ -12,8 +12,8 @@ html {
 }
 
 body {
-  background: var(--warm-gray-300);
-  color: var(--warm-gray-600);
+  background: var(--stone-300);
+  color: var(--stone-600);
   font-family: 'Open Sans', sans-serif;
   font-size: 1em;
   min-height: 100%;
@@ -53,7 +53,7 @@ a:hover {
  * ------------------------------------------------*/
 
 .card {
-  background: var(--true-gray-100);
+  background: var(--stone-100);
   margin-bottom: 2rem;
   padding: 1rem;
   padding-bottom: 1.5rem;
@@ -94,6 +94,12 @@ h1 {
   font-weight: normal;
   font-size: 1.15rem;
   margin-bottom: 0;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
 }
 
 strong{
@@ -160,15 +166,15 @@ li {
 .btn-primary:focus {
   background: var(--lime-900);
   border: none;
-  color: var(--warm-gray-300);
+  color: var(--stone-300);
 }
 
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background: var(--warm-gray-500);
+  background: var(--stone-500);
   border: none;
-  color: var(--warm-gray-100);
+  color: var(--stone-100);
 }
 
 .btn-icon {
@@ -182,24 +188,28 @@ li {
   padding: 0.1rem 0.4rem;
 }
 
-
+.btn-outline-danger {
+  color: var(--orange-700);
+  background-color: var(--stone-100);
+  border-color: var(--orange-700);
+}
 
 /*------------------------------------------------
  * dropdowns
  * ------------------------------------------------*/
 
 .menu-icon {
-  color: var(--warm-gray-350);
+  color: var(--stone-350);
   padding: 0;
 }
 
 .dropdown-menu {
-  background: var(--true-gray-100);
+  background: var(--stone-100);
 }
 
 .dropdown-item:focus,
 .dropdown-item:hover {
-  background: var(--warm-gray-200);
+  background: var(--stone-200);
 }
 
 
