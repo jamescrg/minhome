@@ -1,5 +1,5 @@
 // Background script for the extension
-const FAVORITES_DOMAIN = 'dev.minhome.app';
+const FAVORITES_DOMAIN = 'minhome.app';
 
 // Store popup window ID for closing
 let popupWindowId = null;

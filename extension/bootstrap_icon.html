@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bootstrap Bookmark-Fill Icon - Lime-800</title>
+    <title>Bootstrap Bookmark-Fill Icon - Lime-600</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -44,7 +44,7 @@
 <body>
     <div class="container">
         <h1>📚 Bootstrap Bookmark-Fill Icon</h1>
-        <p>Exact Bootstrap bookmark-fill icon in lime-800 color.</p>
+        <p>Exact Bootstrap bookmark-fill icon in lime-600 color.</p>
         
         <div class="icon-set">
             <h3>16x16 - Toolbar Icon</h3>
@@ -79,36 +79,21 @@
             // Clear canvas
             ctx.clearRect(0, 0, size, size);
             
-            // Bootstrap bookmark-fill SVG path: 
-            // "M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"
-            // Original viewBox is 0 0 16 16
+            // Bootstrap bookmark-fill SVG path
+            const path = "M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2";
             
             const scale = size / 16;
-            const limeGreen = '#365314'; // lime-800
+            const limeGreen = '#65A30D'; // lime-600
             
+            ctx.save();
+            ctx.scale(scale, scale);
             ctx.fillStyle = limeGreen;
-            ctx.beginPath();
             
-            // Scale the path coordinates
-            ctx.moveTo(2 * scale, 2 * scale);
-            ctx.lineTo(2 * scale, 15.5 * scale);
+            // Create and draw the path
+            const p = new Path2D(path);
+            ctx.fill(p);
             
-            // Curve for the .5.5 0 0 0 .74.439 part (approximated)
-            ctx.lineTo(2.74 * scale, 15.939 * scale);
-            ctx.lineTo(8 * scale, 13.069 * scale);
-            ctx.lineTo(13.26 * scale, 15.939 * scale);
-            
-            // Curve for the .5.5 0 0 0 part (approximated) 
-            ctx.lineTo(14 * scale, 15.5 * scale);
-            ctx.lineTo(14 * scale, 2 * scale);
-            
-            // Rounded top corners (2 2 0 0 0-2-2)
-            ctx.arcTo(14 * scale, 0 * scale, 12 * scale, 0 * scale, 2 * scale);
-            ctx.lineTo(4 * scale, 0 * scale);
-            ctx.arcTo(2 * scale, 0 * scale, 2 * scale, 2 * scale, 2 * scale);
-            
-            ctx.closePath();
-            ctx.fill();
+            ctx.restore();
             
             return canvas;
         }
