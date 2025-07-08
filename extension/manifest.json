@@ -9,7 +9,7 @@
   "permissions": [
     "activeTab",
     "contextMenus",
-    "https://dev.minhome.app/*"
+    "https://minhome.app/*"
   ],
   
   "background": {
@@ -36,7 +36,7 @@
   
   "content_scripts": [
     {
-      "matches": ["https://dev.minhome.app/*"],
+      "matches": ["https://minhome.app/*"],
       "js": ["content.js"],
       "run_at": "document_end"
     }
