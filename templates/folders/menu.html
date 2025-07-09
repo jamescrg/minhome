@@ -2,13 +2,7 @@
 <div class="dropdown">
   <button class="btn-icon menu-icon"
     type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      {% if folder.editors.all %}
-          <span class="shared-indicator" title="Shared with {{ folder.editors.count }} user{{ folder.editors.count|pluralize }}">
-              <i class="bi bi-people-fill"></i>
-          </span>
-      {% else %}
-          <i class="bi bi-three-dots-vertical"></i>
-      {% endif %}
+        <i class="bi bi-three-dots-vertical"></i>
   </button>
   <ul class="dropdown-menu">
     {% if folder.user == user %}

@@ -6,14 +6,6 @@
         Folders
     </h1>
 
-    <div style="margin-left: 2rem;">
-      {% if selected_folder %}
-        <a href="/folders/{% if selected_folder.parent %}{{ selected_folder.parent.id }}{% else %}0{% endif %}/{{ page }}" title="Go up one level">
-          <i class="bi bi-arrow-up"></i>
-        </a>
-      {% endif %}
-    </div>
-
     <a href="javascript:showAddFolderForm();">
         <i class="bi bi-plus-lg"></i>
     </a>

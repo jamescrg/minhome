@@ -1,21 +1,20 @@
-<li class="list-group-item mh-ft folder-item" 
-    id="folder-{{ folder_data.folder.id }}" 
+<li class="list-group-item mh-ft folder-item {% if folder_data.expanded %}expanded{% endif %}{% if selected_folder and folder_data.folder.id == selected_folder.id %} selected{% endif %}"
+    id="folder-{{ folder_data.folder.id }}"
     data-folder-id="{{ folder_data.folder.id }}"
     data-folder-name="{{ folder_data.folder.name }}"
     data-level="{{ folder_data.level }}"
+    data-has-children="{{ folder_data.has_children|lower }}"
     draggable="true"
-    style="padding-left: {{ folder_data.level|add:1 }}rem;">
+    style="padding-left: calc({{ folder_data.level }} * 1.5rem);">
 
   <div class="folder-show mh-fc">
 
-    {% if folder_data.folder.home_column and folder_data.folder.user == user %}
-      <span class="folder-icon-home">
-        <i class="bi bi-house-door"></i>
+    {% if folder_data.has_children %}
+      <span class="folder-expand-toggle" data-folder-id="{{ folder_data.folder.id }}">
+        <i class="bi bi-caret-{% if folder_data.expanded %}down{% else %}right{% endif %}-fill"></i>
       </span>
     {% else %}
-      <span class="folder-icon">
-        <i class="bi bi-folder"></i>
-      </span>
+      <span class="folder-expand-spacer"></span>
     {% endif %}
 
     <a class="folder-link"
@@ -23,10 +22,35 @@
         >
         {{ folder_data.folder.name }}
     </a>
+
   </div>
+  <div class="mh-ft">
+    <div class="folder-badges">
+      {% if folder_data.folder.editors.exists %}
+        <span class="folder-badge folder-badge-shared" title="Shared folder">
+          <i class="bi bi-people"></i>
+        </span>
+      {% endif %}
 
-  {% include "folders/edit.html" with folder=folder_data.folder %}
+      {% if folder_data.folder.home_column and folder_data.folder.user == user %}
+        <span class="folder-badge folder-badge-home" title="On home page">
+          <i class="bi bi-house-door"></i>
+        </span>
+      {% endif %}
+    </div>
 
-  {% include "folders/menu.html" with folder=folder_data.folder %}
+    {% include "folders/menu.html" with folder=folder_data.folder %}
 
+  </div>
 </li>
+
+{% if folder_data.children %}
+  <li class="list-group-item folder-children-container {% if not folder_data.expanded %}collapsed{% endif %}"
+      data-parent-id="{{ folder_data.folder.id }}">
+    <ul class="folder-children list-unstyled" data-parent-id="{{ folder_data.folder.id }}">
+      {% for child in folder_data.children %}
+        {% include "folders/tree_item.html" with folder_data=child %}
+      {% endfor %}
+    </ul>
+  </li>
+{% endif %}

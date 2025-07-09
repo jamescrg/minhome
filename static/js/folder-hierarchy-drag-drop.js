@@ -9,17 +9,56 @@ let draggedFolderItem = null;
  * Initialize folder hierarchy drag and drop
  */
 function initializeFolderHierarchyDragDrop() {
-    const folderItems = document.querySelectorAll('.folder-item');
-    console.log('Found', folderItems.length, 'folder items for drag-drop');
+    // Use event delegation for better performance and to handle dynamic content
+    const folderList = document.querySelector('.folders');
+    if (!folderList) return;
     
-    folderItems.forEach(item => {
-        console.log('Setting up drag-drop for folder:', item.getAttribute('data-folder-name'));
-        item.addEventListener('dragstart', handleFolderItemDragStart);
-        item.addEventListener('dragend', handleFolderItemDragEnd);
-        item.addEventListener('dragover', handleFolderItemDragOver);
-        item.addEventListener('dragleave', handleFolderItemDragLeave);
-        item.addEventListener('drop', handleFolderItemDrop);
-    });
+    // Remove any existing listeners to avoid duplicates
+    folderList.removeEventListener('dragstart', handleDragStart);
+    folderList.removeEventListener('dragend', handleDragEnd);
+    folderList.removeEventListener('dragover', handleDragOver);
+    folderList.removeEventListener('dragleave', handleDragLeave);
+    folderList.removeEventListener('drop', handleDrop);
+    
+    // Add event listeners using delegation
+    folderList.addEventListener('dragstart', handleDragStart);
+    folderList.addEventListener('dragend', handleDragEnd);
+    folderList.addEventListener('dragover', handleDragOver);
+    folderList.addEventListener('dragleave', handleDragLeave);
+    folderList.addEventListener('drop', handleDrop);
+}
+
+function handleDragStart(e) {
+    if (e.target.classList.contains('folder-item')) {
+        handleFolderItemDragStart.call(e.target, e);
+    }
+}
+
+function handleDragEnd(e) {
+    if (e.target.classList.contains('folder-item')) {
+        handleFolderItemDragEnd.call(e.target, e);
+    }
+}
+
+function handleDragOver(e) {
+    const folderItem = e.target.closest('.folder-item');
+    if (folderItem && draggedFolderItem) {
+        handleFolderItemDragOver.call(folderItem, e);
+    }
+}
+
+function handleDragLeave(e) {
+    const folderItem = e.target.closest('.folder-item');
+    if (folderItem) {
+        handleFolderItemDragLeave.call(folderItem, e);
+    }
+}
+
+function handleDrop(e) {
+    const folderItem = e.target.closest('.folder-item');
+    if (folderItem && draggedFolderItem) {
+        handleFolderItemDrop.call(folderItem, e);
+    }
 }
 
 /**
@@ -114,9 +153,24 @@ function handleFolderItemDrop(e) {
  * Check if targetId is a descendant of draggedId
  */
 function isDescendant(draggedId, targetId) {
-    // This is a simplified check - in a real implementation you'd want to
-    // traverse the actual folder hierarchy or maintain a lookup
-    return false; // For now, allow all moves
+    // If they're the same, target is not a descendant
+    if (draggedId === targetId) {
+        return false;
+    }
+    
+    // Get the dragged folder element
+    const draggedFolder = document.getElementById(`folder-${draggedId}`);
+    if (!draggedFolder) return false;
+    
+    // Check if the target folder is within the dragged folder's children container
+    const childrenContainer = document.querySelector(`.folder-children-container[data-parent-id="${draggedId}"]`);
+    if (!childrenContainer) return false;
+    
+    // Look for the target folder within the descendants
+    const targetFolder = childrenContainer.querySelector(`#folder-${targetId}`);
+    
+    // If we found the target folder within the dragged folder's descendants, it's a descendant
+    return targetFolder !== null;
 }
 
 /**
@@ -195,7 +249,101 @@ function getCsrfToken() {
     return '';
 }
 
+/**
+ * Initialize folder expand/collapse functionality
+ */
+function initializeFolderExpandCollapse() {
+    const expandToggles = document.querySelectorAll('.folder-expand-toggle');
+    console.log('Found', expandToggles.length, 'expandable folders');
+    
+    expandToggles.forEach(toggle => {
+        toggle.addEventListener('click', handleFolderToggle);
+    });
+}
+
+/**
+ * Handle folder expand/collapse toggle
+ */
+function handleFolderToggle(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const folderId = this.getAttribute('data-folder-id');
+    const folderItem = document.getElementById(`folder-${folderId}`);
+    const childrenContainer = document.querySelector(`.folder-children-container[data-parent-id="${folderId}"]`);
+    const icon = this.querySelector('i');
+    
+    if (!folderItem || !childrenContainer) return;
+    
+    const isExpanded = folderItem.classList.contains('expanded');
+    
+    if (isExpanded) {
+        // Collapse
+        folderItem.classList.remove('expanded');
+        childrenContainer.classList.add('collapsed');
+        icon.classList.remove('bi-caret-down-fill');
+        icon.classList.add('bi-caret-right-fill');
+        
+        // Save collapsed state
+        saveFolderState(folderId, false);
+    } else {
+        // Expand
+        folderItem.classList.add('expanded');
+        childrenContainer.classList.remove('collapsed');
+        icon.classList.remove('bi-caret-right-fill');
+        icon.classList.add('bi-caret-down-fill');
+        
+        // Save expanded state
+        saveFolderState(folderId, true);
+    }
+}
+
+/**
+ * Save folder expanded/collapsed state to localStorage
+ */
+function saveFolderState(folderId, isExpanded) {
+    const page = getCurrentPage();
+    const storageKey = `folder-state-${page}`;
+    let folderStates = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    
+    folderStates[folderId] = isExpanded;
+    localStorage.setItem(storageKey, JSON.stringify(folderStates));
+}
+
+/**
+ * Restore folder states from localStorage
+ */
+function restoreFolderStates() {
+    const page = getCurrentPage();
+    const storageKey = `folder-state-${page}`;
+    const folderStates = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    
+    Object.entries(folderStates).forEach(([folderId, isExpanded]) => {
+        const folderItem = document.getElementById(`folder-${folderId}`);
+        const childrenContainer = document.querySelector(`.folder-children-container[data-parent-id="${folderId}"]`);
+        const toggle = document.querySelector(`.folder-expand-toggle[data-folder-id="${folderId}"]`);
+        
+        if (!folderItem || !childrenContainer || !toggle) return;
+        
+        const icon = toggle.querySelector('i');
+        
+        if (isExpanded) {
+            folderItem.classList.add('expanded');
+            childrenContainer.classList.remove('collapsed');
+            icon.classList.remove('bi-caret-right-fill');
+            icon.classList.add('bi-caret-down-fill');
+        } else {
+            folderItem.classList.remove('expanded');
+            childrenContainer.classList.add('collapsed');
+            icon.classList.remove('bi-caret-down-fill');
+            icon.classList.add('bi-caret-right-fill');
+        }
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeFolderHierarchyDragDrop();
+    initializeFolderExpandCollapse();
+    restoreFolderStates();
 });

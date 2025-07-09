@@ -72,7 +72,7 @@ def get_breadcrumbs(request, page):
 
 
 def get_folder_tree(request, page, selected_folder=None, max_depth=5):
-    """Get folder tree in breadcrumb style: shows ancestors, current, and children."""
+    """Get complete folder tree with hierarchical structure."""
     user = request.user
     
     def get_folder_children(parent_folder):
@@ -84,39 +84,46 @@ def get_folder_tree(request, page, selected_folder=None, max_depth=5):
             Q(user=user) | Q(editors=user)
         ).order_by("name")
     
-    if not selected_folder:
-        # If no folder is selected, show root level folders
-        root_folders = get_folder_children(None)
-        return [{'folder': folder, 'level': 0, 'children': []} for folder in root_folders]
+    def build_tree_recursive(parent_folder, current_level=0):
+        """Recursively build the folder tree."""
+        children = get_folder_children(parent_folder)
+        tree_nodes = []
+        
+        for folder in children:
+            node = {
+                'folder': folder,
+                'level': current_level,
+                'children': build_tree_recursive(folder, current_level + 1) if current_level < max_depth else [],
+                'has_children': get_folder_children(folder).exists()
+            }
+            tree_nodes.append(node)
+            
+        return tree_nodes
     
-    # Get the path from root to selected folder
-    ancestors = selected_folder.get_ancestors()
+    # Build the complete tree starting from root
+    tree = build_tree_recursive(None, 0)
     
-    # Build the breadcrumb-style tree
-    tree = []
-    
-    # Add ancestors (starting from root)
-    for i, ancestor in enumerate(ancestors):
-        tree.append({
-            'folder': ancestor,
-            'level': i,
-            'children': []
-        })
-    
-    # Add the selected folder
-    tree.append({
-        'folder': selected_folder,
-        'level': len(ancestors),
-        'children': []
-    })
-    
-    # Add children of the selected folder
-    children = get_folder_children(selected_folder)
-    for child in children:
-        tree.append({
-            'folder': child,
-            'level': len(ancestors) + 1,
-            'children': []
-        })
+    # Mark expansion state based on selected folder
+    if selected_folder:
+        ancestors = selected_folder.get_ancestors()
+        ancestor_ids = [ancestor.id for ancestor in ancestors] + [selected_folder.id]
+        
+        def mark_expanded(nodes):
+            for node in nodes:
+                if node['folder'].id in ancestor_ids:
+                    node['expanded'] = True
+                    mark_expanded(node['children'])
+                else:
+                    node['expanded'] = False
+        
+        mark_expanded(tree)
+    else:
+        # If no folder is selected, mark all folders as collapsed by default
+        def mark_collapsed(nodes):
+            for node in nodes:
+                node['expanded'] = False
+                mark_collapsed(node['children'])
+        
+        mark_collapsed(tree)
     
     return tree
