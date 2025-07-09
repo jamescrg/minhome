@@ -4,8 +4,9 @@
     data-folder-name="{{ folder_data.folder.name }}"
     data-level="{{ folder_data.level }}"
     data-has-children="{{ folder_data.has_children|lower }}"
-    draggable="true"
-    style="padding-left: calc({{ folder_data.level }} * 1.5rem);">
+    data-shared="{{ folder_data.folder.editors.exists|lower }}"
+    style="padding-left: calc(0.5rem + {{ folder_data.level }} * 1.25rem);">
+
 
   <div class="folder-show mh-fc">
 
@@ -14,7 +15,9 @@
         <i class="bi bi-caret-{% if folder_data.expanded %}down{% else %}right{% endif %}-fill"></i>
       </span>
     {% else %}
-      <span class="folder-expand-spacer"></span>
+      <span class="folder-icon">
+        <i class="bi bi-folder"></i>
+      </span>
     {% endif %}
 
     <a class="folder-link"

@@ -23,6 +23,7 @@ urlpatterns = [
     path("folders/<int:id>/<str:page>", folders.select, name="folder-select"),
     path("folders/insert/<str:page>", folders.insert, name="folder-insert"),
     path("folders/update/<int:id>/<str:page>", folders.update, name="folder-update"),
+    path("folders/edit/<int:id>/<str:page>", folders.edit_form, name="folder-edit-form"),
     path("folders/delete/<int:id>/<str:page>", folders.delete, name="folder-delete"),
     path("folders/share/<int:id>/<str:page>", folders.share, name="folder-share"),
     path("folders/move/<int:id>/<str:page>", folders.move, name="folder-move"),

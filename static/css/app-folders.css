@@ -11,13 +11,25 @@
 
 .folder-icon {
   color: var(--stone-400);
-  margin-right: 1rem;
+  display: inline-block;
+  margin-right: 0.5rem;
+  text-align: center;
 }
 
-.folder-icon-home {
-  color: var(--stone-400);
-  margin-right: 1rem;
+.folder-expand-toggle {
+  color: var(--stone-350);
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 0.5rem;
+  text-align: center;
 }
+
+.folder-expand-spacer {
+  display: inline-block;
+  margin-right: 0.25rem;
+  width: 1.5rem;
+}
+
 
 .folders input,
 .folders input:focus {
@@ -60,21 +72,6 @@
 /*------------------------------------------------
  * Expand/Collapse styles
  * ------------------------------------------------*/
-
-.folder-expand-toggle {
-  cursor: pointer;
-  display: inline-block;
-  width: 1.5rem;
-  text-align: center;
-  margin-right: 0.25rem;
-  color: var(--stone-300);
-}
-
-.folder-expand-spacer {
-  display: inline-block;
-  width: 1.5rem;
-  margin-right: 0.25rem;
-}
 
 .folder-children {
   margin-left: 0;
@@ -135,12 +132,43 @@ ul.folder-children li:first-child {
 }
 
 /*------------------------------------------------
+ * Folders title drop zone
+ * ------------------------------------------------*/
+
+.folders-title-drop-zone {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.folders-title-drop-zone.drop-target {
+  background-color: var(--green-50);
+  border: 2px solid var(--green-300);
+  color: var(--green-700);
+}
+
+.folders-title-drop-zone.drop-target::after {
+  content: " - Drop here";
+  font-size: 0.8em;
+  font-weight: normal;
+  color: var(--green-600);
+}
+
+/*------------------------------------------------
  * Drag and Drop styles
  * ------------------------------------------------*/
 
 .folder-item {
-  cursor: move;
   transition: all 0.2s ease;
+}
+
+.folder-item .folder-link {
+  cursor: pointer;
+}
+
+/* Shared folders cannot be moved */
+.folder-item[data-shared="true"] .folder-link {
+  cursor: pointer;
 }
 
 .folder-item.dragging {

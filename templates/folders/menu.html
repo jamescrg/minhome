@@ -6,8 +6,15 @@
   </button>
   <ul class="dropdown-menu">
     {% if folder.user == user %}
-      <li><a class="dropdown-item" href="#" onclick="showEditFolderForm({{ folder.id }})">Edit</a></li>
-      <li><a class="dropdown-item" href="/folders/share/{{ folder.id }}/{{ page }}">Share</a></li>
+      <li><a class="dropdown-item" 
+             href="#" 
+             hx-get="/folders/edit/{{ folder.id }}/{{ page }}" 
+             hx-target="#editFolderModalContainer" 
+             hx-swap="innerHTML"
+             hx-on::after-request="bootstrap.Modal.getOrCreateInstance(document.getElementById('editFolderModal')).show()">Edit</a></li>
+      {% if not folder.parent %}
+        <li><a class="dropdown-item" href="/folders/share/{{ folder.id }}/{{ page }}">Share</a></li>
+      {% endif %}
       <li><a class="dropdown-item"
               href="/folders/home/{{ folder.id }}/{{ page }}">
             {% if not folder.home_rank %}

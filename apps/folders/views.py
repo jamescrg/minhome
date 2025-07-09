@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from apps.folders.models import Folder
-from apps.folders.folders import select_folder
+from apps.folders.folders import select_folder, get_folder_tree
 from accounts.models import CustomUser
 
 
@@ -51,9 +51,13 @@ def insert(request, page):
     folder.user = request.user
     folder.page = page
     
-    # Always set parent to the currently selected folder
-    selected_folder = select_folder(request, page)
-    folder.parent = selected_folder
+    # For HTMX requests, always create folders at root level (no parent)
+    if request.headers.get('HX-Request'):
+        folder.parent = None
+    else:
+        # Always set parent to the currently selected folder
+        selected_folder = select_folder(request, page)
+        folder.parent = selected_folder
     
     for field in folder.fillable:
         value = request.POST.get(field)
@@ -62,12 +66,24 @@ def insert(request, page):
             try:
                 value = Folder.objects.get(pk=value, user=request.user, page=page)
             except Folder.DoesNotExist:
-                value = selected_folder  # Fall back to selected folder
+                value = None  # Root level for HTMX requests
         elif field == 'parent':
-            # If no parent specified, use selected folder
-            value = selected_folder
+            # If no parent specified, use None for HTMX requests
+            value = None if request.headers.get('HX-Request') else select_folder(request, page)
         setattr(folder, field, value)
     folder.save()
+    
+    # Return partial update for HTMX requests
+    if request.headers.get('HX-Request'):
+        from django.shortcuts import render
+        selected_folder = select_folder(request, page)
+        folder_tree = get_folder_tree(request, page, selected_folder)
+        return render(request, 'folders/list_fragment.html', {
+            'folder_tree': folder_tree,
+            'selected_folder': selected_folder,
+            'page': page
+        })
+    
     return redirect(page)
 
 
@@ -94,7 +110,33 @@ def update(request, id, page):
         value = request.POST.get(field)
         setattr(folder, field, value)
     folder.save()
+    
+    # Return partial update for HTMX requests
+    if request.headers.get('HX-Request'):
+        from django.shortcuts import render
+        selected_folder = select_folder(request, page)
+        folder_tree = get_folder_tree(request, page, selected_folder)
+        return render(request, 'folders/list_fragment.html', {
+            'folder_tree': folder_tree,
+            'selected_folder': selected_folder,
+            'page': page
+        })
+    
     return redirect(page)
+
+
+@login_required
+def edit_form(request, id, page):
+    """Return the edit form for a folder (for HTMX modal)."""
+    try:
+        folder = Folder.objects.filter(user=request.user, pk=id).get()
+    except ObjectDoesNotExist:
+        raise Http404("Record not found.")
+    
+    return render(request, 'folders/edit_modal.html', {
+        'folder': folder,
+        'page': page
+    })
 
 
 @login_required
@@ -230,6 +272,10 @@ def move(request, id, page):
     try:
         # Get the folder to move
         folder = Folder.objects.get(pk=id, user=request.user, page=page)
+        
+        # Prevent moving shared folders
+        if folder.editors.exists():
+            return JsonResponse({'success': False, 'error': 'Shared folders cannot be moved'})
         
         # Parse the request body
         data = json.loads(request.body)

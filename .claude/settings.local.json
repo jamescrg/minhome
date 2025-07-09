@@ -4,7 +4,8 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(python manage.py:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }

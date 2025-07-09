@@ -1,0 +1,7 @@
+<div id="folder-list">
+  <ul class="list-group">
+    {% for folder_data in folder_tree %}
+      {% include "folders/tree_item.html" with folder_data=folder_data %}
+    {% endfor %}
+  </ul>
+</div>

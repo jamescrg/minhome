@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from accounts.models import CustomUser
 
@@ -65,6 +66,25 @@ class Folder(models.Model):
             descendants.append(child)
             descendants.extend(child.get_descendants())
         return descendants
+    
+    def clean(self):
+        """Validate folder constraints."""
+        super().clean()
+        
+        # Shared folders cannot have parents (must be root level)
+        if self.parent is not None and self.editors.exists():
+            raise ValidationError("Shared folders must be at root level and cannot have a parent.")
+        
+        # Folders with parents cannot be shared
+        if self.parent is not None and self.pk is not None:
+            # Check if this folder is about to become shared
+            if self.editors.exists():
+                raise ValidationError("Folders with parents cannot be shared.")
+    
+    def save(self, *args, **kwargs):
+        """Save folder with validation."""
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "app_folder"

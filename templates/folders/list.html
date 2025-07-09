@@ -2,22 +2,22 @@
 
   <div class="card-title mh-fc">
 
-    <h1>
+    <h1 id="folders-title-drop-zone" class="folders-title-drop-zone">
         Folders
     </h1>
 
-    <a href="javascript:showAddFolderForm();">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#addFolderModal">
         <i class="bi bi-plus-lg"></i>
     </a>
 
   </div>
 
-  {% include "folders/add.html" %}
-
-  <ul class="list-group">
-    {% for folder_data in folder_tree %}
-      {% include "folders/tree_item.html" with folder_data=folder_data %}
-    {% endfor %}
-  </ul>
+  {% include "folders/list_fragment.html" %}
 
 </div>
+
+<!-- Add Folder Modal -->
+{% include "folders/add_modal.html" %}
+
+<!-- Edit Folder Modal (placeholder for HTMX) -->
+<div id="editFolderModalContainer"></div>
