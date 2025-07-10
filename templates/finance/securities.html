@@ -6,74 +6,133 @@
 
 <div class="card">
 
-  <div class="card-title">
+  <div class="card-title mh-fc">
     <h1>
       Stocks and ETFs
     </h1>
+    <a href="/settings/securities-symbols/" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-gear"></i> Manage
+    </a>
   </div>
 
-  <div class="table-responsive">
-    <table class="table finance">
+  {% if data %}
+    <div class="table-responsive">
+      <table class="table finance">
 
-      <tr>
+        <tr>
+          <th>
+            Name
+            <a class="sort" href="{% if ord == 'name' %}/securities/-name{% else %}/securities/name{% endif %}">
+              {% if ord == 'name' %}
+                <i class="bi bi-arrow-down"></i>
+              {% elif ord == '-name' %}
+                <i class="bi bi-arrow-up"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up"></i>
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            Symbol
+            <a class="sort" href="{% if ord == 'symbol' %}/securities/-symbol{% else %}/securities/symbol{% endif %}">
+              {% if ord == 'symbol' %}
+                <i class="bi bi-arrow-down"></i>
+              {% elif ord == '-symbol' %}
+                <i class="bi bi-arrow-up"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up"></i>
+              {% endif %}
+            </a>
+          </th>
+          <th class="numeric">
+            Price
+            <a class="sort" href="{% if ord == 'price' %}/securities/-price{% else %}/securities/price{% endif %}">
+              {% if ord == 'price' %}
+                <i class="bi bi-arrow-down"></i>
+              {% elif ord == '-price' %}
+                <i class="bi bi-arrow-up"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up"></i>
+              {% endif %}
+            </a>
+          </th>
+          <th class="numeric">Prev Close</th>
+          <th class="numeric">Open</th>
+          <th class="numeric">High</th>
+          <th class="numeric">Low</th>
+          <th class="numeric">
+            Change
+            <a class="sort" href="{% if ord == 'change' %}/securities/-change{% else %}/securities/change{% endif %}">
+              {% if ord == 'change' %}
+                <i class="bi bi-arrow-down"></i>
+              {% elif ord == '-change' %}
+                <i class="bi bi-arrow-up"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up"></i>
+              {% endif %}
+            </a>
+          </th>
+          <th class="numeric">
+            % Chg
+            <a class="sort" href="{% if ord == 'percent_change' %}/securities/-percent_change{% else %}/securities/percent_change{% endif %}">
+              {% if ord == 'percent_change' %}
+                <i class="bi bi-arrow-down"></i>
+              {% elif ord == '-percent_change' %}
+                <i class="bi bi-arrow-up"></i>
+              {% else %}
+                <i class="bi bi-arrow-down-up"></i>
+              {% endif %}
+            </a>
+          </th>
 
-        <th>
-          <a class="sort" href="name">Name
+        {% for asset in data %}
+
+        <tr>
+
+        <td class="name">
+          <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
+          {{ asset.name }}
           </a>
-        <th>
-          <a class="sort" href="symbol">Symbol
-          </a>
-        <th class="numeric">
-          <a class="sort" href="price">Price
-          </a>
-        <th class="numeric">Prev Close
-        <th class="numeric">Open
-        <th class="numeric">High
-        <th class="numeric">Low
-        <th class="numeric">Change
-        <th class="numeric">% Chg
 
-      {% for asset in data %}
+          <td class="symbol">{{ asset.symbol }}
 
-      <tr>
+          <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
 
-      <td class="name">
-        <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
-        {{ asset.name }}
-        </a>
+          <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
 
-        <td class="symbol">{{ asset.symbol }}
+          <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
 
-        <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
+          <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
 
-        <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
+          <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
 
-        <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
+          <td class="numeric"
+            {% if asset.change < 0 %} style="color: darkred"
+                                      {% else %} style="color: green"
+                                      {% endif %}>
+            {% if asset.change < 0 %}
+            -${{ asset.change|abs|floatformat:"2"|intcomma }}
+            {% else %}
+            ${{ asset.change|floatformat:"2"|intcomma }}
+            {% endif %}
 
-        <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
+          <td class="numeric"
+              {% if asset.percent_change < 0 %} style="color: darkred"
+                                                {% else %} style="color: green"
+                                                {% endif %}>
+            {{ asset.percent_change|floatformat:"1"|intcomma }}%
 
-        <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
+        {% endfor %}
 
-        <td class="numeric"
-          {% if asset.change < 0 %} style="color: darkred"
-                                    {% else %} style="color: green"
-                                    {% endif %}>
-          {% if asset.change < 0 %}
-          -${{ asset.change|abs|floatformat:"2"|intcomma }}
-          {% else %}
-          ${{ asset.change|floatformat:"2"|intcomma }}
-          {% endif %}
-
-        <td class="numeric"
-            {% if asset.percent_change < 0 %} style="color: darkred"
-                                              {% else %} style="color: green"
-                                              {% endif %}>
-          {{ asset.percent_change|floatformat:"1"|intcomma }}%
-
-      {% endfor %}
-
-    </table>
-  </div>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-graph-up" style="font-size: 6rem; color: var(--bs-secondary);"></i>
+      <p class="text-muted mt-3">No securities symbols configured.</p>
+      <p class="text-muted">Add symbols to start tracking securities prices.</p>
+    </div>
+  {% endif %}
 </div>
 
 {% endblock content %}

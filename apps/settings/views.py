@@ -5,7 +5,12 @@ import google_auth_oauthlib.flow
 import requests
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
+from apps.finance.models import CryptoSymbol, SecuritiesSymbol
+from apps.finance.forms import CryptoSymbolForm, SecuritiesSymbolForm
 
 
 @login_required
@@ -156,6 +161,19 @@ def search_engine(request):
     user = request.user
     user.search_engine = request.POST['search_engine']
     user.save()
+    
+    # Handle HTMX requests
+    if request.headers.get('HX-Request'):
+        # Import here to avoid circular imports
+        from apps.home.views import get_search_context
+        
+        # Get updated search context
+        context = get_search_context(user)
+        
+        # Return just the search section
+        from django.shortcuts import render
+        return render(request, 'home/search.html', context)
+    
     return redirect("/home")
 
 
@@ -179,4 +197,194 @@ def home_options(request, option, value):
     return redirect("/settings")
 
 
+@login_required
+def crypto_symbols(request):
+    """Manage user's crypto symbols"""
+    user = request.user
+    symbols = CryptoSymbol.objects.filter(user=user).order_by('symbol')
+    
+    context = {
+        'page': 'settings',
+        'symbols': symbols,
+    }
+    return render(request, 'settings/crypto_symbols.html', context)
+
+
+@login_required
+def crypto_symbol_add(request):
+    """Add a new crypto symbol"""
+    if request.method == 'POST':
+        form = CryptoSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.save(commit=False)
+            symbol.user = request.user
+            symbol.save()
+            
+            if request.headers.get('HX-Request'):
+                symbols = CryptoSymbol.objects.filter(user=request.user).order_by('symbol')
+                return render(request, 'settings/crypto_symbols_list.html', {'symbols': symbols})
+            
+            return redirect('settings-crypto-symbols')
+    else:
+        form = CryptoSymbolForm()
+    
+    if request.headers.get('HX-Request'):
+        return render(request, 'settings/crypto_symbol_form.html', {
+            'form': form,
+            'action': '/settings/crypto-symbols/add',
+            'title': 'Add Crypto Symbol'
+        })
+    
+    context = {
+        'page': 'settings',
+        'form': form,
+        'action': '/settings/crypto-symbols/add',
+        'title': 'Add Crypto Symbol'
+    }
+    return render(request, 'settings/crypto_symbol_form_page.html', context)
+
+
+@login_required
+def crypto_symbol_edit(request, id):
+    """Edit a crypto symbol"""
+    symbol = get_object_or_404(CryptoSymbol, id=id, user=request.user)
+    
+    if request.method == 'POST':
+        form = CryptoSymbolForm(request.POST, instance=symbol)
+        if form.is_valid():
+            form.save()
+            
+            if request.headers.get('HX-Request'):
+                symbols = CryptoSymbol.objects.filter(user=request.user).order_by('symbol')
+                return render(request, 'settings/crypto_symbols_list.html', {'symbols': symbols})
+            
+            return redirect('settings-crypto-symbols')
+    else:
+        form = CryptoSymbolForm(instance=symbol)
+    
+    if request.headers.get('HX-Request'):
+        return render(request, 'settings/crypto_symbol_form.html', {
+            'form': form,
+            'action': f'/settings/crypto-symbols/{id}/edit',
+            'title': 'Edit Crypto Symbol',
+            'symbol': symbol
+        })
+    
+    context = {
+        'page': 'settings',
+        'form': form,
+        'action': f'/settings/crypto-symbols/{id}/edit',
+        'title': 'Edit Crypto Symbol',
+        'symbol': symbol
+    }
+    return render(request, 'settings/crypto_symbol_form_page.html', context)
+
+
+@login_required
+def crypto_symbol_delete(request, id):
+    """Delete a crypto symbol"""
+    symbol = get_object_or_404(CryptoSymbol, id=id, user=request.user)
+    symbol.delete()
+    
+    if request.headers.get('HX-Request'):
+        symbols = CryptoSymbol.objects.filter(user=request.user).order_by('symbol')
+        return render(request, 'settings/crypto_symbols_list.html', {'symbols': symbols})
+    
+    return redirect('settings-crypto-symbols')
+
+
+@login_required
+def securities_symbols(request):
+    """Manage user's securities symbols"""
+    user = request.user
+    symbols = SecuritiesSymbol.objects.filter(user=user).order_by('symbol')
+    
+    context = {
+        'page': 'settings',
+        'symbols': symbols,
+    }
+    return render(request, 'settings/securities_symbols.html', context)
+
+
+@login_required
+def securities_symbol_add(request):
+    """Add a new securities symbol"""
+    if request.method == 'POST':
+        form = SecuritiesSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.save(commit=False)
+            symbol.user = request.user
+            symbol.save()
+            
+            if request.headers.get('HX-Request'):
+                symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by('symbol')
+                return render(request, 'settings/securities_symbols_list.html', {'symbols': symbols})
+            
+            return redirect('settings-securities-symbols')
+    else:
+        form = SecuritiesSymbolForm()
+    
+    if request.headers.get('HX-Request'):
+        return render(request, 'settings/securities_symbol_form.html', {
+            'form': form,
+            'action': '/settings/securities-symbols/add',
+            'title': 'Add Securities Symbol'
+        })
+    
+    context = {
+        'page': 'settings',
+        'form': form,
+        'action': '/settings/securities-symbols/add',
+        'title': 'Add Securities Symbol'
+    }
+    return render(request, 'settings/securities_symbol_form_page.html', context)
+
+
+@login_required
+def securities_symbol_edit(request, id):
+    """Edit a securities symbol"""
+    symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
+    
+    if request.method == 'POST':
+        form = SecuritiesSymbolForm(request.POST, instance=symbol)
+        if form.is_valid():
+            form.save()
+            
+            if request.headers.get('HX-Request'):
+                symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by('symbol')
+                return render(request, 'settings/securities_symbols_list.html', {'symbols': symbols})
+            
+            return redirect('settings-securities-symbols')
+    else:
+        form = SecuritiesSymbolForm(instance=symbol)
+    
+    if request.headers.get('HX-Request'):
+        return render(request, 'settings/securities_symbol_form.html', {
+            'form': form,
+            'action': f'/settings/securities-symbols/{id}/edit',
+            'title': 'Edit Securities Symbol',
+            'symbol': symbol
+        })
+    
+    context = {
+        'page': 'settings',
+        'form': form,
+        'action': f'/settings/securities-symbols/{id}/edit',
+        'title': 'Edit Securities Symbol',
+        'symbol': symbol
+    }
+    return render(request, 'settings/securities_symbol_form_page.html', context)
+
+
+@login_required
+def securities_symbol_delete(request, id):
+    """Delete a securities symbol"""
+    symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
+    symbol.delete()
+    
+    if request.headers.get('HX-Request'):
+        symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by('symbol')
+        return render(request, 'settings/securities_symbols_list.html', {'symbols': symbols})
+    
+    return redirect('settings-securities-symbols')
 

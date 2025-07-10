@@ -1,0 +1,57 @@
+{% if symbols %}
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Added</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for symbol in symbols %}
+          <tr>
+            <td><strong>{{ symbol.symbol }}</strong></td>
+            <td>{{ symbol.name|default:"—" }}</td>
+            <td>
+              {% if symbol.is_active %}
+                <span class="badge bg-success">Active</span>
+              {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+              {% endif %}
+            </td>
+            <td>{{ symbol.created_at|date:"M d, Y" }}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <a href="#"
+                   class="btn btn-outline-primary"
+                   hx-get="/settings/crypto-symbols/{{ symbol.id }}/edit"
+                   hx-target="#htmx-modal-content"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#htmx-modal-container">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="#"
+                   class="btn btn-outline-danger"
+                   hx-delete="/settings/crypto-symbols/{{ symbol.id }}/delete"
+                   hx-target="#crypto-symbols-list"
+                   hx-confirm="Are you sure you want to delete {{ symbol.symbol }}?">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="text-center py-4">
+    <i class="bi bi-currency-bitcoin" style="font-size: 3rem; color: #6c757d;"></i>
+    <p class="text-muted mt-3">No crypto symbols configured yet.</p>
+    <p class="text-muted">Add some symbols to track cryptocurrency prices.</p>
+  </div>
+{% endif %}

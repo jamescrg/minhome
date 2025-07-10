@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.favorites",
     "apps.tasks",
     "apps.contacts",
+    "apps.finance",
     "apps.lab",
     "apps.management",
     "apps.notes",
