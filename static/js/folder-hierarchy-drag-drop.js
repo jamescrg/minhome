@@ -193,6 +193,12 @@ function handleFolderItemDragOver(e) {
         return false;
     }
 
+    // Check depth limit (3 levels maximum)
+    const targetDepth = getFolderDepth(this);
+    if (targetDepth >= 2) { // 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
+        return false;
+    }
+
     this.classList.add('drop-target');
     e.dataTransfer.dropEffect = 'move';
     return false;
@@ -230,6 +236,14 @@ function handleFolderItemDrop(e) {
 
     // Don't allow dropping on descendants
     if (isDescendant(draggedId, targetId)) {
+        return false;
+    }
+
+    // Check depth limit (3 levels maximum)
+    const targetDepth = getFolderDepth(this);
+    if (targetDepth >= 2) { // 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
+        showCustomAlert('Cannot nest folders more than 3 levels deep');
+        this.classList.remove('drop-target');
         return false;
     }
 
@@ -290,6 +304,14 @@ function handleTitleDropZoneDrop(e) {
     moveFolderToParent(draggedId, null);
 
     return false;
+}
+
+/**
+ * Get the depth of a folder (0 = root level, 1 = first level, etc.)
+ */
+function getFolderDepth(folderElement) {
+    const level = folderElement.getAttribute('data-level');
+    return level ? parseInt(level, 10) : 0;
 }
 
 /**
@@ -390,6 +412,23 @@ function getCsrfToken() {
     }
 
     return '';
+}
+
+/**
+ * Show custom alert modal
+ */
+function showCustomAlert(message) {
+    const messageElement = document.getElementById('customAlertMessage');
+    const modal = document.getElementById('customAlertModal');
+    
+    if (messageElement && modal) {
+        messageElement.textContent = message;
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+    } else {
+        // Fallback to regular alert if modal elements not found
+        alert(message);
+    }
 }
 
 /**

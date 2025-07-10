@@ -35,7 +35,7 @@ def select(request, id, page):
     user.save()
     
     # Store the current folder path for breadcrumbs
-    if id and id != "0":
+    if id and id != 0:
         try:
             folder = Folder.objects.get(pk=id)
             request.session[f"{page}_folder_path"] = [f.id for f in folder.get_ancestors()] + [folder.id]
@@ -302,6 +302,11 @@ def move(request, id, page):
                 # Prevent moving a folder into one of its descendants
                 if folder in new_parent.get_ancestors() or folder.id == new_parent.id:
                     return JsonResponse({'success': False, 'error': 'Cannot move folder into its descendant or itself'})
+                
+                # Check depth limit (3 levels maximum)
+                new_parent_depth = len(new_parent.get_ancestors())
+                if new_parent_depth >= 2:  # 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
+                    return JsonResponse({'success': False, 'error': 'Cannot nest folders more than 3 levels deep'})
                 
                 folder.parent = new_parent
             except Folder.DoesNotExist:

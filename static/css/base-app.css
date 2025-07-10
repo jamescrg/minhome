@@ -259,6 +259,17 @@ li {
   background: var(--stone-50);
 }
 
+/* Custom alert modal */
+.custom-alert-modal {
+  background: var(--stone-100);
+}
+
+/* Override Bootstrap modal backdrop */
+.modal-backdrop.show {
+  background-color: var(--stone-300);
+  opacity: 0.8;
+}
+
 /*------------------------------------------------
  * utilities
  * ------------------------------------------------*/

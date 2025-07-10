@@ -31,11 +31,8 @@ def index(request):
     # Get folder tree starting from selected folder
     folder_tree, tree_has_children = get_folder_tree(request, "tasks", selected_folder)
     
-    # Get breadcrumbs for navigation
-    breadcrumbs = []
-    if selected_folder:
-        breadcrumbs = selected_folder.get_ancestors()
-        breadcrumbs.append(selected_folder)
+    # Get breadcrumbs for navigation  
+    breadcrumbs = get_breadcrumbs(request, "tasks")
 
     if selected_folder:
         # Get tasks from selected folder only

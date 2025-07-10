@@ -42,10 +42,7 @@ def index(request):
     folder_tree, tree_has_children = get_folder_tree(request, "favorites", selected_folder)
     
     # Get breadcrumbs for navigation
-    breadcrumbs = []
-    if selected_folder:
-        breadcrumbs = selected_folder.get_ancestors()
-        breadcrumbs.append(selected_folder)
+    breadcrumbs = get_breadcrumbs(request, "favorites")
 
     if selected_folder:
         # Get favorites from selected folder only

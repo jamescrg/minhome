@@ -80,6 +80,12 @@ class Folder(models.Model):
             # Check if this folder is about to become shared
             if self.editors.exists():
                 raise ValidationError("Folders with parents cannot be shared.")
+        
+        # Check depth limit (3 levels maximum)
+        if self.parent is not None:
+            depth = len(self.parent.get_ancestors())
+            if depth >= 2:  # 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
+                raise ValidationError("Cannot nest folders more than 3 levels deep.")
     
     def save(self, *args, **kwargs):
         """Save folder with validation."""
