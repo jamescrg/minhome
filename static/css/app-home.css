@@ -132,3 +132,27 @@
 .drop-zone-active {
   min-height: calc(100vh - 120px);
 }
+
+/*------------------------------------------------
+ * SortableJS styles
+ * ------------------------------------------------*/
+
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--stone-200);
+}
+
+.sortable-chosen {
+  background: var(--stone-150);
+}
+
+.sortable-drag {
+  background: var(--stone-100);
+  transform: rotate(5deg);
+}
+
+.dragging {
+  opacity: 0.8;
+  transform: scale(1.02);
+  background: var(--stone-150);
+}

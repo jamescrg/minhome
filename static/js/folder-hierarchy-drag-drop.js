@@ -208,7 +208,11 @@ function handleFolderItemDragOver(e) {
  * Handle drag leave for folder items
  */
 function handleFolderItemDragLeave(e) {
-    this.classList.remove('drop-target');
+    // Only remove drop-target if we're actually leaving this folder
+    // Check if the related target (where we're going) is outside this folder
+    if (!this.contains(e.relatedTarget)) {
+        this.classList.remove('drop-target');
+    }
 }
 
 /**

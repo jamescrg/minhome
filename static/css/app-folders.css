@@ -217,13 +217,14 @@ ul.folder-children li:first-child {
 .folder-item.dragging {
   opacity: 0.5;
   background-color: var(--stone-100);
-  border: 2px dashed var(--stone-400);
+  /* border-bottom: 1px dashed var(--stone-400); */
+  /* border-top: 1px dashed var(--stone-400); */
 }
 
 .folder-item.drop-target {
   background-color: var(--selected-background);
-  border: 2px solid var(--selected-border);
-  border-radius: 4px;
+  border-bottom: 1px solid var(--selected-border);
+  /* border-top: 1px solid var(--selected-border); */
   position: relative;
 }
 
