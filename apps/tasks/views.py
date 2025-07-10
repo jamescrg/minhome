@@ -27,11 +27,11 @@ def index(request):
 
     user = request.user
     selected_folder = select_folder(request, "tasks")
-    
+
     # Get folder tree starting from selected folder
     folder_tree, tree_has_children = get_folder_tree(request, "tasks", selected_folder)
-    
-    # Get breadcrumbs for navigation  
+
+    # Get breadcrumbs for navigation
     breadcrumbs = get_breadcrumbs(request, "tasks")
 
     if selected_folder:
@@ -140,17 +140,16 @@ def edit(request, id):
         except AttributeError:
             selected_folder = None
 
-        if selected_folder:
-            form = TaskForm(instance=task, initial={"folder": selected_folder.id})
-        else:
-            form = TaskForm(instance=task)
+        form = TaskForm(instance=task)
 
-        form.fields["folder"].queryset = folders
+        folder_tree, tree_has_children = get_folder_tree(
+            request, "tasks", selected_folder)
 
         context = {
             "page": "tasks",
             "edit": True,
-            "folders": folders,
+            "folder_tree": folder_tree,
+            "tree_has_children": tree_has_children,
             "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
             "form": form,
@@ -204,7 +203,7 @@ def remove_editor(request, folder_id, user_id):
 @require_http_methods(["POST"])
 def move_to_folder(request):
     """Move a task to a different folder.
-    
+
     Expected POST data:
         item_id: ID of the task to move
         folder_id: ID of the target folder
@@ -213,22 +212,22 @@ def move_to_folder(request):
         data = json.loads(request.body)
         item_id = data.get('item_id')
         folder_id = data.get('folder_id')
-        
+
         if not item_id or not folder_id:
             return JsonResponse({'success': False, 'message': 'Missing required parameters'})
-        
+
         # Get the task
         task = get_object_or_404(Task, pk=item_id, user=request.user)
-        
+
         # Get the target folder
         folder = get_object_or_404(Folder, pk=folder_id, user=request.user)
-        
+
         # Move the task to the new folder
         task.folder = folder
         task.save()
-        
+
         return JsonResponse({'success': True, 'message': 'Task moved successfully'})
-        
+
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
     except Exception as e:

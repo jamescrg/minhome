@@ -26,9 +26,9 @@ def index(request):
 
     user = request.user
     page = "notes"
-    
+
     selected_folder = select_folder(request, "notes")
-    
+
     # Get folder tree starting from selected folder
     folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
 
@@ -92,6 +92,9 @@ def add(request):
 
     selected_folder = select_folder(request, "notes")
 
+    folder_tree, tree_has_children = get_folder_tree(
+        request, "notes", selected_folder)
+
     if request.method == "POST":
         # create a bound note form loaded with the post values
         # this will render even if the post values are invalid
@@ -128,7 +131,8 @@ def add(request):
         "page": "notes",
         "edit": False,
         "add": True,
-        "folders": folders,
+        "folder_tree": folder_tree,
+        "tree_has_children": tree_has_children,
         "selected_folder": selected_folder,
         "action": "/notes/add",
         "form": form,
@@ -150,9 +154,10 @@ def edit(request, id):
     """
 
     user = request.user
-    folders = get_folders_for_page(request, "notes")
-
     selected_folder = select_folder(request, "notes")
+
+    folder_tree, tree_has_children = get_folder_tree(
+        request, "notes", selected_folder)
 
     note = get_object_or_404(Note, pk=id)
 
@@ -171,24 +176,19 @@ def edit(request, id):
             return redirect("notes")
 
     else:
-        if selected_folder:
-            form = NoteForm(
-                instance=note, initial={"folder": selected_folder.id})
-        else:
-            form = NoteForm(instance=note)
+        form = NoteForm(instance=note)
 
-    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
-
-    context = {
-        "page": "notes",
-        "edit": True,
-        "add": False,
-        "folders": folders,
-        "selected_folder": selected_folder,
-        "action": f"/notes/{id}/edit",
-        "form": form,
-        "note": note,
-    }
+        context = {
+            "page": "notes",
+            "edit": True,
+            "add": False,
+            "folder_tree": folder_tree,
+            "tree_has_children": tree_has_children,
+            "selected_folder": selected_folder,
+            "action": f"/notes/{id}/edit",
+            "form": form,
+            "note": note,
+        }
 
     return render(request, "notes/content.html", context)
 
@@ -214,7 +214,7 @@ def delete(request, id):
 @require_http_methods(["POST"])
 def move_to_folder(request):
     """Move a note to a different folder.
-    
+
     Expected POST data:
         item_id: ID of the note to move
         folder_id: ID of the target folder
@@ -223,22 +223,22 @@ def move_to_folder(request):
         data = json.loads(request.body)
         item_id = data.get('item_id')
         folder_id = data.get('folder_id')
-        
+
         if not item_id or not folder_id:
             return JsonResponse({'success': False, 'message': 'Missing required parameters'})
-        
+
         # Get the note
         note = get_object_or_404(Note, pk=item_id, user=request.user)
-        
+
         # Get the target folder
         folder = get_object_or_404(Folder, pk=folder_id, user=request.user)
-        
+
         # Move the note to the new folder
         note.folder = folder
         note.save()
-        
+
         return JsonResponse({'success': True, 'message': 'Note moved successfully'})
-        
+
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
     except Exception as e:
