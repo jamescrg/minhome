@@ -76,10 +76,10 @@
 .folder::after {
   content: '';
   position: absolute;
-  top: 0;
+  top: -1rem;
   left: 0;
   right: 0;
-  bottom: -1rem;
+  bottom: 0;
   pointer-events: none;
   z-index: 1;
 }
