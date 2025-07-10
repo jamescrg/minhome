@@ -50,6 +50,7 @@ urlpatterns = [
     path("favorites/api/add", favorites.api_add, name="favorites-api-add"),
     path("favorites/api/folders", favorites.api_folders, name="favorites-api-folders"),
     path("favorites/extension", favorites.extension_add, name="favorites-extension"),
+    path("favorites/move-to-folder/", favorites.move_to_folder, name="favorites-move-to-folder"),
     # tasks
     path("tasks/", tasks.index, name="tasks"),
     path("tasks/add", tasks.add, name="tasks-add"),
@@ -57,6 +58,7 @@ urlpatterns = [
     path("tasks/<int:id>/complete", tasks.status, name="tasks-complete"),
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
     path("tasks/clear", tasks.clear, name="tasks-clear"),
+    path("tasks/move-to-folder/", tasks.move_to_folder, name="tasks-move-to-folder"),
     path(
         "tasks/add-editor/<int:folder_id>/<int:user_id>",
         tasks.add_editor, name="folder-add-editor"),
@@ -71,12 +73,14 @@ urlpatterns = [
     path("contacts/<int:id>/delete", contacts.delete, name="contacts-delete"),
     path("contacts/<int:id>/google-toggle", contacts.google_toggle, name="contacts-google-toggle"),
     path("contacts/google-list", contacts.google_list, name="contacts-google-list"),
+    path("contacts/move-to-folder/", contacts.move_to_folder, name="contacts-move-to-folder"),
     # notes
     path("notes/", notes.index, name="notes"),
     path("notes/<int:id>", notes.select, name="notes-select"),
     path("notes/add", notes.add, name="notes-add"),
     path("notes/<int:id>/edit", notes.edit, name="notes-edit"),
     path("notes/<int:id>/delete", notes.delete, name="notes-delete"),
+    path("notes/move-to-folder/", notes.move_to_folder, name="notes-move-to-folder"),
     # weather
     path("weather/", weather.index, name="weather"),
     path("weather/zip", weather.zip, name="weather-zip"),

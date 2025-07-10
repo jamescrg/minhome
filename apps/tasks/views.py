@@ -1,6 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 from accounts.models import CustomUser
 from apps.folders.folders import get_task_folders, select_folder, get_breadcrumbs, get_folder_tree
@@ -25,12 +29,17 @@ def index(request):
     selected_folder = select_folder(request, "tasks")
     
     # Get folder tree starting from selected folder
-    folder_tree = get_folder_tree(request, "tasks", selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(request, "tasks", selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = []
+    if selected_folder:
+        breadcrumbs = selected_folder.get_ancestors()
+        breadcrumbs.append(selected_folder)
 
     if selected_folder:
-        # Get tasks from selected folder and all its descendants
-        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
-        tasks = Task.objects.filter(folder__id__in=folder_ids).order_by("status", "title")
+        # Get tasks from selected folder only
+        tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
     else:
         tasks = Task.objects.filter(
             user=user, folder__isnull=True).order_by("status", "title")
@@ -38,8 +47,10 @@ def index(request):
     context = {
         "page": "tasks",
         "folder_tree": folder_tree,
+        "tree_has_children": tree_has_children,
         "selected_folder": selected_folder,
         "tasks": tasks,
+        "breadcrumbs": breadcrumbs,
     }
 
     return render(request, "tasks/content.html", context)
@@ -189,3 +200,39 @@ def remove_editor(request, folder_id, user_id):
     folder.editors.remove(user)
     folder.save()
     return redirect("/tasks/")
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def move_to_folder(request):
+    """Move a task to a different folder.
+    
+    Expected POST data:
+        item_id: ID of the task to move
+        folder_id: ID of the target folder
+    """
+    try:
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        folder_id = data.get('folder_id')
+        
+        if not item_id or not folder_id:
+            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+        
+        # Get the task
+        task = get_object_or_404(Task, pk=item_id, user=request.user)
+        
+        # Get the target folder
+        folder = get_object_or_404(Folder, pk=folder_id, user=request.user)
+        
+        # Move the task to the new folder
+        task.folder = folder
+        task.save()
+        
+        return JsonResponse({'success': True, 'message': 'Task moved successfully'})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

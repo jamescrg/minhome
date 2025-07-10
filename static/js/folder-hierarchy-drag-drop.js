@@ -7,6 +7,7 @@
 let draggedFolderItem = null;
 let isDragging = false;
 let dragTimeout = null;
+let currentDropTarget = null;
 
 /**
  * Initialize folder hierarchy drag and drop
@@ -72,7 +73,29 @@ function initializeFolderHierarchyDragDrop() {
     console.log('Folder drag and drop initialized');
 }
 
+/**
+ * Clean up all drop target styles
+ */
+function cleanupAllDropTargets() {
+    // Remove drop target class from all folder items
+    const allFolders = document.querySelectorAll('.folder-item.drop-target');
+    allFolders.forEach(folder => {
+        folder.classList.remove('drop-target');
+    });
+    
+    // Remove drop target class from title drop zone
+    const titleDropZone = document.querySelector('.folders-title-drop-zone.drop-target');
+    if (titleDropZone) {
+        titleDropZone.classList.remove('drop-target');
+    }
+    
+    currentDropTarget = null;
+}
+
 function handleDragEnd(e) {
+    // Clean up all drop targets when drag ends
+    cleanupAllDropTargets();
+    
     const folderItem = e.target.closest('.folder-item');
     if (folderItem) {
         handleFolderItemDragEnd.call(folderItem, e);
@@ -83,9 +106,16 @@ function handleDragOver(e) {
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
     
+    // Clear previous drop target if we're over a new element
+    if (currentDropTarget && currentDropTarget !== folderItem && currentDropTarget !== titleDropZone) {
+        currentDropTarget.classList.remove('drop-target');
+    }
+    
     if (folderItem && draggedFolderItem) {
+        currentDropTarget = folderItem;
         handleFolderItemDragOver.call(folderItem, e);
     } else if (titleDropZone && draggedFolderItem) {
+        currentDropTarget = titleDropZone;
         handleTitleDropZoneDragOver.call(titleDropZone, e);
     }
 }
@@ -128,17 +158,8 @@ function handleFolderItemDragEnd(e) {
         }
     }
 
-    // Remove all drop indicators
-    const allItems = document.querySelectorAll('.folder-item');
-    allItems.forEach(item => {
-        item.classList.remove('drag-over', 'drop-target');
-    });
-
-    // Remove drop indicator from title drop zone
-    const titleDropZone = document.querySelector('.folders-title-drop-zone');
-    if (titleDropZone) {
-        titleDropZone.classList.remove('drop-target');
-    }
+    // Use the cleanup function to remove all drop indicators
+    cleanupAllDropTargets();
 
     // Reset state
     draggedFolderItem = null;
@@ -403,8 +424,8 @@ function handleFolderToggle(e) {
         // Collapse
         folderItem.classList.remove('expanded');
         childrenContainer.classList.add('collapsed');
-        icon.classList.remove('bi-caret-down-fill');
-        icon.classList.add('bi-caret-right-fill');
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-chevron-right');
 
         // Save collapsed state
         saveFolderState(folderId, false);
@@ -412,8 +433,8 @@ function handleFolderToggle(e) {
         // Expand
         folderItem.classList.add('expanded');
         childrenContainer.classList.remove('collapsed');
-        icon.classList.remove('bi-caret-right-fill');
-        icon.classList.add('bi-caret-down-fill');
+        icon.classList.remove('bi-chevron-right');
+        icon.classList.add('bi-chevron-down');
 
         // Save expanded state
         saveFolderState(folderId, true);
@@ -452,13 +473,13 @@ function restoreFolderStates() {
         if (isExpanded) {
             folderItem.classList.add('expanded');
             childrenContainer.classList.remove('collapsed');
-            icon.classList.remove('bi-caret-right-fill');
-            icon.classList.add('bi-caret-down-fill');
+            icon.classList.remove('bi-chevron-right');
+            icon.classList.add('bi-chevron-down');
         } else {
             folderItem.classList.remove('expanded');
             childrenContainer.classList.add('collapsed');
-            icon.classList.remove('bi-caret-down-fill');
-            icon.classList.add('bi-caret-right-fill');
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-right');
         }
     });
 }
@@ -468,6 +489,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFolderHierarchyDragDrop();
     initializeFolderExpandCollapse();
     restoreFolderStates();
+    
+    // Global failsafe to clean up drop targets
+    window.addEventListener('dragend', function() {
+        cleanupAllDropTargets();
+    });
 });
 
 // Re-initialize after HTMX updates

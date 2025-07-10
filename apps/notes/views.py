@@ -1,8 +1,11 @@
 import markdown
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
 from apps.folders.models import Folder
@@ -27,12 +30,11 @@ def index(request):
     selected_folder = select_folder(request, "notes")
     
     # Get folder tree starting from selected folder
-    folder_tree = get_folder_tree(request, page, selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
 
     if selected_folder:
-        # Get notes from selected folder and all its descendants
-        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
-        notes = Note.objects.filter(user=user, folder_id__in=folder_ids)
+        # Get notes from selected folder only
+        notes = Note.objects.filter(user=user, folder=selected_folder)
     else:
         notes = Note.objects.filter(user=user, folder_id__isnull=True)
 
@@ -52,6 +54,7 @@ def index(request):
         "page": page,
         "edit": False,
         "folder_tree": folder_tree,
+        "tree_has_children": tree_has_children,
         "selected_folder": selected_folder,
         "notes": notes,
         "selected_note": selected_note,
@@ -204,3 +207,39 @@ def delete(request, id):
         raise Http404("Record not found.")
     note.delete()
     return redirect("notes")
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def move_to_folder(request):
+    """Move a note to a different folder.
+    
+    Expected POST data:
+        item_id: ID of the note to move
+        folder_id: ID of the target folder
+    """
+    try:
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        folder_id = data.get('folder_id')
+        
+        if not item_id or not folder_id:
+            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+        
+        # Get the note
+        note = get_object_or_404(Note, pk=item_id, user=request.user)
+        
+        # Get the target folder
+        folder = get_object_or_404(Folder, pk=folder_id, user=request.user)
+        
+        # Move the note to the new folder
+        note.folder = folder
+        note.save()
+        
+        return JsonResponse({'success': True, 'message': 'Note moved successfully'})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

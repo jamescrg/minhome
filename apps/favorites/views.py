@@ -4,6 +4,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+import json
 
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
@@ -38,12 +39,17 @@ def index(request):
     selected_folder = select_folder(request, "favorites")
     
     # Get folder tree starting from selected folder
-    folder_tree = get_folder_tree(request, "favorites", selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(request, "favorites", selected_folder)
+    
+    # Get breadcrumbs for navigation
+    breadcrumbs = []
+    if selected_folder:
+        breadcrumbs = selected_folder.get_ancestors()
+        breadcrumbs.append(selected_folder)
 
     if selected_folder:
-        # Get favorites from selected folder and all its descendants
-        folder_ids = [selected_folder.id] + [f.id for f in selected_folder.get_descendants()]
-        favorites = Favorite.objects.filter(user=user, folder_id__in=folder_ids)
+        # Get favorites from selected folder only
+        favorites = Favorite.objects.filter(user=user, folder=selected_folder)
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
@@ -53,8 +59,10 @@ def index(request):
         "page": "favorites",
         "edit": False,
         "folder_tree": folder_tree,
+        "tree_has_children": tree_has_children,
         "selected_folder": selected_folder,
         "favorites": favorites,
+        "breadcrumbs": breadcrumbs,
     }
     return render(request, "favorites/content.html", context)
 
@@ -333,3 +341,39 @@ def extension_add(request):
         'url': request.GET.get('url', ''),
     }
     return render(request, "favorites/extension_form.html", context)
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def move_to_folder(request):
+    """Move a favorite to a different folder.
+    
+    Expected POST data:
+        item_id: ID of the favorite to move
+        folder_id: ID of the target folder
+    """
+    try:
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        folder_id = data.get('folder_id')
+        
+        if not item_id or not folder_id:
+            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+        
+        # Get the favorite
+        favorite = get_object_or_404(Favorite, pk=item_id, user=request.user)
+        
+        # Get the target folder
+        folder = get_object_or_404(Folder, pk=folder_id, user=request.user)
+        
+        # Move the favorite to the new folder
+        favorite.folder = folder
+        favorite.save()
+        
+        return JsonResponse({'success': True, 'message': 'Favorite moved successfully'})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

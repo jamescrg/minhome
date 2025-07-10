@@ -13,6 +13,7 @@ from accounts.models import CustomUser
 @login_required
 def select(request, id, page):
     """Select a folder for display, redirect to index if that folder's page.
+    If the folder is already selected, unselect it.
 
     Args:
         id (int): a Folder instance id
@@ -20,6 +21,16 @@ def select(request, id, page):
 
     """
     user = request.user
+    current_folder_id = getattr(user, page + "_folder", None)
+    
+    # If clicking on the currently selected folder, unselect it
+    if current_folder_id == id:
+        setattr(user, page + "_folder", 0)
+        user.save()
+        request.session[f"{page}_folder_path"] = []
+        return redirect(page)
+    
+    # Otherwise, select the new folder
     setattr(user, page + "_folder", id)
     user.save()
     
@@ -77,9 +88,10 @@ def insert(request, page):
     if request.headers.get('HX-Request'):
         from django.shortcuts import render
         selected_folder = select_folder(request, page)
-        folder_tree = get_folder_tree(request, page, selected_folder)
+        folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
         return render(request, 'folders/list_fragment.html', {
             'folder_tree': folder_tree,
+            'tree_has_children': tree_has_children,
             'selected_folder': selected_folder,
             'page': page
         })
@@ -115,9 +127,10 @@ def update(request, id, page):
     if request.headers.get('HX-Request'):
         from django.shortcuts import render
         selected_folder = select_folder(request, page)
-        folder_tree = get_folder_tree(request, page, selected_folder)
+        folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
         return render(request, 'folders/list_fragment.html', {
             'folder_tree': folder_tree,
+            'tree_has_children': tree_has_children,
             'selected_folder': selected_folder,
             'page': page
         })

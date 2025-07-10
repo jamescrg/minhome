@@ -2,18 +2,20 @@
 <div class="card favorites">
 
   <div class="card-title mh-fc">
-    <h1>
-
-      {% if  selected_folder %}
-
-        {{ selected_folder.name }}
-
+    <h1 class="breadcrumb-title">
+      {% if breadcrumbs %}
+        <a href="/folders/0/{{ page }}" class="breadcrumb-link">{{ page|capfirst }}</a>
+        {% for folder in breadcrumbs %}
+          <span class="breadcrumb-separator">/</span>
+          {% if forloop.last %}
+            <span class="breadcrumb-current">{{ folder.name }}</span>
+          {% else %}
+            <a href="/folders/{{ folder.id }}/{{ page }}" class="breadcrumb-link">{{ folder.name }}</a>
+          {% endif %}
+        {% endfor %}
       {% else %}
-
-        Unsorted
-
+        {{ page|capfirst }}
       {% endif %}
-
     </h1>
 
     <a href="/favorites/add">
@@ -26,7 +28,7 @@
 
     {% for favorite in favorites %}
 
-      <li class="list-group-item mh-ft">
+      <li class="list-group-item mh-ft favorite-item" data-favorite-id="{{ favorite.id }}" data-folder-id="{{ favorite.folder.id|default:'' }}">
 
         <div class="favorite-left mh-ftl">
 

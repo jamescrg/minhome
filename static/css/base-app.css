@@ -42,9 +42,33 @@ body {
 
 a,
 a:hover {
-  color: var(--lime-800);
+  color: var(--matcha-800);
   outline: none;
   text-decoration: none;
+}
+
+
+/*------------------------------------------------
+ * add (plus) button links
+ * ------------------------------------------------*/
+
+.card-title a[href*="/add"],
+.card-title a[data-bs-toggle="modal"] {
+  background: var(--stone-125);
+  border: solid 1px var(--stone-200);
+  border-radius: 4px;
+  color: var(--matcha-800);
+  outline: none;
+  padding: 3px 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-title a[href*="/add"]:hover,
+.card-title a[data-bs-toggle="modal"]:hover {
+  background: var(--stone-125);
+  color: var(--matcha-800);
 }
 
 
@@ -90,7 +114,7 @@ a:hover {
  * ------------------------------------------------*/
 
 .page-vertical-centered h1 {
-  color: var(--lime-900);
+  color: var(--matcha-900);
   font-size: 1.5em;
 }
 
@@ -173,7 +197,7 @@ li {
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--lime-900);
+  background: var(--matcha-900);
   border: none;
   color: var(--stone-300);
 }
@@ -222,6 +246,18 @@ li {
 }
 
 
+
+/*------------------------------------------------
+ * modals
+ * ------------------------------------------------*/
+
+.modal-content {
+  background: var(--stone-100);
+}
+
+.modal-content .form-control {
+  background: var(--stone-50);
+}
 
 /*------------------------------------------------
  * utilities

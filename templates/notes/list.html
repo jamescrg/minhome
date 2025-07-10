@@ -1,5 +1,5 @@
 
-<div class="card">
+<div class="card notes">
 
   <div class="card-title mh-fc">
     <h1>
@@ -16,7 +16,7 @@
 
     {% for note in notes %}
 
-    <li class="list-group-item">
+    <li class="list-group-item note-item" data-note-id="{{ note.id }}" data-folder-id="{{ note.folder.id|default:'' }}">
 
       <a href="/notes/{{ note.id }}"
         {% if selected_note and selected_note.id == note.id %} class="strong"{% endif %}>

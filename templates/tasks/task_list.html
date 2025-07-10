@@ -1,21 +1,9 @@
 
 <ul class="list-group task-list">
 
-  <li class="list-group-item task-list-title">
-
-  {% if selected_folder %}
-
-    {{ selected_folder.name }}
-
-  {% else %}
-
-    Unsorted
-
-  {% endif %}
-
   {% for task in tasks %}
 
-    <li class="list-group-item mh-ftl">
+    <li class="list-group-item mh-ftl task-item" data-task-id="{{ task.id }}" data-folder-id="{{ task.folder.id|default:'' }}">
 
       <div class="task-checkbox">
 

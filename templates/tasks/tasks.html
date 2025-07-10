@@ -1,10 +1,23 @@
 
-<div class="card">
+<div class="card tasks">
 
-  <div class="card-title">
-    <h1>
-      Tasks
+  <div class="card-title mh-fc">
+    <h1 class="breadcrumb-title">
+      {% if breadcrumbs %}
+        <a href="/folders/0/{{ page }}" class="breadcrumb-link">{{ page|capfirst }}</a>
+        {% for folder in breadcrumbs %}
+          <span class="breadcrumb-separator">/</span>
+          {% if forloop.last %}
+            <span class="breadcrumb-current">{{ folder.name }}</span>
+          {% else %}
+            <a href="/folders/{{ folder.id }}/{{ page }}" class="breadcrumb-link">{{ folder.name }}</a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {{ page|capfirst }}
+      {% endif %}
     </h1>
+
   </div>
 
 	{% include 'tasks/taskform.html' %}

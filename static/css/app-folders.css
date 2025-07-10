@@ -5,22 +5,11 @@
  * folder list
  * ------------------------------------------------*/
 
-.folders .list-group {
-  padding-left: 0.5rem;
-}
-
-.folder-icon {
-  color: var(--stone-400);
-  display: inline-block;
-  margin-right: 0.5rem;
-  text-align: center;
-}
-
 .folder-expand-toggle {
   color: var(--stone-350);
   cursor: pointer;
   display: inline-block;
-  margin-right: 0.5rem;
+  margin-right: 0.1rem;
   text-align: center;
 }
 
@@ -93,7 +82,7 @@ ul.folder-children li:first-child {
 }
 
 .folder-item.selected .folder-link {
-  color: var(--lime-900);
+  color: var(--matcha-900);
   font-weight: 500;
 }
 
@@ -132,26 +121,80 @@ ul.folder-children li:first-child {
 }
 
 /*------------------------------------------------
+ * Breadcrumb title styling
+ * ------------------------------------------------*/
+
+.breadcrumb-title {
+  /* Inherits default h1 styling */
+}
+
+.breadcrumb-link {
+  color: var(--matcha-800);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--matcha-800);
+  text-decoration: none;
+}
+
+.breadcrumb-separator {
+  color: var(--stone-400);
+  margin: 0 0.5rem;
+}
+
+.breadcrumb-current {
+  color: var(--stone-900);
+}
+
+/*------------------------------------------------
+ * Folder icon alignment
+ * ------------------------------------------------*/
+
+.folder-chevron-container {
+  display: inline-block;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.folder-expand-toggle {
+  cursor: pointer;
+  color: var(--stone-400);
+  transition: color 0.2s ease;
+  font-size: 0.75rem;
+  transform: translateY(-2px);
+}
+
+.folder-expand-toggle:hover {
+  color: var(--stone-600);
+}
+
+.folder-icon {
+  color: var(--stone-400);
+  margin-right: 0.5rem;
+}
+
+/*------------------------------------------------
  * Folders title drop zone
  * ------------------------------------------------*/
 
 .folders-title-drop-zone {
-  padding: 0.5rem 1rem;
   border-radius: 6px;
   transition: all 0.2s ease;
 }
 
 .folders-title-drop-zone.drop-target {
-  background-color: var(--green-50);
-  border: 2px solid var(--green-300);
-  color: var(--green-700);
+  background-color: var(--selected-background);
+  border: 2px solid var(--selected-border);
+  color: var(--selected-color);
 }
 
 .folders-title-drop-zone.drop-target::after {
   content: " - Drop here";
   font-size: 0.8em;
   font-weight: normal;
-  color: var(--green-600);
+  color: var(--selected-color);
 }
 
 /*------------------------------------------------
@@ -173,13 +216,13 @@ ul.folder-children li:first-child {
 
 .folder-item.dragging {
   opacity: 0.5;
-  background-color: var(--blue-50);
-  border: 2px dashed var(--blue-300);
+  background-color: var(--stone-100);
+  border: 2px dashed var(--stone-400);
 }
 
 .folder-item.drop-target {
-  background-color: var(--green-50);
-  border: 2px solid var(--green-300);
+  background-color: var(--selected-background);
+  border: 2px solid var(--selected-border);
   border-radius: 4px;
   position: relative;
 }
@@ -188,10 +231,10 @@ ul.folder-children li:first-child {
   content: "Drop here";
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 5px;
   transform: translateY(-50%);
-  background-color: var(--green-100);
-  color: var(--green-700);
+  background-color: var(--selected-border);
+  color: var(--selected-color);
   padding: 2px 6px;
   border-radius: 3px;
   font-size: 11px;

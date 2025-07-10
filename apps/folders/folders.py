@@ -103,6 +103,17 @@ def get_folder_tree(request, page, selected_folder=None, max_depth=5):
     # Build the complete tree starting from root
     tree = build_tree_recursive(None, 0)
     
+    # Check if any folder in the tree has children
+    def has_any_children(nodes):
+        for node in nodes:
+            if node['has_children']:
+                return True
+            if has_any_children(node['children']):
+                return True
+        return False
+    
+    tree_has_children = has_any_children(tree)
+    
     # Mark expansion state based on selected folder
     if selected_folder:
         ancestors = selected_folder.get_ancestors()
@@ -126,4 +137,4 @@ def get_folder_tree(request, page, selected_folder=None, max_depth=5):
         
         mark_collapsed(tree)
     
-    return tree
+    return tree, tree_has_children

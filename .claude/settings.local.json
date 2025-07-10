@@ -5,7 +5,8 @@
       "Bash(grep:*)",
       "Bash(python manage.py:*)",
       "Bash(pytest:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

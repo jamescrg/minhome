@@ -5,20 +5,24 @@
     data-level="{{ folder_data.level }}"
     data-has-children="{{ folder_data.has_children|lower }}"
     data-shared="{{ folder_data.folder.editors.exists|lower }}"
-    style="padding-left: calc(0.5rem + {{ folder_data.level }} * 1.25rem);">
+    style="padding-left: calc(0.3rem + {{ folder_data.level }} * 1.25rem);">
 
 
   <div class="folder-show mh-fc">
 
-    {% if folder_data.has_children %}
-      <span class="folder-expand-toggle" data-folder-id="{{ folder_data.folder.id }}">
-        <i class="bi bi-caret-{% if folder_data.expanded %}down{% else %}right{% endif %}-fill"></i>
-      </span>
-    {% else %}
-      <span class="folder-icon">
-        <i class="bi bi-folder"></i>
+    {% if tree_has_children %}
+      <span class="folder-chevron-container">
+        {% if folder_data.has_children %}
+          <span class="folder-expand-toggle" data-folder-id="{{ folder_data.folder.id }}">
+            <i class="bi bi-chevron-{% if folder_data.expanded %}down{% else %}right{% endif %}"></i>
+          </span>
+        {% endif %}
       </span>
     {% endif %}
+
+    <span class="folder-icon">
+      <i class="bi bi-folder"></i>
+    </span>
 
     <a class="folder-link"
         href="/folders/{{ folder_data.folder.id }}/{{ page }}"
