@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="row">
-        <div class="col-lg-3 order-lg-1">{% include "folders/list.html" %}</div>
-        <div class="col-lg-9 order-lg-2">
+        <div class="col-lg-9 order-lg-1">
             {% if edit %}
                 {% include "tasks/form.html" %}
             {% else %}
                 {% include "tasks/tasks.html" %}
             {% endif %}
         </div>
+        <div class="col-lg-3 order-lg-2">{% include "folders/list.html" %}</div>
     </div>
 {% endblock content %}
