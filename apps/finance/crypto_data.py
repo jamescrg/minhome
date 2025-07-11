@@ -1,7 +1,6 @@
 import requests
+from django.conf import settings
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-
-from config import settings_local
 
 
 def collect(symbols):
@@ -19,7 +18,7 @@ def collect(symbols):
     params = {
         "symbol": symbols,
         "convert": "USD",
-        "CMC_PRO_API_KEY": settings_local.CRYPTO_API_KEY,
+        "CMC_PRO_API_KEY": settings.CRYPTO_API_KEY,
     }
 
     try:

@@ -1,9 +1,8 @@
 import requests
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-
-from config import settings_local
 
 from .models import CryptoSymbol, SecuritiesSymbol
 
@@ -61,7 +60,7 @@ class CryptoSymbolForm(forms.ModelForm):
         params = {
             "symbol": symbol,
             "convert": "USD",
-            "CMC_PRO_API_KEY": settings_local.CRYPTO_API_KEY,
+            "CMC_PRO_API_KEY": settings.CRYPTO_API_KEY,
         }
 
         try:
@@ -140,7 +139,7 @@ class SecuritiesSymbolForm(forms.ModelForm):
         url = "https://finnhub.io/api/v1/quote"
         params = {
             "symbol": symbol,
-            "token": settings_local.FINNHUB_API_KEY,
+            "token": settings.FINNHUB_API_KEY,
         }
 
         try:
