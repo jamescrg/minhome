@@ -11,7 +11,7 @@ function swapFolderPositions(draggedFolderId, targetFolderId) {
     formData.append('dragged_folder_id', draggedFolderId);
     formData.append('target_folder_id', targetFolderId);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/swap-folder-positions/', {
         method: 'POST',
         body: formData
@@ -42,7 +42,7 @@ function insertAboveFolder(draggedFolderId, targetFolderId, targetColumn) {
     formData.append('target_column', targetColumn);
     formData.append('insert_below', 'false');
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/insert-folder-at-position/', {
         method: 'POST',
         body: formData
@@ -72,7 +72,7 @@ function insertFolderAtPosition(draggedFolderId, targetFolderId, targetColumn) {
     formData.append('target_folder_id', targetFolderId);
     formData.append('target_column', targetColumn);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/insert-folder-at-position/', {
         method: 'POST',
         body: formData
@@ -104,7 +104,7 @@ function updateFolderColumn(folderId, targetColumn, targetPosition) {
         formData.append('target_position', targetPosition);
     }
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/update-folder-column/', {
         method: 'POST',
         body: formData
@@ -133,7 +133,7 @@ function swapFavoritePositions(draggedFavoriteId, targetFavoriteId) {
     formData.append('dragged_favorite_id', draggedFavoriteId);
     formData.append('target_favorite_id', targetFavoriteId);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/swap-favorite-positions/', {
         method: 'POST',
         body: formData
@@ -163,7 +163,7 @@ function insertFavoriteAboveFavorite(draggedFavoriteId, targetFavoriteId) {
     formData.append('target_favorite_id', targetFavoriteId);
     formData.append('insert_below', 'false');
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/insert-favorite-at-position/', {
         method: 'POST',
         body: formData
@@ -192,7 +192,7 @@ function insertFavoriteBelowFavorite(draggedFavoriteId, targetFavoriteId) {
     formData.append('target_favorite_id', targetFavoriteId);
     formData.append('insert_below', 'true');
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/insert-favorite-at-position/', {
         method: 'POST',
         body: formData
@@ -224,7 +224,7 @@ function moveFavoriteToNewFolder(draggedFavoriteId, targetFavoriteId, targetFold
     formData.append('target_folder_id', targetFolderId);
     formData.append('insert_below', 'false'); // Insert above target
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/move-favorite-to-folder/', {
         method: 'POST',
         body: formData
@@ -253,7 +253,7 @@ function moveFavoriteToFolder(draggedFavoriteId, targetFolderId) {
     formData.append('target_folder_id', targetFolderId);
     formData.append('move_to_end', 'true'); // Indicate we want to move to end of folder
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/move-favorite-to-folder/', {
         method: 'POST',
         body: formData
@@ -282,7 +282,7 @@ function moveFavoriteToEmptyFolder(draggedFavoriteId, targetFolderId) {
     formData.append('target_favorite_id', '-1'); // Special value to indicate empty folder
     formData.append('target_folder_id', targetFolderId);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/move-favorite-to-folder/', {
         method: 'POST',
         body: formData

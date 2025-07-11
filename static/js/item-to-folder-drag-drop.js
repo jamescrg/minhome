@@ -14,13 +14,13 @@ let isItemDragging = false;
  */
 function initializeItemToFolderDragDrop() {
     console.log('Initializing item to folder drag and drop');
-    
+
     // Initialize draggable items by type
     initializeDraggableItems('.favorite-left .link a', 'favorite');
     initializeDraggableItems('.task-title a', 'task');
     initializeDraggableItems('.contact-item a', 'contact');
     initializeDraggableItems('.note-item a', 'note');
-    
+
     // Make folders accept drops from items
     initializeFolderDropZones();
 }
@@ -31,11 +31,11 @@ function initializeItemToFolderDragDrop() {
 function initializeDraggableItems(selector, itemType) {
     const items = document.querySelectorAll(selector);
     console.log(`Found ${items.length} ${itemType} items`);
-    
+
     items.forEach(item => {
         const listItem = item.closest('.list-group-item');
         if (!listItem) return;
-        
+
         // Timer-based drag detection
         item.addEventListener('mousedown', function(e) {
             console.log(`Mousedown on ${itemType} item`);
@@ -49,7 +49,7 @@ function initializeDraggableItems(selector, itemType) {
                 console.log(`Started dragging ${itemType}`, listItem);
             }, 150);
         });
-        
+
         item.addEventListener('mouseup', function(e) {
             clearTimeout(itemDragTimeout);
             if (!isItemDragging) {
@@ -62,7 +62,7 @@ function initializeDraggableItems(selector, itemType) {
                 item.style.cursor = '';
             }
         });
-        
+
         // Prevent navigation during drag
         item.addEventListener('click', function(e) {
             if (isItemDragging) {
@@ -70,7 +70,7 @@ function initializeDraggableItems(selector, itemType) {
                 return false;
             }
         });
-        
+
         // Drag events
         listItem.addEventListener('dragstart', handleItemDragStart);
         listItem.addEventListener('dragend', handleItemDragEnd);
@@ -83,7 +83,7 @@ function initializeDraggableItems(selector, itemType) {
 function initializeFolderDropZones() {
     const folderItems = document.querySelectorAll('.folder-item');
     console.log(`Found ${folderItems.length} folders as drop zones`);
-    
+
     folderItems.forEach(folder => {
         // Add event listeners for item drops
         folder.addEventListener('dragover', handleItemToFolderDragOver);
@@ -108,13 +108,13 @@ function handleItemDragEnd(e) {
     this.classList.remove('dragging');
     this.draggable = false;
     isItemDragging = false;
-    
+
     // Clean up all drop indicators
     const folders = document.querySelectorAll('.folder-item');
     folders.forEach(folder => {
         folder.classList.remove('drop-target', 'drop-target-active');
     });
-    
+
     draggedItem = null;
     draggedItemType = null;
 }
@@ -128,7 +128,7 @@ function handleItemToFolderDragOver(e) {
         console.log('Ignoring dragover - draggedItem:', draggedItem, 'draggedFolderItem:', typeof draggedFolderItem !== 'undefined' ? draggedFolderItem : 'undefined');
         return;
     }
-    
+
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     return false;
@@ -140,7 +140,7 @@ function handleItemToFolderDragOver(e) {
 function handleItemToFolderDragEnter(e) {
     // Only handle item drags
     if (!draggedItem || (typeof draggedFolderItem !== 'undefined' && draggedFolderItem)) return;
-    
+
     this.classList.add('drop-target', 'drop-target-active');
 }
 
@@ -150,10 +150,10 @@ function handleItemToFolderDragEnter(e) {
 function handleItemToFolderDragLeave(e) {
     // Only handle item drags
     if (!draggedItem || (typeof draggedFolderItem !== 'undefined' && draggedFolderItem)) return;
-    
+
     // Check if we're actually leaving the folder (not just moving to a child element)
     const rect = this.getBoundingClientRect();
-    if (e.clientX < rect.left || e.clientX >= rect.right || 
+    if (e.clientX < rect.left || e.clientX >= rect.right ||
         e.clientY < rect.top || e.clientY >= rect.bottom) {
         this.classList.remove('drop-target', 'drop-target-active');
     }
@@ -164,17 +164,17 @@ function handleItemToFolderDragLeave(e) {
  */
 function handleItemToFolderDrop(e) {
     console.log('Drop event triggered', draggedItem, draggedItemType);
-    
+
     // Only handle item drags
     if (!draggedItem || (typeof draggedFolderItem !== 'undefined' && draggedFolderItem)) return;
-    
+
     e.preventDefault();
     e.stopPropagation();
-    
+
     const targetFolderId = this.getAttribute('data-folder-id');
     console.log('Target folder ID:', targetFolderId);
     let itemId;
-    
+
     switch(draggedItemType) {
         case 'favorite':
             itemId = draggedItem.getAttribute('data-favorite-id');
@@ -202,7 +202,7 @@ function handleItemToFolderDrop(e) {
             }
             break;
     }
-    
+
     return false;
 }
 
@@ -211,7 +211,7 @@ function handleItemToFolderDrop(e) {
  */
 function moveItemToFolder(itemType, itemId, folderId) {
     const url = `/${itemType}s/move-to-folder/`;
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -258,10 +258,10 @@ function getCookie(name) {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     // Only initialize on pages with folders and items
-    if (document.querySelector('.folders') && 
-        (document.querySelector('.favorites') || 
-         document.querySelector('.tasks') || 
-         document.querySelector('.contacts') || 
+    if (document.querySelector('.folders') &&
+        (document.querySelector('.favorites') ||
+         document.querySelector('.tasks') ||
+         document.querySelector('.contacts') ||
          document.querySelector('.notes'))) {
         initializeItemToFolderDragDrop();
     }

@@ -1,13 +1,19 @@
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 import json
 
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
 from accounts.models import CustomUser
-from apps.folders.folders import get_task_folders, select_folder, get_breadcrumbs, get_folder_tree
+from apps.folders.folders import (
+    get_breadcrumbs,
+    get_folder_tree,
+    get_task_folders,
+    select_folder,
+)
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
@@ -38,8 +44,9 @@ def index(request):
         # Get tasks from selected folder only
         tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
     else:
-        tasks = Task.objects.filter(
-            user=user, folder__isnull=True).order_by("status", "title")
+        tasks = Task.objects.filter(user=user, folder__isnull=True).order_by(
+            "status", "title"
+        )
 
     context = {
         "page": "tasks",
@@ -143,7 +150,8 @@ def edit(request, id):
         form = TaskForm(instance=task)
 
         folder_tree, tree_has_children = get_folder_tree(
-            request, "tasks", selected_folder)
+            request, "tasks", selected_folder
+        )
 
         context = {
             "page": "tasks",
@@ -171,13 +179,12 @@ def clear(request):
     if selected_folder:
         tasks = Task.objects.filter(folder=selected_folder, status=1)
     else:
-        tasks = Task.objects.filter(
-            user=request.user, folder__isnull=True, status=1)
+        tasks = Task.objects.filter(user=request.user, folder__isnull=True, status=1)
 
     for task in tasks:
         task.delete()
 
-    return redirect("/tasks/")
+    return redirect("tasks")
 
 
 @login_required
@@ -186,7 +193,7 @@ def add_editor(request, folder_id, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
     folder.editors.add(user)
     folder.save()
-    return redirect("/tasks/")
+    return redirect("tasks")
 
 
 @login_required
@@ -195,7 +202,7 @@ def remove_editor(request, folder_id, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
     folder.editors.remove(user)
     folder.save()
-    return redirect("/tasks/")
+    return redirect("tasks")
 
 
 @login_required
@@ -210,11 +217,13 @@ def move_to_folder(request):
     """
     try:
         data = json.loads(request.body)
-        item_id = data.get('item_id')
-        folder_id = data.get('folder_id')
+        item_id = data.get("item_id")
+        folder_id = data.get("folder_id")
 
         if not item_id or not folder_id:
-            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+            return JsonResponse(
+                {"success": False, "message": "Missing required parameters"}
+            )
 
         # Get the task
         task = get_object_or_404(Task, pk=item_id, user=request.user)
@@ -226,9 +235,9 @@ def move_to_folder(request):
         task.folder = folder
         task.save()
 
-        return JsonResponse({'success': True, 'message': 'Task moved successfully'})
+        return JsonResponse({"success": True, "message": "Task moved successfully"})
 
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+        return JsonResponse({"success": False, "message": "Invalid JSON data"})
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        return JsonResponse({"success": False, "message": str(e)})

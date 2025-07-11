@@ -5,59 +5,48 @@
     data-level="{{ folder_data.level }}"
     data-has-children="{{ folder_data.has_children|lower }}"
     data-shared="{{ folder_data.folder.editors.exists|lower }}"
-    style="padding-left: calc(0.3rem + {{ folder_data.level }} * 1.25rem);">
-
-
-  <div class="folder-show mh-fc">
-
-    {% if tree_has_children %}
-      <span class="folder-chevron-container">
-        {% if folder_data.has_children %}
-          <span class="folder-expand-toggle" data-folder-id="{{ folder_data.folder.id }}">
-            <i class="bi bi-chevron-{% if folder_data.expanded %}down{% else %}right{% endif %}"></i>
-          </span>
+    style="padding-left: calc(0.3rem + {{ folder_data.level }} * 1.25rem)">
+    <div class="folder-show mh-fc">
+        {% if tree_has_children %}
+            <span class="folder-chevron-container">
+                {% if folder_data.has_children %}
+                    <span class="folder-expand-toggle"
+                          data-folder-id="{{ folder_data.folder.id }}">
+                        <i class="bi bi-chevron-{% if folder_data.expanded %}down{% else %}right{% endif %}"></i>
+                    </span>
+                {% endif %}
+            </span>
         {% endif %}
-      </span>
-    {% endif %}
-
-    <span class="folder-icon">
-      <i class="bi bi-folder"></i>
-    </span>
-
-    <a class="folder-link"
-        href="/folders/{{ folder_data.folder.id }}/{{ page }}"
-        >
-        {{ folder_data.folder.name }}
-    </a>
-
-  </div>
-  <div class="mh-ft">
-    <div class="folder-badges">
-      {% if folder_data.folder.editors.exists %}
-        <span class="folder-badge folder-badge-shared" title="Shared folder">
-          <i class="bi bi-people"></i>
+        <span class="folder-icon">
+            <i class="bi bi-folder"></i>
         </span>
-      {% endif %}
-
-      {% if folder_data.folder.home_column and folder_data.folder.user == user %}
-        <span class="folder-badge folder-badge-home" title="On home page">
-          <i class="bi bi-house-door"></i>
-        </span>
-      {% endif %}
+        <a class="folder-link"
+           href="{% url 'folder-select' id=folder_data.folder.id page=page %}">{{ folder_data.folder.name }}</a>
     </div>
-
-    {% include "folders/menu.html" with folder=folder_data.folder %}
-
-  </div>
+    <div class="mh-ft">
+        <div class="folder-badges">
+            {% if folder_data.folder.editors.exists %}
+                <span class="folder-badge folder-badge-shared" title="Shared folder">
+                    <i class="bi bi-people"></i>
+                </span>
+            {% endif %}
+            {% if folder_data.folder.home_column and folder_data.folder.user == user %}
+                <span class="folder-badge folder-badge-home" title="On home page">
+                    <i class="bi bi-house-door"></i>
+                </span>
+            {% endif %}
+        </div>
+        {% include "folders/menu.html" with folder=folder_data.folder %}
+    </div>
 </li>
-
 {% if folder_data.children %}
-  <li class="list-group-item folder-children-container {% if not folder_data.expanded %}collapsed{% endif %}"
-      data-parent-id="{{ folder_data.folder.id }}">
-    <ul class="folder-children list-unstyled" data-parent-id="{{ folder_data.folder.id }}">
-      {% for child in folder_data.children %}
-        {% include "folders/tree_item.html" with folder_data=child %}
-      {% endfor %}
-    </ul>
-  </li>
+    <li class="list-group-item folder-children-container {% if not folder_data.expanded %}collapsed{% endif %}"
+        data-parent-id="{{ folder_data.folder.id }}">
+        <ul class="folder-children list-unstyled"
+            data-parent-id="{{ folder_data.folder.id }}">
+            {% for child in folder_data.children %}
+                {% include "folders/tree_item.html" with folder_data=child %}
+            {% endfor %}
+        </ul>
+    </li>
 {% endif %}

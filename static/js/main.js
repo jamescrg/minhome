@@ -68,6 +68,3 @@ function showHideCredentials(favorite_id)
     showHide(elementId);
 
 }
-
-
-

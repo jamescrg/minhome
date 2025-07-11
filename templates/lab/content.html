@@ -1,41 +1,29 @@
-<html>
-<head>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body>
-
-    <h1 x-data="{ message: 'I like Alpine' }" x-text="message"></h1>
-
-    <br>
-    <br>
-
-    <div x-data="{ count: {{ count }} }">
-
-      <button x-on:mouseenter="count++">Increment</button>
-
-      <span x-text="count"></span>
-
-    </div>
-
-    <br>
-    <br>
-
-    <div x-data="{ edit: false }">
-
-        <button
-          @click="edit = true"
-          x-show="! edit"
-        >
-          Record
-        </button>
-
-        <input
-          autofocus
-          x-show="edit"
-          @click.outside="edit = false"
-        />
-
-    </div>
-
-</body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lab - Alpine.js Testing</title>
+        <meta name="description"
+              content="Development lab for testing Alpine.js components and interactive features. Includes counter, edit mode, and reactive data binding examples.">
+        <meta name="keywords"
+              content="Alpine.js, JavaScript framework, reactive components, lab testing, interactive elements, development playground">
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </head>
+    <body>
+        <h1 x-data="{ message: 'I like Alpine' }" x-text="message"></h1>
+        <br>
+        <br>
+        <div x-data="{ count: {{ count }} }">
+            <button x-on:mouseenter="count++">Increment</button>
+            <span x-text="count"></span>
+        </div>
+        <br>
+        <br>
+        <div x-data="{ edit: false }">
+            <button @click="edit = true" x-show="! edit">Record</button>
+            <input autofocus x-show="edit" @click.outside="edit = false" />
+        </div>
+    </body>
 </html>

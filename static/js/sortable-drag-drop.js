@@ -11,13 +11,13 @@ let favoriteSortables = [];
  */
 function initializeSortableDragDrop() {
     console.log('Initializing SortableJS drag and drop');
-    
+
     // Clean up existing sortables
     cleanupSortables();
-    
+
     // Initialize folder sorting
     initializeFolderSortables();
-    
+
     // Initialize favorite sorting
     initializeFavoriteSortables();
 }
@@ -32,7 +32,7 @@ function cleanupSortables() {
         }
     });
     folderSortables = [];
-    
+
     favoriteSortables.forEach(sortable => {
         if (sortable && sortable.destroy) {
             sortable.destroy();
@@ -46,7 +46,7 @@ function cleanupSortables() {
  */
 function initializeFolderSortables() {
     const columns = document.querySelectorAll('.drop-zone');
-    
+
     columns.forEach((column, index) => {
         const sortable = new Sortable(column, {
             group: 'folders', // Allow dragging between columns
@@ -57,31 +57,31 @@ function initializeFolderSortables() {
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
-            
+
             // Custom placeholder
             onStart: function(evt) {
                 console.log('Folder drag started');
                 // Add visual feedback
                 evt.item.classList.add('dragging');
             },
-            
+
             onEnd: function(evt) {
                 console.log('Folder drag ended');
                 evt.item.classList.remove('dragging');
-                
+
                 // If item moved to different position or column
                 if (evt.oldIndex !== evt.newIndex || evt.from !== evt.to) {
                     const folderId = evt.item.getAttribute('data-folder-id');
                     const newColumn = evt.to.getAttribute('data-column');
                     const newPosition = evt.newIndex;
-                    
+
                     console.log(`Moving folder ${folderId} to column ${newColumn}, position ${newPosition}`);
-                    
+
                     // Update folder position via API
                     updateFolderPosition(folderId, newColumn, newPosition);
                 }
             },
-            
+
             // Show insertion indicator
             onMove: function(evt) {
                 // Don't allow dropping favorites into folder container
@@ -91,7 +91,7 @@ function initializeFolderSortables() {
                 return true;
             }
         });
-        
+
         folderSortables.push(sortable);
     });
 }
@@ -101,7 +101,7 @@ function initializeFolderSortables() {
  */
 function initializeFavoriteSortables() {
     const favoriteLists = document.querySelectorAll('.folder .list-group');
-    
+
     favoriteLists.forEach((list, index) => {
         const sortable = new Sortable(list, {
             group: 'favorites', // Allow dragging between folders
@@ -111,30 +111,30 @@ function initializeFavoriteSortables() {
             dragClass: 'sortable-drag',
             delay: 150, // Delay to distinguish from clicks
             delayOnTouchStart: true,
-            
+
             onStart: function(evt) {
                 console.log('Favorite drag started');
                 evt.item.classList.add('dragging');
             },
-            
+
             onEnd: function(evt) {
                 console.log('Favorite drag ended');
                 evt.item.classList.remove('dragging');
-                
+
                 // If item moved to different position or folder
                 if (evt.oldIndex !== evt.newIndex || evt.from !== evt.to) {
                     const favoriteId = evt.item.getAttribute('data-favorite-id');
                     const newFolderId = evt.to.closest('.folder').getAttribute('data-folder-id');
                     const newPosition = evt.newIndex;
-                    
+
                     console.log(`Moving favorite ${favoriteId} to folder ${newFolderId}, position ${newPosition}`);
-                    
+
                     // Update favorite position via API
                     updateFavoritePosition(favoriteId, newFolderId, newPosition);
                 }
             }
         });
-        
+
         favoriteSortables.push(sortable);
     });
 }
@@ -148,7 +148,7 @@ function updateFolderPosition(folderId, newColumn, newPosition) {
     formData.append('target_column', newColumn);
     formData.append('target_position', newPosition);
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/update-folder-column/', {
         method: 'POST',
         body: formData
@@ -186,7 +186,7 @@ function updateFavoritePosition(favoriteId, newFolderId, newPosition) {
     formData.append('target_folder_id', newFolderId);
     formData.append('move_to_end', 'true'); // Use existing API to move to end of folder
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    
+
     fetch('/home/move-favorite-to-folder/', {
         method: 'POST',
         body: formData

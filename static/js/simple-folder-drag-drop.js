@@ -18,10 +18,10 @@ function initializeSimpleFolderDragDrop() {
 
     // Initialize draggable folders
     initializeDraggableFolders();
-    
+
     // Initialize expand/collapse functionality
     initializeFolderExpandCollapse();
-    
+
     // Restore folder states
     restoreFolderStates();
 }
@@ -49,7 +49,7 @@ function initializeDraggableFolders() {
                 draggedFolderItem = item;
                 item.classList.add('dragging');
                 link.style.cursor = 'grabbing';
-                
+
                 // Add drop targets to other folders
                 addDropTargetsToFolders(item);
             }, 150); // 150ms delay before drag starts
@@ -135,7 +135,7 @@ function handleDragEnd(e) {
     console.log('Drag end');
     this.classList.remove('dragging');
     removeDropTargetsFromFolders();
-    
+
     // Reset drag state
     const link = this.querySelector('.folder-link');
     if (link) {
@@ -148,29 +148,29 @@ function handleDragEnd(e) {
  */
 function handleDragOver(e) {
     if (!draggedFolderItem) return;
-    
+
     e.preventDefault();
-    
+
     // Don't allow dropping on self
     if (this === draggedFolderItem) {
         return false;
     }
-    
+
     // Validate drop
     const draggedId = draggedFolderItem.getAttribute('data-folder-id');
     const targetId = this.getAttribute('data-folder-id');
-    
+
     // Don't allow dropping on descendants
     if (isDescendantFolder(draggedId, targetId)) {
         return false;
     }
-    
+
     // Check depth limit
     const targetDepth = getFolderDepth(this);
     if (targetDepth >= 2) {
         return false;
     }
-    
+
     // Add visual feedback
     this.classList.add('drop-target');
     e.dataTransfer.dropEffect = 'move';
@@ -199,23 +199,23 @@ function handleDragLeave(e) {
  */
 function handleDrop(e) {
     if (!draggedFolderItem) return false;
-    
+
     e.stopPropagation();
     e.preventDefault();
-    
+
     // Don't allow dropping on self
     if (this === draggedFolderItem) {
         return false;
     }
-    
+
     const draggedId = draggedFolderItem.getAttribute('data-folder-id');
     const targetId = this.getAttribute('data-folder-id');
-    
+
     // Don't allow dropping on descendants
     if (isDescendantFolder(draggedId, targetId)) {
         return false;
     }
-    
+
     // Check depth limit
     const targetDepth = getFolderDepth(this);
     if (targetDepth >= 2) {
@@ -223,14 +223,14 @@ function handleDrop(e) {
         this.classList.remove('drop-target');
         return false;
     }
-    
+
     this.classList.remove('drop-target');
-    
+
     console.log(`Moving folder ${draggedId} to parent ${targetId}`);
-    
+
     // Move the folder to be a child of the target
     moveFolderToParent(draggedId, targetId);
-    
+
     return false;
 }
 
@@ -308,7 +308,7 @@ function isDescendantFolder(draggedId, targetId) {
 function showCustomAlert(message) {
     const messageElement = document.getElementById('customAlertMessage');
     const modal = document.getElementById('customAlertModal');
-    
+
     if (messageElement && modal) {
         messageElement.textContent = message;
         const bootstrapModal = new bootstrap.Modal(modal);

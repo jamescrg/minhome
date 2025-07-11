@@ -1,15 +1,16 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-import json
 
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
+from apps.folders.folders import get_folder_tree, select_folder
 from apps.folders.models import Folder
 
 
@@ -27,15 +28,15 @@ def index(request):
     selected_folder = select_folder(request, "contacts")
 
     # Get folder tree starting from selected folder
-    folder_tree, tree_has_children = get_folder_tree(request, "contacts", selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(
+        request, "contacts", selected_folder
+    )
 
     if selected_folder:
         # Get contacts from selected folder only
-        contacts = Contact.objects.filter(
-            user=request.user, folder=selected_folder)
+        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
     else:
-        contacts = Contact.objects.filter(
-            user=request.user, folder_id__isnull=True)
+        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
 
     contacts = contacts.order_by("name")
 
@@ -77,7 +78,7 @@ def select(request, id):
     user = request.user
     user.contacts_contact = id
     user.save()
-    return redirect("/contacts/")
+    return redirect("contacts")
 
 
 @login_required
@@ -93,7 +94,8 @@ def add(request):
     selected_folder = select_folder(request, "contacts")
 
     folder_tree, tree_has_children = get_folder_tree(
-        request, "contacts", selected_folder)
+        request, "contacts", selected_folder
+    )
 
     # if applicable, process any post data submitted by user
     if request.method == "POST":
@@ -159,7 +161,8 @@ def edit(request, id):
     selected_folder = select_folder(request, "contacts")
 
     folder_tree, tree_has_children = get_folder_tree(
-        request, "contacts", selected_folder)
+        request, "contacts", selected_folder
+    )
 
     contact = get_object_or_404(Contact, pk=id)
 
@@ -272,11 +275,13 @@ def move_to_folder(request):
     """
     try:
         data = json.loads(request.body)
-        item_id = data.get('item_id')
-        folder_id = data.get('folder_id')
+        item_id = data.get("item_id")
+        folder_id = data.get("folder_id")
 
         if not item_id or not folder_id:
-            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+            return JsonResponse(
+                {"success": False, "message": "Missing required parameters"}
+            )
 
         # Get the contact
         contact = get_object_or_404(Contact, pk=item_id, user=request.user)
@@ -288,11 +293,9 @@ def move_to_folder(request):
         contact.folder = folder
         contact.save()
 
-        return JsonResponse({'success': True, 'message': 'Contact moved successfully'})
+        return JsonResponse({"success": True, "message": "Contact moved successfully"})
 
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+        return JsonResponse({"success": False, "message": "Invalid JSON data"})
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
-
-
+        return JsonResponse({"success": False, "message": str(e)})

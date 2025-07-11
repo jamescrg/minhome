@@ -1,4 +1,10 @@
 
 [flake8]
-ignore = E501
-exclude .git,__pycache__
+max-line-length=120
+# E501: line too long
+# F401: imported but unused (will be fixed manually)
+# F841: local variable assigned but never used (will be fixed manually)
+# E722: do not use bare 'except' (will be fixed manually)
+# F821: undefined name (will be fixed manually)
+ignore = E501,W503
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,migrations

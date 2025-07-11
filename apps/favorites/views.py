@@ -1,66 +1,36 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-import json
 
+from apps.favorites.favorites import get_favorites
 from apps.favorites.forms import FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
+from apps.folders.folders import get_folder_tree, get_folders_for_page, select_folder
 from apps.folders.models import Folder
 
 
 def cors_headers(view_func):
     """Decorator to add CORS headers for extension requests"""
+
     def wrapper(request, *args, **kwargs):
         response = view_func(request, *args, **kwargs)
-        response['Access-Control-Allow-Origin'] = '*'
-        response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-        response['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRFToken'
-        response['Access-Control-Allow-Credentials'] = 'true'
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
+        response["Access-Control-Allow-Credentials"] = "true"
         return response
+
     return wrapper
 
 
 @login_required
 def index(request):
-    """Display a list of folders and favorites
-
-    Notes:
-        Always displays folders.
-        If a folder is selected, displays the favorites for a folder.
-
-    """
-
-    user = request.user
-
-    selected_folder = select_folder(request, "favorites")
-
-    # Get folder tree starting from selected folder
-    folder_tree, tree_has_children = get_folder_tree(request, "favorites", selected_folder)
-
-    # Get breadcrumbs for navigation
-    breadcrumbs = get_breadcrumbs(request, "favorites")
-
-    if selected_folder:
-        # Get favorites from selected folder only
-        favorites = Favorite.objects.filter(user=user, folder=selected_folder)
-    else:
-        favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
-
-    favorites = favorites.order_by("name")
-
-    context = {
-        "page": "favorites",
-        "edit": False,
-        "folder_tree": folder_tree,
-        "tree_has_children": tree_has_children,
-        "selected_folder": selected_folder,
-        "favorites": favorites,
-        "breadcrumbs": breadcrumbs,
-    }
+    context = get_favorites(request)
     return render(request, "favorites/content.html", context)
 
 
@@ -77,7 +47,8 @@ def add(request):
     selected_folder = select_folder(request, "favorites")
 
     folder_tree, tree_has_children = get_folder_tree(
-        request, "favorites", selected_folder)
+        request, "favorites", selected_folder
+    )
 
     if request.method == "POST":
         form = FavoriteForm(request.POST)
@@ -94,12 +65,12 @@ def add(request):
         initial_data = {}
 
         # Check for extension parameters
-        name = request.GET.get('name', '').strip()
-        url = request.GET.get('url', '').strip()
+        name = request.GET.get("name", "").strip()
+        url = request.GET.get("url", "").strip()
         if name:
-            initial_data['name'] = name
+            initial_data["name"] = name
         if url:
-            initial_data['url'] = url
+            initial_data["url"] = url
 
         form = FavoriteForm(initial=initial_data)
 
@@ -127,7 +98,6 @@ def edit(request, id):
 
     """
     user = request.user
-    folders = get_folders_for_page(request, "favorites")
 
     selected_folder = select_folder(request, "favorites")
 
@@ -198,7 +168,8 @@ def home(request, id):
     else:
         favorite.home_rank = 1
     favorite.save()
-    return redirect("favorites")
+    context = get_favorites(request)
+    return render(request, "favorites/favorites_list.html", context)
 
 
 @cors_headers
@@ -212,37 +183,42 @@ def api_add(request):
         folder_id: (optional) ID of folder to save to
     """
     # Handle OPTIONS request for CORS preflight
-    if request.method == 'OPTIONS':
+    if request.method == "OPTIONS":
         return JsonResponse({})
 
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     # Check if user is authenticated
     if not request.user.is_authenticated:
-        return JsonResponse({'success': False, 'error': 'Authentication required'})
+        return JsonResponse({"success": False, "error": "Authentication required"})
 
     try:
-        name = request.POST.get('name', '').strip()
-        url = request.POST.get('url', '').strip()
-        folder_id = request.POST.get('folder_id', '').strip()
+        name = request.POST.get("name", "").strip()
+        url = request.POST.get("url", "").strip()
+        folder_id = request.POST.get("folder_id", "").strip()
 
         # Validate required fields
         if not name or len(name) < 2:
-            return JsonResponse({'success': False, 'error': 'Name is required and must be at least 2 characters'})
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Name is required and must be at least 2 characters",
+                }
+            )
 
         if len(name) > 100:
-            return JsonResponse({'success': False, 'error': 'Name must be 100 characters or less'})
+            return JsonResponse(
+                {"success": False, "error": "Name must be 100 characters or less"}
+            )
 
         if url and len(url) > 255:
-            return JsonResponse({'success': False, 'error': 'URL must be 255 characters or less'})
+            return JsonResponse(
+                {"success": False, "error": "URL must be 255 characters or less"}
+            )
 
         # Create the favorite
-        favorite = Favorite(
-            user=request.user,
-            name=name,
-            url=url
-        )
+        favorite = Favorite(user=request.user, name=name, url=url)
 
         # Set folder if provided
         if folder_id:
@@ -251,25 +227,27 @@ def api_add(request):
                 folder = Folder.objects.get(pk=folder_id, user=request.user)
                 favorite.folder = folder
             except (ValueError, Folder.DoesNotExist):
-                return JsonResponse({'success': False, 'error': 'Invalid folder ID'})
+                return JsonResponse({"success": False, "error": "Invalid folder ID"})
 
         # Set home_rank to 1 to make it visible on home page
         favorite.home_rank = 1
         favorite.save()
 
-        return JsonResponse({
-            'success': True,
-            'message': 'Favorite added successfully',
-            'favorite': {
-                'id': favorite.id,
-                'name': favorite.name,
-                'url': favorite.url,
-                'folder_id': favorite.folder_id if favorite.folder else None
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Favorite added successfully",
+                "favorite": {
+                    "id": favorite.id,
+                    "name": favorite.name,
+                    "url": favorite.url,
+                    "folder_id": favorite.folder_id if favorite.folder else None,
+                },
             }
-        })
+        )
 
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @cors_headers
@@ -277,27 +255,24 @@ def api_add(request):
 def api_folders(request):
     """API endpoint to get user's folders for extension"""
     # Handle OPTIONS request for CORS preflight
-    if request.method == 'OPTIONS':
+    if request.method == "OPTIONS":
         return JsonResponse({})
 
-    if request.method != 'GET':
-        return JsonResponse({'success': False, 'error': 'Only GET method allowed'})
+    if request.method != "GET":
+        return JsonResponse({"success": False, "error": "Only GET method allowed"})
 
     # Check if user is authenticated
     if not request.user.is_authenticated:
-        return JsonResponse({'success': False, 'error': 'Authentication required'})
+        return JsonResponse({"success": False, "error": "Authentication required"})
 
     try:
         folders = get_folders_for_page(request, "favorites")
-        folder_list = [{'id': folder.id, 'name': folder.name} for folder in folders]
+        folder_list = [{"id": folder.id, "name": folder.name} for folder in folders]
 
-        return JsonResponse({
-            'success': True,
-            'folders': folder_list
-        })
+        return JsonResponse({"success": True, "folders": folder_list})
 
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -314,27 +289,27 @@ def extension_add(request):
             favorite.home_rank = 1  # Show on home page
             favorite.save()
             # Return a simple success page
-            return render(request, "favorites/extension_success.html", {
-                'favorite': favorite
-            })
+            return render(
+                request, "favorites/extension_success.html", {"favorite": favorite}
+            )
         # If form is not valid, it will fall through and re-render with errors
     else:
         # Pre-fill form with URL parameters
         initial_data = {}
-        name = request.GET.get('name', '').strip()
-        url = request.GET.get('url', '').strip()
+        name = request.GET.get("name", "").strip()
+        url = request.GET.get("url", "").strip()
         if name:
-            initial_data['name'] = name
+            initial_data["name"] = name
         if url:
-            initial_data['url'] = url
+            initial_data["url"] = url
 
         form = FavoriteForm(initial=initial_data)
 
     context = {
-        'form': form,
-        'page_title': 'Add Favorite',
-        'name': request.GET.get('name', ''),
-        'url': request.GET.get('url', ''),
+        "form": form,
+        "page_title": "Add Favorite",
+        "name": request.GET.get("name", ""),
+        "url": request.GET.get("url", ""),
     }
     return render(request, "favorites/extension_form.html", context)
 
@@ -351,11 +326,13 @@ def move_to_folder(request):
     """
     try:
         data = json.loads(request.body)
-        item_id = data.get('item_id')
-        folder_id = data.get('folder_id')
+        item_id = data.get("item_id")
+        folder_id = data.get("folder_id")
 
         if not item_id or not folder_id:
-            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+            return JsonResponse(
+                {"success": False, "message": "Missing required parameters"}
+            )
 
         # Get the favorite
         favorite = get_object_or_404(Favorite, pk=item_id, user=request.user)
@@ -367,9 +344,9 @@ def move_to_folder(request):
         favorite.folder = folder
         favorite.save()
 
-        return JsonResponse({'success': True, 'message': 'Favorite moved successfully'})
+        return JsonResponse({"success": True, "message": "Favorite moved successfully"})
 
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+        return JsonResponse({"success": False, "message": "Invalid JSON data"})
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        return JsonResponse({"success": False, "message": str(e)})

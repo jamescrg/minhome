@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Bootstrap Bookmark-Fill Icon - Lime-600</title>
-    <style>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bootstrap Bookmark-Fill Icon - Lime-600</title>
+        <meta name="description"
+              content="Generate Bootstrap bookmark-fill icons in lime-600 color for browser extensions. Download multiple icon sizes including 16x16, 32x32, 48x48, and 128x128 PNG format.">
+        <meta name="keywords"
+              content="bootstrap bookmark icon, lime green icon, browser extension icons, bookmark-fill icon generator, PNG icon download, lime-600 color">
+        <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -39,39 +45,35 @@
         }
         h1 { color: #365314; text-align: center; }
         h3 { color: #65a30d; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📚 Bootstrap Bookmark-Fill Icon</h1>
-        <p>Exact Bootstrap bookmark-fill icon in lime-600 color.</p>
-
-        <div class="icon-set">
-            <h3>16x16 - Toolbar Icon</h3>
-            <canvas id="icon16" width="16" height="16"></canvas>
-            <button class="download-btn" onclick="downloadIcon('icon16', 'icon-16.png')">📥 Download 16x16</button>
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📚 Bootstrap Bookmark-Fill Icon</h1>
+            <p>Exact Bootstrap bookmark-fill icon in lime-600 color.</p>
+            <div class="icon-set">
+                <h3>16x16 - Toolbar Icon</h3>
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon16', 'icon-16.png')">📥 Download 16x16</button>
+            </div>
+            <div class="icon-set">
+                <h3>32x32 - Standard Icon</h3>
+                <canvas id="icon32" width="32" height="32"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon32', 'icon-32.png')">📥 Download 32x32</button>
+            </div>
+            <div class="icon-set">
+                <h3>48x48 - Main Extension Icon</h3>
+                <canvas id="icon48" width="48" height="48"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon48', 'icon.png')">📥 Download 48x48 (Main)</button>
+            </div>
+            <div class="icon-set">
+                <h3>128x128 - Store Listing</h3>
+                <canvas id="icon128" width="128" height="128"></canvas>
+                <button class="download-btn"
+                        onclick="downloadIcon('icon128', 'icon-128.png')">📥 Download 128x128</button>
+            </div>
         </div>
-
-        <div class="icon-set">
-            <h3>32x32 - Standard Icon</h3>
-            <canvas id="icon32" width="32" height="32"></canvas>
-            <button class="download-btn" onclick="downloadIcon('icon32', 'icon-32.png')">📥 Download 32x32</button>
-        </div>
-
-        <div class="icon-set">
-            <h3>48x48 - Main Extension Icon</h3>
-            <canvas id="icon48" width="48" height="48"></canvas>
-            <button class="download-btn" onclick="downloadIcon('icon48', 'icon.png')">📥 Download 48x48 (Main)</button>
-        </div>
-
-        <div class="icon-set">
-            <h3>128x128 - Store Listing</h3>
-            <canvas id="icon128" width="128" height="128"></canvas>
-            <button class="download-btn" onclick="downloadIcon('icon128', 'icon-128.png')">📥 Download 128x128</button>
-        </div>
-    </div>
-
-    <script>
+        <script>
         function drawBootstrapBookmarkFill(canvasId, size) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
@@ -113,6 +115,6 @@
             drawBootstrapBookmarkFill('icon48', 48);
             drawBootstrapBookmarkFill('icon128', 128);
         };
-    </script>
-</body>
+        </script>
+    </body>
 </html>

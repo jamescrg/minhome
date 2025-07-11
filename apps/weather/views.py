@@ -10,9 +10,7 @@ from config import settings_local
 
 @login_required
 def index(request):
-    """Display current weather conditions at a specified zip code.
-
-    """
+    """Display current weather conditions at a specified zip code."""
 
     # get zip code
     user = request.user
@@ -102,10 +100,8 @@ def index(request):
 
 @login_required
 def zip(request):
-    """Sets the user's zip code.
-
-    """
+    """Sets the user's zip code."""
     user = request.user
-    user.zip = request.POST['zip']
+    user.zip = request.POST["zip"]
     user.save()
-    return redirect("/weather")
+    return redirect("weather")

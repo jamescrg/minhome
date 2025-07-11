@@ -69,7 +69,7 @@ function initializeFolderHierarchyDragDrop() {
     folderContainer.addEventListener('dragleave', handleDragLeave);
     folderContainer.addEventListener('drop', handleDrop);
     folderContainer.addEventListener('dragend', handleDragEnd);
-    
+
     console.log('Folder drag and drop initialized');
 }
 
@@ -82,20 +82,20 @@ function cleanupAllDropTargets() {
     allFolders.forEach(folder => {
         folder.classList.remove('drop-target');
     });
-    
+
     // Remove drop target class from title drop zone
     const titleDropZone = document.querySelector('.folders-title-drop-zone.drop-target');
     if (titleDropZone) {
         titleDropZone.classList.remove('drop-target');
     }
-    
+
     currentDropTarget = null;
 }
 
 function handleDragEnd(e) {
     // Clean up all drop targets when drag ends
     cleanupAllDropTargets();
-    
+
     const folderItem = e.target.closest('.folder-item');
     if (folderItem) {
         handleFolderItemDragEnd.call(folderItem, e);
@@ -105,12 +105,12 @@ function handleDragEnd(e) {
 function handleDragOver(e) {
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
-    
+
     // Clear previous drop target if we're over a new element
     if (currentDropTarget && currentDropTarget !== folderItem && currentDropTarget !== titleDropZone) {
         currentDropTarget.classList.remove('drop-target');
     }
-    
+
     if (folderItem && draggedFolderItem) {
         currentDropTarget = folderItem;
         handleFolderItemDragOver.call(folderItem, e);
@@ -123,7 +123,7 @@ function handleDragOver(e) {
 function handleDragLeave(e) {
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
-    
+
     if (folderItem) {
         handleFolderItemDragLeave.call(folderItem, e);
     } else if (titleDropZone) {
@@ -134,7 +134,7 @@ function handleDragLeave(e) {
 function handleDrop(e) {
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
-    
+
     if (folderItem && draggedFolderItem) {
         handleFolderItemDrop.call(folderItem, e);
     } else if (titleDropZone && draggedFolderItem) {
@@ -150,7 +150,7 @@ function handleFolderItemDragEnd(e) {
     if (draggedFolderItem) {
         draggedFolderItem.classList.remove('dragging');
         draggedFolderItem.draggable = false;
-        
+
         // Reset link cursor
         const link = draggedFolderItem.querySelector('.folder-link');
         if (link) {
@@ -424,7 +424,7 @@ function getCsrfToken() {
 function showCustomAlert(message) {
     const messageElement = document.getElementById('customAlertMessage');
     const modal = document.getElementById('customAlertModal');
-    
+
     if (messageElement && modal) {
         messageElement.textContent = message;
         const bootstrapModal = new bootstrap.Modal(modal);
@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFolderHierarchyDragDrop();
     initializeFolderExpandCollapse();
     restoreFolderStates();
-    
+
     // Global failsafe to clean up drop targets
     window.addEventListener('dragend', function() {
         cleanupAllDropTargets();

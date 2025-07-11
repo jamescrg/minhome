@@ -2,7 +2,6 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-from apps.folders.models import Folder
 from apps.tasks.models import Task
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
@@ -27,7 +26,8 @@ def test_content(client, user, tasks, folders):
 
 def test_string(client, tasks):
     task = tasks[0]
-    assert str(task) == f"{task.title} : {task.id}"
+    expected = "{} : {}".format(task.title, task.id)
+    assert str(task) == expected
 
 
 # ------------------------------------
@@ -86,6 +86,6 @@ def test_edit_data(user, client, folder, task):
 
 def test_clear(client, folder):
     tasks = Task.objects.filter(folder=folder).update(status=1)
-    client.get(f"/tasks/clear")
+    client.get("/tasks/clear")
     tasks = Task.objects.filter(folder=folder)
     assert not tasks

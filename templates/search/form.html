@@ -1,13 +1,9 @@
-
-<form role="form" class="search" action="{{ action }}" method="post" >
-
-  {% csrf_token %}
-
-  <input class="form-control mh-no-shadow"
-    autofocus
-    type="text"
-    maxLength="255"
-    name="search_text"
-    placeholder="Search for favorites, contacts, and notes . . . ">
-
+<form role="form" class="search" action="{{ action }}" method="post">
+    {% csrf_token %}
+    <input class="form-control mh-no-shadow"
+           autofocus
+           type="text"
+           maxLength="255"
+           name="search_text"
+           placeholder="Search for favorites, contacts, and notes . . . ">
 </form>

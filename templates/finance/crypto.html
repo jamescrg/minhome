@@ -1,164 +1,166 @@
-
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}
+    Cryptocurrency Prices
+{% endblock title %}
+{% block meta_description %}
+    View live cryptocurrency prices, market caps, and performance data for Bitcoin, Ethereum, and other digital assets. Track your crypto portfolio with real-time data.
+{% endblock meta_description %}
+{% block meta_keywords %}
+    cryptocurrency prices, bitcoin price, ethereum price, crypto market cap, digital assets, crypto portfolio, cryptocurrency tracking, live crypto prices
+{% endblock meta_keywords %}
 {% block content %}
-{% load humanize %}
-
-<div class="card">
-
-  <div class="card-title mh-fc">
-    <h1>
-      Current Crypto Prices
-    </h1>
-    <a href="/settings/crypto-symbols/" class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-gear"></i> Manage
-    </a>
-  </div>
-
-
-  {% if data %}
-    <div class="table-responsive">
-
-      <table class="table crypto">
-
-        <tr>
-          <th>
-            Name
-            <a class="sort" href="{% if ord == 'name' %}/crypto/-name{% else %}/crypto/name{% endif %}">
-              {% if ord == 'name' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-name' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
+    {% load humanize %}
+    <div class="card">
+        <div class="card-title mh-fc">
+            <h1>Current Crypto Prices</h1>
+            <a href="{% url 'settings-crypto-symbols' %}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-gear"></i> Manage
             </a>
-          </th>
-          <th>
-            Symbol
-            <a class="sort" href="{% if ord == 'symbol' %}/crypto/-symbol{% else %}/crypto/symbol{% endif %}">
-              {% if ord == 'symbol' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-symbol' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            Price
-            <a class="sort" href="{% if ord == 'price' %}/crypto/-price{% else %}/crypto/price{% endif %}">
-              {% if ord == 'price' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-price' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            Mkt Cap
-            <a class="sort" href="{% if ord == 'market_cap' %}/crypto/-market_cap{% else %}/crypto/market_cap{% endif %}">
-              {% if ord == 'market_cap' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-market_cap' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            24h Chg
-            <a class="sort" href="{% if ord == 'percent_change_24h' %}/crypto/-percent_change_24h{% else %}/crypto/percent_change_24h{% endif %}">
-              {% if ord == 'percent_change_24h' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-percent_change_24h' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            7d Chg
-            <a class="sort" href="{% if ord == 'percent_change_7d' %}/crypto/-percent_change_7d{% else %}/crypto/percent_change_7d{% endif %}">
-              {% if ord == 'percent_change_7d' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-percent_change_7d' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            30d Chg
-            <a class="sort" href="{% if ord == 'percent_change_30d' %}/crypto/-percent_change_30d{% else %}/crypto/percent_change_30d{% endif %}">
-              {% if ord == 'percent_change_30d' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-percent_change_30d' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-          <th class="numeric">
-            90d Chg
-            <a class="sort" href="{% if ord == 'percent_change_90d' %}/crypto/-percent_change_90d{% else %}/crypto/percent_change_90d{% endif %}">
-              {% if ord == 'percent_change_90d' %}
-                <i class="bi bi-arrow-down"></i>
-              {% elif ord == '-percent_change_90d' %}
-                <i class="bi bi-arrow-up"></i>
-              {% else %}
-                <i class="bi bi-arrow-down-up"></i>
-              {% endif %}
-            </a>
-          </th>
-
-          {% for token in data %}
-
-          <tr>
-
-            <td class="name"><a href="https://coinmarketcap.com/currencies/{{ token.slug }}">{{ token.name }}</a>
-              <td class="symbol">{{ token.symbol }}
-              <td class="numeric">${{ token.price|floatformat:"2"|intcomma }}
-              <td class="numeric">${{ token.market_cap|floatformat:"1"|intcomma }}B
-              <td class="numeric"
-                {% if token.percent_change_24h < 0 %} style="color: darkred"
-                {% else %} style="color: green"
-                {% endif %}>
-                  {{ token.percent_change_24h|floatformat:"1" }}%
-              <td class="numeric"
-                {% if token.percent_change_7d < 0 %} style="color: darkred"
-                {% else %} style="color: green"
-                {% endif %}>
-                {{ token.percent_change_7d|floatformat:"1" }}%
-              <td class="numeric"
-                {% if token.percent_change_30d < 0 %} style="color: darkred"
-                {% else %} style="color: green"
-                {% endif %}>
-                {{ token.percent_change_30d|floatformat:"1" }}%
-              <td class="numeric"
-                {% if token.percent_change_90d < 0 %} style="color: darkred"
-                {% else %} style="color: green"
-                {% endif %}>
-                {{ token.percent_change_90d|floatformat:"1" }}%
-
-          {% endfor %}
-
-      </table>
+        </div>
+        {% if data %}
+            <div class="table-responsive">
+                <table class="table crypto">
+                    <tr>
+                        <th>
+                            Name
+                            <a class="sort"
+                               href="{% if ord == 'name' %}{% url 'crypto' ord='-name' %}{% else %}{% url 'crypto' ord='name' %}{% endif %}">
+                                {% if ord == 'name' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-name' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            Symbol
+                            <a class="sort"
+                               href="{% if ord == 'symbol' %}{% url 'crypto' ord='-symbol' %}{% else %}{% url 'crypto' ord='symbol' %}{% endif %}">
+                                {% if ord == 'symbol' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-symbol' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            Price
+                            <a class="sort"
+                               href="{% if ord == 'price' %}{% url 'crypto' ord='-price' %}{% else %}{% url 'crypto' ord='price' %}{% endif %}">
+                                {% if ord == 'price' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-price' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            Mkt Cap
+                            <a class="sort"
+                               href="{% if ord == 'market_cap' %}{% url 'crypto' ord='-market_cap' %}{% else %}{% url 'crypto' ord='market_cap' %}{% endif %}">
+                                {% if ord == 'market_cap' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-market_cap' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            24h Chg
+                            <a class="sort"
+                               href="{% if ord == 'percent_change_24h' %}{% url 'crypto' ord='-percent_change_24h' %}{% else %}{% url 'crypto' ord='percent_change_24h' %}{% endif %}">
+                                {% if ord == 'percent_change_24h' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-percent_change_24h' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            7d Chg
+                            <a class="sort"
+                               href="{% if ord == 'percent_change_7d' %}{% url 'crypto' ord='-percent_change_7d' %}{% else %}{% url 'crypto' ord='percent_change_7d' %}{% endif %}">
+                                {% if ord == 'percent_change_7d' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-percent_change_7d' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            30d Chg
+                            <a class="sort"
+                               href="{% if ord == 'percent_change_30d' %}{% url 'crypto' ord='-percent_change_30d' %}{% else %}{% url 'crypto' ord='percent_change_30d' %}{% endif %}">
+                                {% if ord == 'percent_change_30d' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-percent_change_30d' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th class="numeric">
+                            90d Chg
+                            <a class="sort"
+                               href="{% if ord == 'percent_change_90d' %}{% url 'crypto' ord='-percent_change_90d' %}{% else %}{% url 'crypto' ord='percent_change_90d' %}{% endif %}">
+                                {% if ord == 'percent_change_90d' %}
+                                    <i class="bi bi-arrow-down"></i>
+                                {% elif ord == '-percent_change_90d' %}
+                                    <i class="bi bi-arrow-up"></i>
+                                {% else %}
+                                    <i class="bi bi-arrow-down-up"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                    </tr>
+                    {% for token in data %}
+                        <tr>
+                            <td class="name">
+                                <a href="https://coinmarketcap.com/currencies/{{ token.slug }}">{{ token.name }}</a>
+                            </td>
+                            <td class="symbol">{{ token.symbol }}</td>
+                            <td class="numeric">${{ token.price|floatformat:"2"|intcomma }}</td>
+                            <td class="numeric">${{ token.market_cap|floatformat:"1"|intcomma }}B</td>
+                            <td class="numeric"
+                                {% if token.percent_change_24h < 0 %} style="color: darkred" {% else %} style="color: green" {% endif %}>
+                                {{ token.percent_change_24h|floatformat:"1" }}%
+                            </td>
+                            <td class="numeric"
+                                {% if token.percent_change_7d < 0 %} style="color: darkred" {% else %} style="color: green" {% endif %}>
+                                {{ token.percent_change_7d|floatformat:"1" }}%
+                            </td>
+                            <td class="numeric"
+                                {% if token.percent_change_30d < 0 %} style="color: darkred" {% else %} style="color: green" {% endif %}>
+                                {{ token.percent_change_30d|floatformat:"1" }}%
+                            </td>
+                            <td class="numeric"
+                                {% if token.percent_change_90d < 0 %} style="color: darkred" {% else %} style="color: green" {% endif %}>
+                                {{ token.percent_change_90d|floatformat:"1" }}%
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-currency-bitcoin"></i>
+                <p class="text-muted mt-3">No cryptocurrency symbols configured.</p>
+                <p class="text-muted">Add symbols to start tracking crypto prices.</p>
+            </div>
+        {% endif %}
     </div>
-  {% else %}
-    <div class="text-center py-5">
-      <i class="bi bi-currency-bitcoin" style="font-size: 6rem; color: var(--bs-secondary);"></i>
-      <p class="text-muted mt-3">No cryptocurrency symbols configured.</p>
-      <p class="text-muted">Add symbols to start tracking crypto prices.</p>
-    </div>
-  {% endif %}
-</div>
-
-
 {% endblock content %}

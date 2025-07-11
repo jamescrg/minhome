@@ -1,55 +1,32 @@
-
 <div id="contact" class="col-lg-6 order-lg-3">
-
-	{% if selected_contact %}
-
-		{% include 'contacts/contact.html' %}
-
-	{% endif %}
-
+    {% if selected_contact %}
+        {% include "contacts/contact.html" %}
+    {% endif %}
 </div>
-
 <div id="contacts" class="col-lg-3 order-lg-2">
-
-<div class="card contacts">
-
-  <div class="card-title mh-fc">
-    <h1>
-      Contacts
-    </h1>
-
-    <a href="/contacts/add">
-      <i class="bi bi-plus-lg"></i>
-    </a>
-
-  </div>
-
-
-    {% if contacts %}
-
-      <ul class="list-group">
-      {% for contact in contacts %}
-
-        <li class="list-group-item contact-item" data-contact-id="{{ contact.id }}" data-folder-id="{{ contact.folder.id|default:'' }}">
-          <a href="/contacts/{{ contact.id }}"
-            {% if selected_contact and selected_contact.id == contact.id %} class="strong" {% endif %}>
-            {{ contact.name }}</a>
-        </li>
-
-      {% endfor %}
-      </ul>
-
-	{% else %}
-
-    <div class="no-contacts">
-
-        <i class="bi bi-person-lines-fill"></i>
-
+    <div class="card contacts">
+        <div class="card-title mh-fc">
+            <h1>Contacts</h1>
+            <a href="{% url 'contacts-add' %}">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        </div>
+        {% if contacts %}
+            <ul class="list-group">
+                {% for contact in contacts %}
+                    <li class="list-group-item contact-item"
+                        data-contact-id="{{ contact.id }}"
+                        data-folder-id="{{ contact.folder.id|default:'' }}">
+                        <a href="{% url 'contacts-select' id=contact.id %}"
+                           {% if selected_contact and selected_contact.id == contact.id %}class="strong"{% endif %}>
+                        {{ contact.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="no-contacts">
+                <i class="bi bi-person-lines-fill"></i>
+            </div>
+        {% endif %}
     </div>
-
-	{% endif %}
-
-
-</div>
-
 </div>

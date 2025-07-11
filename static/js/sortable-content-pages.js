@@ -11,13 +11,13 @@ let itemSortables = [];
  */
 function initializeSortableContentPages() {
     console.log('Initializing SortableJS for content pages');
-    
+
     // Clean up existing sortables
     cleanupContentSortables();
-    
+
     // Initialize folder hierarchy sorting
     initializeFolderHierarchySortable();
-    
+
     // Initialize item-to-folder dragging
     initializeItemToFolderSortables();
 }
@@ -30,7 +30,7 @@ function cleanupContentSortables() {
         folderHierarchySortable.destroy();
         folderHierarchySortable = null;
     }
-    
+
     itemSortables.forEach(sortable => {
         if (sortable && sortable.destroy) {
             sortable.destroy();
@@ -45,7 +45,7 @@ function cleanupContentSortables() {
 function initializeFolderHierarchySortable() {
     const foldersContainer = document.querySelector('.folders');
     if (!foldersContainer) return;
-    
+
     // Create a single sortable for the entire folders container
     folderHierarchySortable = new Sortable(foldersContainer, {
         group: 'folder-hierarchy',
@@ -56,7 +56,7 @@ function initializeFolderHierarchySortable() {
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
         dragClass: 'sortable-drag',
-        
+
         // Filter out elements that shouldn't be draggable
         filter: function(evt, item) {
             // Don't allow dragging shared folders
@@ -73,11 +73,11 @@ function initializeFolderHierarchySortable() {
             }
             return false; // Allow dragging
         },
-        
+
         onStart: function(evt) {
             console.log('Folder drag started');
             evt.item.classList.add('dragging');
-            
+
             // Add drop target indicators to all other folders
             const allFolders = document.querySelectorAll('.folder-item');
             allFolders.forEach(folder => {
@@ -86,48 +86,48 @@ function initializeFolderHierarchySortable() {
                 }
             });
         },
-        
+
         onEnd: function(evt) {
             console.log('Folder drag ended');
             evt.item.classList.remove('dragging');
-            
+
             // Remove all drop target indicators
             const allFolders = document.querySelectorAll('.folder-item');
             allFolders.forEach(folder => {
                 folder.classList.remove('drop-target-available', 'drop-target');
             });
-            
+
             // Handle the drop if position changed
             if (evt.oldIndex !== evt.newIndex || evt.from !== evt.to) {
                 handleFolderDrop(evt);
             }
         },
-        
+
         onMove: function(evt) {
             const draggedItem = evt.dragged;
             const relatedItem = evt.related;
-            
+
             // Only allow dropping on folder items
             if (!relatedItem || !relatedItem.classList.contains('folder-item')) {
                 return false;
             }
-            
+
             const draggedId = draggedItem.getAttribute('data-folder-id');
             const targetId = relatedItem.getAttribute('data-folder-id');
-            
+
             // Don't allow dropping on self
             if (draggedId === targetId) return false;
-            
+
             // Don't allow dropping on descendants
             if (isDescendantFolder(draggedId, targetId)) return false;
-            
+
             // Check depth limit
             const targetDepth = getFolderDepth(relatedItem);
             if (targetDepth >= 2) return false;
-            
+
             // Add visual feedback
             relatedItem.classList.add('drop-target');
-            
+
             // Remove feedback from other folders
             const allFolders = document.querySelectorAll('.folder-item');
             allFolders.forEach(folder => {
@@ -135,11 +135,11 @@ function initializeFolderHierarchySortable() {
                     folder.classList.remove('drop-target');
                 }
             });
-            
+
             return true;
         }
     });
-    
+
     // Initialize expand/collapse functionality
     initializeFolderExpandCollapse();
 }
@@ -150,7 +150,7 @@ function initializeFolderHierarchySortable() {
 function handleFolderDrop(evt) {
     const draggedFolderId = evt.item.getAttribute('data-folder-id');
     const targetFolder = evt.item.nextElementSibling || evt.item.previousElementSibling;
-    
+
     // If dropped next to another folder, nest under it
     if (targetFolder && targetFolder.classList.contains('folder-item')) {
         const targetFolderId = targetFolder.getAttribute('data-folder-id');
@@ -168,7 +168,7 @@ function handleFolderDrop(evt) {
  */
 function initializeItemToFolderSortables() {
     const itemContainers = document.querySelectorAll('.list-group');
-    
+
     itemContainers.forEach(container => {
         const sortable = new Sortable(container, {
             group: {
@@ -183,22 +183,22 @@ function initializeItemToFolderSortables() {
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
             sort: false, // Don't allow sorting within the container
-            
+
             onStart: function(evt) {
                 console.log('Item drag started');
                 evt.item.classList.add('dragging');
-                
+
                 // Add drop zones to folders
                 const folderItems = document.querySelectorAll('.folder-item');
                 folderItems.forEach(folder => {
                     folder.classList.add('drop-zone-active');
                 });
             },
-            
+
             onEnd: function(evt) {
                 console.log('Item drag ended');
                 evt.item.classList.remove('dragging');
-                
+
                 // Remove drop zones from folders
                 const folderItems = document.querySelectorAll('.folder-item');
                 folderItems.forEach(folder => {
@@ -206,10 +206,10 @@ function initializeItemToFolderSortables() {
                 });
             }
         });
-        
+
         itemSortables.push(sortable);
     });
-    
+
     // Make folders accept item drops
     initializeFolderDropZones();
 }
@@ -219,7 +219,7 @@ function initializeItemToFolderSortables() {
  */
 function initializeFolderDropZones() {
     const folderItems = document.querySelectorAll('.folder-item');
-    
+
     folderItems.forEach(folder => {
         const dropSortable = new Sortable(folder, {
             group: {
@@ -229,25 +229,25 @@ function initializeFolderDropZones() {
             },
             animation: 200,
             ghostClass: 'sortable-ghost',
-            
+
             onAdd: function(evt) {
                 const droppedItem = evt.item;
                 const targetFolderId = folder.getAttribute('data-folder-id');
-                
+
                 // Determine item type and ID
                 const itemType = getItemTypeFromElement(droppedItem);
                 const itemId = getItemIdFromElement(droppedItem, itemType);
-                
+
                 console.log(`Moving ${itemType} ${itemId} to folder ${targetFolderId}`);
-                
+
                 // Move item to folder via API
                 moveItemToFolder(itemId, targetFolderId, itemType);
-                
+
                 // Remove the cloned element
                 droppedItem.remove();
             }
         });
-        
+
         itemSortables.push(dropSortable);
     });
 }
@@ -292,7 +292,7 @@ function moveFolderToParent(folderId, newParentId) {
  */
 function moveItemToFolder(itemId, folderId, itemType) {
     const url = `/${itemType}s/move-to-folder/`;
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -330,13 +330,13 @@ function getCurrentPage() {
     const path = window.location.pathname;
     const segments = path.split('/').filter(segment => segment.length > 0);
     const pageTypes = ['favorites', 'contacts', 'notes', 'tasks'];
-    
+
     for (const pageType of pageTypes) {
         if (segments.includes(pageType)) {
             return pageType;
         }
     }
-    
+
     return 'favorites'; // Default fallback
 }
 

@@ -2,8 +2,6 @@ import pytest
 from django.test import Client
 
 from accounts.models import CustomUser
-from apps.folders.models import Folder
-from apps.notes.models import Note
 
 
 @pytest.fixture

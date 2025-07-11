@@ -1,7 +1,4 @@
 import pytest
-from django.test.client import RequestFactory
-
-from apps.home.toggle import show_section
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
 

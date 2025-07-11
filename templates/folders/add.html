@@ -1,37 +1,25 @@
-
 <form id="folder-add"
       class="list-group-item folder-add mh-fc li-folder-edit"
-      style="border-bottom: none;"
-      action="/folders/insert/{{ page }}"
+      style="border-bottom: none"
+      action="{% url 'folder-insert' page=page %}"
       method="post">
-
-  {% if page == "tasks" %}
-
-      <span class="folder-icon">
-        <i class="bi bi-folder"></i>
-      </span>
-
-  {% else %}
-
-    <span class="folder-icon">
-      <i class="bi bi-folder"></i>
-    </span>
-
-  {% endif %}
-
-  {% csrf_token %}
-
-  <input class="form-control"
-      id="folder-add-input"
-      autofocus
-      type="text"
-      name="name"
-      onchange="submit()"
-      onblur="hideAddFolderForm()"
-      value="{{ folder.name }}">
-  
-  {% if selected_folder %}
-  <input type="hidden" name="parent" value="{{ selected_folder.id }}">
-  {% endif %}
-
+    {% if page == "tasks" %}
+        <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+        </span>
+    {% else %}
+        <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+        </span>
+    {% endif %}
+    {% csrf_token %}
+    <input class="form-control"
+           id="folder-add-input"
+           autofocus
+           type="text"
+           name="name"
+           onchange="submit()"
+           onblur="hideAddFolderForm()"
+           value="{{ folder.name }}">
+    {% if selected_folder %}<input type="hidden" name="parent" value="{{ selected_folder.id }}">{% endif %}
 </form>

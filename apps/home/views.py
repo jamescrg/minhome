@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.home.google as google
 from apps.favorites.models import Favorite
 from apps.folders.models import Folder
-from apps.folders.folders import get_folders_for_page
 from apps.home.movement import sequence
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
@@ -17,26 +16,10 @@ from apps.tasks.models import Task
 def get_search_context(user):
     """Get search engine context for a user"""
     engines = [
-        {
-            "id": "google",
-            "name": "Google",
-            "url": "google.com/search"
-        },
-        {
-            "id": "duckduckgo",
-            "name": "DuckDuckGo",
-            "url": "duckduckgo.com/"
-        },
-        {
-            "id": "wikipedia",
-            "name": "Wikipedia",
-            "url": "en.wikipedia.org/w/index.php"
-        },
-        {
-            "id": "bing",
-            "name": "Bing",
-            "url": "bing.com/"
-        },
+        {"id": "google", "name": "Google", "url": "google.com/search"},
+        {"id": "duckduckgo", "name": "DuckDuckGo", "url": "duckduckgo.com/"},
+        {"id": "wikipedia", "name": "Wikipedia", "url": "en.wikipedia.org/w/index.php"},
+        {"id": "bing", "name": "Bing", "url": "bing.com/"},
     ]
 
     search_engine = "google"
@@ -81,7 +64,6 @@ def index(request):
     else:
         events = None
 
-
     # TASKS
     # ----------------
 
@@ -119,7 +101,6 @@ def index(request):
             if folder.tasks:
                 some_tasks = True
 
-
     # SEARCH
     # ----------------
     search_context = get_search_context(user)
@@ -137,8 +118,7 @@ def index(request):
         folders = all_favorites_folders.filter(home_column=i)
         folders = folders.order_by("home_rank")
         for folder in folders:
-            favorites = Favorite.objects.filter(
-                folder_id=folder.id, home_rank__gt=0)
+            favorites = Favorite.objects.filter(folder_id=folder.id, home_rank__gt=0)
             favorites = favorites.order_by("home_rank")
             folder.favorites = favorites
         columns.append(folders)
@@ -158,7 +138,7 @@ def index(request):
         "columns": columns,
         "moved_folder": moved_folder,
     }
-    
+
     # Add search context
     context.update(search_context)
 
@@ -182,7 +162,7 @@ def toggle(request, section):
 
     user = request.user
 
-    attrib = (f"home_{section}_hidden")
+    attrib = f"home_{section}_hidden"
     if getattr(user, attrib):
         setattr(user, attrib, None)
     else:
@@ -190,7 +170,7 @@ def toggle(request, section):
 
     user.save()
 
-    return redirect("/home/")
+    return redirect("home")
 
 
 @login_required
@@ -231,8 +211,10 @@ def folder(request, id, direction):
         # identify the folder to be displaced
         try:
             displaced_folder = Folder.objects.filter(
-                user=user, page="favorites",
-                home_column=origin_column, home_rank=destination_rank
+                user=user,
+                page="favorites",
+                home_column=origin_column,
+                home_rank=destination_rank,
             ).get()
         except Folder.DoesNotExist:
             displaced_folder = False
@@ -281,7 +263,7 @@ def folder(request, id, direction):
     # save the id of the moved folder for the next page view
     request.session["moved_folder"] = moved_folder.id
 
-    return redirect("/home/")
+    return redirect("home")
 
 
 @login_required
@@ -343,7 +325,7 @@ def favorite(request, id, direction):
     # save the id of the moved folder for the next page view
     request.session["moved_folder"] = moved_favorite.folder.id
 
-    return redirect("/home/")
+    return redirect("home")
 
 
 @login_required
@@ -355,22 +337,23 @@ def update_folder_column(request):
         target_column: Column number (1-5) to move the folder to
         target_position: Optional position within the column (0-based index)
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        folder_id = int(request.POST.get('folder_id'))
-        target_column = int(request.POST.get('target_column'))
-        target_position = request.POST.get('target_position')
+        folder_id = int(request.POST.get("folder_id"))
+        target_column = int(request.POST.get("target_column"))
+        target_position = request.POST.get("target_position")
 
         # Validate target column
         if not (1 <= target_column <= 5):
-            return JsonResponse({'success': False, 'error': 'Invalid target column'})
+            return JsonResponse({"success": False, "error": "Invalid target column"})
 
         # Get the folder to be moved
-        moved_folder = get_object_or_404(Folder, pk=folder_id, user=request.user, page="favorites")
+        moved_folder = get_object_or_404(
+            Folder, pk=folder_id, user=request.user, page="favorites"
+        )
         origin_column = moved_folder.home_column
-        origin_rank = moved_folder.home_rank
 
         # Handle intra-column reordering (same column, different position)
         if target_column == origin_column and target_position is not None:
@@ -403,15 +386,19 @@ def update_folder_column(request):
                         folder.home_rank = i + 1
                         folder.save()
 
-                    return JsonResponse({
-                        'success': True,
-                        'message': f'Folder reordered within column {target_column}',
-                        'new_column': target_column,
-                        'new_rank': target_position + 1
-                    })
+                    return JsonResponse(
+                        {
+                            "success": True,
+                            "message": f"Folder reordered within column {target_column}",
+                            "new_column": target_column,
+                            "new_rank": target_position + 1,
+                        }
+                    )
 
             except (ValueError, TypeError):
-                return JsonResponse({'success': False, 'error': 'Invalid target position'})
+                return JsonResponse(
+                    {"success": False, "error": "Invalid target position"}
+                )
 
         # Handle inter-column movement (different column)
         elif target_column != origin_column:
@@ -422,9 +409,13 @@ def update_folder_column(request):
             if target_position is not None:
                 try:
                     target_position = int(target_position)
-                    destination_folders = list(Folder.objects.filter(
-                        user=request.user, page="favorites", home_column=target_column
-                    ).order_by("home_rank"))
+                    destination_folders = list(
+                        Folder.objects.filter(
+                            user=request.user,
+                            page="favorites",
+                            home_column=target_column,
+                        ).order_by("home_rank")
+                    )
 
                     # Insert at specified position
                     target_position = min(target_position, len(destination_folders))
@@ -464,19 +455,21 @@ def update_folder_column(request):
             # Resequence origin column
             sequence(request.user, origin_column)
 
-            return JsonResponse({
-                'success': True,
-                'message': f'Folder moved to column {target_column}',
-                'new_column': target_column,
-                'new_rank': new_rank
-            })
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": f"Folder moved to column {target_column}",
+                    "new_column": target_column,
+                    "new_rank": new_rank,
+                }
+            )
         else:
-            return JsonResponse({'success': True, 'message': 'No change needed'})
+            return JsonResponse({"success": True, "message": "No change needed"})
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid parameters'})
+        return JsonResponse({"success": False, "error": "Invalid parameters"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -487,20 +480,29 @@ def swap_folder_positions(request):
         dragged_folder_id: ID of the folder being dragged
         target_folder_id: ID of the folder being dropped onto
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        dragged_folder_id = int(request.POST.get('dragged_folder_id'))
-        target_folder_id = int(request.POST.get('target_folder_id'))
+        dragged_folder_id = int(request.POST.get("dragged_folder_id"))
+        target_folder_id = int(request.POST.get("target_folder_id"))
 
         # Get both folders and ensure they belong to the user
-        dragged_folder = get_object_or_404(Folder, pk=dragged_folder_id, user=request.user, page="favorites")
-        target_folder = get_object_or_404(Folder, pk=target_folder_id, user=request.user, page="favorites")
+        dragged_folder = get_object_or_404(
+            Folder, pk=dragged_folder_id, user=request.user, page="favorites"
+        )
+        target_folder = get_object_or_404(
+            Folder, pk=target_folder_id, user=request.user, page="favorites"
+        )
 
         # Ensure folders are in the same column
         if dragged_folder.home_column != target_folder.home_column:
-            return JsonResponse({'success': False, 'error': 'Folders must be in the same column to swap'})
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Folders must be in the same column to swap",
+                }
+            )
 
         # Swap the home_rank values
         dragged_rank = dragged_folder.home_rank
@@ -512,23 +514,25 @@ def swap_folder_positions(request):
         dragged_folder.save()
         target_folder.save()
 
-        return JsonResponse({
-            'success': True,
-            'message': f'Swapped folder positions in column {dragged_folder.home_column}',
-            'dragged_folder': {
-                'id': dragged_folder.id,
-                'new_rank': dragged_folder.home_rank
-            },
-            'target_folder': {
-                'id': target_folder.id,
-                'new_rank': target_folder.home_rank
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Swapped folder positions in column {dragged_folder.home_column}",
+                "dragged_folder": {
+                    "id": dragged_folder.id,
+                    "new_rank": dragged_folder.home_rank,
+                },
+                "target_folder": {
+                    "id": target_folder.id,
+                    "new_rank": target_folder.home_rank,
+                },
             }
-        })
+        )
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid folder IDs'})
+        return JsonResponse({"success": False, "error": "Invalid folder IDs"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -540,21 +544,25 @@ def insert_folder_at_position(request):
         target_folder_id: ID of the folder whose position we want to take
         target_column: Column number where the target folder is located
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        dragged_folder_id = int(request.POST.get('dragged_folder_id'))
-        target_folder_id = int(request.POST.get('target_folder_id'))
-        target_column = int(request.POST.get('target_column'))
+        dragged_folder_id = int(request.POST.get("dragged_folder_id"))
+        target_folder_id = int(request.POST.get("target_folder_id"))
+        target_column = int(request.POST.get("target_column"))
 
         # Get both folders and ensure they belong to the user
-        dragged_folder = get_object_or_404(Folder, pk=dragged_folder_id, user=request.user, page="favorites")
-        target_folder = get_object_or_404(Folder, pk=target_folder_id, user=request.user, page="favorites")
+        dragged_folder = get_object_or_404(
+            Folder, pk=dragged_folder_id, user=request.user, page="favorites"
+        )
+        target_folder = get_object_or_404(
+            Folder, pk=target_folder_id, user=request.user, page="favorites"
+        )
 
         # Validate target column
         if not (1 <= target_column <= 5):
-            return JsonResponse({'success': False, 'error': 'Invalid target column'})
+            return JsonResponse({"success": False, "error": "Invalid target column"})
 
         # Store original position info
         origin_column = dragged_folder.home_column
@@ -568,8 +576,8 @@ def insert_folder_at_position(request):
             user=request.user,
             page="favorites",
             home_column=target_column,
-            home_rank__gte=target_rank
-        ).order_by('home_rank')
+            home_rank__gte=target_rank,
+        ).order_by("home_rank")
 
         # Step 2: Shift all folders down by 1 to make room
         for folder in folders_to_shift:
@@ -585,20 +593,22 @@ def insert_folder_at_position(request):
         if origin_column != target_column:
             sequence(request.user, origin_column)
 
-        return JsonResponse({
-            'success': True,
-            'message': f'Inserted folder at position {target_rank} in column {target_column}',
-            'moved_folder': {
-                'id': dragged_folder.id,
-                'new_column': target_column,
-                'new_rank': target_rank
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Inserted folder at position {target_rank} in column {target_column}",
+                "moved_folder": {
+                    "id": dragged_folder.id,
+                    "new_column": target_column,
+                    "new_rank": target_rank,
+                },
             }
-        })
+        )
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid parameters'})
+        return JsonResponse({"success": False, "error": "Invalid parameters"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -609,26 +619,37 @@ def swap_favorite_positions(request):
         dragged_favorite_id: ID of the favorite being dragged
         target_favorite_id: ID of the favorite being dropped onto
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        dragged_favorite_id = int(request.POST.get('dragged_favorite_id'))
-        target_favorite_id = int(request.POST.get('target_favorite_id'))
+        dragged_favorite_id = int(request.POST.get("dragged_favorite_id"))
+        target_favorite_id = int(request.POST.get("target_favorite_id"))
 
         # Import the Favorite model
         from apps.favorites.models import Favorite
 
         # Get both favorites and ensure they belong to the user
-        dragged_favorite = get_object_or_404(Favorite, pk=dragged_favorite_id, user=request.user)
-        target_favorite = get_object_or_404(Favorite, pk=target_favorite_id, user=request.user)
+        dragged_favorite = get_object_or_404(
+            Favorite, pk=dragged_favorite_id, user=request.user
+        )
+        target_favorite = get_object_or_404(
+            Favorite, pk=target_favorite_id, user=request.user
+        )
 
         # Ensure favorites are in the same folder
         if dragged_favorite.folder_id != target_favorite.folder_id:
-            return JsonResponse({'success': False, 'error': 'Favorites must be in the same folder to swap'})
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Favorites must be in the same folder to swap",
+                }
+            )
 
         # Swap the home_rank values
-        if hasattr(dragged_favorite, 'home_rank') and hasattr(target_favorite, 'home_rank'):
+        if hasattr(dragged_favorite, "home_rank") and hasattr(
+            target_favorite, "home_rank"
+        ):
             dragged_rank = dragged_favorite.home_rank
             target_rank = target_favorite.home_rank
 
@@ -642,23 +663,25 @@ def swap_favorite_positions(request):
             # For now, return success but note that ordering might not persist
             pass
 
-        return JsonResponse({
-            'success': True,
-            'message': f'Swapped favorite positions in folder {dragged_favorite.folder_id}',
-            'dragged_favorite': {
-                'id': dragged_favorite.id,
-                'name': dragged_favorite.name
-            },
-            'target_favorite': {
-                'id': target_favorite.id,
-                'name': target_favorite.name
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Swapped favorite positions in folder {dragged_favorite.folder_id}",
+                "dragged_favorite": {
+                    "id": dragged_favorite.id,
+                    "name": dragged_favorite.name,
+                },
+                "target_favorite": {
+                    "id": target_favorite.id,
+                    "name": target_favorite.name,
+                },
             }
-        })
+        )
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid favorite IDs'})
+        return JsonResponse({"success": False, "error": "Invalid favorite IDs"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -670,39 +693,51 @@ def insert_favorite_at_position(request):
         target_favorite_id: ID of the favorite whose position we want to take
         insert_below: Whether to insert below the target favorite (true/false)
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        dragged_favorite_id = int(request.POST.get('dragged_favorite_id'))
-        target_favorite_id = int(request.POST.get('target_favorite_id'))
-        insert_below = request.POST.get('insert_below') == 'true'
+        dragged_favorite_id = int(request.POST.get("dragged_favorite_id"))
+        target_favorite_id = int(request.POST.get("target_favorite_id"))
+        insert_below = request.POST.get("insert_below") == "true"
 
         # Import the Favorite model
         from apps.favorites.models import Favorite
 
         # Get both favorites and ensure they belong to the user
-        dragged_favorite = get_object_or_404(Favorite, pk=dragged_favorite_id, user=request.user)
-        target_favorite = get_object_or_404(Favorite, pk=target_favorite_id, user=request.user)
+        dragged_favorite = get_object_or_404(
+            Favorite, pk=dragged_favorite_id, user=request.user
+        )
+        target_favorite = get_object_or_404(
+            Favorite, pk=target_favorite_id, user=request.user
+        )
 
         # Ensure favorites are in the same folder
         if dragged_favorite.folder_id != target_favorite.folder_id:
-            return JsonResponse({'success': False, 'error': 'Favorites must be in the same folder'})
+            return JsonResponse(
+                {"success": False, "error": "Favorites must be in the same folder"}
+            )
 
         # Handle positioning using home_rank field
-        if hasattr(dragged_favorite, 'home_rank') and hasattr(target_favorite, 'home_rank'):
+        if hasattr(dragged_favorite, "home_rank") and hasattr(
+            target_favorite, "home_rank"
+        ):
             target_rank = target_favorite.home_rank
-            
+
             # If inserting below, adjust the target rank
             if insert_below:
                 target_rank = target_favorite.home_rank + 1
 
             # Shift other favorites to make room
-            favorites_to_shift = Favorite.objects.filter(
-                user=request.user,
-                folder_id=target_favorite.folder_id,
-                home_rank__gte=target_rank
-            ).exclude(id=dragged_favorite_id).order_by('home_rank')
+            favorites_to_shift = (
+                Favorite.objects.filter(
+                    user=request.user,
+                    folder_id=target_favorite.folder_id,
+                    home_rank__gte=target_rank,
+                )
+                .exclude(id=dragged_favorite_id)
+                .order_by("home_rank")
+            )
 
             for fav in favorites_to_shift:
                 fav.home_rank += 1
@@ -716,19 +751,21 @@ def insert_favorite_at_position(request):
             # For now, return success but note that ordering might not persist
             pass
 
-        return JsonResponse({
-            'success': True,
-            'message': f'Inserted favorite at position in folder {dragged_favorite.folder_id}',
-            'moved_favorite': {
-                'id': dragged_favorite.id,
-                'name': dragged_favorite.name
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Inserted favorite at position in folder {dragged_favorite.folder_id}",
+                "moved_favorite": {
+                    "id": dragged_favorite.id,
+                    "name": dragged_favorite.name,
+                },
             }
-        })
+        )
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid parameters'})
+        return JsonResponse({"success": False, "error": "Invalid parameters"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @login_required
@@ -740,69 +777,82 @@ def move_favorite_to_folder(request):
         target_favorite_id: ID of the favorite to position below
         target_folder_id: ID of the folder to move to
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Only POST method allowed'})
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
-        dragged_favorite_id = int(request.POST.get('dragged_favorite_id'))
-        target_favorite_id = int(request.POST.get('target_favorite_id'))
-        target_folder_id = int(request.POST.get('target_folder_id'))
-        insert_below = request.POST.get('insert_below') == 'true'
+        dragged_favorite_id = int(request.POST.get("dragged_favorite_id"))
+        target_favorite_id = int(request.POST.get("target_favorite_id"))
+        target_folder_id = int(request.POST.get("target_folder_id"))
+        insert_below = request.POST.get("insert_below") == "true"
 
         # Import the Favorite model
         from apps.favorites.models import Favorite
         from apps.folders.models import Folder
 
         # Get the favorites and folder, ensure they belong to the user
-        dragged_favorite = get_object_or_404(Favorite, pk=dragged_favorite_id, user=request.user)
-        target_folder = get_object_or_404(Folder, pk=target_folder_id, user=request.user)
+        dragged_favorite = get_object_or_404(
+            Favorite, pk=dragged_favorite_id, user=request.user
+        )
+        target_folder = get_object_or_404(
+            Folder, pk=target_folder_id, user=request.user
+        )
 
         # Handle empty folder case (target_favorite_id = -1)
         if target_favorite_id == -1:
             # Move to empty folder - just update folder and set home_rank to 1
             original_folder_id = dragged_favorite.folder_id
             dragged_favorite.folder_id = target_folder_id
-            if hasattr(dragged_favorite, 'home_rank'):
+            if hasattr(dragged_favorite, "home_rank"):
                 dragged_favorite.home_rank = 1
             dragged_favorite.save()
 
             # Resequence the original folder if it's different
             if original_folder_id != target_folder_id:
                 original_favorites = Favorite.objects.filter(
-                    user=request.user,
-                    folder_id=original_folder_id,
-                    home_rank__gt=0
-                ).order_by('home_rank')
+                    user=request.user, folder_id=original_folder_id, home_rank__gt=0
+                ).order_by("home_rank")
 
                 for index, fav in enumerate(original_favorites):
                     fav.home_rank = index + 1
                     fav.save()
 
-            return JsonResponse({
-                'success': True,
-                'message': f'Moved favorite to empty folder {target_folder_id}',
-                'moved_favorite': {
-                    'id': dragged_favorite.id,
-                    'name': dragged_favorite.name,
-                    'new_folder_id': target_folder_id,
-                    'new_rank': getattr(dragged_favorite, 'home_rank', None)
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": f"Moved favorite to empty folder {target_folder_id}",
+                    "moved_favorite": {
+                        "id": dragged_favorite.id,
+                        "name": dragged_favorite.name,
+                        "new_folder_id": target_folder_id,
+                        "new_rank": getattr(dragged_favorite, "home_rank", None),
+                    },
                 }
-            })
+            )
 
         # Normal case with target favorite
-        target_favorite = get_object_or_404(Favorite, pk=target_favorite_id, user=request.user)
+        target_favorite = get_object_or_404(
+            Favorite, pk=target_favorite_id, user=request.user
+        )
 
         # Ensure target favorite is in the target folder
         if target_favorite.folder_id != target_folder_id:
-            return JsonResponse({'success': False, 'error': 'Target favorite is not in the specified folder'})
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Target favorite is not in the specified folder",
+                }
+            )
 
         # Store original folder for cleanup
         original_folder_id = dragged_favorite.folder_id
 
         # Handle positioning using home_rank field
-        if hasattr(dragged_favorite, 'home_rank') and hasattr(target_favorite, 'home_rank'):
+        if hasattr(dragged_favorite, "home_rank") and hasattr(
+            target_favorite, "home_rank"
+        ):
             target_rank = target_favorite.home_rank
-            
+
             # If inserting below, adjust the target rank
             if insert_below:
                 target_rank = target_favorite.home_rank + 1
@@ -811,8 +861,8 @@ def move_favorite_to_folder(request):
             favorites_to_shift = Favorite.objects.filter(
                 user=request.user,
                 folder_id=target_folder_id,
-                home_rank__gte=target_rank
-            ).order_by('home_rank')
+                home_rank__gte=target_rank,
+            ).order_by("home_rank")
 
             for fav in favorites_to_shift:
                 fav.home_rank += 1
@@ -827,10 +877,8 @@ def move_favorite_to_folder(request):
             if original_folder_id != target_folder_id:
                 # Get only favorites that are visible on home page (home_rank > 0) and resequence
                 original_favorites = Favorite.objects.filter(
-                    user=request.user,
-                    folder_id=original_folder_id,
-                    home_rank__gt=0
-                ).order_by('home_rank')
+                    user=request.user, folder_id=original_folder_id, home_rank__gt=0
+                ).order_by("home_rank")
 
                 for index, fav in enumerate(original_favorites):
                     fav.home_rank = index + 1
@@ -840,18 +888,20 @@ def move_favorite_to_folder(request):
             dragged_favorite.folder_id = target_folder_id
             dragged_favorite.save()
 
-        return JsonResponse({
-            'success': True,
-            'message': f'Moved favorite to folder {target_folder_id} at position {target_rank if "target_rank" in locals() else "end"}',
-            'moved_favorite': {
-                'id': dragged_favorite.id,
-                'name': dragged_favorite.name,
-                'new_folder_id': target_folder_id,
-                'new_rank': getattr(dragged_favorite, 'home_rank', None)
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f'Moved favorite to folder {target_folder_id} at position {target_rank if "target_rank" in locals() else "end"}',
+                "moved_favorite": {
+                    "id": dragged_favorite.id,
+                    "name": dragged_favorite.name,
+                    "new_folder_id": target_folder_id,
+                    "new_rank": getattr(dragged_favorite, "home_rank", None),
+                },
             }
-        })
+        )
 
     except (ValueError, TypeError):
-        return JsonResponse({'success': False, 'error': 'Invalid parameters'})
+        return JsonResponse({"success": False, "error": "Invalid parameters"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})

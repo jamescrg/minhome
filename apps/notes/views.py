@@ -1,3 +1,5 @@
+import json
+
 import markdown
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -5,9 +7,8 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-import json
 
-from apps.folders.folders import select_folder, get_folders_for_page, get_breadcrumbs, get_folder_tree
+from apps.folders.folders import get_folder_tree, select_folder
 from apps.folders.models import Folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
@@ -74,7 +75,7 @@ def select(request, id):
     user = request.user
     user.notes_note = id
     user.save()
-    return redirect("/notes/")
+    return redirect("notes")
 
 
 @login_required
@@ -88,12 +89,10 @@ def add(request):
     """
 
     user = request.user
-    folders = get_folders_for_page(request, "notes")
 
     selected_folder = select_folder(request, "notes")
 
-    folder_tree, tree_has_children = get_folder_tree(
-        request, "notes", selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(request, "notes", selected_folder)
 
     if request.method == "POST":
         # create a bound note form loaded with the post values
@@ -156,8 +155,7 @@ def edit(request, id):
     user = request.user
     selected_folder = select_folder(request, "notes")
 
-    folder_tree, tree_has_children = get_folder_tree(
-        request, "notes", selected_folder)
+    folder_tree, tree_has_children = get_folder_tree(request, "notes", selected_folder)
 
     note = get_object_or_404(Note, pk=id)
 
@@ -221,11 +219,13 @@ def move_to_folder(request):
     """
     try:
         data = json.loads(request.body)
-        item_id = data.get('item_id')
-        folder_id = data.get('folder_id')
+        item_id = data.get("item_id")
+        folder_id = data.get("folder_id")
 
         if not item_id or not folder_id:
-            return JsonResponse({'success': False, 'message': 'Missing required parameters'})
+            return JsonResponse(
+                {"success": False, "message": "Missing required parameters"}
+            )
 
         # Get the note
         note = get_object_or_404(Note, pk=item_id, user=request.user)
@@ -237,9 +237,9 @@ def move_to_folder(request):
         note.folder = folder
         note.save()
 
-        return JsonResponse({'success': True, 'message': 'Note moved successfully'})
+        return JsonResponse({"success": True, "message": "Note moved successfully"})
 
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+        return JsonResponse({"success": False, "message": "Invalid JSON data"})
     except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        return JsonResponse({"success": False, "message": str(e)})

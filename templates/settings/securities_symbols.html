@@ -1,53 +1,55 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}
+    Securities Symbols Management
+{% endblock title %}
+{% block meta_description %}
+    Manage your securities symbols for tracking stocks and ETFs. Add, edit, and configure which securities you want to monitor with live market prices.
+{% endblock meta_description %}
+{% block meta_keywords %}
+    securities symbols, stock tracking, ETF management, stock market, portfolio tracking, investment monitoring, securities configuration
+{% endblock meta_keywords %}
 {% block content %}
-
-<div class="row">
-  <div class="col-lg-8">
-    <div class="card">
-      <div class="card-title mh-fc">
-        <h1>Securities Symbols</h1>
-        <a href="#"
-           hx-get="/settings/securities-symbols/add"
-           hx-target="#htmx-modal-content"
-           hx-trigger="click"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-          <i class="bi bi-plus-lg"></i>
-        </a>
-      </div>
-
-      <div id="securities-symbols-list">
-        {% include 'settings/securities_symbols_list.html' %}
-      </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-title mh-fc">
+                    <h1>Securities Symbols</h1>
+                    <a href="#"
+                       hx-get="{% url 'settings-securities-symbol-add' %}"
+                       hx-target="#htmx-modal-content"
+                       hx-trigger="click"
+                       data-bs-toggle="modal"
+                       data-bs-target="#htmx-modal-container">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                </div>
+                <div id="securities-symbols-list">{% include "settings/securities_symbols_list.html" %}</div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-title">
+                    <h2>About Securities Symbols</h2>
+                </div>
+                <div class="card-body">
+                    <p>Manage which securities symbols you want to track in the finance section.</p>
+                    <p>Symbols are validated against the Finnhub API to ensure they exist.</p>
+                    <p>You can disable symbols temporarily without deleting them.</p>
+                    <hr>
+                    <a href="{% url 'securities' %}" class="btn btn-primary">
+                        <i class="bi bi-graph-up"></i> View Securities Prices
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <div class="col-lg-4">
-    <div class="card">
-      <div class="card-title">
-        <h2>About Securities Symbols</h2>
-      </div>
-      <div class="card-body">
-        <p>Manage which securities symbols you want to track in the finance section.</p>
-        <p>Symbols are validated against the Finnhub API to ensure they exist.</p>
-        <p>You can disable symbols temporarily without deleting them.</p>
-        <hr>
-        <a href="/securities/" class="btn btn-primary">
-          <i class="bi bi-graph-up"></i> View Securities Prices
-        </a>
-      </div>
+    <!-- HTMX Modal -->
+    <div id="htmx-modal-container"
+         class="modal modal-blur fade"
+         aria-hidden="false"
+         tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div id="htmx-modal-content" class="modal-content"></div>
+        </div>
     </div>
-  </div>
-</div>
-
-<!-- HTMX Modal -->
-<div id="htmx-modal-container"
-     class="modal modal-blur fade"
-     aria-hidden="false"
-     tabindex="-1">
-  <div class="modal-dialog modal-lg" role="document">
-    <div id="htmx-modal-content" class="modal-content"></div>
-  </div>
-</div>
-
 {% endblock content %}

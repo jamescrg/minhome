@@ -1,13 +1,14 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
-import json
 
-from apps.folders.models import Folder
-from apps.folders.folders import select_folder, get_folder_tree
 from accounts.models import CustomUser
+from apps.folders.folders import get_folder_tree, select_folder
+from apps.folders.models import Folder
 
 
 @login_required
@@ -22,28 +23,30 @@ def select(request, id, page):
     """
     user = request.user
     current_folder_id = getattr(user, page + "_folder", None)
-    
+
     # If clicking on the currently selected folder, unselect it
     if current_folder_id == id:
         setattr(user, page + "_folder", 0)
         user.save()
         request.session[f"{page}_folder_path"] = []
         return redirect(page)
-    
+
     # Otherwise, select the new folder
     setattr(user, page + "_folder", id)
     user.save()
-    
+
     # Store the current folder path for breadcrumbs
     if id and id != 0:
         try:
             folder = Folder.objects.get(pk=id)
-            request.session[f"{page}_folder_path"] = [f.id for f in folder.get_ancestors()] + [folder.id]
+            request.session[f"{page}_folder_path"] = [
+                f.id for f in folder.get_ancestors()
+            ] + [folder.id]
         except Folder.DoesNotExist:
             request.session[f"{page}_folder_path"] = []
     else:
         request.session[f"{page}_folder_path"] = []
-    
+
     return redirect(page)
 
 
@@ -61,41 +64,50 @@ def insert(request, page):
     folder = Folder()
     folder.user = request.user
     folder.page = page
-    
+
     # For HTMX requests, always create folders at root level (no parent)
-    if request.headers.get('HX-Request'):
+    if request.headers.get("HX-Request"):
         folder.parent = None
     else:
         # Always set parent to the currently selected folder
         selected_folder = select_folder(request, page)
         folder.parent = selected_folder
-    
+
     for field in folder.fillable:
         value = request.POST.get(field)
-        if field == 'parent' and value:
+        if field == "parent" and value:
             # Convert parent ID to actual Folder instance
             try:
                 value = Folder.objects.get(pk=value, user=request.user, page=page)
             except Folder.DoesNotExist:
                 value = None  # Root level for HTMX requests
-        elif field == 'parent':
+        elif field == "parent":
             # If no parent specified, use None for HTMX requests
-            value = None if request.headers.get('HX-Request') else select_folder(request, page)
+            value = (
+                None
+                if request.headers.get("HX-Request")
+                else select_folder(request, page)
+            )
         setattr(folder, field, value)
     folder.save()
-    
+
     # Return partial update for HTMX requests
-    if request.headers.get('HX-Request'):
+    if request.headers.get("HX-Request"):
         from django.shortcuts import render
+
         selected_folder = select_folder(request, page)
         folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
-        return render(request, 'folders/list_fragment.html', {
-            'folder_tree': folder_tree,
-            'tree_has_children': tree_has_children,
-            'selected_folder': selected_folder,
-            'page': page
-        })
-    
+        return render(
+            request,
+            "folders/list_fragment.html",
+            {
+                "folder_tree": folder_tree,
+                "tree_has_children": tree_has_children,
+                "selected_folder": selected_folder,
+                "page": page,
+            },
+        )
+
     return redirect(page)
 
 
@@ -116,25 +128,30 @@ def update(request, id, page):
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
     for field in folder.fillable:
-        if field == 'parent':
+        if field == "parent":
             # Skip parent field - keep folder in the same parent
             continue
         value = request.POST.get(field)
         setattr(folder, field, value)
     folder.save()
-    
+
     # Return partial update for HTMX requests
-    if request.headers.get('HX-Request'):
+    if request.headers.get("HX-Request"):
         from django.shortcuts import render
+
         selected_folder = select_folder(request, page)
         folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
-        return render(request, 'folders/list_fragment.html', {
-            'folder_tree': folder_tree,
-            'tree_has_children': tree_has_children,
-            'selected_folder': selected_folder,
-            'page': page
-        })
-    
+        return render(
+            request,
+            "folders/list_fragment.html",
+            {
+                "folder_tree": folder_tree,
+                "tree_has_children": tree_has_children,
+                "selected_folder": selected_folder,
+                "page": page,
+            },
+        )
+
     return redirect(page)
 
 
@@ -145,11 +162,8 @@ def edit_form(request, id, page):
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
-    
-    return render(request, 'folders/edit_modal.html', {
-        'folder': folder,
-        'page': page
-    })
+
+    return render(request, "folders/edit_modal.html", {"folder": folder, "page": page})
 
 
 @login_required
@@ -197,8 +211,7 @@ def home(request, id, page):
 
         # sequence destination column
         # make sure the folders are sequential and adjacent
-        folders = Folder.objects.filter(
-            user=user, home_column=destination_column)
+        folders = Folder.objects.filter(user=user, home_column=destination_column)
         folders = folders.order_by("home_rank")
         count = 1
         for folder in folders:
@@ -226,7 +239,7 @@ def home(request, id, page):
 @login_required
 def share(request, id, page):
     """Manage sharing for a folder.
-    
+
     Args:
         id (int): a Folder instance id
         page (str): the page to which the folder belongs
@@ -235,93 +248,113 @@ def share(request, id, page):
         folder = Folder.objects.filter(user=request.user, pk=id).get()
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
-    
-    if request.method == 'POST':
+
+    if request.method == "POST":
         # Handle adding/removing users from sharing
-        user_id = request.POST.get('user_id')
-        action = request.POST.get('action')
-        
+        user_id = request.POST.get("user_id")
+        action = request.POST.get("action")
+
         if user_id and action:
             try:
                 user = CustomUser.objects.get(pk=user_id)
-                if action == 'add':
+                if action == "add":
                     folder.editors.add(user)
-                elif action == 'remove':
+                elif action == "remove":
                     folder.editors.remove(user)
-                return JsonResponse({'status': 'success'})
+                return JsonResponse({"status": "success"})
             except CustomUser.DoesNotExist:
-                return JsonResponse({'status': 'error', 'message': 'User not found'})
-    
+                return JsonResponse({"status": "error", "message": "User not found"})
+
     # Get all users for sharing dropdown
     all_users = CustomUser.objects.exclude(pk=request.user.pk)
     current_editors = folder.editors.all()
-    available_users = all_users.exclude(pk__in=current_editors.values_list('pk', flat=True))
-    
+    available_users = all_users.exclude(
+        pk__in=current_editors.values_list("pk", flat=True)
+    )
+
     context = {
-        'folder': folder,
-        'page': page,
-        'current_editors': current_editors,
-        'available_users': available_users,
+        "folder": folder,
+        "page": page,
+        "current_editors": current_editors,
+        "available_users": available_users,
     }
-    
-    return render(request, 'folders/share.html', context)
+
+    return render(request, "folders/share.html", context)
 
 
 @login_required
 @csrf_exempt
 def move(request, id, page):
     """Move a folder to a new parent.
-    
+
     Args:
         id (int): The folder ID to move
         page (str): The page type (favorites, contacts, notes, tasks)
-    
+
     Returns:
         JsonResponse with success/error status
     """
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'POST request required'})
-    
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "POST request required"})
+
     try:
         # Get the folder to move
         folder = Folder.objects.get(pk=id, user=request.user, page=page)
-        
+
         # Prevent moving shared folders
         if folder.editors.exists():
-            return JsonResponse({'success': False, 'error': 'Shared folders cannot be moved'})
-        
+            return JsonResponse(
+                {"success": False, "error": "Shared folders cannot be moved"}
+            )
+
         # Parse the request body
         data = json.loads(request.body)
-        new_parent_id = data.get('new_parent_id')
-        
+        new_parent_id = data.get("new_parent_id")
+
         # Get the new parent folder
         if new_parent_id:
             try:
-                new_parent = Folder.objects.get(pk=new_parent_id, user=request.user, page=page)
-                
+                new_parent = Folder.objects.get(
+                    pk=new_parent_id, user=request.user, page=page
+                )
+
                 # Prevent moving a folder into one of its descendants
                 if folder in new_parent.get_ancestors() or folder.id == new_parent.id:
-                    return JsonResponse({'success': False, 'error': 'Cannot move folder into its descendant or itself'})
-                
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "Cannot move folder into its descendant or itself",
+                        }
+                    )
+
                 # Check depth limit (3 levels maximum)
                 new_parent_depth = len(new_parent.get_ancestors())
-                if new_parent_depth >= 2:  # 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
-                    return JsonResponse({'success': False, 'error': 'Cannot nest folders more than 3 levels deep'})
-                
+                if (
+                    new_parent_depth >= 2
+                ):  # 0-indexed: 0=root, 1=level1, 2=level2 (can't add level3)
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "Cannot nest folders more than 3 levels deep",
+                        }
+                    )
+
                 folder.parent = new_parent
             except Folder.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Target folder not found'})
+                return JsonResponse(
+                    {"success": False, "error": "Target folder not found"}
+                )
         else:
             # Move to root level
             folder.parent = None
-        
+
         folder.save()
-        
-        return JsonResponse({'success': True})
-        
+
+        return JsonResponse({"success": True})
+
     except Folder.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Folder not found'})
+        return JsonResponse({"success": False, "error": "Folder not found"})
     except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+        return JsonResponse({"success": False, "error": "Invalid JSON data"})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({"success": False, "error": str(e)})
