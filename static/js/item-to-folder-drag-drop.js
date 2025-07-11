@@ -16,7 +16,7 @@ function initializeItemToFolderDragDrop() {
     console.log('Initializing item to folder drag and drop');
 
     // Initialize draggable items by type
-    initializeDraggableItems('.favorite-left .link a', 'favorite');
+    initializeDraggableItems('.favorite-item', 'favorite');
     initializeDraggableItems('.task-title a', 'task');
     initializeDraggableItems('.contact-item a', 'contact');
     initializeDraggableItems('.note-item a', 'note');
@@ -30,46 +30,55 @@ function initializeItemToFolderDragDrop() {
  */
 function initializeDraggableItems(selector, itemType) {
     const items = document.querySelectorAll(selector);
-    console.log(`Found ${items.length} ${itemType} items`);
+    console.log(`Found ${items.length} ${itemType} items with selector: ${selector}`);
 
     items.forEach(item => {
-        const listItem = item.closest('.list-group-item');
+        const listItem = itemType === 'favorite' ? item : item.closest('.list-group-item');
         if (!listItem) return;
 
+        // Make items draggable by default
+        listItem.draggable = true;
+        listItem.setAttribute('draggable', 'true');
+
+        // For favorites, we're already selecting the list item
+        const dragTarget = itemType === 'favorite' ? item : item;
+        const clickTarget = itemType === 'favorite' ? item.querySelector('.link a') : item;
+
         // Timer-based drag detection
-        item.addEventListener('mousedown', function(e) {
-            console.log(`Mousedown on ${itemType} item`);
+        dragTarget.addEventListener('mousedown', function(e) {
+            // Set drag mode immediately for native drag to work
+            isItemDragging = true;
+            draggedItem = listItem;
+            draggedItemType = itemType;
+
             itemDragTimeout = setTimeout(() => {
-                listItem.draggable = true;
-                isItemDragging = true;
-                draggedItem = listItem;
-                draggedItemType = itemType;
                 listItem.classList.add('dragging');
-                item.style.cursor = 'grabbing';
-                console.log(`Started dragging ${itemType}`, listItem);
+                dragTarget.style.cursor = 'grabbing';
             }, 150);
         });
 
-        item.addEventListener('mouseup', function(e) {
+        let dragStarted = false;
+
+        dragTarget.addEventListener('mouseup', function(e) {
             clearTimeout(itemDragTimeout);
-            if (!isItemDragging) {
-                // Short click - allow default behavior
-            } else {
-                // Was dragging - clean up
-                listItem.draggable = false;
-                isItemDragging = false;
-                listItem.classList.remove('dragging');
-                item.style.cursor = '';
-            }
+
+            // Clean up
+            const wasDragging = dragStarted;
+            dragStarted = false;
+            isItemDragging = false;
+            listItem.classList.remove('dragging');
+            dragTarget.style.cursor = '';
         });
 
         // Prevent navigation during drag
-        item.addEventListener('click', function(e) {
-            if (isItemDragging) {
-                e.preventDefault();
-                return false;
-            }
-        });
+        if (clickTarget) {
+            clickTarget.addEventListener('click', function(e) {
+                if (isItemDragging) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
 
         // Drag events
         listItem.addEventListener('dragstart', handleItemDragStart);
@@ -97,8 +106,12 @@ function initializeFolderDropZones() {
  * Handle item drag start
  */
 function handleItemDragStart(e) {
+    console.log('Drag start event fired', e);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', this.innerHTML);
+
+    // Mark the element with data attribute to track drag state
+    this.setAttribute('data-is-dragging', 'true');
 }
 
 /**
@@ -106,7 +119,7 @@ function handleItemDragStart(e) {
  */
 function handleItemDragEnd(e) {
     this.classList.remove('dragging');
-    this.draggable = false;
+    this.removeAttribute('data-is-dragging');
     isItemDragging = false;
 
     // Clean up all drop indicators

@@ -175,6 +175,7 @@ li {
 
 .list-group {
   border: none;
+  border-radius: 0;
 }
 
 .list-group-item {
