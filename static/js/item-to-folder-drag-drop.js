@@ -17,7 +17,7 @@ function initializeItemToFolderDragDrop() {
 
     // Initialize draggable items by type
     initializeDraggableItems('.favorite-item', 'favorite');
-    initializeDraggableItems('.task-title a', 'task');
+    initializeDraggableItems('.task-item', 'task');
     initializeDraggableItems('.contact-item a', 'contact');
     initializeDraggableItems('.note-item a', 'note');
 
@@ -33,16 +33,17 @@ function initializeDraggableItems(selector, itemType) {
     console.log(`Found ${items.length} ${itemType} items with selector: ${selector}`);
 
     items.forEach(item => {
-        const listItem = itemType === 'favorite' ? item : item.closest('.list-group-item');
+        const listItem = (itemType === 'favorite' || itemType === 'task') ? item : item.closest('.list-group-item');
         if (!listItem) return;
 
         // Make items draggable by default
         listItem.draggable = true;
         listItem.setAttribute('draggable', 'true');
 
-        // For favorites, we're already selecting the list item
-        const dragTarget = itemType === 'favorite' ? item : item;
-        const clickTarget = itemType === 'favorite' ? item.querySelector('.link a') : item;
+        // For favorites and tasks, we're already selecting the list item
+        const dragTarget = (itemType === 'favorite' || itemType === 'task') ? item : item;
+        const clickTarget = itemType === 'favorite' ? item.querySelector('.link a') :
+                           itemType === 'task' ? item.querySelector('.task-title a') : item;
 
         // Timer-based drag detection
         dragTarget.addEventListener('mousedown', function(e) {

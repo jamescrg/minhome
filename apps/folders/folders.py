@@ -110,27 +110,22 @@ def get_folder_tree(request, page, selected_folder=None, max_depth=5):
 
     tree_has_children = has_any_children(tree)
 
-    # Mark expansion state based on selected folder
+    # Get expanded folders from session
+    session_key = f"{page}_expanded_folders"
+    expanded_folder_ids = set(request.session.get(session_key, []))
+
+    # Also expand ancestors of selected folder if one is selected
     if selected_folder:
         ancestors = selected_folder.get_ancestors()
-        ancestor_ids = [ancestor.id for ancestor in ancestors] + [selected_folder.id]
+        ancestor_ids = {ancestor.id for ancestor in ancestors}
+        expanded_folder_ids.update(ancestor_ids)
+        expanded_folder_ids.add(selected_folder.id)
 
-        def mark_expanded(nodes):
-            for node in nodes:
-                if node["folder"].id in ancestor_ids:
-                    node["expanded"] = True
-                    mark_expanded(node["children"])
-                else:
-                    node["expanded"] = False
+    def mark_expanded_from_session(nodes):
+        for node in nodes:
+            node["expanded"] = node["folder"].id in expanded_folder_ids
+            mark_expanded_from_session(node["children"])
 
-        mark_expanded(tree)
-    else:
-        # If no folder is selected, mark all folders as collapsed by default
-        def mark_collapsed(nodes):
-            for node in nodes:
-                node["expanded"] = False
-                mark_collapsed(node["children"])
-
-        mark_collapsed(tree)
+    mark_expanded_from_session(tree)
 
     return tree, tree_has_children

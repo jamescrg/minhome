@@ -461,27 +461,81 @@ function handleFolderToggle(e) {
 
     if (!folderItem || !childrenContainer) return;
 
-    const isExpanded = folderItem.classList.contains('expanded');
+    // Get current page
+    const page = window.location.pathname.split('/')[1] || 'tasks';
 
+    // Toggle visually immediately for better UX
+    const isExpanded = folderItem.classList.contains('expanded');
     if (isExpanded) {
-        // Collapse
         folderItem.classList.remove('expanded');
         childrenContainer.classList.add('collapsed');
         icon.classList.remove('bi-chevron-down');
         icon.classList.add('bi-chevron-right');
-
-        // Save collapsed state
-        saveFolderState(folderId, false);
     } else {
-        // Expand
         folderItem.classList.add('expanded');
         childrenContainer.classList.remove('collapsed');
         icon.classList.remove('bi-chevron-right');
         icon.classList.add('bi-chevron-down');
-
-        // Save expanded state
-        saveFolderState(folderId, true);
     }
+
+    // Update server state
+    fetch(`/folders/toggle/${folderId}/${page}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            // Revert visual state if server update failed
+            if (isExpanded) {
+                folderItem.classList.add('expanded');
+                childrenContainer.classList.remove('collapsed');
+                icon.classList.add('bi-chevron-down');
+                icon.classList.remove('bi-chevron-right');
+            } else {
+                folderItem.classList.remove('expanded');
+                childrenContainer.classList.add('collapsed');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-right');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error toggling folder:', error);
+        // Revert visual state on error
+        if (isExpanded) {
+            folderItem.classList.add('expanded');
+            childrenContainer.classList.remove('collapsed');
+            icon.classList.add('bi-chevron-down');
+            icon.classList.remove('bi-chevron-right');
+        } else {
+            folderItem.classList.remove('expanded');
+            childrenContainer.classList.add('collapsed');
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-right');
+        }
+    });
+}
+
+/**
+ * Get CSRF token from cookies
+ */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 /**
@@ -531,7 +585,7 @@ function restoreFolderStates() {
 document.addEventListener('DOMContentLoaded', function() {
     initializeFolderHierarchyDragDrop();
     initializeFolderExpandCollapse();
-    restoreFolderStates();
+    // restoreFolderStates(); // Not needed - state is restored server-side
 
     // Global failsafe to clean up drop targets
     window.addEventListener('dragend', function() {
@@ -545,6 +599,6 @@ document.addEventListener('htmx:afterSwap', function(e) {
     if (e.target.id === 'folder-list' || e.target.closest('#folder-list')) {
         initializeFolderHierarchyDragDrop();
         initializeFolderExpandCollapse();
-        restoreFolderStates();
+        // restoreFolderStates(); // Not needed - state is restored server-side
     }
 });

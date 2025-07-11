@@ -28,6 +28,14 @@
   margin-bottom: 1.5rem;
 }
 
+.task-list .task-item {
+  /* Prevent text selection during drag */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 @media (max-width: 768px) {
 
   .task-list li {

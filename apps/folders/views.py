@@ -358,3 +358,26 @@ def move(request, id, page):
         return JsonResponse({"success": False, "error": "Invalid JSON data"})
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
+def toggle_folder(request, id, page):
+    """Toggle the expand/collapse state of a folder."""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "POST request required"})
+
+    session_key = f"{page}_expanded_folders"
+    expanded_folders = set(request.session.get(session_key, []))
+
+    folder_id = int(id)
+    if folder_id in expanded_folders:
+        expanded_folders.remove(folder_id)
+        is_expanded = False
+    else:
+        expanded_folders.add(folder_id)
+        is_expanded = True
+
+    request.session[session_key] = list(expanded_folders)
+    request.session.modified = True
+
+    return JsonResponse({"success": True, "is_expanded": is_expanded})
