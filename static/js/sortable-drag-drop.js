@@ -101,6 +101,7 @@ function initializeFolderSortables() {
  */
 function initializeFavoriteSortables() {
     const favoriteLists = document.querySelectorAll('.folder .list-group');
+    console.log('Found', favoriteLists.length, 'favorite lists');
 
     favoriteLists.forEach((list, index) => {
         const sortable = new Sortable(list, {
@@ -109,7 +110,7 @@ function initializeFavoriteSortables() {
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
-            delay: 150, // Delay to distinguish from clicks
+            delay: 100, // Delay to distinguish from clicks
             delayOnTouchStart: true,
 
             onStart: function(evt) {
@@ -184,7 +185,8 @@ function updateFavoritePosition(favoriteId, newFolderId, newPosition) {
     const formData = new FormData();
     formData.append('dragged_favorite_id', favoriteId);
     formData.append('target_folder_id', newFolderId);
-    formData.append('move_to_end', 'true'); // Use existing API to move to end of folder
+    formData.append('target_favorite_id', -1); // -1 means move to end of folder
+    formData.append('insert_below', 'true');
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
     fetch('/home/move-favorite-to-folder/', {

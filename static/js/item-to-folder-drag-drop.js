@@ -55,7 +55,7 @@ function initializeDraggableItems(selector, itemType) {
             itemDragTimeout = setTimeout(() => {
                 listItem.classList.add('dragging');
                 dragTarget.style.cursor = 'grabbing';
-            }, 150);
+            }, 100);
         });
 
         let dragStarted = false;
