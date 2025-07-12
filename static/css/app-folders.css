@@ -5,6 +5,10 @@
  * folder list
  * ------------------------------------------------*/
 
+.folders .mh-fcl a {
+  margin-left: 1rem;
+}
+
 .folder-expand-toggle {
   color: var(--stone-350);
   cursor: pointer;

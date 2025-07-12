@@ -602,3 +602,12 @@ document.addEventListener('htmx:afterSwap', function(e) {
         // restoreFolderStates(); // Not needed - state is restored server-side
     }
 });
+
+// Also listen for afterSettle to ensure DOM is fully ready
+document.addEventListener('htmx:afterSettle', function(e) {
+    // Only reinitialize if the target contains folder content
+    if (e.target.id === 'folder-list' || e.target.closest('#folder-list')) {
+        initializeFolderHierarchyDragDrop();
+        initializeFolderExpandCollapse();
+    }
+});

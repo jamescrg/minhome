@@ -34,6 +34,11 @@ urlpatterns = [
         folders.toggle_folder,
         name="folder-toggle",
     ),
+    path(
+        "folders/collapse-all/<str:page>",
+        folders.collapse_all_folders,
+        name="folder-collapse-all",
+    ),
     # home
     path("", home.index, name="home-index"),
     path("home/", home.index, name="home"),

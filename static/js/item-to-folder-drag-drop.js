@@ -280,3 +280,12 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeItemToFolderDragDrop();
     }
 });
+
+// Re-initialize after HTMX updates
+document.addEventListener('htmx:afterSettle', function(e) {
+    // Only reinitialize if the target contains folder content
+    if (e.target.id === 'folder-list' || e.target.closest('#folder-list')) {
+        // Re-initialize folder drop zones for item-to-folder dragging
+        initializeFolderDropZones();
+    }
+});

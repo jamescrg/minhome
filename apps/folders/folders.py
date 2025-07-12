@@ -114,13 +114,6 @@ def get_folder_tree(request, page, selected_folder=None, max_depth=5):
     session_key = f"{page}_expanded_folders"
     expanded_folder_ids = set(request.session.get(session_key, []))
 
-    # Also expand ancestors of selected folder if one is selected
-    if selected_folder:
-        ancestors = selected_folder.get_ancestors()
-        ancestor_ids = {ancestor.id for ancestor in ancestors}
-        expanded_folder_ids.update(ancestor_ids)
-        expanded_folder_ids.add(selected_folder.id)
-
     def mark_expanded_from_session(nodes):
         for node in nodes:
             node["expanded"] = node["folder"].id in expanded_folder_ids

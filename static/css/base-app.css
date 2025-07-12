@@ -52,8 +52,7 @@ a:hover {
  * add (plus) button links
  * ------------------------------------------------*/
 
-.card-title a[href*="/add"],
-.card-title a[data-bs-toggle="modal"] {
+.square-button {
   background: var(--stone-125);
   border: solid 1px var(--stone-200);
   border-radius: 4px;

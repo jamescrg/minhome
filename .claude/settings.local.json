@@ -6,7 +6,8 @@
       "Bash(python manage.py:*)",
       "Bash(pytest:*)",
       "Bash(ls:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

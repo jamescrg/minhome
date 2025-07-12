@@ -18,7 +18,11 @@
             </span>
         {% endif %}
         <span class="folder-icon">
-            <i class="bi bi-folder"></i>
+            {% if folder_data.folder.home_column and folder_data.folder.user == user %}
+                <i class="bi bi-house-door"></i>
+            {% else %}
+                <i class="bi bi-folder"></i>
+            {% endif %}
         </span>
         <a class="folder-link"
            href="{% url 'folder-select' id=folder_data.folder.id page=page %}">{{ folder_data.folder.name }}</a>
@@ -28,11 +32,6 @@
             {% if folder_data.folder.editors.exists %}
                 <span class="folder-badge folder-badge-shared" title="Shared folder">
                     <i class="bi bi-people"></i>
-                </span>
-            {% endif %}
-            {% if folder_data.folder.home_column and folder_data.folder.user == user %}
-                <span class="folder-badge folder-badge-home" title="On home page">
-                    <i class="bi bi-house-door"></i>
                 </span>
             {% endif %}
         </div>

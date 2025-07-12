@@ -42,6 +42,14 @@ def select(request, id, page):
             request.session[f"{page}_folder_path"] = [
                 f.id for f in folder.get_ancestors()
             ] + [folder.id]
+
+            # Also expand the selected folder
+            session_key = f"{page}_expanded_folders"
+            expanded_folders = set(request.session.get(session_key, []))
+            expanded_folders.add(id)
+            request.session[session_key] = list(expanded_folders)
+            request.session.modified = True
+
         except Folder.DoesNotExist:
             request.session[f"{page}_folder_path"] = []
     else:
@@ -381,3 +389,27 @@ def toggle_folder(request, id, page):
     request.session.modified = True
 
     return JsonResponse({"success": True, "is_expanded": is_expanded})
+
+
+@login_required
+def collapse_all_folders(request, page):
+    """Collapse all folders by clearing the expanded folders from session."""
+    # Clear expanded folders from session
+    session_key = f"{page}_expanded_folders"
+    request.session[session_key] = []
+    request.session.modified = True
+
+    # Return the updated folder list for HTMX
+    selected_folder = select_folder(request, page)
+    folder_tree, tree_has_children = get_folder_tree(request, page, selected_folder)
+
+    return render(
+        request,
+        "folders/list_fragment.html",
+        {
+            "folder_tree": folder_tree,
+            "tree_has_children": tree_has_children,
+            "selected_folder": selected_folder,
+            "page": page,
+        },
+    )
