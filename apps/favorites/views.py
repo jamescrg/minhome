@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from apps.favorites.favorites import get_favorites
-from apps.favorites.forms import FavoriteForm
+from apps.favorites.forms import FavoriteForm, FavoriteExtensionForm
 from apps.favorites.models import Favorite
 from apps.folders.folders import get_folder_tree, get_folders_for_page, select_folder
 from apps.folders.models import Folder
@@ -277,15 +277,12 @@ def api_folders(request):
 
 @login_required
 def extension_add(request):
-    """Minimal extension form without site layout"""
-    selected_folder = select_folder(request, "favorites")
 
     if request.method == "POST":
-        form = FavoriteForm(request.POST)
+        form = FavoriteExtensionForm(request.POST)
         if form.is_valid():
             favorite = form.save(commit=False)
             favorite.user = request.user
-            favorite.folder = selected_folder  # Always assign to selected folder
             favorite.home_rank = 1  # Show on home page
             favorite.save()
             # Return a simple success page
@@ -303,7 +300,11 @@ def extension_add(request):
         if url:
             initial_data["url"] = url
 
-        form = FavoriteForm(initial=initial_data)
+        form = FavoriteExtensionForm(initial=initial_data)
+        form.fields["folder"].queryset = Folder.objects.filter(
+            page="favorites", user=request.user, parent=None).order_by(
+            "name"
+        )
 
     context = {
         "form": form,
