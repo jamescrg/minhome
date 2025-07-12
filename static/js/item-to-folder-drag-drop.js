@@ -1,7 +1,7 @@
 /**
  * Item to folder drag-and-drop functionality
  * Handles dragging favorites, tasks, contacts, and notes to folders
- * Uses timer-based click vs drag detection (150ms delay)
+ * Uses timer-based click vs drag detection (200ms delay)
  */
 
 let draggedItem = null;
@@ -55,7 +55,7 @@ function initializeDraggableItems(selector, itemType) {
             itemDragTimeout = setTimeout(() => {
                 listItem.classList.add('dragging');
                 dragTarget.style.cursor = 'grabbing';
-            }, 100);
+            }, 200);
         });
 
         let dragStarted = false;

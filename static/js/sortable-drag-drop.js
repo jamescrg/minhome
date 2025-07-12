@@ -110,7 +110,7 @@ function initializeFavoriteSortables() {
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
-            delay: 100, // Delay to distinguish from clicks
+            delay: 200, // Delay to distinguish from clicks
             delayOnTouchStart: true,
 
             onStart: function(evt) {

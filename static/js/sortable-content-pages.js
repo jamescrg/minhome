@@ -51,7 +51,7 @@ function initializeFolderHierarchySortable() {
         group: 'folder-hierarchy',
         animation: 200,
         handle: '.folder-link',
-        delay: 150,
+        delay: 200,
         delayOnTouchStart: true,
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
@@ -177,7 +177,7 @@ function initializeItemToFolderSortables() {
                 put: false // Don't allow items to be moved within the list
             },
             animation: 200,
-            delay: 150, // Delay to distinguish from clicks
+            delay: 200, // Delay to distinguish from clicks
             delayOnTouchStart: true,
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
