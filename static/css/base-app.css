@@ -199,15 +199,15 @@ li {
 .btn-primary:focus {
   background: var(--matcha-900);
   border: none;
-  color: var(--stone-300);
+  color: var(--stone-50);
 }
 
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background: var(--stone-500);
+  background: var(--stone-400);
   border: none;
-  color: var(--stone-100);
+  color: white;
 }
 
 .btn-icon {

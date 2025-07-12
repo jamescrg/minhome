@@ -3,7 +3,7 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    background: var(--stone-300);
+    background: var(--stone-100);
     color: var(--stone-600);
     padding: 15px;
 }

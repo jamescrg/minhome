@@ -45,7 +45,7 @@
 
   "content_scripts": [
     {
-      "matches": ["https://minhome.app/*"],
+      "matches": ["https://minhome.app/*", "https://*.minhome.app/*"],
       "js": ["content.js"],
       "run_at": "document_end"
     }
