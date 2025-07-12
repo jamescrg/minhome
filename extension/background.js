@@ -1,5 +1,4 @@
 // Background script for the extension
-const FAVORITES_DOMAIN = 'minhome.app';
 
 // Store popup window ID for closing
 let popupWindowId = null;
@@ -7,40 +6,50 @@ let popupWindowId = null;
 // Firefox uses 'browser' API, Chrome uses 'chrome' API
 const api = typeof browser !== 'undefined' ? browser : chrome;
 
+// Function to get the configured domain
+function getFavoritesDomain(callback) {
+  api.storage.sync.get(['favoritesDomain'], function(result) {
+    const domain = (result && result.favoritesDomain) || 'minhome.app';
+    callback(domain);
+  });
+}
+
 // Handle browser action click
 api.browserAction.onClicked.addListener(function(tab) {
   // Get the current tab's title and URL
   const title = tab.title || tab.url;
   const url = tab.url;
 
-  // Open the favorites form in a popup
-  const popupUrl = `https://${FAVORITES_DOMAIN}/favorites/extension?name=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+  // Get the configured domain and open popup
+  getFavoritesDomain(function(domain) {
+    const popupUrl = `https://${domain}/favorites/extension?name=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
 
-  if (typeof browser !== 'undefined') {
-    // Firefox - uses promises
-    api.windows.create({
-      url: popupUrl,
-      type: 'popup',
-      width: 450,
-      height: 550,
-      focused: true
-    }).then(function(window) {
-      popupWindowId = window.id;
-      console.log('Created popup window:', window.id);
-    });
-  } else {
-    // Chrome - uses callbacks
-    api.windows.create({
-      url: popupUrl,
-      type: 'popup',
-      width: 450,
-      height: 550,
-      focused: true
-    }, function(window) {
-      popupWindowId = window.id;
-      console.log('Created popup window:', window.id);
-    });
-  }
+    if (typeof browser !== 'undefined') {
+      // Firefox - uses promises
+      api.windows.create({
+        url: popupUrl,
+        type: 'popup',
+        width: 450,
+        height: 550,
+        focused: true
+      }).then(function(window) {
+        popupWindowId = window.id;
+        console.log('Created popup window:', window.id);
+      });
+    } else {
+      // Chrome - uses callbacks
+      api.windows.create({
+        url: popupUrl,
+        type: 'popup',
+        width: 450,
+        height: 550,
+        focused: true
+      }, function(window) {
+        popupWindowId = window.id;
+        console.log('Created popup window:', window.id);
+      });
+    }
+  });
 });
 
 // Add context menu item
@@ -60,33 +69,36 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
     const title = info.linkText || tab.title || tab.url;
     const url = info.linkUrl || tab.url;
 
-    const popupUrl = `https://${FAVORITES_DOMAIN}/favorites/extension?name=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+    // Get the configured domain and open popup
+    getFavoritesDomain(function(domain) {
+      const popupUrl = `https://${domain}/favorites/extension?name=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
 
-    if (typeof browser !== 'undefined') {
-      // Firefox - uses promises
-      api.windows.create({
-        url: popupUrl,
-        type: 'popup',
-        width: 450,
-        height: 550,
-        focused: true
-      }).then(function(window) {
-        popupWindowId = window.id;
-        console.log('Created popup window from context menu:', window.id);
-      });
-    } else {
-      // Chrome - uses callbacks
-      api.windows.create({
-        url: popupUrl,
-        type: 'popup',
-        width: 450,
-        height: 550,
-        focused: true
-      }, function(window) {
-        popupWindowId = window.id;
-        console.log('Created popup window from context menu:', window.id);
-      });
-    }
+      if (typeof browser !== 'undefined') {
+        // Firefox - uses promises
+        api.windows.create({
+          url: popupUrl,
+          type: 'popup',
+          width: 450,
+          height: 550,
+          focused: true
+        }).then(function(window) {
+          popupWindowId = window.id;
+          console.log('Created popup window from context menu:', window.id);
+        });
+      } else {
+        // Chrome - uses callbacks
+        api.windows.create({
+          url: popupUrl,
+          type: 'popup',
+          width: 450,
+          height: 550,
+          focused: true
+        }, function(window) {
+          popupWindowId = window.id;
+          console.log('Created popup window from context menu:', window.id);
+        });
+      }
+    });
   }
 });
 

@@ -6,9 +6,16 @@
   "author": "MinHome",
   "homepage_url": "https://dev.minhome.app",
 
+  "applications": {
+    "gecko": {
+      "id": "minhome-favorites@minhome.app"
+    }
+  },
+
   "permissions": [
     "activeTab",
     "contextMenus",
+    "storage",
     "https://minhome.app/*"
   ],
 
@@ -26,6 +33,8 @@
       "128": "icon.png"
     }
   },
+
+  "options_page": "options.html",
 
   "icons": {
     "16": "icon.png",
