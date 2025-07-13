@@ -182,39 +182,84 @@ function updateFolderPosition(folderId, newColumn, newPosition) {
  * Update favorite position via API
  */
 function updateFavoritePosition(favoriteId, newFolderId, newPosition) {
-    const formData = new FormData();
-    formData.append('dragged_favorite_id', favoriteId);
-    formData.append('target_folder_id', newFolderId);
-    formData.append('target_favorite_id', -1); // -1 means move to end of folder
-    formData.append('insert_below', 'true');
-    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    // Get the dragged favorite element to check its current folder
+    const draggedFavorite = document.querySelector(`[data-favorite-id="${favoriteId}"]`);
+    const currentFolderId = draggedFavorite?.getAttribute('data-folder-id');
 
-    fetch('/home/move-favorite-to-folder/', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Favorite position updated successfully');
-            // Update the data attributes
-            const favorite = document.querySelector(`[data-favorite-id="${favoriteId}"]`);
-            if (favorite) {
-                favorite.setAttribute('data-folder-id', newFolderId);
-            }
-            // Reload to reflect changes (like existing implementation)
-            window.location.reload();
+    // If moving within the same folder, use swap positions endpoint
+    if (currentFolderId === newFolderId) {
+        // Find the target favorite at the new position
+        const folderContainer = document.querySelector(`[data-folder-id="${newFolderId}"] .favorites-list`);
+        const favoritesInFolder = folderContainer?.querySelectorAll('[data-favorite-id]');
+
+        if (favoritesInFolder && favoritesInFolder[newPosition]) {
+            const targetFavoriteId = favoritesInFolder[newPosition].getAttribute('data-favorite-id');
+
+            const formData = new FormData();
+            formData.append('dragged_favorite_id', favoriteId);
+            formData.append('target_favorite_id', targetFavoriteId);
+            formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+            fetch('/home/swap-favorite-positions/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Favorite positions swapped successfully');
+                    window.location.reload();
+                } else {
+                    console.error('Error swapping favorite positions:', data.error);
+                    alert('Error updating favorite position: ' + data.error);
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating favorite position');
+                location.reload();
+            });
         } else {
-            console.error('Error updating favorite position:', data.error);
-            alert('Error updating favorite position: ' + data.error);
-            location.reload();
+            console.log('No target favorite found for swap, position may already be correct');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error updating favorite position');
-        location.reload();
-    });
+    } else {
+        // Moving to different folder, use existing move endpoint
+        const formData = new FormData();
+        formData.append('dragged_favorite_id', favoriteId);
+        formData.append('target_folder_id', newFolderId);
+        formData.append('target_favorite_id', -1);
+        formData.append('insert_below', 'true');
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+        fetch('/home/move-favorite-to-folder/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Favorite position updated successfully');
+                // Update the data attributes
+                const favorite = document.querySelector(`[data-favorite-id="${favoriteId}"]`);
+                if (favorite) {
+                    favorite.setAttribute('data-folder-id', newFolderId);
+                }
+                // Reload to reflect changes (like existing implementation)
+                window.location.reload();
+            } else {
+                console.error('Error updating favorite position:', data.error);
+                alert('Error updating favorite position: ' + data.error);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating favorite position');
+            location.reload();
+        });
+    }
 }
 
 /**
