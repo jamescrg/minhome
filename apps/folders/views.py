@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from accounts.models import CustomUser
 from apps.folders.folders import get_folder_tree, select_folder
 from apps.folders.models import Folder
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -24,8 +27,13 @@ def select(request, id, page):
     user = request.user
     current_folder_id = getattr(user, page + "_folder", None)
 
+    # Check if user is coming from home page
+    referer = request.META.get("HTTP_REFERER", "")
+    from_home = "/home/" in referer or referer.endswith("/home")
+
     # If clicking on the currently selected folder, unselect it
-    if current_folder_id == id:
+    # BUT not if coming from the home page - in that case always select
+    if current_folder_id == id and not from_home:
         setattr(user, page + "_folder", 0)
         user.save()
         request.session[f"{page}_folder_path"] = []
