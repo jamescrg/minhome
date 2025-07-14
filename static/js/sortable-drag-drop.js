@@ -54,6 +54,10 @@ function initializeFolderSortables() {
             handle: '.drag-handle', // Only drag by the handle
             filter: '.list-group', // Don't make favorites sortable here
             preventOnFilter: false,
+            delay: 150, // Delay to prevent accidental drags
+            delayOnTouchStart: true,
+            delayOnTouchOnly: true, // Only apply delay on touch devices
+            touchStartThreshold: 20, // Require more movement before starting drag
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
@@ -112,6 +116,8 @@ function initializeFavoriteSortables() {
             dragClass: 'sortable-drag',
             delay: 200, // Delay to distinguish from clicks
             delayOnTouchStart: true,
+            delayOnTouchOnly: true, // Only apply delay on touch devices
+            touchStartThreshold: 20, // Require more movement before starting drag
 
             onStart: function(evt) {
                 console.log('Favorite drag started');
