@@ -8,12 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from accounts.models import CustomUser
-from apps.folders.folders import (
-    get_breadcrumbs,
-    get_folder_tree,
-    get_task_folders,
-    select_folder,
-)
+from apps.folders.folders import get_breadcrumbs, get_folder_tree, select_folder
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
@@ -140,13 +135,8 @@ def edit(request, id):
         return redirect("tasks")
 
     else:
+        selected_folder = user.tasks_folder
         task = get_object_or_404(Task, pk=id)
-        folders = get_task_folders(request)
-        try:
-            selected_folder = folders.filter(id=task.folder.id).get()
-        except AttributeError:
-            selected_folder = None
-
         form = TaskForm(instance=task)
 
         folder_tree, tree_has_children = get_folder_tree(
@@ -184,6 +174,19 @@ def clear(request):
     for task in tasks:
         task.delete()
 
+    return redirect("tasks")
+
+
+@login_required
+def delete(request, id):
+    """Delete a specific task."""
+    task = get_object_or_404(Task, pk=id)
+
+    # Only allow the task owner to delete it
+    if task.user != request.user:
+        raise Http404("Task not found")
+
+    task.delete()
     return redirect("tasks")
 
 
