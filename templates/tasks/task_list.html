@@ -14,7 +14,11 @@
                     </a>
                 </div>
                 <div class="task-title">
-                    <span {% if task.status == 1 %}style="text-decoration: line-through; color: gray;"{% endif %}>{{ task.title }}</span>
+                    {% if task.status == 1 %}
+                        <span style="text-decoration: line-through; color: gray;">{{ task.title }}</span>
+                    {% else %}
+                        <a href="{% url 'tasks-edit' id=task.id %}">{{ task.title }}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="task-right mh-ftl">{% include "tasks/menu.html" %}</div>

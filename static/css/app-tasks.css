@@ -44,7 +44,6 @@
   }
 
   .task-checkbox {
-    margin-top: 0.1rem !important;
     padding-top: 0;
   }
 
@@ -57,7 +56,7 @@
 .task-checkbox {
   font-size: 0.96rem;
   margin-right: 1rem;
-  margin-top: 0.2rem;
+  /* margin-top: 0.2rem; */
 }
 
 .task-checkbox a,
