@@ -16,6 +16,11 @@ function initializeFolderHierarchyDragDrop() {
     const folderContainer = document.querySelector('.folders');
     if (!folderContainer) return;
 
+    // Detect if we're on a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                     ('ontouchstart' in window) ||
+                     (navigator.maxTouchPoints > 0);
+
     // Get all folder items and links
     const folderItems = document.querySelectorAll('.folder-item');
     const folderLinks = document.querySelectorAll('.folder-link');
@@ -28,19 +33,36 @@ function initializeFolderHierarchyDragDrop() {
         const isShared = item.getAttribute('data-shared') === 'true';
         if (isShared) return;
 
-        // Timer-based drag detection on the entire item for touch, link for mouse
+        // Touch-based drag detection variables
         let touchStartPos = null;
+        let isTouchSequence = false;
+        let isDragModeActive = false;
+        const MOVE_THRESHOLD = 10; // pixels
 
-        // Enable dragging by default for desktop, but touch events will override
-        item.draggable = true;
+        // On mobile: completely disable HTML5 drag, on desktop: start disabled
+        if (isMobile) {
+            item.draggable = false;
+            item.removeAttribute('draggable');
+            // Prevent any drag events on mobile
+            item.addEventListener('dragstart', function(e) {
+                console.log('MOBILE DRAGSTART PREVENTED - Folder:', item.getAttribute('data-folder-name'));
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                return false;
+            }, { capture: true });
+        } else {
+            item.draggable = false;
+        }
 
         // Separate mouse and touch event handlers
         const handleMouseStart = function(e) {
             // Don't interfere with touch events
             if (e.type === 'touchstart') return;
 
-            // Mouse: Enable dragging immediately
+            // Mouse: Enable dragging immediately for desktop
             item.draggable = true;
+            item.setAttribute('draggable', 'true');
         };
 
         const handleMouseEnd = function(e) {
@@ -56,60 +78,211 @@ function initializeFolderHierarchyDragDrop() {
         };
 
         const handleTouchStart = function(e) {
-            // Touch: Use long press
-            e.preventDefault();
+            console.log('TOUCH START - Folder:', item.getAttribute('data-folder-name'));
 
-            // Temporarily disable dragging to prevent conflicts
-            item.draggable = false;
+            // DON'T prevent default initially - allow scrolling until we confirm long press
+            // e.preventDefault(); // Removed to allow scrolling
 
+            // Set touch sequence flag
+            isTouchSequence = true;
+
+            // Record initial touch position
             touchStartPos = {
                 x: e.touches[0].clientX,
-                y: e.touches[0].clientY
+                y: e.touches[0].clientY,
+                time: Date.now()
             };
 
-            // Add visual feedback for long press
+            // Add visual feedback for potential long press
             item.classList.add('long-pressing');
 
+            // Start long press timer
             dragTimeout = setTimeout(() => {
-                // Remove long press indicator
-                item.classList.remove('long-pressing');
-
-                // After delay, enable dragging on the item
-                item.draggable = true;
-                isDragging = true;
-                draggedFolderItem = item;
-                item.classList.add('dragging');
-
-                // Add touch move and end listeners
-                document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                document.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-                // Add visual feedback for touch
-                item.style.opacity = '0.8';
-                item.style.transform = 'scale(1.05)';
-
-                // Add haptic feedback if available
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
+                // Long press threshold met - check if finger hasn't moved too much
+                if (!hasMovedSignificantly(touchStartPos, e.touches[0])) {
+                    // Long press confirmed without significant movement
+                    confirmLongPress();
+                } else {
+                    // Moved too much, cancel long press
+                    cancelLongPress();
                 }
-            }, 500); // Long press delay for touch
+            }, 500); // 500ms long press threshold
+
+            // Add movement monitoring
+            document.addEventListener('touchmove', handleTouchMoveMonitor, { passive: false });
+            document.addEventListener('touchend', handleTouchEndLocal, { passive: false });
+        };
+
+        // Helper function to check if touch has moved significantly
+        const hasMovedSignificantly = function(startPos, currentTouch) {
+            if (!startPos || !currentTouch) return false;
+            const deltaX = Math.abs(currentTouch.clientX - startPos.x);
+            const deltaY = Math.abs(currentTouch.clientY - startPos.y);
+            return (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD);
+        };
+
+        // Helper function to confirm long press and enter drag mode
+        const confirmLongPress = function() {
+            console.log('LONG PRESS CONFIRMED - Entering drag mode');
+
+            // Remove long press indicator
+            item.classList.remove('long-pressing');
+
+            // Enter drag mode
+            isDragModeActive = true;
+            isDragging = true;
+            draggedFolderItem = item;
+            item.classList.add('dragging');
+
+            // Add visual feedback
+            item.style.opacity = '0.8';
+            item.style.transform = 'scale(1.05)';
+
+            // Haptic feedback if available
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            // Now listen for drag movements
+            document.addEventListener('touchmove', handleDragMove, { passive: false });
+        };
+
+        // Helper function to cancel long press
+        const cancelLongPress = function() {
+            console.log('LONG PRESS CANCELLED - Movement detected');
+
+            // Clean up visual feedback
+            item.classList.remove('long-pressing');
+
+            // Reset touch sequence flag to allow normal behavior
+            isTouchSequence = false;
+
+            // Clean up listeners
+            document.removeEventListener('touchmove', handleTouchMoveMonitor);
+            document.removeEventListener('touchend', handleTouchEndLocal);
+        };
+
+        // Monitor touch movement during long press detection
+        const handleTouchMoveMonitor = function(e) {
+            if (!touchStartPos) return;
+
+            // Check if moved significantly
+            if (hasMovedSignificantly(touchStartPos, e.touches[0])) {
+                // Too much movement, cancel long press
+                clearTimeout(dragTimeout);
+                cancelLongPress();
+
+                // Allow default behavior for scrolling
+                // Don't call preventDefault() - let the browser handle scrolling
+            } else {
+                // Still within threshold - this might be a long press
+                // Only prevent default if we're very close to the original position
+                // to avoid interfering with small scroll movements
+                const deltaX = Math.abs(e.touches[0].clientX - touchStartPos.x);
+                const deltaY = Math.abs(e.touches[0].clientY - touchStartPos.y);
+
+                // Only prevent scrolling if movement is very minimal (< 5px)
+                if (deltaX < 5 && deltaY < 5) {
+                    e.preventDefault();
+                }
+            }
+        };
+
+        // Handle dragging movement (after long press confirmed)
+        const handleDragMove = function(e) {
+            if (!isDragModeActive) return;
+
+            e.preventDefault();
+
+            console.log('DRAG MOVE');
+
+            // Update visual feedback during drag
+            const touch = e.touches[0];
+
+            // Find element under touch for drop target highlighting
+            item.style.pointerEvents = 'none';
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            item.style.pointerEvents = 'auto';
+
+            // Clean up previous drop targets
+            cleanupAllDropTargets();
+
+            if (elementBelow) {
+                const targetFolder = elementBelow.closest('.folder-item');
+                if (targetFolder && targetFolder !== item) {
+                    targetFolder.classList.add('drop-target');
+                    currentDropTarget = targetFolder;
+                }
+
+                const titleDropZone = elementBelow.closest('.folders-title-drop-zone');
+                if (titleDropZone) {
+                    titleDropZone.classList.add('drop-target');
+                    currentDropTarget = titleDropZone;
+                }
+            }
         };
 
         const handleTouchEndLocal = function(e) {
-            // Touch handling
+            console.log('TOUCH END');
+
+            // Clear timeout if still running
             clearTimeout(dragTimeout);
 
-            // Clean up long press indicator
-            item.classList.remove('long-pressing');
+            // Clean up listeners
+            document.removeEventListener('touchmove', handleTouchMoveMonitor);
+            document.removeEventListener('touchend', handleTouchEndLocal);
 
-            if (!isDragging) {
-                // Short tap - re-enable dragging for desktop and allow navigation
-                item.draggable = true;
-                link.click();
+            if (isDragModeActive) {
+                // We were in drag mode, handle drop
+                console.log('DRAG END - Processing drop');
+
+                const touch = e.changedTouches[0];
+
+                // Find drop target
+                item.style.pointerEvents = 'none';
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                item.style.pointerEvents = 'auto';
+
+                if (elementBelow && currentDropTarget) {
+                    const draggedId = item.getAttribute('data-folder-id');
+
+                    if (currentDropTarget.classList.contains('folders-title-drop-zone')) {
+                        // Move to root
+                        console.log('Moving to root');
+                        moveFolderToRoot(draggedId);
+                    } else {
+                        // Move to folder
+                        const targetId = currentDropTarget.getAttribute('data-folder-id');
+                        console.log('Moving to folder:', targetId);
+                        moveFolderToFolder(draggedId, targetId);
+                    }
+                }
+
+                // Clean up drag state
+                isDragModeActive = false;
+                isDragging = false;
+                draggedFolderItem = null;
+                item.classList.remove('dragging');
+                item.style.opacity = '';
+                item.style.transform = '';
+                cleanupAllDropTargets();
+
+                document.removeEventListener('touchmove', handleDragMove);
             } else {
-                // Was dragging with touch - let the global handler take over
-                return;
+                // Short tap - handle navigation
+                console.log('SHORT TAP - Navigation');
+
+                // Clean up any visual feedback
+                item.classList.remove('long-pressing');
+
+                // Allow navigation
+                if (!hasMovedSignificantly(touchStartPos, e.changedTouches[0])) {
+                    link.click();
+                }
             }
+
+            // Reset state
+            isTouchSequence = false;
             touchStartPos = null;
         };
 
@@ -117,23 +290,43 @@ function initializeFolderHierarchyDragDrop() {
         item.addEventListener('mousedown', handleMouseStart);
         item.addEventListener('mouseup', handleMouseEnd);
 
-        // Add HTML5 drag event listeners for desktop
-        item.addEventListener('dragstart', function(e) {
-            isDragging = true;
-            draggedFolderItem = item;
-            item.classList.add('dragging');
-        });
+        // Add HTML5 drag event listeners only on desktop
+        if (!isMobile) {
+            item.addEventListener('dragstart', function(e) {
+                // Prevent drag if item is not explicitly draggable or during touch sequence
+                if (!item.draggable || (isTouchSequence && !isDragging)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+                isDragging = true;
+                draggedFolderItem = item;
+                item.classList.add('dragging');
+            }, { capture: true });
 
-        item.addEventListener('dragend', function(e) {
-            isDragging = false;
-            draggedFolderItem = null;
-            item.classList.remove('dragging');
-            item.draggable = false;
-        });
+            item.addEventListener('dragend', function(e) {
+                isDragging = false;
+                draggedFolderItem = null;
+                item.classList.remove('dragging');
+                item.draggable = false;
+            });
+        }
 
-        // Add touch listeners to the entire item (for larger touch target)
-        item.addEventListener('touchstart', handleTouchStart, { passive: false });
-        item.addEventListener('touchend', handleTouchEndLocal);
+        // Add touch listeners to the entire item (for larger touch target) with capture
+        item.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
+        item.addEventListener('touchend', handleTouchEndLocal, { capture: true });
+
+        // Add logging to all possible drag events
+        ['dragstart', 'dragend', 'drag', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach(eventType => {
+            item.addEventListener(eventType, function(e) {
+                console.log(`${eventType.toUpperCase()} EVENT - Folder:`, item.getAttribute('data-folder-name'));
+                console.log('  - Event details:', e);
+                console.log('  - item.draggable:', item.draggable);
+                console.log('  - isDragging:', isDragging);
+                console.log('  - isTouchSequence:', isTouchSequence);
+            }, { capture: true });
+        });
 
         // Prevent context menu on long press
         item.addEventListener('contextmenu', function(e) {
@@ -882,9 +1075,31 @@ function moveFolderToRoot(draggedFolderId) {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initializeFolderHierarchyDragDrop();
-    initializeFolderExpandCollapse();
-    // restoreFolderStates(); // Not needed - state is restored server-side
+    // Run after a small delay to ensure other scripts have finished
+    setTimeout(() => {
+        initializeFolderHierarchyDragDrop();
+        initializeFolderExpandCollapse();
+        // restoreFolderStates(); // Not needed - state is restored server-side
+
+        // Additional mobile protection - force disable draggable on all folder items
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                         ('ontouchstart' in window) ||
+                         (navigator.maxTouchPoints > 0);
+
+        if (isMobile) {
+            const folderItems = document.querySelectorAll('.folder-item');
+            folderItems.forEach(item => {
+                item.draggable = false;
+                item.removeAttribute('draggable');
+                // Override any other script that might set draggable
+                Object.defineProperty(item, 'draggable', {
+                    get: () => false,
+                    set: () => {}, // Ignore attempts to set draggable to true
+                    configurable: false
+                });
+            });
+        }
+    }, 100);
 
     // Global failsafe to clean up drop targets
     window.addEventListener('dragend', function() {
