@@ -31,29 +31,37 @@ function initializeFolderHierarchyDragDrop() {
         // Timer-based drag detection on the entire item for touch, link for mouse
         let touchStartPos = null;
 
+        // Enable dragging by default for desktop, but touch events will override
+        item.draggable = true;
 
         // Separate mouse and touch event handlers
         const handleMouseStart = function(e) {
-            // Mouse: Immediate drag
+            // Don't interfere with touch events
+            if (e.type === 'touchstart') return;
+
+            // Mouse: Enable dragging immediately
             item.draggable = true;
-            isDragging = true;
-            draggedFolderItem = item;
-            item.classList.add('dragging');
-            link.style.cursor = 'grabbing';
         };
 
         const handleMouseEnd = function(e) {
-            // Mouse handling - clean up immediately
-            item.draggable = false;
-            isDragging = false;
-            draggedFolderItem = null;
-            item.classList.remove('dragging');
-            link.style.cursor = '';
+            // Don't interfere with touch events
+            if (e.type === 'touchend') return;
+
+            // Mouse handling - reset draggable state
+            setTimeout(() => {
+                if (!isDragging) {
+                    item.draggable = false;
+                }
+            }, 10);
         };
 
         const handleTouchStart = function(e) {
             // Touch: Use long press
             e.preventDefault();
+
+            // Temporarily disable dragging to prevent conflicts
+            item.draggable = false;
+
             touchStartPos = {
                 x: e.touches[0].clientX,
                 y: e.touches[0].clientY
@@ -87,7 +95,7 @@ function initializeFolderHierarchyDragDrop() {
             }, 500); // Long press delay for touch
         };
 
-        const handleTouchEnd = function(e) {
+        const handleTouchEndLocal = function(e) {
             // Touch handling
             clearTimeout(dragTimeout);
 
@@ -95,7 +103,8 @@ function initializeFolderHierarchyDragDrop() {
             item.classList.remove('long-pressing');
 
             if (!isDragging) {
-                // Short tap - allow navigation
+                // Short tap - re-enable dragging for desktop and allow navigation
+                item.draggable = true;
                 link.click();
             } else {
                 // Was dragging with touch - let the global handler take over
@@ -104,13 +113,27 @@ function initializeFolderHierarchyDragDrop() {
             touchStartPos = null;
         };
 
-        // Add mouse listeners to the link (for precise mouse interaction)
-        link.addEventListener('mousedown', handleMouseStart);
-        link.addEventListener('mouseup', handleMouseEnd);
+        // Add mouse listeners for desktop drag functionality
+        item.addEventListener('mousedown', handleMouseStart);
+        item.addEventListener('mouseup', handleMouseEnd);
+
+        // Add HTML5 drag event listeners for desktop
+        item.addEventListener('dragstart', function(e) {
+            isDragging = true;
+            draggedFolderItem = item;
+            item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', function(e) {
+            isDragging = false;
+            draggedFolderItem = null;
+            item.classList.remove('dragging');
+            item.draggable = false;
+        });
 
         // Add touch listeners to the entire item (for larger touch target)
         item.addEventListener('touchstart', handleTouchStart, { passive: false });
-        item.addEventListener('touchend', handleTouchEnd);
+        item.addEventListener('touchend', handleTouchEndLocal);
 
         // Prevent context menu on long press
         item.addEventListener('contextmenu', function(e) {
@@ -161,48 +184,70 @@ function handleDragEnd(e) {
 
     const folderItem = e.target.closest('.folder-item');
     if (folderItem) {
-        handleFolderItemDragEnd.call(folderItem, e);
+        folderItem.classList.remove('dragging');
     }
 }
 
 function handleDragOver(e) {
+    if (!isDragging) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
 
-    // Clear previous drop target if we're over a new element
-    if (currentDropTarget && currentDropTarget !== folderItem && currentDropTarget !== titleDropZone) {
+    // Clear previous drop target
+    if (currentDropTarget) {
         currentDropTarget.classList.remove('drop-target');
     }
 
-    if (folderItem && draggedFolderItem) {
+    if (folderItem && folderItem !== draggedFolderItem) {
+        // Valid drop target
+        folderItem.classList.add('drop-target');
         currentDropTarget = folderItem;
-        handleFolderItemDragOver.call(folderItem, e);
-    } else if (titleDropZone && draggedFolderItem) {
+    } else if (titleDropZone) {
+        // Drop on title zone (move to root)
+        titleDropZone.classList.add('drop-target');
         currentDropTarget = titleDropZone;
-        handleTitleDropZoneDragOver.call(titleDropZone, e);
     }
 }
 
 function handleDragLeave(e) {
-    const folderItem = e.target.closest('.folder-item');
-    const titleDropZone = e.target.closest('.folders-title-drop-zone');
+    if (!isDragging) return;
 
-    if (folderItem) {
-        handleFolderItemDragLeave.call(folderItem, e);
-    } else if (titleDropZone) {
-        handleTitleDropZoneDragLeave.call(titleDropZone, e);
+    // Only remove drop target if we're actually leaving the container
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+        cleanupAllDropTargets();
     }
 }
 
 function handleDrop(e) {
+    if (!isDragging) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
 
-    if (folderItem && draggedFolderItem) {
-        handleFolderItemDrop.call(folderItem, e);
-    } else if (titleDropZone && draggedFolderItem) {
-        handleTitleDropZoneDrop.call(titleDropZone, e);
+    if (folderItem && folderItem !== draggedFolderItem) {
+        // Move folder into another folder
+        const draggedFolderId = draggedFolderItem.getAttribute('data-folder-id');
+        const targetFolderId = folderItem.getAttribute('data-folder-id');
+
+        if (draggedFolderId && targetFolderId) {
+            moveFolderToFolder(draggedFolderId, targetFolderId);
+        }
+    } else if (titleDropZone) {
+        // Move folder to root
+        const draggedFolderId = draggedFolderItem.getAttribute('data-folder-id');
+        if (draggedFolderId) {
+            moveFolderToRoot(draggedFolderId);
+        }
     }
+
+    cleanupAllDropTargets();
 }
 
 
@@ -692,15 +737,20 @@ function handleTouchMove(e) {
  * Handle touch end for folder dragging
  */
 function handleTouchEnd(e) {
+    console.log('handleTouchEnd called, isDragging:', isDragging, 'draggedFolderItem:', draggedFolderItem);
+
     if (!isDragging || !draggedFolderItem) return;
 
     // Get the final touch position to find drop target
     const touch = e.changedTouches[0];
+    console.log('Touch position:', touch.clientX, touch.clientY);
 
     // Find element under final touch point
     draggedFolderItem.style.pointerEvents = 'none';
     const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
     draggedFolderItem.style.pointerEvents = 'auto';
+
+    console.log('Element below touch:', elementBelow);
 
     // Reset visual state
     draggedFolderItem.style.opacity = '';
@@ -725,15 +775,20 @@ function handleTouchEnd(e) {
     // Handle drop if we have a valid target
     if (dropTarget) {
         const draggedId = draggedFolderItem.getAttribute('data-folder-id');
+        console.log('Drop target found:', dropTarget, 'draggedId:', draggedId);
 
         if (dropTarget.classList.contains('folders-title-drop-zone')) {
             // Move to root
-            moveFolderToParent(draggedId, null);
+            console.log('Moving to root');
+            moveFolderToRoot(draggedId);
         } else {
             // Move to folder
             const targetId = dropTarget.getAttribute('data-folder-id');
-            moveFolderToParent(draggedId, targetId);
+            console.log('Moving to folder:', targetId);
+            moveFolderToFolder(draggedId, targetId);
         }
+    } else {
+        console.log('No drop target found');
     }
 
     // Clean up
@@ -747,6 +802,82 @@ function handleTouchEnd(e) {
     // Remove listeners
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
+}
+
+/**
+ * Move folder to another folder
+ */
+function moveFolderToFolder(draggedFolderId, targetFolderId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const page = getCurrentPage();
+
+    console.log('Moving folder', draggedFolderId, 'to folder', targetFolderId, 'on page', page);
+
+    fetch(`/folders/move/${draggedFolderId}/${page}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            new_parent_id: targetFolderId
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            location.reload();
+        } else {
+            console.error('Server error:', data.error);
+            alert('Error moving folder: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Network error:', error);
+        alert('Error moving folder: ' + error.message);
+    });
+}
+
+/**
+ * Move folder to root
+ */
+function moveFolderToRoot(draggedFolderId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const page = getCurrentPage();
+
+    console.log('Moving folder', draggedFolderId, 'to root on page', page);
+
+    fetch(`/folders/move/${draggedFolderId}/${page}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            new_parent_id: null
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            location.reload();
+        } else {
+            console.error('Server error:', data.error);
+            alert('Error moving folder: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Network error:', error);
+        alert('Error moving folder: ' + error.message);
+    });
 }
 
 // Initialize when DOM is loaded
