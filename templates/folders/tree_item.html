@@ -4,7 +4,7 @@
     data-folder-name="{{ folder_data.folder.name }}"
     data-level="{{ folder_data.level }}"
     data-has-children="{{ folder_data.has_children|lower }}"
-    data-shared="{{ folder_data.folder.editors.exists|lower }}"
+    data-shared="{{ folder_data.folder.is_shared_or_inherited|lower }}"
     style="padding-left: calc(0.3rem + {{ folder_data.level }} * 1.25rem)">
     <div class="folder-show mh-fc">
         {% if tree_has_children %}
@@ -29,7 +29,7 @@
     </div>
     <div class="mh-ft">
         <div class="folder-badges">
-            {% if folder_data.folder.editors.exists %}
+            {% if folder_data.folder.is_shared_or_inherited %}
                 <span class="folder-badge folder-badge-shared" title="Shared folder">
                     <i class="bi bi-people"></i>
                 </span>

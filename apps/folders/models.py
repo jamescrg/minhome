@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 
 from accounts.models import CustomUser
 
@@ -73,21 +75,60 @@ class Folder(models.Model):
             descendants.extend(child.get_descendants())
         return descendants
 
+    def get_inherited_editors(self):
+        """Get editors inherited from parent folders."""
+        inherited_editors = set()
+        for ancestor in self.get_ancestors():
+            if ancestor.editors.exists():
+                inherited_editors.update(ancestor.editors.all())
+        return inherited_editors
+
+    def has_inherited_access(self, user):
+        """Check if user has access through parent folder sharing."""
+        return user in self.get_inherited_editors()
+
+    def is_shared_or_inherited(self):
+        """Check if folder is shared directly or through inheritance."""
+        return self.editors.exists() or len(self.get_inherited_editors()) > 0
+
+    def propagate_permissions_to_descendants(self):
+        """Propagate this folder's editor permissions to all descendants."""
+        if not self.editors.exists():
+            return
+
+        editors_to_add = list(self.editors.all())
+        descendants = self.get_descendants()
+
+        for descendant in descendants:
+            for editor in editors_to_add:
+                descendant.editors.add(editor)
+
+    def remove_inherited_permissions_from_descendants(self, editors_to_remove):
+        """Remove inherited permissions from descendants when moving out of shared hierarchy."""
+        descendants = self.get_descendants()
+
+        for descendant in descendants:
+            # Get inherited editors excluding this folder's contribution
+            inherited_editors = set()
+            for ancestor in descendant.get_ancestors():
+                if ancestor != self and ancestor.editors.exists():
+                    inherited_editors.update(ancestor.editors.all())
+
+            for editor in editors_to_remove:
+                # Only remove if the editor doesn't have access through:
+                # 1. Direct sharing on the descendant itself
+                # 2. Inheritance from other ancestors (not this folder)
+                if (
+                    descendant.editors.filter(pk=editor.pk).exists()
+                    or editor in inherited_editors
+                ):
+                    continue
+                else:
+                    descendant.editors.remove(editor)
+
     def clean(self):
         """Validate folder constraints."""
         super().clean()
-
-        # Shared folders cannot have parents (must be root level)
-        if self.parent is not None and self.editors.exists():
-            raise ValidationError(
-                "Shared folders must be at root level and cannot have a parent."
-            )
-
-        # Folders with parents cannot be shared
-        if self.parent is not None and self.pk is not None:
-            # Check if this folder is about to become shared
-            if self.editors.exists():
-                raise ValidationError("Folders with parents cannot be shared.")
 
         # Check depth limit (3 levels maximum)
         if self.parent is not None:
@@ -102,3 +143,18 @@ class Folder(models.Model):
 
     class Meta:
         db_table = "app_folder"
+
+
+@receiver(m2m_changed, sender=Folder.editors.through)
+def handle_folder_editors_changed(sender, instance, action, pk_set, **kwargs):
+    """Handle changes to folder editors - propagate permissions to descendants."""
+    if action == "post_add":
+        # Editors were added to the folder
+        instance.propagate_permissions_to_descendants()
+    elif action == "post_remove":
+        # Editors were removed from the folder
+        if pk_set:
+            from accounts.models import CustomUser
+
+            editors_removed = CustomUser.objects.filter(pk__in=pk_set)
+            instance.remove_inherited_permissions_from_descendants(editors_removed)

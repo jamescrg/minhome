@@ -314,11 +314,8 @@ def move(request, id, page):
         # Get the folder to move
         folder = Folder.objects.get(pk=id, user=request.user, page=page)
 
-        # Prevent moving shared folders
-        if folder.editors.exists():
-            return JsonResponse(
-                {"success": False, "error": "Shared folders cannot be moved"}
-            )
+        # Store old inherited editors for permission cleanup
+        old_inherited_editors = folder.get_inherited_editors()
 
         # Parse the request body
         data = json.loads(request.body)
@@ -362,6 +359,25 @@ def move(request, id, page):
             folder.parent = None
 
         folder.save()
+
+        # Apply permission inheritance changes after parent is set
+        new_inherited_editors = folder.get_inherited_editors()
+
+        # Remove old inherited permissions that are no longer valid
+        editors_to_remove = old_inherited_editors - new_inherited_editors
+        if editors_to_remove:
+            # Remove from folder and all its descendants
+            for editor in editors_to_remove:
+                folder.editors.remove(editor)
+            folder.remove_inherited_permissions_from_descendants(editors_to_remove)
+
+        # Add new inherited permissions
+        editors_to_add = new_inherited_editors - old_inherited_editors
+        if editors_to_add:
+            # Add to folder and all its descendants
+            for editor in editors_to_add:
+                folder.editors.add(editor)
+            folder.propagate_permissions_to_descendants()
 
         return JsonResponse({"success": True})
 
