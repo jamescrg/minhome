@@ -16,10 +16,11 @@ function initializeFolderHierarchyDragDrop() {
     const folderContainer = document.querySelector('.folders');
     if (!folderContainer) return;
 
-    // Detect if we're on a mobile device
+    // Detect if we're on a mobile device (more specific detection)
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                     ('ontouchstart' in window) ||
-                     (navigator.maxTouchPoints > 0);
+                     (navigator.maxTouchPoints > 0 && /Mobi|Android/i.test(navigator.userAgent));
+
+    console.log('Mobile detection:', isMobile, 'User agent:', navigator.userAgent, 'MaxTouchPoints:', navigator.maxTouchPoints);
 
     // Get all folder items and links
     const folderItems = document.querySelectorAll('.folder-item');
@@ -43,7 +44,6 @@ function initializeFolderHierarchyDragDrop() {
             item.removeAttribute('draggable');
             // Prevent any drag events on mobile
             item.addEventListener('dragstart', function(e) {
-                console.log('MOBILE DRAGSTART PREVENTED - Folder:', item.getAttribute('data-folder-name'));
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
@@ -76,7 +76,6 @@ function initializeFolderHierarchyDragDrop() {
         };
 
         const handleTouchStart = function(e) {
-            console.log('TOUCH START - Folder:', item.getAttribute('data-folder-name'));
 
             // DON'T prevent default initially - allow scrolling until we confirm long press
             // e.preventDefault(); // Removed to allow scrolling
@@ -121,7 +120,6 @@ function initializeFolderHierarchyDragDrop() {
 
         // Helper function to confirm long press and enter drag mode
         const confirmLongPress = function() {
-            console.log('LONG PRESS CONFIRMED - Entering drag mode');
 
             // Remove long press indicator
             item.classList.remove('long-pressing');
@@ -147,7 +145,6 @@ function initializeFolderHierarchyDragDrop() {
 
         // Helper function to cancel long press
         const cancelLongPress = function() {
-            console.log('LONG PRESS CANCELLED - Movement detected');
 
             // Clean up visual feedback
             item.classList.remove('long-pressing');
@@ -315,16 +312,7 @@ function initializeFolderHierarchyDragDrop() {
         item.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
         item.addEventListener('touchend', handleTouchEndLocal, { capture: true });
 
-        // Add logging to all possible drag events
-        ['dragstart', 'dragend', 'drag', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach(eventType => {
-            item.addEventListener(eventType, function(e) {
-                console.log(`${eventType.toUpperCase()} EVENT - Folder:`, item.getAttribute('data-folder-name'));
-                console.log('  - Event details:', e);
-                console.log('  - item.draggable:', item.draggable);
-                console.log('  - isDragging:', isDragging);
-                console.log('  - isTouchSequence:', isTouchSequence);
-            }, { capture: true });
-        });
+        // Note: Extensive drag event logging removed for production
 
         // Prevent context menu on long press
         item.addEventListener('contextmenu', function(e) {
@@ -1063,24 +1051,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeFolderExpandCollapse();
         // restoreFolderStates(); // Not needed - state is restored server-side
 
-        // Additional mobile protection - force disable draggable on all folder items
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                         ('ontouchstart' in window) ||
-                         (navigator.maxTouchPoints > 0);
-
-        if (isMobile) {
-            const folderItems = document.querySelectorAll('.folder-item');
-            folderItems.forEach(item => {
-                item.draggable = false;
-                item.removeAttribute('draggable');
-                // Override any other script that might set draggable
-                Object.defineProperty(item, 'draggable', {
-                    get: () => false,
-                    set: () => {}, // Ignore attempts to set draggable to true
-                    configurable: false
-                });
-            });
-        }
+        // Mobile protection is handled in the main initialization function
     }, 100);
 
     // Global failsafe to clean up drop targets
