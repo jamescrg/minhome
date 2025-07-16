@@ -6,7 +6,7 @@
                      data-folder-id="{{ folder.id }}"
                      data-current-column="{{ folder.home_column }}">
                     {# card title #}
-                    <div class="card-title drag-handle mh-fc">
+                    <div class="card-title drag-handle flex-center-space">
                         <a href="{% url 'folder-select' id=folder.id page='favorites' origin='home' %}"
                            class="">{{ folder.name }}</a>
                         <a class="folder-icon" href="#" onclick="return false;">
@@ -17,7 +17,7 @@
                     <ul class="list-group">
                         {% for favorite in folder.favorites %}
                             {% if favorite.folder_id == folder.id %}
-                                <li class="list-group-item home-item mh-fe favorite-item"
+                                <li class="list-group-item home-item flex-end-space favorite-item"
                                     data-favorite-id="{{ favorite.id }}"
                                     data-folder-id="{{ folder.id }}">
                                     <a class="home-link favorite-drag-link"

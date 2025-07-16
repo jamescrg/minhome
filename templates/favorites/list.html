@@ -1,5 +1,5 @@
 <div class="card favorites">
-    <div class="card-title mh-fc">
+    <div class="card-title flex-center-space">
         <h1 class="breadcrumb-title">
             {% if breadcrumbs %}
                 <a href="{% url 'folder-select' id=0 page=page %}"
@@ -17,7 +17,7 @@
                 {{ page|capfirst }}
             {% endif %}
         </h1>
-        <a href="{% url 'favorites-add' %}">
+        <a class="square-button" href="{% url 'favorites-add' %}">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>

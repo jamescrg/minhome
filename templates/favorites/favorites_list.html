@@ -1,9 +1,9 @@
 <ul class="list-group">
     {% for favorite in favorites %}
-        <li class="list-group-item mh-ft favorite-item"
+        <li class="list-group-item flex-start-space favorite-item"
             data-favorite-id="{{ favorite.id }}"
             data-folder-id="{{ favorite.folder.id|default:'' }}">
-            <div class="favorite-left mh-ftl">
+            <div class="favorite-left flex-start-left">
                 <div class="favorite-left-icon">
                     {% if selected_folder.home_column and favorite.home_rank %}
                         <div class="favorite-icon-home">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <div class="favorite-right mh-ftl">{% include "favorites/menu.html" %}</div>
+            <div class="favorite-right flex-start-left">{% include "favorites/menu.html" %}</div>
         </li>
     {% endfor %}
 </ul>

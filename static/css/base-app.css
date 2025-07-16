@@ -230,7 +230,7 @@ li {
 .btn-sort {
 	background: none;
 	border: none;
-	color: inherit;
+	color: var(--stone-400);
 	font-weight: 600;
 }
 
@@ -281,33 +281,33 @@ li {
  * utilities
  * ------------------------------------------------*/
 
-.mh-ft {
+.flex-start-space {
   align-items: start;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.mh-ftl {
+.flex-start-left {
   align-items: start;
   display: flex;
   flex-direction: row;
 }
 
-.mh-fc {
+.flex-center-space {
   align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.mh-fcl {
+.flex-center-left {
   align-items: center;
   display: flex;
   flex-direction: row;
 }
 
-.mh-fe {
+.flex-end-space {
   align-items: end;
   display: flex;
   flex-direction: row;

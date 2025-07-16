@@ -3,7 +3,7 @@
         {% if selected_folder %}{{ selected_folder.name }}{% endif %}
     </li>
     {% for task in selected_folder.tasks %}
-        <li class="list-group-item mh-ftl">
+        <li class="list-group-item flex-start-left">
             <div class="task-checkbox">
                 <a href="{% if origin %}{% url 'tasks-complete' id=task.id origin=origin %}{% else %}{% url 'tasks-complete' id=task.id %}{% endif %}">
                     {% if task.status == 1 %}

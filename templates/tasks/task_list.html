@@ -1,9 +1,9 @@
 <ul class="list-group task-list">
     {% for task in tasks %}
-        <li class="list-group-item mh-ft task-item"
+        <li class="list-group-item flex-start-space task-item"
             data-task-id="{{ task.id }}"
             data-folder-id="{{ task.folder.id|default:'' }}">
-            <div class="task-left mh-ftl">
+            <div class="task-left flex-start-left">
                 <div class="task-checkbox">
                     <a href="{% if origin %}{% url 'tasks-complete' id=task.id origin=origin %}{% else %}{% url 'tasks-complete' id=task.id %}{% endif %}">
                         {% if task.status == 1 %}
@@ -21,7 +21,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="task-right mh-ftl">{% include "tasks/menu.html" %}</div>
+            <div class="task-right flex-start-left">{% include "tasks/menu.html" %}</div>
         </li>
     {% endfor %}
 </ul>

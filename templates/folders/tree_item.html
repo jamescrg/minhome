@@ -1,4 +1,4 @@
-<li class="list-group-item mh-ft folder-item {% if folder_data.expanded %}expanded{% endif %}{% if selected_folder and folder_data.folder.id == selected_folder.id %} selected{% endif %}"
+<li class="list-group-item flex-start-space folder-item {% if folder_data.expanded %}expanded{% endif %}{% if selected_folder and folder_data.folder.id == selected_folder.id %} selected{% endif %}"
     id="folder-{{ folder_data.folder.id }}"
     data-folder-id="{{ folder_data.folder.id }}"
     data-folder-name="{{ folder_data.folder.name }}"
@@ -6,7 +6,7 @@
     data-has-children="{{ folder_data.has_children|lower }}"
     data-shared="{{ folder_data.folder.is_shared_or_inherited|lower }}"
     style="padding-left: calc(0.3rem + {{ folder_data.level }} * 1.25rem)">
-    <div class="folder-show mh-fc">
+    <div class="folder-show flex-center-space">
         {% if tree_has_children %}
             <span class="folder-chevron-container">
                 {% if folder_data.has_children %}
@@ -27,7 +27,7 @@
         <a class="folder-link"
            href="{% url 'folder-select' id=folder_data.folder.id page=page %}">{{ folder_data.folder.name }}</a>
     </div>
-    <div class="mh-ft">
+    <div class="flex-start-space">
         <div class="folder-badges">
             {% if folder_data.folder.is_shared_or_inherited %}
                 <span class="folder-badge folder-badge-shared" title="Shared folder">

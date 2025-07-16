@@ -10,37 +10,27 @@
 {% endblock meta_keywords %}
 {% block content %}
     <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-title mh-fc">
+        <div class="card">
+            <div class="card-title flex-center-space">
+                <div class="flex-center-space">
+                    <a href="{% url 'crypto' %}"
+                       class="square-button"
+                       style="margin-right: 0.5rem">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
                     <h1>Crypto Symbols</h1>
-                    <a href="#"
-                       hx-get="{% url 'settings-crypto-symbol-add' %}"
-                       hx-target="#htmx-modal-content"
-                       hx-trigger="click"
-                       data-bs-toggle="modal"
-                       data-bs-target="#htmx-modal-container">
-                        <i class="bi bi-plus-lg"></i>
-                    </a>
                 </div>
-                <div id="crypto-symbols-list">{% include "settings/crypto_symbols_list.html" %}</div>
+                <a href="#"
+                   class="square-button"
+                   hx-get="{% url 'settings-crypto-symbol-add' %}"
+                   hx-target="#htmx-modal-content"
+                   hx-trigger="click"
+                   data-bs-toggle="modal"
+                   data-bs-target="#htmx-modal-container">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-title">
-                    <h2>About Crypto Symbols</h2>
-                </div>
-                <div class="card-body">
-                    <p>Manage which cryptocurrency symbols you want to track in the finance section.</p>
-                    <p>Symbols are validated against the CoinMarketCap API to ensure they exist.</p>
-                    <p>You can disable symbols temporarily without deleting them.</p>
-                    <hr>
-                    <a href="{% url 'crypto' %}" class="btn btn-primary">
-                        <i class="bi bi-graph-up"></i> View Crypto Prices
-                    </a>
-                </div>
-            </div>
+            <div id="crypto-symbols-list">{% include "settings/crypto_symbols_list.html" %}</div>
         </div>
     </div>
     <!-- HTMX Modal -->

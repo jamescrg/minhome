@@ -7,7 +7,7 @@
                     <th>Name</th>
                     <th>Status</th>
                     <th>Added</th>
-                    <th>Actions</th>
+                    <th style="text-align: right">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,7 +25,7 @@
                             {% endif %}
                         </td>
                         <td>{{ symbol.created_at|date:"M d, Y" }}</td>
-                        <td>
+                        <td style="text-align: right">
                             <div class="btn-group btn-group-sm">
                                 <a href="#"
                                    class="btn btn-outline-primary"

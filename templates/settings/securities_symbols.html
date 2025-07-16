@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card">
-                <div class="card-title mh-fc">
+                <div class="card-title flex-center-space">
                     <h1>Securities Symbols</h1>
                     <a href="#"
                        hx-get="{% url 'settings-securities-symbol-add' %}"
@@ -36,9 +36,6 @@
                     <p>Symbols are validated against the Finnhub API to ensure they exist.</p>
                     <p>You can disable symbols temporarily without deleting them.</p>
                     <hr>
-                    <a href="{% url 'securities' %}" class="btn btn-primary">
-                        <i class="bi bi-graph-up"></i> View Securities Prices
-                    </a>
                 </div>
             </div>
         </div>

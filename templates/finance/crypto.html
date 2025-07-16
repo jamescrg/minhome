@@ -11,11 +11,10 @@
 {% block content %}
     {% load humanize %}
     <div class="card">
-        <div class="card-title mh-fc">
+        <div class="card-title flex-center-space">
             <h1>Current Crypto Prices</h1>
-            <a href="{% url 'settings-crypto-symbols' %}"
-               class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-gear"></i> Manage
+            <a href="{% url 'settings-crypto-symbols' %}" class="square-button">
+                <i class="bi bi-gear"></i>
             </a>
         </div>
         {% if data %}
