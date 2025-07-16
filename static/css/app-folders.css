@@ -248,3 +248,9 @@ ul.folder-children li:first-child {
   z-index: 10;
   pointer-events: none;
 }
+
+.folder-item.long-pressing {
+  background-color: var(--stone-100);
+  transform: scale(0.98);
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}

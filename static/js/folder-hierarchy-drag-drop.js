@@ -29,30 +29,86 @@ function initializeFolderHierarchyDragDrop() {
         if (isShared) return;
 
         // Timer-based drag detection on the link
-        link.addEventListener('mousedown', function(e) {
+        let touchStartPos = null;
+
+        // Handle start (mouse or touch)
+        const handleDragStart = function(e) {
+            if (e.type === 'touchstart') {
+                // Prevent context menu from appearing
+                e.preventDefault();
+                touchStartPos = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+
+                // Add visual feedback for long press
+                item.classList.add('long-pressing');
+            }
+
             dragTimeout = setTimeout(() => {
+                // Remove long press indicator
+                item.classList.remove('long-pressing');
+
                 // After delay, enable dragging on the item
                 item.draggable = true;
                 isDragging = true;
                 draggedFolderItem = item;
                 item.classList.add('dragging');
                 link.style.cursor = 'grabbing';
-            }, 150); // 150ms delay before drag starts
-        });
 
-        link.addEventListener('mouseup', function(e) {
+                // For touch, add move and end listeners
+                if (e.type === 'touchstart') {
+                    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+                    // Add visual feedback for touch
+                    item.style.opacity = '0.8';
+                    item.style.transform = 'scale(1.05)';
+
+                    // Add haptic feedback if available
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                }
+            }, 500); // Longer delay for proper long press feel
+        };
+
+        // Handle end (mouse or touch)
+        const handleDragEnd = function(e) {
             clearTimeout(dragTimeout);
+
+            // Clean up long press indicator
+            item.classList.remove('long-pressing');
+
             if (!isDragging) {
-                // Short click - allow navigation
-                // Default behavior will handle the navigation
+                // Short click/tap - allow navigation
+                if (e.type === 'touchend') {
+                    // For touch, manually trigger the link
+                    link.click();
+                }
+            } else if (e.type === 'touchend') {
+                // If we're dragging and it's a touch end, let the global handler take over
+                return;
             } else {
-                // Was dragging - clean up
+                // Was dragging with mouse - clean up
                 item.draggable = false;
                 isDragging = false;
                 draggedFolderItem = null;
                 item.classList.remove('dragging');
                 link.style.cursor = '';
             }
+            touchStartPos = null;
+        };
+
+        // Add both mouse and touch listeners
+        link.addEventListener('mousedown', handleDragStart);
+        link.addEventListener('mouseup', handleDragEnd);
+        link.addEventListener('touchstart', handleDragStart, { passive: false });
+        link.addEventListener('touchend', handleDragEnd);
+
+        // Prevent context menu on long press
+        link.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
         });
 
         // Prevent link navigation during drag
@@ -579,6 +635,111 @@ function restoreFolderStates() {
             icon.classList.add('bi-chevron-right');
         }
     });
+}
+
+/**
+ * Handle touch move for folder dragging
+ */
+function handleTouchMove(e) {
+    if (!isDragging || !draggedFolderItem) return;
+
+    e.preventDefault();
+
+    const touch = e.touches[0];
+
+    // Visual feedback during drag
+    draggedFolderItem.style.opacity = '0.5';
+
+    // Find element under touch point
+    draggedFolderItem.style.pointerEvents = 'none';
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    draggedFolderItem.style.pointerEvents = 'auto';
+
+    if (!elementBelow) return;
+
+    // Clean up previous drop targets
+    cleanupAllDropTargets();
+
+    // Check if we're over a folder item
+    const targetFolder = elementBelow.closest('.folder-item');
+    if (targetFolder && targetFolder !== draggedFolderItem) {
+        // Check if it's a valid drop target
+        const draggedId = draggedFolderItem.getAttribute('data-folder-id');
+        const targetId = targetFolder.getAttribute('data-folder-id');
+
+        if (!isDescendant(draggedId, targetId) && getFolderDepth(targetFolder) < 2) {
+            targetFolder.classList.add('drop-target');
+            currentDropTarget = targetFolder;
+        }
+    }
+
+    // Check if we're over the title drop zone
+    const titleDropZone = elementBelow.closest('.folders-title-drop-zone');
+    if (titleDropZone) {
+        titleDropZone.classList.add('drop-target');
+        currentDropTarget = titleDropZone;
+    }
+}
+
+/**
+ * Handle touch end for folder dragging
+ */
+function handleTouchEnd(e) {
+    if (!isDragging || !draggedFolderItem) return;
+
+    // Get the final touch position to find drop target
+    const touch = e.changedTouches[0];
+
+    // Find element under final touch point
+    draggedFolderItem.style.pointerEvents = 'none';
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    draggedFolderItem.style.pointerEvents = 'auto';
+
+    // Reset visual state
+    draggedFolderItem.style.opacity = '';
+    draggedFolderItem.style.transform = '';
+
+    let dropTarget = null;
+
+    if (elementBelow) {
+        // Check if we're over the title drop zone
+        const titleDropZone = elementBelow.closest('.folders-title-drop-zone');
+        if (titleDropZone && titleDropZone.classList.contains('drop-target')) {
+            dropTarget = titleDropZone;
+        } else {
+            // Check if we're over a folder item
+            const targetFolder = elementBelow.closest('.folder-item');
+            if (targetFolder && targetFolder.classList.contains('drop-target')) {
+                dropTarget = targetFolder;
+            }
+        }
+    }
+
+    // Handle drop if we have a valid target
+    if (dropTarget) {
+        const draggedId = draggedFolderItem.getAttribute('data-folder-id');
+
+        if (dropTarget.classList.contains('folders-title-drop-zone')) {
+            // Move to root
+            moveFolderToParent(draggedId, null);
+        } else {
+            // Move to folder
+            const targetId = dropTarget.getAttribute('data-folder-id');
+            moveFolderToParent(draggedId, targetId);
+        }
+    }
+
+    // Clean up
+    cleanupAllDropTargets();
+    draggedFolderItem.classList.remove('dragging');
+    draggedFolderItem.draggable = false;
+    draggedFolderItem = null;
+    isDragging = false;
+    currentDropTarget = null;
+
+    // Remove listeners
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
 }
 
 // Initialize when DOM is loaded
