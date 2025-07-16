@@ -227,6 +227,13 @@ li {
   border-color: var(--orange-700);
 }
 
+.btn-sort {
+	background: none;
+	border: none;
+	color: inherit;
+	font-weight: 600;
+}
+
 /*------------------------------------------------
  * dropdowns
  * ------------------------------------------------*/
