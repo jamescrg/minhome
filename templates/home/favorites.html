@@ -1,6 +1,6 @@
 <div class="row align-items-start">
     {% for column in columns %}
-        <div class="col drop-zone" data-column="{{ forloop.counter }}">
+        <div class="col-md drop-zone" data-column="{{ forloop.counter }}">
             {% for folder in column %}
                 <div class="card folder"
                      data-folder-id="{{ folder.id }}"
