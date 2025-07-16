@@ -29,9 +29,7 @@ function initializeFolderHierarchyDragDrop() {
         const link = item.querySelector('.folder-link');
         if (!link) return;
 
-        // Prevent dragging shared folders
-        const isShared = item.getAttribute('data-shared') === 'true';
-        if (isShared) return;
+        // Allow dragging shared folders (editors can now move them)
 
         // Touch-based drag detection variables
         let touchStartPos = null;
@@ -480,11 +478,7 @@ function handleFolderItemDragOver(e) {
         return false;
     }
 
-    // Don't allow moving shared folders
-    const isShared = draggedFolderItem.getAttribute('data-shared') === 'true';
-    if (isShared) {
-        return false;
-    }
+    // Allow moving shared folders (editors can now move them)
 
     // Don't allow dropping on descendants
     const draggedId = draggedFolderItem.getAttribute('data-folder-id');
@@ -530,11 +524,7 @@ function handleFolderItemDrop(e) {
         return false;
     }
 
-    // Don't allow moving shared folders
-    const isShared = draggedFolderItem.getAttribute('data-shared') === 'true';
-    if (isShared) {
-        return false;
-    }
+    // Allow moving shared folders (editors can now move them)
 
     const draggedId = draggedFolderItem.getAttribute('data-folder-id');
     const targetId = this.getAttribute('data-folder-id');
@@ -568,11 +558,7 @@ function handleTitleDropZoneDragOver(e) {
 
     e.preventDefault();
 
-    // Don't allow moving shared folders
-    const isShared = draggedFolderItem.getAttribute('data-shared') === 'true';
-    if (isShared) {
-        return false;
-    }
+    // Allow moving shared folders (editors can now move them)
 
     this.classList.add('drop-target');
     e.dataTransfer.dropEffect = 'move';
@@ -595,11 +581,7 @@ function handleTitleDropZoneDrop(e) {
     e.stopPropagation();
     e.preventDefault();
 
-    // Don't allow moving shared folders
-    const isShared = draggedFolderItem.getAttribute('data-shared') === 'true';
-    if (isShared) {
-        return false;
-    }
+    // Allow moving shared folders (editors can now move them)
 
     const draggedId = draggedFolderItem.getAttribute('data-folder-id');
 

@@ -213,7 +213,7 @@ ul.folder-children li:first-child {
   cursor: pointer;
 }
 
-/* Shared folders cannot be moved */
+/* Shared folders can be moved by editors */
 .folder-item[data-shared="true"] .folder-link {
   cursor: pointer;
 }
