@@ -137,7 +137,17 @@ def update(request, id, page):
 
     """
     try:
-        folder = Folder.objects.filter(user=request.user, pk=id).get()
+        # First try to get folder owned by user
+        try:
+            folder = Folder.objects.filter(user=request.user, pk=id).get()
+        except ObjectDoesNotExist:
+            # User doesn't own the folder, check if they have editor access
+            folder = Folder.objects.get(pk=id, page=page)
+            if not (
+                folder.editors.filter(pk=request.user.pk).exists()
+                or folder.has_inherited_access(request.user)
+            ):
+                raise Http404("Record not found.")
     except ObjectDoesNotExist:
         raise Http404("Record not found.")
     for field in folder.fillable:
@@ -311,8 +321,22 @@ def move(request, id, page):
         return JsonResponse({"success": False, "error": "POST request required"})
 
     try:
-        # Get the folder to move
-        folder = Folder.objects.get(pk=id, user=request.user, page=page)
+        # Get the folder to move - check if user owns it or has editor access
+        try:
+            folder = Folder.objects.get(pk=id, user=request.user, page=page)
+        except Folder.DoesNotExist:
+            # User doesn't own the folder, check if they have editor access
+            folder = Folder.objects.get(pk=id, page=page)
+            if not (
+                folder.editors.filter(pk=request.user.pk).exists()
+                or folder.has_inherited_access(request.user)
+            ):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "You don't have permission to move this folder",
+                    }
+                )
 
         # Store old inherited editors for permission cleanup
         old_inherited_editors = folder.get_inherited_editors()
@@ -324,9 +348,24 @@ def move(request, id, page):
         # Get the new parent folder
         if new_parent_id:
             try:
-                new_parent = Folder.objects.get(
-                    pk=new_parent_id, user=request.user, page=page
-                )
+                # First try to get folder owned by user
+                try:
+                    new_parent = Folder.objects.get(
+                        pk=new_parent_id, user=request.user, page=page
+                    )
+                except Folder.DoesNotExist:
+                    # User doesn't own the target folder, check if they have editor access
+                    new_parent = Folder.objects.get(pk=new_parent_id, page=page)
+                    if not (
+                        new_parent.editors.filter(pk=request.user.pk).exists()
+                        or new_parent.has_inherited_access(request.user)
+                    ):
+                        return JsonResponse(
+                            {
+                                "success": False,
+                                "error": "You don't have permission to move into this folder",
+                            }
+                        )
 
                 # Prevent moving a folder into one of its descendants
                 if folder in new_parent.get_ancestors() or folder.id == new_parent.id:
