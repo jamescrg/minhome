@@ -21,6 +21,9 @@ urlpatterns = [
     # folders
     path("folders/home/<int:id>/<str:page>", folders.home, name="folder-home"),
     path("folders/<int:id>/<str:page>", folders.select, name="folder-select"),
+    path(
+        "folders/<int:id>/<str:page>/<str:origin>", folders.select, name="folder-select"
+    ),
     path("folders/insert/<str:page>", folders.insert, name="folder-insert"),
     path("folders/update/<int:id>/<str:page>", folders.update, name="folder-update"),
     path(

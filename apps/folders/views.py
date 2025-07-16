@@ -15,25 +15,22 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-def select(request, id, page):
+def select(request, id, page, origin=None):
     """Select a folder for display, redirect to index if that folder's page.
     If the folder is already selected, unselect it.
 
     Args:
         id (int): a Folder instance id
         page (int): the page to which the folder belongs
+        origin (str): optional origin page (e.g., 'home')
 
     """
     user = request.user
     current_folder_id = getattr(user, page + "_folder", None)
 
-    # Check if user is coming from home page
-    referer = request.META.get("HTTP_REFERER", "")
-    from_home = "/home/" in referer or referer.endswith("/home")
-
     # If clicking on the currently selected folder, unselect it
     # BUT not if coming from the home page - in that case always select
-    if current_folder_id == id and not from_home:
+    if current_folder_id == id and origin != "home":
         setattr(user, page + "_folder", 0)
         user.save()
         request.session[f"{page}_folder_path"] = []
