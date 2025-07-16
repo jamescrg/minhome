@@ -28,22 +28,39 @@ function initializeFolderHierarchyDragDrop() {
         const isShared = item.getAttribute('data-shared') === 'true';
         if (isShared) return;
 
-        // Timer-based drag detection on the link
+        // Timer-based drag detection on the entire item for touch, link for mouse
         let touchStartPos = null;
 
-        // Handle start (mouse or touch)
-        const handleDragStart = function(e) {
-            if (e.type === 'touchstart') {
-                // Prevent context menu from appearing
-                e.preventDefault();
-                touchStartPos = {
-                    x: e.touches[0].clientX,
-                    y: e.touches[0].clientY
-                };
 
-                // Add visual feedback for long press
-                item.classList.add('long-pressing');
-            }
+        // Separate mouse and touch event handlers
+        const handleMouseStart = function(e) {
+            // Mouse: Immediate drag
+            item.draggable = true;
+            isDragging = true;
+            draggedFolderItem = item;
+            item.classList.add('dragging');
+            link.style.cursor = 'grabbing';
+        };
+
+        const handleMouseEnd = function(e) {
+            // Mouse handling - clean up immediately
+            item.draggable = false;
+            isDragging = false;
+            draggedFolderItem = null;
+            item.classList.remove('dragging');
+            link.style.cursor = '';
+        };
+
+        const handleTouchStart = function(e) {
+            // Touch: Use long press
+            e.preventDefault();
+            touchStartPos = {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY
+            };
+
+            // Add visual feedback for long press
+            item.classList.add('long-pressing');
 
             dragTimeout = setTimeout(() => {
                 // Remove long press indicator
@@ -54,59 +71,49 @@ function initializeFolderHierarchyDragDrop() {
                 isDragging = true;
                 draggedFolderItem = item;
                 item.classList.add('dragging');
-                link.style.cursor = 'grabbing';
 
-                // For touch, add move and end listeners
-                if (e.type === 'touchstart') {
-                    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-                    // Add visual feedback for touch
-                    item.style.opacity = '0.8';
-                    item.style.transform = 'scale(1.05)';
+                // Add touch move and end listeners
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                document.addEventListener('touchend', handleTouchEnd, { passive: false });
 
-                    // Add haptic feedback if available
-                    if (navigator.vibrate) {
-                        navigator.vibrate(50);
-                    }
+                // Add visual feedback for touch
+                item.style.opacity = '0.8';
+                item.style.transform = 'scale(1.05)';
+
+                // Add haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
                 }
-            }, 500); // Longer delay for proper long press feel
+            }, 500); // Long press delay for touch
         };
 
-        // Handle end (mouse or touch)
-        const handleDragEnd = function(e) {
+        const handleTouchEnd = function(e) {
+            // Touch handling
             clearTimeout(dragTimeout);
 
             // Clean up long press indicator
             item.classList.remove('long-pressing');
 
             if (!isDragging) {
-                // Short click/tap - allow navigation
-                if (e.type === 'touchend') {
-                    // For touch, manually trigger the link
-                    link.click();
-                }
-            } else if (e.type === 'touchend') {
-                // If we're dragging and it's a touch end, let the global handler take over
-                return;
+                // Short tap - allow navigation
+                link.click();
             } else {
-                // Was dragging with mouse - clean up
-                item.draggable = false;
-                isDragging = false;
-                draggedFolderItem = null;
-                item.classList.remove('dragging');
-                link.style.cursor = '';
+                // Was dragging with touch - let the global handler take over
+                return;
             }
             touchStartPos = null;
         };
 
-        // Add both mouse and touch listeners
-        link.addEventListener('mousedown', handleDragStart);
-        link.addEventListener('mouseup', handleDragEnd);
-        link.addEventListener('touchstart', handleDragStart, { passive: false });
-        link.addEventListener('touchend', handleDragEnd);
+        // Add mouse listeners to the link (for precise mouse interaction)
+        link.addEventListener('mousedown', handleMouseStart);
+        link.addEventListener('mouseup', handleMouseEnd);
+
+        // Add touch listeners to the entire item (for larger touch target)
+        item.addEventListener('touchstart', handleTouchStart, { passive: false });
+        item.addEventListener('touchend', handleTouchEnd);
 
         // Prevent context menu on long press
-        link.addEventListener('contextmenu', function(e) {
+        item.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             return false;
         });
