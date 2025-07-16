@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="row">
-        <div id="folders" class="col-lg-3">{% include "folders/list.html" %}</div>
-        <div id="favorites" class="col-lg-9">
+        <div id="folders" class="col-lg-4">{% include "folders/list.html" %}</div>
+        <div id="favorites" class="col-lg-8">
             {% if add or edit %}
                 {% include "favorites/form.html" %}
             {% else %}
