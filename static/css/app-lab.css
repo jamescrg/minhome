@@ -1,0 +1,6 @@
+
+.boxy {
+  border: solid 1px var(--stone-700);
+  max-width: 200px;
+  padding: 5px;
+}

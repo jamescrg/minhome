@@ -4,9 +4,8 @@ from django.shortcuts import render
 
 @login_required
 def index(request):
-    count = 7
     context = {
-        "count": count,
+        "page": "lab",
     }
     return render(request, "lab/content.html", context)
 
