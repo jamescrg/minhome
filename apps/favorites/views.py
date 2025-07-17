@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from apps.favorites.favorites import get_favorites
-from apps.favorites.forms import FavoriteForm, FavoriteExtensionForm
+from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
 from apps.folders.folders import get_folder_tree, get_folders_for_page, select_folder
 from apps.folders.models import Folder
@@ -98,8 +98,9 @@ def edit(request, id):
 
     """
     user = request.user
-
     selected_folder = select_folder(request, "favorites")
+
+    folder_tree, tree_has_children = get_folder_tree(request, "notes", selected_folder)
 
     favorite = get_object_or_404(Favorite, pk=id)
 
@@ -129,8 +130,10 @@ def edit(request, id):
         "page": "favorites",
         "edit": True,
         "add": False,
-        "action": f"/favorites/{id}/edit",
+        "folder_tree": folder_tree,
+        "tree_has_children": tree_has_children,
         "selected_folder": selected_folder,
+        "action": f"/favorites/{id}/edit",
         "form": form,
     }
 
@@ -302,9 +305,8 @@ def extension_add(request):
 
         form = FavoriteExtensionForm(initial=initial_data)
         form.fields["folder"].queryset = Folder.objects.filter(
-            page="favorites", user=request.user, parent=None).order_by(
-            "name"
-        )
+            page="favorites", user=request.user, parent=None
+        ).order_by("name")
 
     context = {
         "form": form,
