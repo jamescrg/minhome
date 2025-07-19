@@ -36,7 +36,10 @@ function initializeFolderHierarchyDragDrop() {
         let touchStartPos = null;
         let isTouchSequence = false;
         let isDragModeActive = false;
+        let isScrolling = false;
         const MOVE_THRESHOLD = 10; // pixels
+        const SCROLL_THRESHOLD = 5; // pixels - smaller threshold for scroll detection
+        const TAP_DURATION = 200; // milliseconds - max duration for a tap
 
         // On mobile: completely disable HTML5 drag, on desktop: start disabled
         if (isMobile) {
@@ -161,23 +164,31 @@ function initializeFolderHierarchyDragDrop() {
         const handleTouchMoveMonitor = function(e) {
             if (!touchStartPos) return;
 
-            // Check if moved significantly
-            if (hasMovedSignificantly(touchStartPos, e.touches[0])) {
-                // Too much movement, cancel long press
+            const deltaX = Math.abs(e.touches[0].clientX - touchStartPos.x);
+            const deltaY = Math.abs(e.touches[0].clientY - touchStartPos.y);
+
+            // Detect scrolling with a small threshold
+            if (deltaX > SCROLL_THRESHOLD || deltaY > SCROLL_THRESHOLD) {
+                // Mark as scrolling
+                isScrolling = true;
+
+                // Cancel any drag detection
                 clearTimeout(dragTimeout);
                 cancelLongPress();
 
-                // Allow default behavior for scrolling
-                // Don't call preventDefault() - let the browser handle scrolling
+                // Don't prevent default - allow scrolling
+                return;
+            }
+
+            // Check if moved significantly for drag purposes
+            if (hasMovedSignificantly(touchStartPos, e.touches[0])) {
+                // Too much movement for long press, but not scrolling
+                clearTimeout(dragTimeout);
+                cancelLongPress();
             } else {
                 // Still within threshold - this might be a long press
                 // Only prevent default if we're very close to the original position
-                // to avoid interfering with small scroll movements
-                const deltaX = Math.abs(e.touches[0].clientX - touchStartPos.x);
-                const deltaY = Math.abs(e.touches[0].clientY - touchStartPos.y);
-
-                // Only prevent scrolling if movement is very minimal (< 5px)
-                if (deltaX < 5 && deltaY < 5) {
+                if (deltaX < SCROLL_THRESHOLD && deltaY < SCROLL_THRESHOLD) {
                     e.preventDefault();
                 }
             }
@@ -270,8 +281,15 @@ function initializeFolderHierarchyDragDrop() {
                 // Clean up any visual feedback
                 item.classList.remove('long-pressing');
 
-                // Allow navigation only if the touch was on the link itself
-                if (!hasMovedSignificantly(touchStartPos, e.changedTouches[0])) {
+                // Allow navigation only if:
+                // 1. Not scrolling
+                // 2. Touch was on the link itself
+                // 3. Touch duration was short (tap, not long press)
+                // 4. Didn't move significantly
+                if (!isScrolling &&
+                    !hasMovedSignificantly(touchStartPos, e.changedTouches[0]) &&
+                    touchStartPos && (Date.now() - touchStartPos.time) < TAP_DURATION) {
+
                     const touch = e.changedTouches[0];
                     const elementAtTouch = document.elementFromPoint(touch.clientX, touch.clientY);
 
@@ -285,6 +303,7 @@ function initializeFolderHierarchyDragDrop() {
             // Reset state
             isTouchSequence = false;
             touchStartPos = null;
+            isScrolling = false;
         };
 
         // Add mouse listeners for desktop drag functionality

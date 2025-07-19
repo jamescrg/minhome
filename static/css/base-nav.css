@@ -55,12 +55,12 @@
 }
 
 .navbar-toggler-icon {
-  color: var(--link);
+  color: var(--stone-600);
   font-size: 1.8rem;
 }
 
 .navbar-toggler-chevron {
-  color: var(--link);
+  color: var(--stone-600);
   font-size: 1rem;
 }
 
