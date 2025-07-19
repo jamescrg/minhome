@@ -401,10 +401,8 @@ function handleDragOver(e) {
     const folderItem = e.target.closest('.folder-item');
     const titleDropZone = e.target.closest('.folders-title-drop-zone');
 
-    // Clear previous drop target
-    if (currentDropTarget) {
-        currentDropTarget.classList.remove('drop-target');
-    }
+    // Clear ALL drop targets first to prevent multiple highlights
+    cleanupAllDropTargets();
 
     if (folderItem && folderItem !== draggedFolderItem) {
         // Valid drop target
