@@ -109,19 +109,9 @@ def add(request):
             # save contact to database
             contact.save()
 
-            # deselect previously selected contact, if one exists
-            try:
-                old = Contact.objects.filter(user=user, selected=1).get()
-            except Contact.DoesNotExist:
-                pass
-            else:
-                old.selected = 0
-                old.save()
-
-            # select newest contact for user
-            new = Contact.objects.filter(user=user).latest("id")
-            new.selected = 1
-            new.save()
+            # Update user's selected contact to the newly created contact
+            user.contacts_contact = contact.id
+            user.save()
 
             return redirect("contacts")
 

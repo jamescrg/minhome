@@ -105,19 +105,9 @@ def add(request):
             note.folder = selected_folder  # Always assign to selected folder
             note.save()
 
-            # deselect previously selected note
-            try:
-                old = Note.objects.filter(user=user, selected=1).get()
-            except Note.DoesNotExist:
-                pass
-            else:
-                old.selected = 0
-                old.save()
-
-            # select newest note for user
-            new = Note.objects.filter(user=user).latest("id")
-            new.selected = 1
-            new.save()
+            # Update user's selected note to the newly created note
+            user.notes_note = note.id
+            user.save()
 
             return redirect("notes")
 
