@@ -270,9 +270,15 @@ function initializeFolderHierarchyDragDrop() {
                 // Clean up any visual feedback
                 item.classList.remove('long-pressing');
 
-                // Allow navigation
+                // Allow navigation only if the touch was on the link itself
                 if (!hasMovedSignificantly(touchStartPos, e.changedTouches[0])) {
-                    link.click();
+                    const touch = e.changedTouches[0];
+                    const elementAtTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+
+                    // Check if the touched element is the link or a child of the link
+                    if (elementAtTouch && (elementAtTouch === link || link.contains(elementAtTouch))) {
+                        link.click();
+                    }
                 }
             }
 
