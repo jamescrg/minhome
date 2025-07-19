@@ -15,6 +15,14 @@ def get_favorites(request):
 
     selected_folder = select_folder(request, "favorites")
 
+    # Update folder path in session for breadcrumbs if folder is selected
+    if selected_folder:
+        request.session["favorites_folder_path"] = [
+            f.id for f in selected_folder.get_ancestors()
+        ] + [selected_folder.id]
+    else:
+        request.session["favorites_folder_path"] = []
+
     # Get folder tree starting from selected folder
     folder_tree, tree_has_children = get_folder_tree(
         request, "favorites", selected_folder

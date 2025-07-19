@@ -29,6 +29,14 @@ def index(request):
     user = request.user
     selected_folder = select_folder(request, "tasks")
 
+    # Update folder path in session for breadcrumbs if folder is selected
+    if selected_folder:
+        request.session["tasks_folder_path"] = [
+            f.id for f in selected_folder.get_ancestors()
+        ] + [selected_folder.id]
+    else:
+        request.session["tasks_folder_path"] = []
+
     # Get folder tree starting from selected folder
     folder_tree, tree_has_children = get_folder_tree(request, "tasks", selected_folder)
 
