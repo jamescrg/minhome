@@ -128,6 +128,14 @@
   padding: 10px;
 }
 
+/* Prevent dark background when folders are drop targets */
+.folder.drop-target,
+.folder.drop-target-active {
+  background: transparent !important;
+  /* Or use a light background color if needed */
+  /* background: var(--stone-100) !important; */
+}
+
 /* Mobile-only border at bottom of columns */
 @media (max-width: 992px) {
   .drop-zone {
@@ -154,7 +162,7 @@
   background: var(--stone-200);
 }
 
-.sortable-chosen {
+.sortable-chosen.dragging {
   background: var(--stone-150);
 }
 
@@ -167,4 +175,10 @@
   opacity: 0.8;
   transform: scale(1.02);
   background: var(--stone-150);
+}
+
+/* Ensure folders maintain their normal appearance during drag operations */
+.folder.dragging {
+  background: var(--stone-100);
+  opacity: 0.9;
 }
