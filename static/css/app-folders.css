@@ -28,6 +28,14 @@
   outline: none;
 }
 
+.shared-indicator {
+  margin-left: 1rem;
+}
+
+.shared-indicator .bi-people-fill {
+  color: var(--warm-gray-300);
+}
+
 
 /*------------------------------------------------
  * add folder

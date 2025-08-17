@@ -47,14 +47,8 @@
             >
 
             {{ folder.name }}
-            {% if folder.editors.all %}
-                <span class="shared-indicator ms-1" title="Shared with {{ folder.editors.count }} user{{ folder.editors.count|pluralize }}">
-                    <i class="bi bi-people-fill text-primary"></i>
-                </span>
-            {% endif %}
 
         </a>
-
       </div>
 
       {% include "folders/edit.html" %}
