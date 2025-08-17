@@ -2,7 +2,7 @@
 <div class="row align-items-start">
 
 {% for column in columns %}
-<div class="col">
+<div class="col-lg drop-zone" data-column="{{ forloop.counter }}">
 
   {% for folder in column %}
     <div class="card folder">
