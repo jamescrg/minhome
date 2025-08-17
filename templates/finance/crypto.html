@@ -17,25 +17,55 @@
     <table class="table crypto">
 
       <tr>
-        <th>Name
-        <th>Symbol
+        <th>
+            Name
+            <a class="btn-sort" href="{% url 'crypto' ord='name' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
+        <th>
+            Symbol
+            <a class="btn-sort" href="{% url 'crypto' ord='symbol' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="price">Price&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
+            Price
+            <a class="btn-sort" href="{% url 'crypto' ord='price' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="market_cap">Mkt Cap&nbsp;
-          <span class="glyphicon glyphicon-chevron-down"></span></a>
+            Mkt Cap
+            <a class="btn-sort" href="{% url 'crypto' ord='market_cap' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="percent_change_24h">24h Chg&nbsp;
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
+            24h Chg
+            <a class="btn-sort" href="{% url 'crypto' ord='percent_change_24h' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="percent_change_7d">7d Chg&nbsp;
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
+            7d Chg
+            <a class="btn-sort" href="{% url 'crypto' ord='percent_change_7d' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="percent_change_30d">30d Chg&nbsp
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
+            30d Chg
+            <a class="btn-sort" href="{% url 'crypto' ord='percent_change_30d' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
         <th class="numeric">
-          <a class="sort" href="percent_change_90d">90d Chg&nbsp;
-            <span class="glyphicon glyphicon-chevron-down"></span></a>
+            90d Chg
+            <a class="btn-sort" href="{% url 'crypto' ord='percent_change_90d' %}">
+                <i class="bi bi-chevron-expand"></i>
+            </a>
+        </th>
+      </tr>
 
         {% for token in data %}
 

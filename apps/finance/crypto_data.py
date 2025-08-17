@@ -76,7 +76,12 @@ def sort(data, ord="market_cap"):
     for key in data.keys():
         sequential_data.append(data[key])
 
+    if ord == "name" or ord == "symbol":
+        reverse_value = False
+    else:
+        reverse_value = True
+
     # sort list of dicts by common key
-    sorted_data = sorted(sequential_data, key=lambda k: k[ord], reverse=True)
+    sorted_data = sorted(sequential_data, key=lambda k: k[ord], reverse=reverse_value)
 
     return sorted_data
