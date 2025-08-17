@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 
 from apps.contacts import views as contacts
@@ -12,7 +13,6 @@ from apps.search import views as search
 from apps.settings import views as settings
 from apps.tasks import views as tasks
 from apps.weather import views as weather
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -48,17 +48,25 @@ urlpatterns = [
     path("tasks/clear", tasks.clear, name="tasks-clear"),
     path(
         "tasks/add-editor/<int:folder_id>/<int:user_id>",
-        tasks.add_editor, name="folder-add-editor"),
+        tasks.add_editor,
+        name="folder-add-editor",
+    ),
     path(
         "tasks/remove-editor/<int:folder_id>/<int:user_id>",
-        tasks.remove_editor, name="folder-remove-editor"),
+        tasks.remove_editor,
+        name="folder-remove-editor",
+    ),
     # contacts
     path("contacts/", contacts.index, name="contacts"),
     path("contacts/<int:id>", contacts.select, name="contacts-select"),
     path("contacts/add", contacts.add, name="contacts-add"),
     path("contacts/<int:id>/edit", contacts.edit, name="contacts-edit"),
     path("contacts/<int:id>/delete", contacts.delete, name="contacts-delete"),
-    path("contacts/<int:id>/google-toggle", contacts.google_toggle, name="contacts-google-toggle"),
+    path(
+        "contacts/<int:id>/google-toggle",
+        contacts.google_toggle,
+        name="contacts-google-toggle",
+    ),
     path("contacts/google-list", contacts.google_list, name="contacts-google-list"),
     # notes
     path("notes/", notes.index, name="notes"),
@@ -86,16 +94,54 @@ urlpatterns = [
         "settings/google/logout", settings.google_logout, name="settings-google-logout"
     ),
     path("settings/theme", settings.theme, name="settings-theme"),
-    path("settings/search-engine", settings.search_engine, name="settings-search-engine"),
-    path("settings/home-options/<str:option>/<str:value>", settings.home_options, name="settings-home-options"),
-    path("settings/crypto-symbols/", settings.crypto_symbols, name="settings-crypto-symbols"),
-    path("settings/crypto-symbols/add", settings.crypto_symbol_add, name="settings-crypto-symbol-add"),
-    path("settings/crypto-symbols/<int:id>/edit", settings.crypto_symbol_edit, name="settings-crypto-symbol-edit"),
-    path("settings/crypto-symbols/<int:id>/delete", settings.crypto_symbol_delete, name="settings-crypto-symbol-delete"),
-    path("settings/securities-symbols/", settings.securities_symbols, name="settings-securities-symbols"),
-    path("settings/securities-symbols/add", settings.securities_symbol_add, name="settings-securities-symbol-add"),
-    path("settings/securities-symbols/<int:id>/edit", settings.securities_symbol_edit, name="settings-securities-symbol-edit"),
-    path("settings/securities-symbols/<int:id>/delete", settings.securities_symbol_delete, name="settings-securities-symbol-delete"),
+    path(
+        "settings/search-engine", settings.search_engine, name="settings-search-engine"
+    ),
+    path(
+        "settings/home-options/<str:option>/<str:value>",
+        settings.home_options,
+        name="settings-home-options",
+    ),
+    path(
+        "settings/crypto-symbols/",
+        settings.crypto_symbols,
+        name="settings-crypto-symbols",
+    ),
+    path(
+        "settings/crypto-symbols/add",
+        settings.crypto_symbol_add,
+        name="settings-crypto-symbol-add",
+    ),
+    path(
+        "settings/crypto-symbols/<int:id>/edit",
+        settings.crypto_symbol_edit,
+        name="settings-crypto-symbol-edit",
+    ),
+    path(
+        "settings/crypto-symbols/<int:id>/delete",
+        settings.crypto_symbol_delete,
+        name="settings-crypto-symbol-delete",
+    ),
+    path(
+        "settings/securities-symbols/",
+        settings.securities_symbols,
+        name="settings-securities-symbols",
+    ),
+    path(
+        "settings/securities-symbols/add",
+        settings.securities_symbol_add,
+        name="settings-securities-symbol-add",
+    ),
+    path(
+        "settings/securities-symbols/<int:id>/edit",
+        settings.securities_symbol_edit,
+        name="settings-securities-symbol-edit",
+    ),
+    path(
+        "settings/securities-symbols/<int:id>/delete",
+        settings.securities_symbol_delete,
+        name="settings-securities-symbol-delete",
+    ),
     # lab
     path("lab/", lab.index, name="lab"),
     path("lab/email", lab.email_test, name="email-test"),

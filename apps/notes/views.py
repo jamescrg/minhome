@@ -4,8 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.folders.folders import select_folder, get_folders_for_page
-from apps.folders.models import Folder
+from apps.folders.folders import get_folders_for_page, select_folder
 from apps.notes.forms import NoteForm
 from apps.notes.models import Note
 
@@ -172,8 +171,7 @@ def edit(request, id):
 
     else:
         if selected_folder:
-            form = NoteForm(
-                instance=note, initial={"folder": selected_folder.id})
+            form = NoteForm(instance=note, initial={"folder": selected_folder.id})
         else:
             form = NoteForm(instance=note)
 

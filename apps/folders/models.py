@@ -24,7 +24,8 @@ class Folder(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="folder_owner")
+        CustomUser, on_delete=models.CASCADE, related_name="folder_owner"
+    )
     page = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     home_column = models.IntegerField(blank=True, null=True)
