@@ -83,3 +83,30 @@
 	color: var(--lime-600);
   font-size: 1.3rem;
 }
+
+
+/*------------------------------------------------
+ * drop zones
+ * ------------------------------------------------*/
+
+.drop-zone {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Mobile-only border at bottom of columns */
+@media (max-width: 992px) {
+  .drop-zone {
+    border-bottom: 2px solid var(--stone-500);
+    border-radius: 0;
+    margin-bottom: 1rem;
+  }
+
+  .drop-zone:last-child {
+    border-bottom: none;
+  }
+}
+
+.drop-zone-active {
+  /* min-height removed for better mobile layout */
+}
