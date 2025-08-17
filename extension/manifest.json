@@ -1,0 +1,53 @@
+{
+  "manifest_version": 2,
+  "name": "MinHome Favorites",
+  "version": "1.0.0",
+  "description": "Save any webpage to your MinHome favorites with one click. Easily organize bookmarks with folders and quick access.",
+  "author": "MinHome",
+  "homepage_url": "https://dev.minhome.app",
+
+  "applications": {
+    "gecko": {
+      "id": "{a2158ad1-2365-4a7d-93d8-4d732c753e5e}"
+    }
+  },
+
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "storage",
+    "https://minhome.app/*"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "browser_action": {
+    "default_title": "Add to MinHome Favorites",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+
+  "options_page": "options.html",
+
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://minhome.app/*", "https://*.minhome.app/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
