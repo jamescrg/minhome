@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>MinHome Extension Settings</title>
+        <meta name="description" content="Configure MinHome extension settings">
+        <meta name="keywords"
+              content="minhome, extension, settings, preferences, favorites">
+        <link rel="stylesheet" href="options.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>MinHome Extension Settings</h1>
+            <form id="options-form">
+                <div class="form-group">
+                    <label for="domain">MinHome Server URL:</label>
+                    <input type="text"
+                           id="domain"
+                           name="domain"
+                           placeholder="minhome.app"
+                           required>
+                    <div class="help-text">
+                        Enter your MinHome server domain (e.g., minhome.app for production or dev.minhome.app for development)
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="save" class="btn btn-primary">Save Settings</button>
+                    <button type="button" id="reset" class="btn btn-secondary">Reset to Default</button>
+                </div>
+            </form>
+            <div id="status" class="status-message"></div>
+            <div class="info-section">
+                <h3>About</h3>
+                <p>
+                    This extension allows you to quickly save any webpage to your MinHome favorites. You can configure which MinHome server to use above.
+                </p>
+                <h3>Usage</h3>
+                <ul>
+                    <li>Click the extension icon to save the current page</li>
+                    <li>Right-click on any page or link and select "Add to Favorites"</li>
+                </ul>
+            </div>
+        </div>
+        <script src="options.js"></script>
+    </body>
+</html>
