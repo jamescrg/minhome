@@ -54,7 +54,7 @@ a:hover {
  * ------------------------------------------------*/
 
 .card {
-  background: var(--true-gray-100);
+  background: var(--stone-100);
   margin-bottom: 2rem;
   padding: 1rem;
   padding-bottom: 1.5rem;
@@ -206,7 +206,7 @@ li {
 }
 
 .dropdown-menu {
-  background: var(--true-gray-100);
+  background: var(--stone-100);
 }
 
 .dropdown-item:focus,
