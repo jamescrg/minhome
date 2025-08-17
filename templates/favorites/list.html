@@ -1,7 +1,7 @@
 
 <div class="card favorites">
 
-  <div class="card-title mh-fc">
+  <div class="card-title flex-center-space">
     <h1>
 
       {% if  selected_folder %}
@@ -26,9 +26,9 @@
 
     {% for favorite in favorites %}
 
-      <li class="list-group-item mh-ft">
+      <li class="list-group-item flex-start-space">
 
-        <div class="favorite-left mh-ftl">
+        <div class="favorite-left flex-start-left">
 
           <div class="favorite-left-icon">
 
@@ -60,7 +60,7 @@
 
         </div>
 
-        <div class="favorite-right mh-ftl">
+        <div class="favorite-right flex-start-left">
 
           {% include "favorites/menu.html" %}
 

@@ -1,7 +1,7 @@
 
 <div class="card folders">
 
-  <div class="card-title mh-fc">
+  <div class="card-title flex-center-space">
 
     <h1>
         Folders
@@ -18,9 +18,9 @@
   <ul class="list-group">
     {% if folders %}
     {% for folder in folders %}
-    <li class="list-group-item mh-ft" id="folder-{{ folder.id }}">
+    <li class="list-group-item flex-start-space" id="folder-{{ folder.id }}">
 
-      <div class="folder-show mh-fc">
+      <div class="folder-show flex-center-space">
 
         {% if folder.home_column and folder.user == user %}
 
@@ -59,9 +59,9 @@
     {% endfor %}
     {% endif %}
 
-    <li class="list-group-item mh-ft">
+    <li class="list-group-item flex-start-space">
 
-      <div class="folder-show mh-fc">
+      <div class="folder-show flex-center-space">
 
         {% if folder.home_column and folder.user == user %}
 

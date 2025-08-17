@@ -9,7 +9,7 @@
 
       {# card title #}
 
-      <div class="card-title mh-fc">
+      <div class="card-title flex-center-space">
 
         <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
 
@@ -22,7 +22,7 @@
 
       {# folder controls #}
 
-      <div class="folder-controls mh-fc folder-{{ folder.id }}" style="display: none;">
+      <div class="folder-controls flex-center-space folder-{{ folder.id }}" style="display: none;">
 
         <a href="/home/folder/{{ folder.id }}/left">
           <i class="bi bi-arrow-left-square"></i>
@@ -47,7 +47,7 @@
         {% for favorite in folder.favorites %}
           {% if favorite.folder_id == folder.id %}
 
-            <li class="list-group-item home-item mh-fe">
+            <li class="list-group-item home-item flex-end-space">
 
               <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
 
