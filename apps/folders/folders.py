@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 
 from apps.folders.models import Folder
 
@@ -36,8 +35,24 @@ def select_folder(request, page):
 
     folder_id = getattr(user, page + "_folder")
 
-    if folder_id:
-        folder = get_object_or_404(Folder, pk=folder_id)
+    if folder_id and folder_id > 0:
+        try:
+            # Check if folder exists and user has access to it
+            folder = Folder.objects.filter(
+                Q(user=user) | Q(editors=user), pk=folder_id
+            ).first()
+
+            if not folder:
+                # Folder doesn't exist or user doesn't have access
+                # Clear the invalid folder reference
+                setattr(user, page + "_folder", 0)
+                user.save()
+                folder = None
+        except Exception:
+            # Clear the invalid folder reference on any error
+            setattr(user, page + "_folder", 0)
+            user.save()
+            folder = None
     else:
         folder = None
 
