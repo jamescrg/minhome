@@ -1,4 +1,4 @@
-from . import settings, settings_local
+from . import settings
 
 
 def env(request):
@@ -9,5 +9,5 @@ def env(request):
 
 def site_handle(request):
     return {
-        "site_handle": settings_local.SITE_NAME,
+        "site_handle": settings.SITE_NAME,
     }

@@ -1,6 +1,7 @@
 __init__.py
 *.pyc
 config/settings_local.py
+.env
 static/bootstrap*
 static/admin
 tags*

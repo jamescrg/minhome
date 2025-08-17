@@ -10,27 +10,40 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-from . import settings_local
+import environ
 
-# Build paths inside the project like this: BASE_DIR / "subdir".
+# Initialize environ
+env = environ.Env(
+    # Set casting and default values
+    DEBUG=(bool, False),
+    ZIP_PRIMARY=(int, 30360),
+    ZIP_SECONDARY=(int, 30533),
+)
+
+# Read .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+# Site settings
+SITE_NAME = env("SITE_NAME")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = settings_local.SECRET_KEY
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = settings_local.DEBUG
+DEBUG = env("DEBUG")
 
 # check dev v. production environment
-ENV = settings_local.ENV
+ENV = env("ENV")
 
 # urls to which the application will respond
-ALLOWED_HOSTS = settings_local.ALLOWED_HOSTS
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -52,7 +65,9 @@ INSTALLED_APPS = [
     "apps.favorites",
     "apps.tasks",
     "apps.contacts",
+    "apps.finance",
     "apps.lab",
+    "apps.management",
     "apps.notes",
     "apps.search",
     "apps.settings",
@@ -66,7 +81,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Temporarily disabled for extension development
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -93,6 +108,9 @@ TEMPLATES = [
                 "config.context.site_handle",
             ],
             "loaders": default_loaders if DEBUG else cached_loaders,
+            "libraries": {
+                "cache_buster": "apps.management.templatetags.cache_buster",
+            },
         },
     },
 ]
@@ -106,9 +124,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": settings_local.DB_NAME,
-        "USER": settings_local.DB_USER,
-        "PASSWORD": settings_local.DB_PASSWORD,
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
         "HOST": "localhost",
     }
 }
@@ -170,13 +188,81 @@ INTERNAL_IPS = [
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = settings_local.EMAIL_HOST
+EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = settings_local.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = settings_local.EMAIL_HOST_PASSWORD
-SERVER_EMAIL = settings_local.SERVER_EMAIL
-ADMINS = settings_local.ADMINS
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+SERVER_EMAIL = env("SERVER_EMAIL")
+ADMINS = [(env("ADMINS_NAME"), env("ADMINS_EMAIL"))]
+
+# API Keys
+OPEN_WEATHER_API_KEY = env("OPEN_WEATHER_API_KEY")
+CRYPTO_API_KEY = env("CRYPTO_API_KEY")
+ALPHAVANTAGE_STOCKS_API_KEY = env("ALPHAVANGAGE_STOCKS_API_KEY")
+FINNHUB_API_KEY = env("FINNHUB_API_KEY")
+
+# Location Settings
+ZIP_PRIMARY = env("ZIP_PRIMARY")
+ZIP_SECONDARY = env("ZIP_SECONDARY")
+
+# Financial Symbols
+CRYPTO_SYMBOLS = env("CRYPTO_SYMBOLS")
+SECURITIES_ASSET_LIST = [
+    {
+        "symbol": "GME",
+        "exchange": "NYSE",
+        "name": "Gamestop",
+    },
+    {
+        "symbol": "TSLA",
+        "exchange": "NASDAQ",
+        "name": "Tesla",
+    },
+    {
+        "symbol": "TLRY",
+        "exchange": "NASDAQ",
+        "name": "Tilray",
+    },
+    {
+        "symbol": "SNDL",
+        "exchange": "NASDAQ",
+        "name": "Sundial",
+    },
+    {
+        "symbol": "BBBY",
+        "exchange": "NASDAQ",
+        "name": "BBBY",
+    },
+    {
+        "symbol": "O",
+        "exchange": "NYSE",
+        "name": "REIT",
+    },
+    {
+        "symbol": "FXF",
+        "exchange": "NYSEARCA",
+        "name": "Swiss Francs",
+    },
+    {
+        "symbol": "GLD",
+        "exchange": "NSEARCA",
+        "name": "Gold ETF",
+    },
+    {
+        "symbol": "QQQ",
+        "exchange": "NASDAQ",
+        "name": "Invesco Tech",
+    },
+    {
+        "symbol": "VTV",
+        "exchange": "NYSEARCA",
+        "name": "Vanguard Value",
+    },
+]
+
+# Test email recipient
+TEST_EMAIL_RECIPIENT = [env("TEST_EMAIL_RECIPIENT")]
 
 
 # set cookies (sessions) to last for two months

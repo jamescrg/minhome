@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from apps.weather.timeshift import timestamp_to_eastern
-from config import settings_local
+from django.conf import settings
 
 
 @login_required
@@ -27,7 +27,7 @@ def index(request):
         params = {
             "zip": zip,
             "units": "imperial",
-            "appid": settings_local.OPEN_WEATHER_API_KEY,
+            "appid": settings.OPEN_WEATHER_API_KEY,
         }
         response = requests.get(url, params=params)
         current = response.json()
