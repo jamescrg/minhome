@@ -42,7 +42,7 @@
 
 .form-select {
   font-size: 1.05em;
-	color: var(--warm-gray-600);
+	color: var(--stone-600);
 }
 
 
@@ -61,7 +61,7 @@
 
 .folder .card-title a {
 	font-weight: 500;
-	color: var(--warm-gray-600);
+	color: var(--stone-600);
 }
 
 .folder .list-group-item {

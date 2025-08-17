@@ -80,5 +80,10 @@
 
 /* for the entire list item when editing is turned on */
 .li-folder-edit {
-  background: var(--true-gray-50);
+  background: var(--stone-50);
+}
+
+.edit-share .list-group-item {
+  border: solid 1px var(--stone-200);
+  padding-right: 10px;
 }
