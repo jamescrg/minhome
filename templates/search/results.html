@@ -133,9 +133,10 @@
 
       <table class="table">
 
-        <th>Folder
-        <th>Subject
-        <th>Preview (Raw Text)
+        <tr>
+          <th>Folder
+          <th>Subject
+          <th>Preview (Raw Text)
 
         {% for note in notes %}
 
@@ -143,14 +144,13 @@
 
             <td class="folder">
               {% if note.folder %}
-                <a href="/folders/{{ note.folder.id }}/notes">{{ note.folder.name }}</a>
+                <a href="{% url 'folder-select' id=note.folder.id page='notes' %}">{{ note.folder.name }}</a>
               {% else %}
-                <a href="/folders/0/notes">Unsorted</a>
+                <a href="{% url 'folder-select' id=0 page='notes' %}">Unsorted</a>
               {% endif %}
 
-
             <td class="note-subject">
-              <a href="/notes/{{ note.id }}">{{ note.subject }}</a>
+              <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
             <td class="note">{{ note.note|slice:":300"|safe }}
 
           </tr>
@@ -160,6 +160,7 @@
       </table>
 
 		{% endif %}
+
 	</div>
 
 
