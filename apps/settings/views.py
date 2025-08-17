@@ -5,7 +5,12 @@ import google_auth_oauthlib.flow
 import requests
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
+from apps.finance.models import CryptoSymbol, SecuritiesSymbol
+from apps.finance.forms import CryptoSymbolForm, SecuritiesSymbolForm
 
 
 @login_required
@@ -177,6 +182,130 @@ def home_options(request, option, value):
 
     user.save()
     return redirect("/settings")
+
+
+@login_required
+def crypto_symbols(request):
+    """Display and manage crypto symbols for the user."""
+    symbols = CryptoSymbol.objects.filter(user=request.user).order_by('symbol')
+    context = {
+        "page": "settings",
+        "symbols": symbols,
+    }
+    return render(request, "settings/crypto_symbols.html", context)
+
+
+@login_required
+def crypto_symbol_add(request):
+    """Add a new crypto symbol."""
+    if request.method == 'POST':
+        form = CryptoSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.save(commit=False)
+            symbol.user = request.user
+            symbol.save()
+            return redirect("settings-crypto-symbols")
+    else:
+        form = CryptoSymbolForm()
+    
+    context = {
+        "page": "settings",
+        "form": form,
+        "action": "Add",
+    }
+    return render(request, "settings/crypto_symbol_form.html", context)
+
+
+@login_required
+def crypto_symbol_edit(request, id):
+    """Edit an existing crypto symbol."""
+    symbol = get_object_or_404(CryptoSymbol, id=id, user=request.user)
+    
+    if request.method == 'POST':
+        form = CryptoSymbolForm(request.POST, instance=symbol)
+        if form.is_valid():
+            form.save()
+            return redirect("settings-crypto-symbols")
+    else:
+        form = CryptoSymbolForm(instance=symbol)
+    
+    context = {
+        "page": "settings",
+        "form": form,
+        "symbol": symbol,
+        "action": "Edit",
+    }
+    return render(request, "settings/crypto_symbol_form.html", context)
+
+
+@login_required
+def crypto_symbol_delete(request, id):
+    """Delete a crypto symbol."""
+    symbol = get_object_or_404(CryptoSymbol, id=id, user=request.user)
+    symbol.delete()
+    return redirect("settings-crypto-symbols")
+
+
+@login_required
+def securities_symbols(request):
+    """Display and manage securities symbols for the user."""
+    symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by('symbol')
+    context = {
+        "page": "settings",
+        "symbols": symbols,
+    }
+    return render(request, "settings/securities_symbols.html", context)
+
+
+@login_required
+def securities_symbol_add(request):
+    """Add a new securities symbol."""
+    if request.method == 'POST':
+        form = SecuritiesSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.save(commit=False)
+            symbol.user = request.user
+            symbol.save()
+            return redirect("settings-securities-symbols")
+    else:
+        form = SecuritiesSymbolForm()
+    
+    context = {
+        "page": "settings",
+        "form": form,
+        "action": "Add",
+    }
+    return render(request, "settings/securities_symbol_form.html", context)
+
+
+@login_required
+def securities_symbol_edit(request, id):
+    """Edit an existing securities symbol."""
+    symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
+    
+    if request.method == 'POST':
+        form = SecuritiesSymbolForm(request.POST, instance=symbol)
+        if form.is_valid():
+            form.save()
+            return redirect("settings-securities-symbols")
+    else:
+        form = SecuritiesSymbolForm(instance=symbol)
+    
+    context = {
+        "page": "settings",
+        "form": form,
+        "symbol": symbol,
+        "action": "Edit",
+    }
+    return render(request, "settings/securities_symbol_form.html", context)
+
+
+@login_required
+def securities_symbol_delete(request, id):
+    """Delete a securities symbol."""
+    symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
+    symbol.delete()
+    return redirect("settings-securities-symbols")
 
 
 
