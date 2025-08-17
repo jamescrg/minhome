@@ -4,21 +4,21 @@
 }
 
 .form-control:focus {
-  background: var(--warm-gray-50);
+  background: var(--stone-50);
   font-size: 1.05em;
   padding: 0.5rem;
 }
 
 .form-control,
 .form-select {
-  background-color: var(--warm-gray-50);
+  background-color: var(--stone-50);
   font-size: 1.05em;
   padding: 0.5rem;
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--warm-gray-300);
+  border-color: var(--stone-300);
   box-shadow: none;
   outline: none;
 }

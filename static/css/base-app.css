@@ -93,8 +93,14 @@ a:hover {
 
 h1 {
   font-weight: normal;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   margin-bottom: 0;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
 }
 
 strong{
@@ -173,6 +179,12 @@ li {
 .btn-slim {
   font-size: 0.97rem;
   padding: 0.1rem 0.4rem;
+}
+
+.btn-outline-danger {
+  color: var(--orange-700);
+  background-color: var(--stone-100);
+  border-color: var(--orange-700);
 }
 
 

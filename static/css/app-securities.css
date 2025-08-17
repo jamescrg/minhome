@@ -6,7 +6,7 @@
 }
 
 .finance th, td {
-  border: solid 1px var(--warm-gray-200);
+  border: solid 1px var(--stone-200);
   padding: 10px;
 }
 

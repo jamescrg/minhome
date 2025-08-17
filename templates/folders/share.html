@@ -4,18 +4,18 @@
 {% block title %}Share Folder - {{ folder.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container edit-share">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="mb-0">Share Folder: {{ folder.name }}</h4>
+                <div class="card-title">
+                    <h1>Share Folder: {{ folder.name }}</h1>
                 </div>
-                <div class="card-body">
+                <div class="card-text">
                     <p class="text-muted">Manage who can access and edit this folder.</p>
-                    
+
                     <!-- Current shared users -->
-                    <h5>Currently Shared With:</h5>
+                    <h2>Currently Shared With:</h2>
                     {% if current_editors %}
                         <div class="list-group mb-3">
                             {% for editor in current_editors %}
@@ -24,7 +24,7 @@
                                         <i class="bi bi-person-fill me-2"></i>
                                         {{ editor.email }}
                                     </span>
-                                    <button class="btn btn-sm btn-outline-danger" 
+                                    <button class="btn btn-sm btn-outline-danger"
                                             onclick="removeAccess({{ editor.id }})">
                                         Remove
                                     </button>
@@ -34,9 +34,9 @@
                     {% else %}
                         <p class="text-muted">This folder is not shared with anyone.</p>
                     {% endif %}
-                    
+
                     <!-- Add new user -->
-                    <h5>Add New User:</h5>
+                    <h2>Add New User:</h2>
                     {% if available_users %}
                         <div class="input-group mb-3">
                             <select class="form-select" id="userSelect">
@@ -71,12 +71,12 @@
 function addAccess() {
     const userSelect = document.getElementById('userSelect');
     const userId = userSelect.value;
-    
+
     if (!userId) {
         alert('Please select a user to add.');
         return;
     }
-    
+
     fetch(`/folders/share/{{ folder.id }}/{{ page }}`, {
         method: 'POST',
         headers: {
@@ -103,7 +103,7 @@ function removeAccess(userId) {
     if (!confirm('Are you sure you want to remove this user\'s access?')) {
         return;
     }
-    
+
     fetch(`/folders/share/{{ folder.id }}/{{ page }}`, {
         method: 'POST',
         headers: {
