@@ -94,6 +94,14 @@
   padding: 10px;
 }
 
+/* Prevent dark background when folders are drop targets */
+.folder.drop-target,
+.folder.drop-target-active {
+  background: transparent !important;
+  /* Or use a light background color if needed */
+  /* background: var(--stone-100) !important; */
+}
+
 /* Mobile-only border at bottom of columns */
 @media (max-width: 992px) {
   .drop-zone {
@@ -109,4 +117,43 @@
 
 .drop-zone-active {
   /* min-height removed for better mobile layout */
+}
+
+/*------------------------------------------------
+ * SortableJS styles
+ * ------------------------------------------------*/
+
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--stone-200);
+}
+
+.sortable-chosen.dragging {
+  background: var(--stone-200);
+}
+
+.sortable-drag {
+  background: var(--stone-100);
+  transform: rotate(5deg);
+}
+
+.dragging {
+  opacity: 0.8;
+  transform: scale(1.02);
+  background: var(--stone-200);
+}
+
+/* Ensure folders maintain their normal appearance during drag operations */
+.folder.dragging {
+  background: var(--stone-100);
+  opacity: 0.9;
+}
+
+/* insertion indicator for drag and drop */
+.folder.insertion-target {
+  border-top: 4px solid #65A30D !important;
+}
+
+.favorite-item.insertion-target {
+  border-top: 4px solid #65A30D !important;
 }
