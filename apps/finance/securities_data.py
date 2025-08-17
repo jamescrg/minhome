@@ -1,6 +1,6 @@
 import requests
 
-from config import settings_local
+from django.conf import settings
 
 asset_list = [
     {
@@ -62,7 +62,7 @@ def fetch(symbol):
     url = "https://finnhub.io/api/v1/quote"
     params = {
         "symbol": symbol,
-        "token": settings_local.FINNHUB_API_KEY,
+        "token": settings.FINNHUB_API_KEY,
     }
     response = requests.get(url, params=params)
     quote = response.json()
