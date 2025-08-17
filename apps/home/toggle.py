@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 import pytz
 
@@ -16,7 +16,7 @@ def check_if_enabled(user, section):
     """
     # if user has enabled the section, the user's "home_{section}"
     # attribute will have a values of "1" aka "True"
-    attrib = (f"home_{section}")
+    attrib = f"home_{section}"
     enabled = getattr(user, attrib)
     return enabled
 
@@ -38,7 +38,7 @@ def check_if_hidden(user, section):
     # on which the section was hidden.
     # This function therefore returns a date if the section was hidden
     # or false if the section is shown.
-    attrib = (f"home_{section}_hidden")
+    attrib = f"home_{section}_hidden"
     hidden = getattr(user, attrib)
     return hidden
 
@@ -104,7 +104,7 @@ def show_section(user, section):
     # (i.e. it's the next day)
     hidden_expired = check_if_hidden_expired(user, section, hidden)
     if hidden_expired:
-        attrib = (f"home_{section}_hidden")
+        attrib = f"home_{section}_hidden"
         setattr(user, attrib, None)
         user.save()
         return True

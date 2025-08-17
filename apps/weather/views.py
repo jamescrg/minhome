@@ -1,18 +1,16 @@
 from datetime import datetime
 
 import requests
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from apps.weather.timeshift import timestamp_to_eastern
-from django.conf import settings
 
 
 @login_required
 def index(request):
-    """Display current weather conditions at a specified zip code.
-
-    """
+    """Display current weather conditions at a specified zip code."""
 
     # get zip code
     user = request.user
@@ -102,10 +100,8 @@ def index(request):
 
 @login_required
 def zip(request):
-    """Sets the user's zip code.
-
-    """
+    """Sets the user's zip code."""
     user = request.user
-    user.zip = request.POST['zip']
+    user.zip = request.POST["zip"]
     user.save()
     return redirect("/weather")

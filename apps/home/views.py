@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 import apps.home.google as google
 from apps.favorites.models import Favorite
-from apps.folders.models import Folder
 from apps.folders.folders import get_folders_for_page
+from apps.folders.models import Folder
 from apps.home.movement import sequence
 from apps.home.toggle import show_section
 from apps.tasks.models import Task
@@ -15,26 +15,10 @@ from apps.tasks.models import Task
 def get_search_context(user):
     """Get search engine context for a user"""
     engines = [
-        {
-            "id": "google",
-            "name": "Google",
-            "url": "google.com/search"
-        },
-        {
-            "id": "duckduckgo",
-            "name": "DuckDuckGo",
-            "url": "duckduckgo.com/"
-        },
-        {
-            "id": "wikipedia",
-            "name": "Wikipedia",
-            "url": "en.wikipedia.org/w/index.php"
-        },
-        {
-            "id": "bing",
-            "name": "Bing",
-            "url": "bing.com/"
-        },
+        {"id": "google", "name": "Google", "url": "google.com/search"},
+        {"id": "duckduckgo", "name": "DuckDuckGo", "url": "duckduckgo.com/"},
+        {"id": "wikipedia", "name": "Wikipedia", "url": "en.wikipedia.org/w/index.php"},
+        {"id": "bing", "name": "Bing", "url": "bing.com/"},
     ]
 
     search_engine = "google"
@@ -79,7 +63,6 @@ def index(request):
     else:
         events = None
 
-
     # TASKS
     # ----------------
 
@@ -114,7 +97,6 @@ def index(request):
             if folder.tasks:
                 some_tasks = True
 
-
     # SEARCH
     # ----------------
     search_context = get_search_context(user)
@@ -129,8 +111,7 @@ def index(request):
         folders = all_favorites_folders.filter(home_column=i)
         folders = folders.order_by("home_rank")
         for folder in folders:
-            favorites = Favorite.objects.filter(
-                folder_id=folder.id, home_rank__gt=0)
+            favorites = Favorite.objects.filter(folder_id=folder.id, home_rank__gt=0)
             favorites = favorites.order_by("home_rank")
             folder.favorites = favorites
         columns.append(folders)
@@ -150,7 +131,7 @@ def index(request):
         "columns": columns,
         "moved_folder": moved_folder,
     }
-    
+
     # Add search context
     context.update(search_context)
 
@@ -174,7 +155,7 @@ def toggle(request, section):
 
     user = request.user
 
-    attrib = (f"home_{section}_hidden")
+    attrib = f"home_{section}_hidden"
     if getattr(user, attrib):
         setattr(user, attrib, None)
     else:
@@ -223,8 +204,10 @@ def folder(request, id, direction):
         # identify the folder to be displaced
         try:
             displaced_folder = Folder.objects.filter(
-                user=user, page="favorites",
-                home_column=origin_column, home_rank=destination_rank
+                user=user,
+                page="favorites",
+                home_column=origin_column,
+                home_rank=destination_rank,
             ).get()
         except Folder.DoesNotExist:
             displaced_folder = False

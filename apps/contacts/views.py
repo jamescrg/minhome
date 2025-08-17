@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import select_folder, get_folders_for_page
+from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
 
 
@@ -26,11 +26,9 @@ def index(request):
     selected_folder = select_folder(request, "contacts")
 
     if selected_folder:
-        contacts = Contact.objects.filter(
-            user=request.user, folder=selected_folder)
+        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
     else:
-        contacts = Contact.objects.filter(
-            user=request.user, folder_id__isnull=True)
+        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
 
     contacts = contacts.order_by("name")
 
@@ -261,5 +259,3 @@ def google_list(request):
     }
 
     return render(request, "contacts/google.html", context)
-
-

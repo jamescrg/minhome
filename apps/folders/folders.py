@@ -1,8 +1,7 @@
-from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from apps.folders.models import Folder
-from accounts.models import CustomUser
 
 
 def get_task_folders(request):
@@ -15,25 +14,19 @@ def get_task_folders(request):
     # 1. owned by the user and
     # 2. edited by the user,
     # and then order the folders by name
-    folders = folders.filter(
-        Q(user=user)
-        | Q(editors=user)
-    ).order_by("name")
+    folders = folders.filter(Q(user=user) | Q(editors=user)).order_by("name")
     return folders
 
 
 def get_folders_for_page(request, page):
     """Get folders for a specific page that the user owns or has edit access to."""
     user = request.user
-    
+
     folders = Folder.objects.filter(page=page)
-    
+
     # Get folders that are owned by the user or shared with them
-    folders = folders.filter(
-        Q(user=user)
-        | Q(editors=user)
-    ).order_by("name")
-    
+    folders = folders.filter(Q(user=user) | Q(editors=user)).order_by("name")
+
     return folders
 
 

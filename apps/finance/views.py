@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 import apps.finance.crypto_data as crypto_data
 import apps.finance.securities_data as securities_data
-from django.conf import settings
+
 from .models import CryptoSymbol, SecuritiesSymbol
 
 
@@ -18,11 +18,11 @@ def crypto(request, ord="market_cap"):
 
     # Get user's custom symbols only
     user_symbols = CryptoSymbol.objects.filter(user=request.user, is_active=True)
-    
+
     if user_symbols.exists():
         # Use user's custom symbols
         symbols = ",".join([symbol.symbol for symbol in user_symbols])
-        
+
         # collect data from remote service
         data = crypto_data.collect(symbols)
 
@@ -56,20 +56,22 @@ def securities(request, ord="name"):
 
     # Get user's custom symbols only
     user_symbols = SecuritiesSymbol.objects.filter(user=request.user, is_active=True)
-    
+
     if user_symbols.exists():
         # Convert user symbols to the format expected by securities_data.collect
         asset_list = []
         for symbol in user_symbols:
-            asset_list.append({
-                "symbol": symbol.symbol,
-                "name": symbol.name,
-                "exchange": symbol.exchange,
-            })
-        
+            asset_list.append(
+                {
+                    "symbol": symbol.symbol,
+                    "name": symbol.name,
+                    "exchange": symbol.exchange,
+                }
+            )
+
         # Collect data from remote service
         data = securities_data.collect(asset_list)
-        
+
         # Sort the data according to the user indicated field
         data = securities_data.sort(data, ord)
     else:

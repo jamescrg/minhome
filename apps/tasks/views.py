@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
@@ -29,9 +30,9 @@ def index(request):
     if selected_folder:
         tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
     else:
-        tasks = Task.objects.filter(
-            user=user, folder__isnull=True).order_by("status", "title")
-
+        tasks = Task.objects.filter(user=user, folder__isnull=True).order_by(
+            "status", "title"
+        )
 
     context = {
         "page": "tasks",
@@ -162,8 +163,7 @@ def clear(request):
     if selected_folder:
         tasks = Task.objects.filter(folder=selected_folder, status=1)
     else:
-        tasks = Task.objects.filter(
-            user=request.user, folder__isnull=True, status=1)
+        tasks = Task.objects.filter(user=request.user, folder__isnull=True, status=1)
 
     for task in tasks:
         task.delete()

@@ -277,14 +277,11 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGGING = {
-
     # The version number of our log
     "version": 1,
-
     # django uses some of its own loggers for internal operations.
     # In case you want to disable them just replace the False above with true.
     "disable_existing_loggers": False,
-
     # A handler for WARNING. It is basically writing
     # the WARNING messages into a file called WARNING.log
     "handlers": {
@@ -294,15 +291,12 @@ LOGGING = {
             "filename": BASE_DIR / "warning.log",
         },
     },
-
     # A logger for WARNING which has a handler called "file".
     # A logger can have multiple handlers.
     "loggers": {
-
-       # Notice the blank "".
-       # Usually you would put built in loggers
-       # like django or root here based on your needs.
-
+        # Notice the blank "".
+        # Usually you would put built in loggers
+        # like django or root here based on your needs.
         "": {
             # Notice how file variable is called
             # in handler which has been defined above

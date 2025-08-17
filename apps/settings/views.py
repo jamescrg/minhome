@@ -3,14 +3,11 @@ import json
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import requests
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404, redirect, render
 
-from apps.finance.models import CryptoSymbol, SecuritiesSymbol
 from apps.finance.forms import CryptoSymbolForm, SecuritiesSymbolForm
+from apps.finance.models import CryptoSymbol, SecuritiesSymbol
 
 
 @login_required
@@ -82,7 +79,6 @@ def google_store(request):
     """
 
     redirect_uri = "https://" + request.get_host() + "/settings/google/store"
-    pwd = settings.BASE_DIR
 
     state = request.session["state"]
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -143,43 +139,38 @@ def google_logout(request):
 
 @login_required
 def theme(request):
-    """Sets the user's preferred  theme.
-
-    """
+    """Sets the user's preferred  theme."""
 
     user = request.user
-    user.theme = request.POST['theme']
+    user.theme = request.POST["theme"]
     user.save()
     return redirect("/settings")
 
 
 @login_required
 def search_engine(request):
-    """Sets the user's preferred search engine.
-
-    """
+    """Sets the user's preferred search engine."""
     user = request.user
-    user.search_engine = request.POST['search_engine']
+    user.search_engine = request.POST["search_engine"]
     user.save()
-    
+
     # Handle HTMX requests
-    if request.headers.get('HX-Request'):
+    if request.headers.get("HX-Request"):
         # Import here to avoid circular imports
         from apps.home.views import get_search_context
-        
+
         # Get updated search context
         context = get_search_context(user)
-        
+
         # Return just the search section
-        return render(request, 'home/search.html', context)
-    
+        return render(request, "home/search.html", context)
+
     return redirect("/home")
 
 
 @login_required
 def home_options(request, option, value):
-    """Sets the user's home page options
-    """
+    """Sets the user's home page options"""
     user = request.user
 
     if value == "enable":
@@ -199,7 +190,7 @@ def home_options(request, option, value):
 @login_required
 def crypto_symbols(request):
     """Display and manage crypto symbols for the user."""
-    symbols = CryptoSymbol.objects.filter(user=request.user).order_by('symbol')
+    symbols = CryptoSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
         "symbols": symbols,
@@ -210,7 +201,7 @@ def crypto_symbols(request):
 @login_required
 def crypto_symbol_add(request):
     """Add a new crypto symbol."""
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CryptoSymbolForm(request.POST)
         if form.is_valid():
             symbol = form.save(commit=False)
@@ -219,7 +210,7 @@ def crypto_symbol_add(request):
             return redirect("settings-crypto-symbols")
     else:
         form = CryptoSymbolForm()
-    
+
     context = {
         "page": "settings",
         "form": form,
@@ -232,15 +223,15 @@ def crypto_symbol_add(request):
 def crypto_symbol_edit(request, id):
     """Edit an existing crypto symbol."""
     symbol = get_object_or_404(CryptoSymbol, id=id, user=request.user)
-    
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = CryptoSymbolForm(request.POST, instance=symbol)
         if form.is_valid():
             form.save()
             return redirect("settings-crypto-symbols")
     else:
         form = CryptoSymbolForm(instance=symbol)
-    
+
     context = {
         "page": "settings",
         "form": form,
@@ -261,7 +252,7 @@ def crypto_symbol_delete(request, id):
 @login_required
 def securities_symbols(request):
     """Display and manage securities symbols for the user."""
-    symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by('symbol')
+    symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
         "symbols": symbols,
@@ -272,7 +263,7 @@ def securities_symbols(request):
 @login_required
 def securities_symbol_add(request):
     """Add a new securities symbol."""
-    if request.method == 'POST':
+    if request.method == "POST":
         form = SecuritiesSymbolForm(request.POST)
         if form.is_valid():
             symbol = form.save(commit=False)
@@ -281,7 +272,7 @@ def securities_symbol_add(request):
             return redirect("settings-securities-symbols")
     else:
         form = SecuritiesSymbolForm()
-    
+
     context = {
         "page": "settings",
         "form": form,
@@ -294,15 +285,15 @@ def securities_symbol_add(request):
 def securities_symbol_edit(request, id):
     """Edit an existing securities symbol."""
     symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
-    
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = SecuritiesSymbolForm(request.POST, instance=symbol)
         if form.is_valid():
             form.save()
             return redirect("settings-securities-symbols")
     else:
         form = SecuritiesSymbolForm(instance=symbol)
-    
+
     context = {
         "page": "settings",
         "form": form,
@@ -318,6 +309,3 @@ def securities_symbol_delete(request, id):
     symbol = get_object_or_404(SecuritiesSymbol, id=id, user=request.user)
     symbol.delete()
     return redirect("settings-securities-symbols")
-
-
-
