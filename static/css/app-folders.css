@@ -6,7 +6,7 @@
  * ------------------------------------------------*/
 
 .folder-icon {
-  color: var(--warm-gray-400);
+  color: var(--stone-400);
   margin-right: 1rem;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .folder-icon-home {
-  color: var(--warm-gray-400);
+  color: var(--stone-400);
   margin-right: 1rem;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .shared-indicator .bi-people-fill {
-  color: var(--warm-gray-300);
+  color: var(--stone-300);
 }
 
 
