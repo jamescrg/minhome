@@ -5,15 +5,17 @@
 <div class="col-lg drop-zone" data-column="{{ forloop.counter }}">
 
   {% for folder in column %}
-    <div class="card folder">
+    <div class="card folder"
+         data-folder-id="{{ folder.id }}"
+         data-current-column="{{ folder.home_column }}">
 
       {# card title #}
 
-      <div class="card-title flex-center-space">
+      <div class="card-title drag-handle flex-center-space">
 
-        <a href="/folders/{{ folder.id }}/favorites">{{ folder.name }}</a>
+        <a href="{% url 'folder-select' id=folder.id page='favorites' origin='home' %}">{{ folder.name }}</a>
 
-        <a class="folder-icon" href="javascript:showHideHomeControls('{{ folder.id }}');">
+        <a class="folder-icon" href="#" onclick="return false;">
           <i class="bi-columns"></i>
         </a>
 
@@ -47,9 +49,14 @@
         {% for favorite in folder.favorites %}
           {% if favorite.folder_id == folder.id %}
 
-            <li class="list-group-item home-item flex-end-space">
+            <li class="list-group-item home-item flex-end-space favorite-item"
+                data-favorite-id="{{ favorite.id }}"
+                data-folder-id="{{ folder.id }}">
 
-              <a class="home-link" href="{{ favorite.url }}">{{ favorite.name }}</a>
+              <a class="home-link favorite-drag-link"
+                 href="{{ favorite.url }}"
+                 data-favorite-id="{{ favorite.id }}"
+                 data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
 
               <a class="favorite-controls home-link-controls-{{ folder.id }}"
                 style="display:none;"

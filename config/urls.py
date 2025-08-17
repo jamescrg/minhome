@@ -33,6 +33,36 @@ urlpatterns = [
         "home/favorite/<int:id>/<str:direction>/", home.favorite, name="home-favorite"
     ),
     path("home/toggle/<str:section>", home.toggle, name="home-toggle"),
+    path(
+        "home/update-folder-column/",
+        home.update_folder_column,
+        name="home-update-folder-column",
+    ),
+    path(
+        "home/swap-folder-positions/",
+        home.swap_folder_positions,
+        name="home-swap-folder-positions",
+    ),
+    path(
+        "home/insert-folder-at-position/",
+        home.insert_folder_at_position,
+        name="home-insert-folder-at-position",
+    ),
+    path(
+        "home/swap-favorite-positions/",
+        home.swap_favorite_positions,
+        name="home-swap-favorite-positions",
+    ),
+    path(
+        "home/insert-favorite-at-position/",
+        home.insert_favorite_at_position,
+        name="home-insert-favorite-at-position",
+    ),
+    path(
+        "home/move-favorite-to-folder/",
+        home.move_favorite_to_folder,
+        name="home-move-favorite-to-folder",
+    ),
     # favorites
     path("favorites/", favorites.index, name="favorites"),
     path("favorites/add", favorites.add, name="favorites-add"),
