@@ -12,6 +12,42 @@ from apps.home.toggle import show_section
 from apps.tasks.models import Task
 
 
+def get_search_context(user):
+    """Get search engine context for a user"""
+    engines = [
+        {
+            "id": "google",
+            "name": "Google",
+            "url": "google.com/search"
+        },
+        {
+            "id": "duckduckgo",
+            "name": "DuckDuckGo",
+            "url": "duckduckgo.com/"
+        },
+        {
+            "id": "wikipedia",
+            "name": "Wikipedia",
+            "url": "en.wikipedia.org/w/index.php"
+        },
+        {
+            "id": "bing",
+            "name": "Bing",
+            "url": "bing.com/"
+        },
+    ]
+
+    search_engine = "google"
+    for engine in engines:
+        if engine["id"] == user.search_engine:
+            search_engine = engine
+
+    return {
+        "engines": engines,
+        "search_engine": search_engine,
+    }
+
+
 @login_required
 def index(request):
     """Display the home page.
@@ -81,35 +117,7 @@ def index(request):
 
     # SEARCH
     # ----------------
-
-    engines = [
-        {
-            "id": "google",
-            "name": "Google",
-            "url": "google.com/search"
-        },
-        {
-            "id": "duckduckgo",
-            "name": "DuckDuckGo",
-            "url": "duckduckgo.com/"
-        },
-        {
-            "id": "wikipedia",
-            "name": "Wikipedia",
-            "url": "en.wikipedia.org/w/index.php"
-        },
-        {
-            "id": "bing",
-            "name": "Bing",
-            "url": "bing.com/"
-        },
-    ]
-
-
-    search_engine = "google"
-    for engine in engines:
-        if engine["id"] == user.search_engine:
-            search_engine = engine
+    search_context = get_search_context(user)
 
     # FAVORITES
     # ----------------
@@ -134,8 +142,6 @@ def index(request):
     context = {
         "page": "home",
         "origin": "home",
-        "engines": engines,
-        "search_engine": search_engine,
         "show_tasks": show_tasks,
         "task_folders": task_folders,
         "some_tasks": some_tasks,
@@ -144,6 +150,9 @@ def index(request):
         "columns": columns,
         "moved_folder": moved_folder,
     }
+    
+    # Add search context
+    context.update(search_context)
 
     return render(request, "home/content.html", context)
 

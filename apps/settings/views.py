@@ -161,6 +161,18 @@ def search_engine(request):
     user = request.user
     user.search_engine = request.POST['search_engine']
     user.save()
+    
+    # Handle HTMX requests
+    if request.headers.get('HX-Request'):
+        # Import here to avoid circular imports
+        from apps.home.views import get_search_context
+        
+        # Get updated search context
+        context = get_search_context(user)
+        
+        # Return just the search section
+        return render(request, 'home/search.html', context)
+    
     return redirect("/home")
 
 
