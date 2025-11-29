@@ -1,20 +1,19 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-
-  {# -- events -- #}
-  {% if show_events and events %}
-    {% include "home/events.html" %}
-  {% endif %}
-
-  {# -- tasks -- #}
-  {% if show_tasks and task_folders and some_tasks %}
-    {% include "home/tasks.html" %}
-  {% endif %}
-
-  {# -- search -- #}
-  {% include "home/search.html" %}
-
-  {# -- favorites -- #}
-  {% include "home/favorites.html" %}
-
+    {# -- events -- #}
+    {% if show_events and events %}
+        {% include "home/events.html" %}
+    {% endif %}
+    {# -- tasks -- #}
+    {% if show_tasks and task_folders and some_tasks %}
+        {% include "home/tasks.html" %}
+    {% endif %}
+    {# -- due tasks -- #}
+    {% if show_due_tasks and due_tasks %}
+        {% include "home/due_tasks.html" %}
+    {% endif %}
+    {# -- search -- #}
+    {% include "home/search.html" %}
+    {# -- favorites -- #}
+    {% include "home/favorites.html" %}
 {% endblock content %}

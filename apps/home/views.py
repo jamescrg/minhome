@@ -1,10 +1,8 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 
 import apps.home.google as google
 from apps.favorites.models import Favorite
@@ -100,6 +98,24 @@ def index(request):
             if folder.tasks:
                 some_tasks = True
 
+    # DUE TASKS
+    # ----------------
+
+    # check whether due tasks section is shown or hidden
+    show_due_tasks = show_section(user, "due_tasks")
+
+    # if due tasks are shown, load tasks due in the next 3 days
+    due_tasks = []
+    if show_due_tasks:
+        today = date.today()
+        three_days = today + timedelta(days=3)
+        due_tasks = Task.objects.filter(
+            user=user,
+            status=0,
+            due_date__gte=today,
+            due_date__lte=three_days,
+        ).order_by("due_date", "due_time", "title")
+
     # SEARCH
     # ----------------
     search_context = get_search_context(user)
@@ -129,6 +145,8 @@ def index(request):
         "show_tasks": show_tasks,
         "task_folders": task_folders,
         "some_tasks": some_tasks,
+        "show_due_tasks": show_due_tasks,
+        "due_tasks": due_tasks,
         "events": events,
         "show_events": show_events,
         "columns": columns,
@@ -149,10 +167,10 @@ def toggle(request, section):
         section (str): the section to toggle
 
     Notes:
-        Page sections appear in the morning, this turns them off
+        Page sections appear in the morning, this turns them off.
 
-        Session based, so that sections are only turned off for
-        the specific browser from whcih they are toggled
+        The hidden state is stored per-user on the CustomUser model
+        (home_{section}_hidden field) and syncs across all devices.
 
     """
 
@@ -495,7 +513,10 @@ def swap_folder_positions(request):
         # Ensure folders are in the same column
         if dragged_folder.home_column != target_folder.home_column:
             return JsonResponse(
-                {"success": False, "error": "Folders must be in the same column to swap"}
+                {
+                    "success": False,
+                    "error": "Folders must be in the same column to swap",
+                }
             )
 
         # Swap the home_rank values
@@ -521,14 +542,9 @@ def insert_folder_at_position(request):
         return JsonResponse({"success": False, "error": "Only POST method allowed"})
 
     try:
+        # Validate folder exists and belongs to user
         folder_id = int(request.POST.get("folder_id"))
-        target_column = int(request.POST.get("target_column"))
-        target_position = int(request.POST.get("target_position"))
-
-        # Get the folder and update its position
-        moved_folder = get_object_or_404(
-            Folder, pk=folder_id, user=request.user, page="favorites"
-        )
+        get_object_or_404(Folder, pk=folder_id, user=request.user, page="favorites")
 
         # Use the existing update_folder_column logic
         return update_folder_column(request)
@@ -619,16 +635,18 @@ def move_favorite_to_folder(request):
         target_folder_id = int(request.POST.get("target_folder_id"))
 
         # Get the favorite
-        favorite = get_object_or_404(Favorite, pk=dragged_favorite_id, user=request.user)
+        favorite = get_object_or_404(
+            Favorite, pk=dragged_favorite_id, user=request.user
+        )
 
         # Update folder
         favorite.folder_id = target_folder_id
-        
+
         # Set to end of folder favorites list
         folder_favorites = Favorite.objects.filter(
             user=request.user, folder_id=target_folder_id, home_rank__gt=0
         ).order_by("home_rank")
-        
+
         if folder_favorites:
             favorite.home_rank = folder_favorites.last().home_rank + 1
         else:
