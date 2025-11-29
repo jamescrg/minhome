@@ -28,11 +28,13 @@ def get_events(user_id):
     service = build_service(user_id)
 
     now = datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
+    one_week = (datetime.utcnow() + timedelta(days=7)).isoformat() + "Z"
     events_result = (
         service.events()
         .list(
             calendarId="primary",
             timeMin=now,
+            timeMax=one_week,
             maxResults=10,
             singleEvents=True,
             orderBy="startTime",

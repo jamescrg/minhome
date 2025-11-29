@@ -3,11 +3,11 @@
 /* task form */
 /* ------------------------------------------------------------------------- */
 
-.task-add {
+.tasks-add {
   margin-bottom: 1rem;
 }
 
-.task-add .form-control {
+.tasks-add .form-control {
   box-shadow: none;
   outline: none;
 }
@@ -17,76 +17,93 @@
 /* task list */
 /* ------------------------------------------------------------------------- */
 
-.task-list-title{
+.tasks-list-title{
   border-left: none;
   border-right: none;
   border-top: none;
   font-weight: 600;
 }
 
-.task-list {
+.tasks-list {
   margin-bottom: 1.5rem;
 }
 
 @media (max-width: 768px) {
 
-  .task-list li {
+  .tasks-list li {
     padding-bottom: 0.7rem;
     padding-top: 0.7rem;
   }
 
-  .task-checkbox {
+  .tasks-checkbox {
     margin-top: 0.1rem !important;
     padding-top: 0;
   }
 
-  .task-checkbox a {
+  .tasks-checkbox a {
     font-size: 1.1rem;
   }
 
 } /* end media exception */
 
-.task-checkbox {
+.tasks-checkbox {
   font-size: 0.96rem;
   margin-right: 1rem;
   margin-top: 0.2rem;
 }
 
-.task-checkbox i {
+.tasks-checkbox i {
   position: relative;
-  top: -0.2rem;
+  top: -0.15rem;
 }
 
-.task-checkbox a,
-.task-checkbox a:hover {
+.tasks-checkbox a,
+.tasks-checkbox a:hover {
   color: var(--stone-400);
 }
 
-.task-row {
+.tasks-row {
   display: flex;
   align-items: flex-start;
 }
 
-.task-content {
+.tasks-folder {
+  color: var(--stone-400);
+  min-width: 8rem;
+  white-space: nowrap;
+}
+
+.tasks-folder .bi-folder {
+  margin-right: 1rem;
+  position: relative;
+  top: 0.1rem;
+}
+
+.tasks-folder a,
+.tasks-folder a:hover {
+  /* color: var(--stone-400); */
+}
+
+.tasks-content {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.task-due {
+.tasks-due {
   color: var(--stone-500);
   font-size: 0.85rem;
   white-space: nowrap;
 }
 
 @media (max-width: 576px) {
-  .task-content {
+  .tasks-content {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .task-due {
+  .tasks-due {
     margin-top: 0.25rem;
   }
 }
@@ -101,4 +118,13 @@
 
 #id_folder {
   max-width: 300px;
+}
+
+.tasks-delete,
+.tasks-delete:hover {
+  color: var(--orange-800);
+}
+
+.tasks-delete i {
+  margin-right: 0.25rem;
 }
