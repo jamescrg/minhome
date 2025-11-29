@@ -62,3 +62,4 @@ urwid==2.6.15
 urwid_readline==0.14
 virtualenv==20.26.3
 wcwidth==0.2.13
+twilio==9.3.7
