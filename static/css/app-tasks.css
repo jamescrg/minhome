@@ -52,9 +52,43 @@
   margin-top: 0.2rem;
 }
 
+.task-checkbox i {
+  position: relative;
+  top: -0.2rem;
+}
+
 .task-checkbox a,
 .task-checkbox a:hover {
   color: var(--stone-400);
+}
+
+.task-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.task-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-due {
+  color: var(--stone-500);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+  .task-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-due {
+    margin-top: 0.25rem;
+  }
 }
 
 .clear {

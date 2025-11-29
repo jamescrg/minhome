@@ -19,6 +19,8 @@ class CustomUserAdmin(UserAdmin):
         "home_events_hidden",
         "home_tasks",
         "home_tasks_hidden",
+        "home_due_tasks",
+        "home_due_tasks_hidden",
         "home_search",
         "favorites_folder",
         "contacts_folder",
@@ -29,7 +31,47 @@ class CustomUserAdmin(UserAdmin):
         "tasks_folders",
         "tasks_active_folder",
     ]
-    fieldsets = UserAdmin.fieldsets
+    fieldsets = UserAdmin.fieldsets + (
+        (
+            "Preferences",
+            {
+                "fields": (
+                    "theme",
+                    "search_engine",
+                    "zip",
+                )
+            },
+        ),
+        (
+            "Home Page",
+            {
+                "fields": (
+                    "home_events",
+                    "home_events_hidden",
+                    "home_tasks",
+                    "home_tasks_hidden",
+                    "home_due_tasks",
+                    "home_due_tasks_hidden",
+                    "home_search",
+                )
+            },
+        ),
+        (
+            "Selected Items",
+            {
+                "fields": (
+                    "favorites_folder",
+                    "contacts_folder",
+                    "contacts_contact",
+                    "notes_folder",
+                    "notes_note",
+                    "tasks_folder",
+                    "tasks_folders",
+                    "tasks_active_folder",
+                )
+            },
+        ),
+    )
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

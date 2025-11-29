@@ -1,48 +1,32 @@
-
-
 <ul class="list-group task-list">
-
-  <li class="list-group-item task-list-title">
-
-  {% if selected_folder %}
-
-    {{ selected_folder.name }}
-
-  {% endif %}
-
-  {% for task in selected_folder.tasks %}
-
-    <li class="list-group-item flex-start-left">
-
-      <div class="task-checkbox">
-
-        <a href="/tasks/{{ task.id }}/complete{% if origin %}/{{origin}}{%endif%}">
-
-          {% if task.status == 1 %}
-
-            <i class="bi bi-check-square"></i>
-
-          {% else %}
-
-            <i class="bi bi-square"></i>
-
-          {% endif %}
-
-        </a>
-
-      </div>
-
-      <div class="task-title">
-
-        <a href="/tasks/{{ task.id }}/edit" {% if task.status == 1 %}
-          style="text-decoration: line-through; color: gray;" {% endif %}>
-          {{ task.title}}
-        </a>
-
-      </div>
-
+    <li class="list-group-item task-list-title">
+        {% if selected_folder %}{{ selected_folder.name }}{% endif %}
     </li>
-
-  {% endfor %}
-
+    {% for task in selected_folder.tasks %}
+        <li class="list-group-item task-row">
+            <div class="task-checkbox">
+                <a href="{% if origin %}{% url 'tasks-complete' task.id origin %}{% else %}{% url 'tasks-complete' task.id %}{% endif %}">
+                    {% if task.status == 1 %}
+                        <i class="bi bi-check-square"></i>
+                    {% else %}
+                        <i class="bi bi-square"></i>
+                    {% endif %}
+                </a>
+            </div>
+            <div class="task-content">
+                <div class="task-title">
+                    <a href="{% url 'tasks-edit' task.id %}"
+                       {% if task.status == 1 %}style="text-decoration: line-through; color: gray;"{% endif %}>
+                        {{ task.title }}
+                    </a>
+                </div>
+                {% if task.due_date %}
+                    <div class="task-due">
+                        {{ task.due_date|date:"M j" }}
+                        {% if task.due_time %}{{ task.due_time|time:"g:i A" }}{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
 </ul>
