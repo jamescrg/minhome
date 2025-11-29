@@ -73,6 +73,7 @@ urlpatterns = [
     path("tasks/", tasks.index, name="tasks"),
     path("tasks/add", tasks.add, name="tasks-add"),
     path("tasks/<int:id>/edit", tasks.edit, name="tasks-edit"),
+    path("tasks/<int:id>/delete", tasks.delete, name="tasks-delete"),
     path("tasks/<int:id>/complete", tasks.status, name="tasks-complete"),
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
     path("tasks/clear", tasks.clear, name="tasks-clear"),

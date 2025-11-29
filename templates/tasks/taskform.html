@@ -1,11 +1,12 @@
-
-<form role="form" class="task-add" method="post" action="/tasks/add" >
-
-  {% csrf_token %}
-
-	<input type="hidden" name="folder_id" value="{{ selected_folder.id }}">
-
-		<input class="form-control mh-no-shadow"
-    type="text" name="title" autofocus required>
-
+<form role="form"
+      class="tasks-add"
+      method="post"
+      action="{% url 'tasks-add' %}">
+    {% csrf_token %}
+    <input type="hidden" name="folder_id" value="{{ selected_folder.id }}">
+    <input class="form-control mh-no-shadow"
+           type="text"
+           name="title"
+           autofocus
+           required>
 </form>

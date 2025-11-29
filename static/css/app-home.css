@@ -1,5 +1,3 @@
-@import "app-tasks.css";
-
 /*------------------------------------------------
  * layout
  * ------------------------------------------------*/
@@ -13,7 +11,7 @@
  * tasks and events
  * ------------------------------------------------*/
 
-.task-list-title {
+.tasks-list-title {
   border-left: none;
   border-right: none;
   border-top: none;

@@ -7,10 +7,16 @@
             </a>
         </div>
     </div>
-    <ul class="list-group task-list">
+    <ul class="list-group tasks-list">
         {% for task in due_tasks %}
-            <li class="list-group-item task-row">
-                <div class="task-checkbox">
+            <li class="list-group-item tasks-row">
+                {% if task.folder %}
+                    <div class="tasks-folder">
+                        <i class="bi bi-folder"></i>
+                        <a href="{% url 'folder-select' task.folder.id 'tasks' %}">{{ task.folder.name }}</a>
+                    </div>
+                {% endif %}
+                <div class="tasks-checkbox">
                     <a href="{% if origin %}{% url 'tasks-complete' task.id origin %}{% else %}{% url 'tasks-complete' task.id %}{% endif %}">
                         {% if task.status == 1 %}
                             <i class="bi bi-check-square"></i>
@@ -19,11 +25,11 @@
                         {% endif %}
                     </a>
                 </div>
-                <div class="task-content">
-                    <div class="task-title">
+                <div class="tasks-content">
+                    <div class="tasks-title">
                         <a href="{% url 'tasks-edit' task.id %}">{{ task.title }}</a>
                     </div>
-                    <div class="task-due">
+                    <div class="tasks-due">
                         {{ task.due_date|date:"M j" }}
                         {% if task.due_time %}{{ task.due_time|time:"g:i A" }}{% endif %}
                     </div>

@@ -144,10 +144,23 @@ def edit(request, id):
             "folders": folders,
             "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
+            "task": task,
             "form": form,
         }
 
         return render(request, "tasks/content.html", context)
+
+
+@login_required
+def delete(request, id):
+    """Delete a task.
+
+    Args:
+        id (int): A Task instance id
+    """
+    task = get_object_or_404(Task, pk=id, user=request.user)
+    task.delete()
+    return redirect("tasks")
 
 
 @login_required
