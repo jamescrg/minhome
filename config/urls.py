@@ -176,6 +176,7 @@ urlpatterns = [
     # lab
     path("lab/", lab.index, name="lab"),
     path("lab/email", lab.email_test, name="email-test"),
+    path("lab/sms/", lab.sms_test, name="sms-test"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

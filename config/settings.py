@@ -264,6 +264,12 @@ SECURITIES_ASSET_LIST = [
 # Test email recipient
 TEST_EMAIL_RECIPIENT = [env("TEST_EMAIL_RECIPIENT")]
 
+# Twilio SMS Settings
+TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID", default="")
+TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN", default="")
+TWILIO_PHONE_NUMBER = env("TWILIO_PHONE_NUMBER", default="")
+SMS_RECIPIENT = env("SMS_RECIPIENT", default="")
+
 
 # set cookies (sessions) to last for two months
 # default is two weeks, multiplying by four to get two months

@@ -4,6 +4,8 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     zip = models.IntegerField(null=True, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True, default="")
+    sms_notifications = models.BooleanField(default=True)
     google_credentials = models.TextField(null=True, blank=True)
     theme = models.TextField(default="", blank=True)
     search_engine = models.TextField(default="google", blank=True)
