@@ -1,48 +1,42 @@
 
-
 body {
   background: var(--stone-300);
-  color: var(--neutral-700);
+  color: var(--stone-700);
 }
 
 a,
 a:hover {
-  color: var(--blue-700);
+  /* color: var(--sky-700); */
 }
 
 .navbar {
-  background: var(--neutral-700);
+  background: var(--stone-700);
 }
 
-.navbar-expand-lg .navbar-nav .nav-link {
-  color: var(--neutral-200);
+.navbar a {
+  color: var(--stone-350);
+  font-weight: 400;
 }
 
-.nav-active {
-  background: var(--neutral-600);
+.navbar .active {
+  background: var(--stone-300);
 }
 
-.navbar-toggler-icon {
+.navbar .active a {
   color: var(--stone-600);
 }
 
-.btn-nav {
-  color: var(--neutral-200);
-}
-
-
 .folder-controls a,
 .favorite-controls {
-	color: var(--neutral-600);
+  color: var(--stone-600);
 }
-
 
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--neutral-700);
+  background: var(--stone-700);
   border: none;
-  color: var(--neutral-200);
+  color: var(--stone-200);
 }
 
 .bi-plus-lg {
