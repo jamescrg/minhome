@@ -1,44 +1,27 @@
 {% load crispy_forms_tags %}
-
 <div class="col-lg-9 order-lg-2">
-
-  <div class="card">
-
-    <div class="card-title flex-center-space">
-      <h1>
-        {% if not edit %}
-
-          Add Contact
-
-        {% else %}
-
-          Edit Contact
-
+    <div class="card">
+        <div class="card-title flex-center-space">
+            <h1>
+                {% if not edit %}
+                    Add Contact
+                {% else %}
+                    Edit Contact
+                {% endif %}
+            </h1>
+            <a href="{% url 'contacts' %}">
+                <i class="bi bi-arrow-return-left"></i>
+            </a>
+        </div>
+        {% if user.id == 1 and not user.google_credentials %}
+            <div class="warn">
+                Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="{% url 'settings' %}">here</a> to connect.
+            </div>
         {% endif %}
-      </h1>
-
-      <a href="/contacts">
-        <i class="bi bi-arrow-return-left"></i>
-      </a>
+        <form action="{{ action }}" class="large-form" method="post" role="form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
     </div>
-
-
-    {% if user.id == 1 and not user.google_credentials %}
-
-    <div class="warn">
-      Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="/settings">here</a> to connect.
-    </div>
-
-    {% endif %}
-
-    <form action="{{ action }}" class="large-form" method="post" role="form">
-
-      {% csrf_token %}
-
-      {{ form|crispy }}
-
-      <button class="btn btn-primary" type="submit">Submit</button>
-
-    </form>
-  </div>
 </div>

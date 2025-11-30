@@ -1,40 +1,50 @@
-
 <div class="dropdown">
-  <button class="btn-icon menu-icon"
-    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-      {% if folder.editors.all %}
-          <span class="shared-indicator" title="Shared with {{ folder.editors.count }} user{{ folder.editors.count|pluralize }}">
-              <i class="bi bi-people-fill"></i>
-          </span>
-      {% else %}
-          <i class="bi bi-three-dots-vertical"></i>
-      {% endif %}
-  </button>
-  <ul class="dropdown-menu">
-    {% if folder.user == user %}
-      <li><a class="dropdown-item" href="#" onclick="showEditFolderForm({{ folder.id }})">Edit</a></li>
-      <li><a class="dropdown-item" href="/folders/share/{{ folder.id }}/{{ page }}">Share</a></li>
-      <li><a class="dropdown-item"
-              href="/folders/home/{{ folder.id }}/{{ page }}">
-            {% if not folder.home_rank %}
-              Add to Home
-            {% else %}
-              Remove from Home
-            {% endif %}
-          </a>
-      </li>
-      <li><a class="dropdown-item"
-          href="/folders/delete/{{ folder.id }}/{{ page }}"
-          onclick="javascript: return confirm('Are you sure you want to delete this folder?')">
-            Delete
-          </a>
-      </li>
-    {% else %}
-      <li><span class="dropdown-item-text text-muted">
-        <i class="bi bi-people"></i>
-        Shared folder
-      </span></li>
-    {% endif %}
-  </ul>
+    <button class="btn-icon menu-icon"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        {% if folder.editors.all %}
+            <span class="shared-indicator"
+                  title="Shared with {{ folder.editors.count }} user{{ folder.editors.count|pluralize }}">
+                <i class="bi bi-people-fill"></i>
+            </span>
+        {% else %}
+            <i class="bi bi-three-dots-vertical"></i>
+        {% endif %}
+    </button>
+    <ul class="dropdown-menu">
+        {% if folder.user == user %}
+            <li>
+                <a class="dropdown-item"
+                   href="#"
+                   onclick="showEditFolderForm({{ folder.id }})">Edit</a>
+            </li>
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'folder-share' id=folder.id page=page %}">Share</a>
+            </li>
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'folder-home' id=folder.id page=page %}">
+                    {% if not folder.home_rank %}
+                        Add to Home
+                    {% else %}
+                        Remove from Home
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'folder-delete' id=folder.id page=page %}"
+                   onclick="javascript: return confirm('Are you sure you want to delete this folder?')">Delete</a>
+            </li>
+        {% else %}
+            <li>
+                <span class="dropdown-item-text text-muted">
+                    <i class="bi bi-people"></i>
+                    Shared folder
+                </span>
+            </li>
+        {% endif %}
+    </ul>
 </div>
-

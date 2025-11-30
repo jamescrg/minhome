@@ -182,6 +182,8 @@ def home_options(request, option, value):
         user.home_events = value
     if option == "tasks":
         user.home_tasks = value
+    if option == "due_tasks":
+        user.home_due_tasks = value
 
     user.save()
     return redirect("/settings")

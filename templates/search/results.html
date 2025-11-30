@@ -1,167 +1,107 @@
-
 <div class="row">
-
-	<div class="card">
-
-    <div class="card-title">
-      <h1>
-        Favorites
-      </h1>
+    <div class="card">
+        <div class="card-title">
+            <h1>Favorites</h1>
+        </div>
+        {% if favorites %}
+            <table class="table">
+                <tr>
+                    <th>Folder</th>
+                    <th>Favorite</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                {% for favorite in favorites %}
+                    <tr>
+                        <td class="folder">
+                            {% if favorite.folder.name %}
+                                <a href="{% url 'folder-select' id=favorite.folder.id page='favorites' %}">{{ favorite.folder.name }}</a>
+                            {% else %}
+                                <a href="{% url 'folder-select' id=0 page='favorites' %}">Unsorted</a>
+                            {% endif %}
+                        </td>
+                        <td class="favorite-name">
+                            <a href="{{ favorite.url }}">{{ favorite.name }}</a>
+                        </td>
+                        <td class="favorite-description">{{ favorite.description|slice:"0:50"|default:"" }}</td>
+                        <td class="credentials">
+                            {% if favorite.login %}
+                                <div id="credential-hint-{{ favorite.id }}">
+                                    <a href="#"
+                                       onclick="showHideCredentials('{{ favorite.id }}'); return false;">
+                                        <i class="bi bi-briefcase-fill"></i>
+                                    </a>
+                                </div>
+                                <div id="credential-data-{{ favorite.id }}"
+                                     class="credential-data"
+                                     style="display:none">
+                                    {{ favorite.login }} | {{ favorite.root }} {{ favorite.passkey }}
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </div>
-
-		{% if favorites %}
-
-      <table class="table">
-
-        <tr>
-          <th>Folder
-          <th>Favorite
-          <th>Description
-          <th>
-
-        {% for favorite in favorites %}
-
-          <tr>
-
-            <td class="folder">
-
-              {% if favorite.folder.name %}
-
-                <a href="/folders/{{ favorite.folder.id }}/favorites">
-                  {{ favorite.folder.name}}
-                </a>
-
-              {% else %}
-
-                <a href="/folders/0/favorites">Unsorted</a>
-
-              {% endif %}
-
-            <td class="favorite-name">
-
-              <a href="{{ favorite.url }}">{{ favorite.name}}</a>
-
-            <td class="favorite-description">
-
-              {{ favorite.description|slice:"0:50"|default:"" }}
-
-              <td  class="credentials">
-
-                {% if favorite.login  %}
-
-                  <div id="credential-hint-{{ favorite.id }}">
-
-                    <a href="javascript:showHideCredentials('{{ favorite.id }}');">
-                      <i class="bi bi-briefcase-fill"></i>
-                    </a>
-
-                  </div>
-
-                  <div id="credential-data-{{ favorite.id }}" class="credential-data"
-                    style="display:none;">
-                    {{ favorite.login }} | {{ favorite.root}} {{ favorite.passkey}}
-                  </div>
-
-                {% endif %}
-
-          </tr>
-
-        {% endfor %}
-
-      </table>
-
-		{% endif %}
-
-  </div>
-
-	<div class="card">
-
-    <div class="card-title">
-      <h1>
-        Contacts
-      </h1>
+    <div class="card">
+        <div class="card-title">
+            <h1>Contacts</h1>
+        </div>
+        {% if contacts %}
+            <table class="table">
+                <tr>
+                    <th>Folder</th>
+                    <th>Name</th>
+                    <th>Phone1</th>
+                    <th>Email</th>
+                </tr>
+                {% for contact in contacts %}
+                    <tr>
+                        <td class="folder">
+                            {% if contact.folder %}
+                                <a href="{% url 'folder-select' id=contact.folder.id page='contacts' %}">{{ contact.folder.name }}</a>
+                            {% else %}
+                                <a href="{% url 'folder-select' id=0 page='contacts' %}">Unsorted</a>
+                            {% endif %}
+                        </td>
+                        <td class="contact-name">
+                            <a href="{% url 'contacts-select' id=contact.id %}">{{ contact.name }}</a>
+                        </td>
+                        <td class="contact-phone1">{{ contact.phone1 }}</td>
+                        <td class="contact-email">{{ contact.email|default:"" }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </div>
-
-		{% if contacts %}
-
-      <table class="table">
-
-        <tr>
-          <th>Folder
-          <th>Name
-          <th>Phone1
-          <th>Email
-
-        {% for contact in contacts %}
-
-          <tr>
-            <td class="folder">
-              {% if contact.folder %}
-                <a href="/folders/{{ contact.folder.id }}/contacts">
-                  {{ contact.folder.name }}
-                </a>
-              {% else %}
-                <a href="/folders/0/contacts">Unsorted</a>
-              {% endif %}
-
-            <td class="contact-name">
-              <a href="/contacts/{{ contact.id }}">{{ contact.name }}</a>
-
-            <td class="contact-phone1">
-              {{ contact.phone1 }}
-
-            <td class="contact-email">
-              {{ contact.email|default:"" }}
-
-        {% endfor %}
-
-      </table>
-
-		{% endif %}
-
-	</div>
-
-	<div class="card">
-
-    <div class="card-title">
-      <h1>
-        Notes
-      </h1>
+    <div class="card">
+        <div class="card-title">
+            <h1>Notes</h1>
+        </div>
+        {% if notes %}
+            <table class="table">
+                <tr>
+                    <th>Folder</th>
+                    <th>Subject</th>
+                    <th>Preview (Raw Text)</th>
+                </tr>
+                {% for note in notes %}
+                    <tr>
+                        <td class="folder">
+                            {% if note.folder %}
+                                <a href="{% url 'folder-select' id=note.folder.id page='notes' %}">{{ note.folder.name }}</a>
+                            {% else %}
+                                <a href="{% url 'folder-select' id=0 page='notes' %}">Unsorted</a>
+                            {% endif %}
+                        </td>
+                        <td class="note-subject">
+                            <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
+                        </td>
+                        <td class="note">{{ note.note|slice:":300"|safe }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </div>
-
-		{% if notes %}
-
-      <table class="table">
-
-        <tr>
-          <th>Folder
-          <th>Subject
-          <th>Preview (Raw Text)
-
-        {% for note in notes %}
-
-          <tr>
-
-            <td class="folder">
-              {% if note.folder %}
-                <a href="{% url 'folder-select' id=note.folder.id page='notes' %}">{{ note.folder.name }}</a>
-              {% else %}
-                <a href="{% url 'folder-select' id=0 page='notes' %}">Unsorted</a>
-              {% endif %}
-
-            <td class="note-subject">
-              <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
-            <td class="note">{{ note.note|slice:":300"|safe }}
-
-          </tr>
-
-        {% endfor %}
-
-      </table>
-
-		{% endif %}
-
-	</div>
-
-
 </div>

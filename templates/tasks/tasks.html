@@ -1,23 +1,10 @@
-
 <div class="card">
-
-  <div class="card-title">
-    <h1>
-      Tasks
-    </h1>
-  </div>
-
-	{% include 'tasks/taskform.html' %}
-
-  {% include 'tasks/task_list.html' %}
-
-
-  <div class="clear">
-
-    <a href="/tasks/clear">
-      Clear Checked
-    </a>
-
-  </div>
-
+    <div class="card-title">
+        <h1>Tasks</h1>
+    </div>
+    {% include "tasks/taskform.html" %}
+    {% include "tasks/task_list.html" %}
+    <div class="clear">
+        <a href="{% url 'tasks-clear' %}">Clear Checked</a>
+    </div>
 </div>
