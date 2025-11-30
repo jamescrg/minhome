@@ -272,3 +272,12 @@ li {
   padding: 0.1rem 0.5rem;
   text-align: center;
 }
+
+
+/* alerts */
+
+.alert-info {
+  background-color: var(--stone-50);
+  color: var(--stone-700);
+  border-color: var(--stone-300);
+}

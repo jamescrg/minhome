@@ -28,11 +28,13 @@ def index(request):
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(folder=selected_folder).order_by("status", "title")
+        tasks = Task.objects.filter(
+            folder=selected_folder, is_recurring=False
+        ).order_by("status", "title")
     else:
-        tasks = Task.objects.filter(user=user, folder__isnull=True).order_by(
-            "status", "title"
-        )
+        tasks = Task.objects.filter(
+            user=user, folder__isnull=True, is_recurring=False
+        ).order_by("status", "title")
 
     context = {
         "page": "tasks",
@@ -114,12 +116,68 @@ def edit(request, id):
         except ObjectDoesNotExist:
             raise Http404("Record not found.")
 
+        # Check if this task was already recurring before the edit
+        was_recurring = task.is_recurring
+
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             task = form.save(commit=False)
             task.user = user
             task.title = task.title[0].upper() + task.title[1:]
+
+            # Handle recurrence from the dropdown
+            recurrence = form.cleaned_data.get("recurrence")
+            if recurrence:
+                task.is_recurring = True
+                task.recurrence_type = recurrence
+
+                # Set recurrence_day based on due_date
+                if task.due_date:
+                    if recurrence == "daily":
+                        task.recurrence_day = None
+                    elif recurrence == "monthly":
+                        task.recurrence_day = task.due_date.day
+                    elif recurrence == "weekly":
+                        task.recurrence_day = task.due_date.weekday()
+                    elif recurrence == "yearly":
+                        task.recurrence_day = task.due_date.day
+                        task.recurrence_month = task.due_date.month
+            else:
+                task.is_recurring = False
+                task.recurrence_type = None
+                task.recurrence_day = None
+                task.recurrence_month = None
+
             task.save()
+
+            # If task just became recurring, create the first instance immediately
+            if task.is_recurring and not was_recurring:
+                from datetime import date
+
+                Task.objects.create(
+                    user=task.user,
+                    folder=task.folder,
+                    title=task.title,
+                    status=0,
+                    due_date=task.due_date,
+                    due_time=task.due_time,
+                    parent_task=task,
+                )
+                task.last_generated = date.today()
+                task.save(update_fields=["last_generated"])
+
+            # If editing a recurring template, update the most recent incomplete instance
+            elif task.is_recurring and was_recurring:
+                latest_instance = (
+                    Task.objects.filter(parent_task=task, status=0)
+                    .order_by("-due_date")
+                    .first()
+                )
+                if latest_instance:
+                    latest_instance.folder = task.folder
+                    latest_instance.title = task.title
+                    latest_instance.due_time = task.due_time
+                    latest_instance.save()
 
         return redirect("tasks")
 
@@ -137,6 +195,10 @@ def edit(request, id):
             form = TaskForm(instance=task)
 
         form.fields["folder"].queryset = folders
+
+        # Hide recurrence field for generated instances (they have a parent_task)
+        if task.parent_task:
+            del form.fields["recurrence"]
 
         context = {
             "page": "tasks",

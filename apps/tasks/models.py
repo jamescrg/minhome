@@ -17,6 +17,13 @@ class Task(models.Model):
             1: completed
     """
 
+    RECURRENCE_CHOICES = [
+        ("daily", "Daily"),
+        ("weekly", "Weekly"),
+        ("monthly", "Monthly"),
+        ("yearly", "Yearly"),
+    ]
+
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)
@@ -24,6 +31,22 @@ class Task(models.Model):
     status = models.IntegerField(blank=True, null=True, default=0)
     due_date = models.DateField(blank=True, null=True)
     due_time = models.TimeField(blank=True, null=True)
+
+    # Recurrence fields
+    is_recurring = models.BooleanField(default=False)
+    recurrence_type = models.CharField(
+        max_length=20, blank=True, null=True, choices=RECURRENCE_CHOICES
+    )
+    recurrence_day = models.IntegerField(blank=True, null=True)
+    recurrence_month = models.IntegerField(blank=True, null=True)
+    parent_task = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="instances",
+    )
+    last_generated = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} : {self.id}"

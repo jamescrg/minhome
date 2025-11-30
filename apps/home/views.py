@@ -78,13 +78,17 @@ def index(request):
 
         # eliminate folders with no tasks
         for folder in task_folders:
-            tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
+            tasks = Task.objects.filter(
+                folder_id=folder.id, is_recurring=False
+            ).exclude(status=1)
             if not tasks:
                 task_folders = task_folders.exclude(id=folder.id)
 
         # attatch tasks to folders with tasks
         for folder in task_folders:
-            tasks = Task.objects.filter(folder_id=folder.id).exclude(status=1)
+            tasks = Task.objects.filter(
+                folder_id=folder.id, is_recurring=False
+            ).exclude(status=1)
             tasks = tasks.order_by("status", "title")
             folder.tasks = tasks
 
@@ -112,6 +116,7 @@ def index(request):
         due_tasks = Task.objects.filter(
             user=user,
             status=0,
+            is_recurring=False,
             due_date__gte=today,
             due_date__lte=three_days,
         ).order_by("due_date", "due_time", "title")
