@@ -69,7 +69,7 @@
 
 .tasks-folder {
   color: var(--stone-400);
-  min-width: 8rem;
+  min-width: 15rem;
   white-space: nowrap;
 }
 
@@ -95,6 +95,11 @@
   color: var(--stone-500);
   font-size: 0.85rem;
   white-space: nowrap;
+}
+
+.tasks-recurring {
+  color: var(--stone-400);
+  margin-left: 0.75rem;
 }
 
 @media (max-width: 576px) {
