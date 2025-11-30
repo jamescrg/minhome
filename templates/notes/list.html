@@ -1,15 +1,29 @@
 <div class="card">
     <div class="card-title flex-center-space">
         <h1>Notes</h1>
-        <a class="square-button" href="{% url 'notes-add' %}">
+        <a class="square-button"
+           href="#"
+           hx-get="{% url 'notes-form-htmx' %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">
             <i class="bi bi-plus-lg"></i>
         </a>
     </div>
-    <ul class="list-group">
-        {% for note in notes %}
-            <li class="list-group-item {% if selected_note and selected_note.id == note.id %}active-item{% endif %}">
-                <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% if notes %}
+        <ul class="list-group">
+            {% for note in notes %}
+                <li class="list-group-item {% if selected_note and selected_note.id == note.id %}active-item{% endif %}">
+                    <a href="#"
+                       hx-get="{% url 'notes-select-htmx' id=note.id %}"
+                       hx-target="#note-detail"
+                       hx-swap="innerHTML">{{ note.subject }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <ul class="list-group">
+            <li class="list-group-item">No notes.</li>
+        </ul>
+    {% endif %}
 </div>

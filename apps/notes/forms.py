@@ -1,3 +1,5 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -15,6 +17,12 @@ class NoteForm(forms.ModelForm):
         widgets = {
             "note": forms.Textarea(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout("subject", "note")
 
     def clean_subject(self):
         subject = self.cleaned_data["subject"]

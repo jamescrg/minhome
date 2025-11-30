@@ -3,6 +3,17 @@
 /* favorites list */
 /* ------------------------------------------------------------------------- */
 
+.favorites-list-title {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-weight: 600;
+}
+
+.favorites-list {
+  margin-bottom: 1.5rem;
+}
+
 .favorites .list-group-item{
   border-left: none;
   border-right: none;

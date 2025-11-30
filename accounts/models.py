@@ -27,3 +27,4 @@ class CustomUser(AbstractUser):
     tasks_folder = models.IntegerField(default=0)
     tasks_folders = models.JSONField(default=list)
     tasks_active_folder = models.IntegerField(default=0)
+    expanded_folders = models.JSONField(default=dict)

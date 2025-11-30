@@ -87,3 +87,76 @@
   border: solid 1px var(--stone-200);
   padding-right: 0.5rem;
 }
+
+
+/*------------------------------------------------
+ * folder tree hierarchy
+ * ------------------------------------------------*/
+
+.folder-tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 0.1rem;
+}
+
+.folder-caret {
+  cursor: pointer;
+  width: 1rem;
+  flex-shrink: 0;
+  color: var(--stone-400);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  right: 0.25rem;
+}
+
+.folder-caret:hover {
+  color: var(--stone-600);
+}
+
+.folder-caret-placeholder {
+  width: 1rem;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.folder-item {
+  padding: 0;
+}
+
+.folder-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-link {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.caret-icon {
+  font-size: 0.75rem;
+}
+
+.folder-depth-0 {
+  padding-left: 0;
+}
+
+.folder-depth-1 {
+  padding-left: 0.75rem;
+}
+
+.folder-depth-2 {
+  padding-left: 1.5rem;
+}
