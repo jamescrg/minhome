@@ -20,12 +20,8 @@
                                 <i class="bi bi-folder"></i>
                             </span>
                         {% endif %}
-                        <a class="folder-link"
-                           href="{% url 'folder-select' id=folder.id page=page %}"
-                           {% if page != tasks and folder.id == selected_folder.id %}style="font-weight: 600;"{% endif %}
-                           {% if page == 'tasks' and folder in selected_folders %}style="font-weight: 600;"{% endif %}>
-                            {{ folder.name }}
-                        </a>
+                        <a class="folder-link {% if page != tasks and folder.id == selected_folder.id %}text-semibold{% endif %}{% if page == 'tasks' and folder in selected_folders %}text-semibold{% endif %}"
+                           href="{% url 'folder-select' id=folder.id page=page %}">{{ folder.name }}</a>
                     </div>
                     {% include "folders/edit.html" %}
                     {% include "folders/menu.html" %}
@@ -43,9 +39,8 @@
                         <i class="bi bi-folder"></i>
                     </span>
                 {% endif %}
-                <a class="folder-link"
-                   href="{% url 'folder-select' id=0 page=page %}"
-                   {% if not selected_folder %}style="font-weight: bold;"{% endif %}>Unsorted</a>
+                <a class="folder-link {% if not selected_folder %}text-bold{% endif %}"
+                   href="{% url 'folder-select' id=0 page=page %}">Unsorted</a>
             </div>
         </li>
     </ul>

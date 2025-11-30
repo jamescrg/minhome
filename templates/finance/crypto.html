@@ -65,20 +65,16 @@
                         <td class="symbol">{{ token.symbol }}</td>
                         <td class="numeric">${{ token.price|floatformat:"2"|intcomma }}</td>
                         <td class="numeric">${{ token.market_cap|floatformat:"1"|intcomma }}B</td>
-                        <td class="numeric"
-                            {% if token.percent_change_24h < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if token.percent_change_24h < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {{ token.percent_change_24h|floatformat:"1" }}%
                         </td>
-                        <td class="numeric"
-                            {% if token.percent_change_7d < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if token.percent_change_7d < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {{ token.percent_change_7d|floatformat:"1" }}%
                         </td>
-                        <td class="numeric"
-                            {% if token.percent_change_30d < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if token.percent_change_30d < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {{ token.percent_change_30d|floatformat:"1" }}%
                         </td>
-                        <td class="numeric"
-                            {% if token.percent_change_90d < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if token.percent_change_90d < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {{ token.percent_change_90d|floatformat:"1" }}%
                         </td>
                     </tr>

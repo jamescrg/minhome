@@ -149,9 +149,9 @@
 
 /* insertion indicator for drag and drop */
 .folder.insertion-target {
-  border-top: 4px solid #65A30D !important;
+  border-top: 4px solid var(--lime-600) !important;
 }
 
 .favorite-item.insertion-target {
-  border-top: 4px solid #65A30D !important;
+  border-top: 4px solid var(--lime-600) !important;
 }

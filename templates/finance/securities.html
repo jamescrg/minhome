@@ -36,16 +36,14 @@
                         <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}</td>
                         <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}</td>
                         <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}</td>
-                        <td class="numeric"
-                            {% if asset.change < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if asset.change < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {% if asset.change < 0 %}
                                 -${{ asset.change|abs|floatformat:"2"|intcomma }}
                             {% else %}
                                 ${{ asset.change|floatformat:"2"|intcomma }}
                             {% endif %}
                         </td>
-                        <td class="numeric"
-                            {% if asset.percent_change < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                        <td class="numeric {% if asset.percent_change < 0 %}text-negative{% else %}text-positive{% endif %}">
                             {{ asset.percent_change|floatformat:"1"|intcomma }}%
                         </td>
                     </tr>
