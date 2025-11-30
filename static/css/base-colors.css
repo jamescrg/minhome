@@ -56,6 +56,8 @@
   /* Stone */
   --stone-50: oklch(0.985 0.001 106.423);
   --stone-100: oklch(0.97 0.001 106.424);
+  --stone-125: oklch(0.954 0.002 56.4);
+  --stone-150: oklch(0.947 0.002 56.4);
   --stone-200: oklch(0.923 0.003 48.717);
   --stone-300: oklch(0.869 0.005 56.366);
   --stone-350: oklch(0.82 0.007 56);
@@ -291,4 +293,21 @@
   /* Black & White */
   --black: oklch(0 0 0);
   --white: oklch(1 0 0);
+
+  /* Highlight Colors */
+  --hl-blue: var(--blue-50);
+  --hl-gray: var(--stone-125);
+  --hl-green: var(--lime-50);
+  --hl-orange: var(--orange-50);
+  --hl-purple: var(--purple-50);
+  --hl-red: var(--red-50);
+  --hl-slate: var(--slate-100);
+  --hl-yellow: var(--yellow-50);
+
+  /* Button Colors */
+  --button-primary-background: var(--lime-800);
+  --button-primary-color: var(--stone-100);
+  --button-secondary-background: var(--stone-150);
+  --button-secondary-color: var(--stone-600);
+  --button-toolbar: var(--stone-600);
 }
