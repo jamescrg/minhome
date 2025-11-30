@@ -164,26 +164,38 @@ li {
  * ------------------------------------------------*/
 
 .btn {
-  font-size: 1em;
+  border: none;
+  box-shadow: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
 }
 
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--lime-900);
+  background: var(--button-primary-background);
   border: none;
-  color: var(--stone-300);
+  box-shadow: none;
+  color: var(--button-primary-color);
 }
 
-.btn-icon {
-  background: none;
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: var(--button-secondary-background);
   border: none;
-  padding: none;
+  box-shadow: none;
+  color: var(--button-secondary-color);
 }
 
-.btn-slim {
-  font-size: 0.97rem;
-  padding: 0.1rem 0.4rem;
+.btn-outline-primary,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background: transparent;
+  border: solid 1px var(--stone-350);
+  box-shadow: none;
+  color: var(--stone-600);
 }
 
 .btn-outline-danger {
@@ -192,11 +204,48 @@ li {
   border-color: var(--orange-700);
 }
 
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.btn-slim {
+  font-size: 0.97rem;
+  padding: 0.1rem 0.4rem;
+}
+
 .btn-sort {
-	background: none;
-	border: none;
-	color: var(--stone-400);
-	font-weight: 600;
+  background: none;
+  border: none;
+  color: var(--stone-400);
+  font-weight: 600;
+}
+
+.button-link {
+  background: none;
+  border: none;
+  color: var(--lime-800);
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.button-link:hover {
+  color: var(--lime-700);
+}
+
+.square-button {
+  background: var(--stone-150);
+  border: solid 1px var(--stone-200);
+  border-radius: 4px;
+  color: var(--button-toolbar);
+  outline: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.square-button:hover {
+  color: var(--button-toolbar);
 }
 
 
@@ -344,4 +393,9 @@ li {
 
 .mt-2 {
   margin-top: 2rem;
+}
+
+/* active/selected items */
+.active-item {
+  background: var(--hl-gray);
 }

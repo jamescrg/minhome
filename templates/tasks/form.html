@@ -3,7 +3,7 @@
     <div class="card-title flex-center-space">
         <h1>Edit Task</h1>
         <a href="{% if task.folder %}{% url 'folder-select' task.folder.id 'tasks' %}{% else %}{% url 'tasks' %}{% endif %}"
-           class="card-close">
+           class="square-button">
             <i class="bi bi-x-lg"></i>
         </a>
     </div>

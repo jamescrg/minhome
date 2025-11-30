@@ -1,33 +1,20 @@
 {% load crispy_forms_tags %}
-
 <div class="card">
-
-  <div class="card-title flex-center-space">
-    <h1>
-      {% if edit %}
-
-      Edit Favorite
-
-      {% else %}
-
-      Add Favorite
-
-      {% endif %}
-
-    </h1>
-
-    <a href="/favorites">
-      <i class="bi bi-arrow-return-left"></i>
-    </a>
-  </div>
-
-  <form class="large-form" action="{{ action }}" method="post" role="form">
-
-    {% csrf_token %}
-
-    {{ form|crispy }}
-
-    <button class="btn btn-primary" type="submit">Submit</button>
-
-  </form>
+    <div class="card-title flex-center-space">
+        <h1>
+            {% if edit %}
+                Edit Favorite
+            {% else %}
+                Add Favorite
+            {% endif %}
+        </h1>
+        <a class="square-button" href="{% url 'favorites' %}">
+            <i class="bi bi-arrow-return-left"></i>
+        </a>
+    </div>
+    <form class="large-form" action="{{ action }}" method="post" role="form">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
 </div>
