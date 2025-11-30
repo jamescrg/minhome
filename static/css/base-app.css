@@ -12,6 +12,11 @@ html {
   height: 100%;
 }
 
+*:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 body {
   background: var(--stone-300);
   color: var(--stone-600);
@@ -40,6 +45,39 @@ body {
   padding-top: 1.5rem;
 }
 
+
+/*------------------------------------------------
+ * modals
+ * ------------------------------------------------*/
+
+.modal-content {
+  background: var(--stone-100);
+}
+
+.modal-header {
+  padding: 0.5rem 1rem;
+}
+
+.modal-header a.btn-icon {
+  margin-right: 1.5rem;
+}
+
+/* Mobile: Make modals full-width with small margins */
+@media (max-width: 767px) {
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .modal-md,
+  .modal-lg {
+    max-width: calc(100% - 1rem);
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+}
 
 
 /*------------------------------------------------

@@ -25,6 +25,32 @@ urlpatterns = [
     path("folders/update/<int:id>/<str:page>", folders.update, name="folder-update"),
     path("folders/delete/<int:id>/<str:page>", folders.delete, name="folder-delete"),
     path("folders/share/<int:id>/<str:page>", folders.share, name="folder-share"),
+    # folders htmx
+    path("folders/tree/", folders.folder_tree, name="folders-tree"),
+    path("folders/form/<str:page>", folders.folder_form, name="folder-form"),
+    path(
+        "folders/form/<int:id>/<str:page>", folders.folder_form, name="folder-form-edit"
+    ),
+    path(
+        "folders/<int:id>/<str:page>/select",
+        folders.select_htmx,
+        name="folder-select-htmx",
+    ),
+    path(
+        "folders/<int:id>/<str:page>/home",
+        folders.home_htmx,
+        name="folder-home-htmx",
+    ),
+    path(
+        "folders/<int:id>/<str:page>/delete",
+        folders.delete_htmx,
+        name="folder-delete-htmx",
+    ),
+    path(
+        "folders/<int:id>/<str:page>/toggle-expand",
+        folders.toggle_expand_htmx,
+        name="folder-toggle-expand",
+    ),
     # home
     path("", home.index, name="home-index"),
     path("home/", home.index, name="home"),
@@ -72,6 +98,20 @@ urlpatterns = [
     path("favorites/api/add", favorites.api_add, name="favorites-api-add"),
     path("favorites/api/folders", favorites.api_folders, name="favorites-api-folders"),
     path("favorites/extension", favorites.extension_add, name="favorites-extension"),
+    # favorites htmx
+    path("favorites/list/", favorites.favorites_list, name="favorites-list"),
+    path("favorites/form", favorites.favorites_form, name="favorites-form"),
+    path(
+        "favorites/<int:id>/form", favorites.favorites_form, name="favorites-form-edit"
+    ),
+    path(
+        "favorites/<int:id>/delete-htmx",
+        favorites.delete_htmx,
+        name="favorites-delete-htmx",
+    ),
+    path(
+        "favorites/<int:id>/home-htmx", favorites.home_htmx, name="favorites-home-htmx"
+    ),
     # tasks
     path("tasks/", tasks.index, name="tasks"),
     path("tasks/add", tasks.add, name="tasks-add"),
@@ -80,6 +120,13 @@ urlpatterns = [
     path("tasks/<int:id>/complete", tasks.status, name="tasks-complete"),
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
     path("tasks/clear", tasks.clear, name="tasks-clear"),
+    # tasks htmx
+    path("tasks/list/", tasks.task_list, name="tasks-list"),
+    path("tasks/add-htmx", tasks.add_htmx, name="tasks-add-htmx"),
+    path("tasks/<int:id>/form", tasks.task_form, name="tasks-form"),
+    path("tasks/<int:id>/status", tasks.status_htmx, name="tasks-status"),
+    path("tasks/<int:id>/delete-htmx", tasks.delete_htmx, name="tasks-delete-htmx"),
+    path("tasks/clear-htmx", tasks.clear_htmx, name="tasks-clear-htmx"),
     path(
         "tasks/add-editor/<int:folder_id>/<int:user_id>",
         tasks.add_editor,
@@ -102,12 +149,49 @@ urlpatterns = [
         name="contacts-google-toggle",
     ),
     path("contacts/google-list", contacts.google_list, name="contacts-google-list"),
+    # contacts htmx
+    path("contacts/list-htmx/", contacts.contacts_list_htmx, name="contacts-list-htmx"),
+    path(
+        "contacts/detail-htmx/",
+        contacts.contact_detail_htmx,
+        name="contacts-detail-htmx",
+    ),
+    path(
+        "contacts/<int:id>/select-htmx",
+        contacts.select_htmx,
+        name="contacts-select-htmx",
+    ),
+    path("contacts/form-htmx", contacts.contacts_form_htmx, name="contacts-form-htmx"),
+    path(
+        "contacts/<int:id>/form-htmx",
+        contacts.contacts_form_htmx,
+        name="contacts-form-htmx-edit",
+    ),
+    path(
+        "contacts/<int:id>/delete-htmx",
+        contacts.delete_htmx,
+        name="contacts-delete-htmx",
+    ),
+    path(
+        "contacts/<int:id>/google-toggle-htmx",
+        contacts.google_toggle_htmx,
+        name="contacts-google-toggle-htmx",
+    ),
     # notes
     path("notes/", notes.index, name="notes"),
     path("notes/<int:id>", notes.select, name="notes-select"),
     path("notes/add", notes.add, name="notes-add"),
     path("notes/<int:id>/edit", notes.edit, name="notes-edit"),
     path("notes/<int:id>/delete", notes.delete, name="notes-delete"),
+    # notes htmx
+    path("notes/list-htmx/", notes.notes_list_htmx, name="notes-list-htmx"),
+    path("notes/detail-htmx/", notes.note_detail_htmx, name="notes-detail-htmx"),
+    path("notes/<int:id>/select-htmx", notes.select_htmx, name="notes-select-htmx"),
+    path("notes/form-htmx", notes.notes_form_htmx, name="notes-form-htmx"),
+    path(
+        "notes/<int:id>/form-htmx", notes.notes_form_htmx, name="notes-form-htmx-edit"
+    ),
+    path("notes/<int:id>/delete-htmx", notes.delete_htmx, name="notes-delete-htmx"),
     # weather
     path("weather/", weather.index, name="weather"),
     path("weather/zip", weather.zip, name="weather-zip"),

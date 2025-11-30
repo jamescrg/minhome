@@ -1,28 +1,14 @@
-<div id="contact" class="col-lg-6 order-lg-3">
+<div id="contact-detail"
+     class="col-lg-6 order-lg-3"
+     hx-trigger="contactDetailChanged from:body"
+     hx-get="{% url 'contacts-detail-htmx' %}"
+     hx-target="this">
     {% if selected_contact %}
         {% include "contacts/contact.html" %}
     {% endif %}
 </div>
-<div id="contacts" class="col-lg-3 order-lg-2">
-    <div class="card">
-        <div class="card-title flex-center-space">
-            <h1>Contacts</h1>
-            <a class="square-button" href="{% url 'contacts-add' %}">
-                <i class="bi bi-plus-lg"></i>
-            </a>
-        </div>
-        {% if contacts %}
-            <ul class="list-group">
-                {% for contact in contacts %}
-                    <li class="list-group-item {% if selected_contact and selected_contact.id == contact.id %}active-item{% endif %}">
-                        <a href="{% url 'contacts-select' id=contact.id %}">{{ contact.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <div class="no-contacts">
-                <i class="bi bi-person-lines-fill"></i>
-            </div>
-        {% endif %}
-    </div>
-</div>
+<div id="contacts-list"
+     class="col-lg-3 order-lg-2"
+     hx-trigger="contactsChanged from:body"
+     hx-get="{% url 'contacts-list-htmx' %}"
+     hx-target="this">{% include "contacts/list.html" %}</div>
