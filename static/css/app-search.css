@@ -6,7 +6,7 @@
 
 .search {
   margin: 0 auto 2rem auto;
-  max-width: 800px;
+  max-width: 50rem;
 	text-align: center;
 }
 
@@ -25,12 +25,12 @@
 }
 
 .folder {
-	width: 200px;
+	width: 12.5rem;
   padding-right: 1rem;
 }
 
 .favorite-name {
-	width: 300px;
+	width: 18.75rem;
   padding-right: 1rem;
 }
 
@@ -48,12 +48,12 @@
 }
 
 .contact-name {
-	width: 300px;
+	width: 18.75rem;
   padding-right: 1rem;
 }
 
 .contact-phone1 {
-	width: 250px;
+	width: 15.5rem;
   padding-right: 1rem;
 }
 
@@ -61,6 +61,6 @@
 }
 
 .note-subject {
-	width: 300px;
+	width: 18.75rem;
   padding-right: 1rem;
 }

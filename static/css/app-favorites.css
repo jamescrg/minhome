@@ -57,29 +57,29 @@
 /* ------------------------------------------------------------------------- */
 
 #id_folder {
-  max-width: 250px;
+  max-width: 15.5rem;
 }
 
 
 #id_name {
-  max-width: 400px;
+  max-width: 25rem;
 }
 
 #id_url {
-  max-width: 1000px;
+  max-width: 62.5rem;
 }
 
 #id_description{
-  height: 100px;
+  height: 6.25rem;
 }
 
 #id_login {
-  max-width: 450px;
+  max-width: 28rem;
 }
 
 #id_root,
 #id_passkey {
-	max-width: 150px;
+	max-width: 9.5rem;
 }
 
 .btn {

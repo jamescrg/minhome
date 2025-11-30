@@ -17,21 +17,21 @@
 }
 
 .zip-input {
-  max-width: 100px;
+  max-width: 6.25rem;
 }
 
 
 @media screen and (min-width: 750px) {
 
   .current-conditions {
-    max-width: 330px;
+    max-width: 20.5rem;
   }
 
 }
 
 .current-icon-image {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
 }
 
 .edit-link {
@@ -68,6 +68,3 @@
 .forecast-icon-image {
 
 }
-
-
-
