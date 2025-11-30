@@ -69,6 +69,9 @@ urlpatterns = [
     path("favorites/<int:id>/edit", favorites.edit, name="favorites-edit"),
     path("favorites/delete/<int:id>", favorites.delete, name="favorites-delete"),
     path("favorites/home/<int:id>", favorites.home, name="favorites-home"),
+    path("favorites/api/add", favorites.api_add, name="favorites-api-add"),
+    path("favorites/api/folders", favorites.api_folders, name="favorites-api-folders"),
+    path("favorites/extension", favorites.extension_add, name="favorites-extension"),
     # tasks
     path("tasks/", tasks.index, name="tasks"),
     path("tasks/add", tasks.add, name="tasks-add"),
