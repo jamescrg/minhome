@@ -7,11 +7,8 @@
     </div>
     <ul class="list-group">
         {% for note in notes %}
-            <li class="list-group-item">
-                <a href="{% url 'notes-select' id=note.id %}"
-                   {% if selected_note and selected_note.id == note.id %}class="strong"{% endif %}>
-                    {{ note.subject }}
-                </a>
+            <li class="list-group-item {% if selected_note and selected_note.id == note.id %}active-item{% endif %}">
+                <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
             </li>
         {% endfor %}
     </ul>
