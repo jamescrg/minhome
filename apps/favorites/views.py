@@ -1,12 +1,34 @@
+import json
+from functools import wraps
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
-from apps.favorites.forms import FavoriteForm
+from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import select_folder, get_folders_for_page
+from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
+
+
+def cors_headers(view_func):
+    """Decorator to add CORS headers for browser extension API endpoints."""
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.method == "OPTIONS":
+            response = JsonResponse({})
+        else:
+            response = view_func(request, *args, **kwargs)
+
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response
+
+    return wrapper
 
 
 @login_required
@@ -171,3 +193,130 @@ def home(request, id):
         favorite.home_rank = 1
     favorite.save()
     return redirect("favorites")
+
+
+# -----------------------------------------------------------------------------
+# Browser Extension API
+# -----------------------------------------------------------------------------
+
+
+@csrf_exempt
+@cors_headers
+def api_add(request):
+    """API endpoint for browser extension to add favorites.
+
+    Expects JSON body with: name, url, folder_id (optional), auth_token
+    """
+    if request.method == "OPTIONS":
+        return JsonResponse({})
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    # Authenticate via token
+    auth_token = data.get("auth_token")
+    if not auth_token:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+
+    from accounts.models import CustomUser
+
+    try:
+        user = CustomUser.objects.get(extension_token=auth_token)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({"error": "Invalid authentication token"}, status=401)
+
+    # Create the favorite
+    name = data.get("name", "").strip()
+    url = data.get("url", "").strip()
+    folder_id = data.get("folder_id")
+
+    if not name or not url:
+        return JsonResponse({"error": "Name and URL are required"}, status=400)
+
+    favorite = Favorite(user=user, name=name, url=url)
+
+    if folder_id:
+        try:
+            folder = Folder.objects.get(pk=folder_id, user=user)
+            favorite.folder = folder
+        except Folder.DoesNotExist:
+            pass
+
+    favorite.save()
+
+    return JsonResponse({"success": True, "id": favorite.id})
+
+
+@csrf_exempt
+@cors_headers
+def api_folders(request):
+    """API endpoint to get user's folders for the browser extension."""
+    if request.method == "OPTIONS":
+        return JsonResponse({})
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    auth_token = data.get("auth_token")
+    if not auth_token:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+
+    from accounts.models import CustomUser
+
+    try:
+        user = CustomUser.objects.get(extension_token=auth_token)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({"error": "Invalid authentication token"}, status=401)
+
+    folders = Folder.objects.filter(user=user, page="favorites").order_by("name")
+    folder_list = [{"id": f.id, "name": f.name} for f in folders]
+
+    return JsonResponse({"folders": folder_list})
+
+
+@login_required
+def extension_add(request):
+    """Web form for adding favorites via browser extension popup.
+
+    This provides a logged-in web form that the extension can open in a popup.
+    """
+    user = request.user
+    folders = get_folders_for_page(request, "favorites")
+
+    if request.method == "POST":
+        form = FavoriteExtensionForm(request.POST)
+        form.fields["folder"].queryset = folders
+
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.user = user
+            favorite.save()
+            return render(
+                request, "favorites/extension_success.html", {"favorite": favorite}
+            )
+    else:
+        # Pre-fill from query params (extension passes these)
+        initial = {}
+        if request.GET.get("url"):
+            initial["url"] = request.GET.get("url")
+        if request.GET.get("name"):
+            initial["name"] = request.GET.get("name")
+
+        form = FavoriteExtensionForm(initial=initial)
+        form.fields["folder"].queryset = folders
+
+    context = {
+        "form": form,
+    }
+
+    return render(request, "favorites/extension_form.html", context)

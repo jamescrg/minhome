@@ -7,6 +7,9 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=20, blank=True, default="")
     sms_notifications = models.BooleanField(default=True)
     google_credentials = models.TextField(null=True, blank=True)
+    extension_token = models.CharField(
+        max_length=64, blank=True, null=True, unique=True
+    )
     theme = models.TextField(default="", blank=True)
     search_engine = models.TextField(default="google", blank=True)
     home_events = models.IntegerField(default=0)
