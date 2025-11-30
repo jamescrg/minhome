@@ -85,5 +85,5 @@
 
 .edit-share .list-group-item {
   border: solid 1px var(--stone-200);
-  padding-right: 10px;
+  padding-right: 0.5rem;
 }

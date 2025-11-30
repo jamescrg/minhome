@@ -8,7 +8,7 @@
 .no-contacts {
   color: var(--stone-400);
   font-size: 3rem;
-  padding: 20px 0;
+  padding: 1.25rem 0;
   text-align: center;
 }
 
@@ -22,13 +22,13 @@
 #id_email,
 #id_company,
 #id_notes {
-  max-width: 600px;
+  max-width: 37.5rem;
 }
 
 #id_address,
 #id_notes {
-  height: 150px;
-  max-width: 600px;
+  height: 9.5rem;
+  max-width: 37.5rem;
 }
 
 #id_folder,
@@ -38,6 +38,5 @@
 #id_phone1_label,
 #id_phone2_label,
 #id_phone3_label {
-	max-width: 300px;
+	max-width: 18.75rem;
 }
-
