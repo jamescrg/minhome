@@ -31,6 +31,11 @@
                     </div>
                 {% endif %}
             </div>
+            {% if task.parent_task %}
+                <div class="tasks-recurring">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+            {% endif %}
         </li>
     {% endfor %}
 </ul>
