@@ -1,48 +1,85 @@
 
 .navbar {
   background: var(--stone-350);
-  margin-bottom: 2rem;
-  padding-bottom: 0;
-  padding-top: 0;
+  margin-bottom: 0;
+  padding: 0.25rem 0 0 0;
 }
 
-.navbar-expand-lg .navbar-nav .nav-link {
+.navbar ul {
+  margin: 0.25rem 0 0 0;
+  padding: 0;
+}
+
+.navbar li {
+  display: inline-block;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.navbar a {
   color: var(--stone-600);
-  padding: 1rem 1.5rem;
-}
-
-.nav-active {
-  background: var(--stone-300);
-}
-
-.navbar-toggler-icon {
-  font-size: 1.8rem;
-  color: var(--lime-700);
-}
-
-.navbar-toggler-chevron {
-  font-size: 1rem;
-  color: var(--lime-700);
-}
-
-.navbar-toggler {
-  padding-bottom: 0;
-  padding-left: 0.5rem;
-  padding-top: 1rem;
-}
-
-.navbar-toggler:focus,
-.navbar-toggler:active {
-  outline: none;
-  box-shadow: none;
-}
-
-.navbar-nav .settings-link {
-  font-size: 1.4rem;
-  padding: 0.8rem 1.5rem 0.6rem 1.5rem !important;
-}
-
-.settings-link i {
+  margin: 0;
+  padding-bottom: 0.5rem;
   position: relative;
-  bottom: 0.1rem;
+  top: 0.1rem;
+}
+
+.navbar .active {
+  background: var(--stone-300);
+  border-radius: 5px 5px 0 0;
+}
+
+.navbar .settings-link {
+  font-size: 1.25rem;
+  position: relative;
+  top: -0.1rem;
+}
+
+/* ==========================================================================
+ Horizontal Scroll Container
+========================================================================== */
+
+.nav-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.nav-scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+.nav-scroll-container ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-scroll-container li {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Keep right-aligned items at the end */
+.navbar-right {
+  margin-left: auto !important;
+}
+
+
+/* ==========================================================================
+ Responsive - Tighter spacing on mobile
+========================================================================== */
+
+@media (max-width: 991px) {
+  .navbar li {
+    /* padding: 0.5rem 0.75rem; */
+  }
+
+  .navbar a {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
 }
