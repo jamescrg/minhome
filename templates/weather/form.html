@@ -1,13 +1,11 @@
-
-<form id="edit-location-form" action="/weather/zip" method="post">
-
-  {% csrf_token %}
-
-  <input class="form-control zip-input"
-    type="number"
-    name="zip"
-    autofocus
-    required
-    onchange="submit()" >
-
+<form id="edit-location-form"
+      action="{% url 'weather-zip' %}"
+      method="post">
+    {% csrf_token %}
+    <input class="form-control zip-input"
+           type="number"
+           name="zip"
+           autofocus
+           required
+           onchange="submit()">
 </form>

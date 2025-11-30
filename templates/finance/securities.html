@@ -1,79 +1,56 @@
-
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-{% load humanize %}
-{% load mathfilters %}
-
-<div class="card">
-
-  <div class="card-title">
-    <h1>
-      Stocks and ETFs
-    </h1>
-  </div>
-
-  <div class="table-responsive">
-    <table class="table finance">
-
-      <tr>
-
-        <th>
-          <a class="sort" href="name">Name
-          </a>
-        <th>
-          <a class="sort" href="symbol">Symbol
-          </a>
-        <th class="numeric">
-          <a class="sort" href="price">Price
-          </a>
-        <th class="numeric">Prev Close
-        <th class="numeric">Open
-        <th class="numeric">High
-        <th class="numeric">Low
-        <th class="numeric">Change
-        <th class="numeric">% Chg
-
-      {% for asset in data %}
-
-      <tr>
-
-      <td class="name">
-        <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">
-        {{ asset.name }}
-        </a>
-
-        <td class="symbol">{{ asset.symbol }}
-
-        <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}
-
-        <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}
-
-        <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}
-
-        <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}
-
-        <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}
-
-        <td class="numeric"
-          {% if asset.change < 0 %} style="color: darkred"
-                                    {% else %} style="color: green"
-                                    {% endif %}>
-          {% if asset.change < 0 %}
-          -${{ asset.change|abs|floatformat:"2"|intcomma }}
-          {% else %}
-          ${{ asset.change|floatformat:"2"|intcomma }}
-          {% endif %}
-
-        <td class="numeric"
-            {% if asset.percent_change < 0 %} style="color: darkred"
-                                              {% else %} style="color: green"
-                                              {% endif %}>
-          {{ asset.percent_change|floatformat:"1"|intcomma }}%
-
-      {% endfor %}
-
-    </table>
-  </div>
-</div>
-
+    {% load humanize %}
+    {% load mathfilters %}
+    <div class="card">
+        <div class="card-title">
+            <h1>Stocks and ETFs</h1>
+        </div>
+        <div class="table-responsive">
+            <table class="table finance">
+                <tr>
+                    <th>
+                        <a class="sort" href="{% url 'securities' ord='name' %}">Name</a>
+                    </th>
+                    <th>
+                        <a class="sort" href="{% url 'securities' ord='symbol' %}">Symbol</a>
+                    </th>
+                    <th class="numeric">
+                        <a class="sort" href="{% url 'securities' ord='price' %}">Price</a>
+                    </th>
+                    <th class="numeric">Prev Close</th>
+                    <th class="numeric">Open</th>
+                    <th class="numeric">High</th>
+                    <th class="numeric">Low</th>
+                    <th class="numeric">Change</th>
+                    <th class="numeric">% Chg</th>
+                </tr>
+                {% for asset in data %}
+                    <tr>
+                        <td class="name">
+                            <a href="https://www.google.com/finance/quote/{{ asset.symbol }}:{{ asset.exchange }}">{{ asset.name }}</a>
+                        </td>
+                        <td class="symbol">{{ asset.symbol }}</td>
+                        <td class="numeric">${{ asset.price|floatformat:"2"|intcomma }}</td>
+                        <td class="numeric">{{ asset.previous_close|floatformat:"2"|intcomma }}</td>
+                        <td class="numeric">${{ asset.open|floatformat:"2"|intcomma }}</td>
+                        <td class="numeric">${{ asset.high|floatformat:"2"|intcomma }}</td>
+                        <td class="numeric">${{ asset.low|floatformat:"2"|intcomma }}</td>
+                        <td class="numeric"
+                            {% if asset.change < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                            {% if asset.change < 0 %}
+                                -${{ asset.change|abs|floatformat:"2"|intcomma }}
+                            {% else %}
+                                ${{ asset.change|floatformat:"2"|intcomma }}
+                            {% endif %}
+                        </td>
+                        <td class="numeric"
+                            {% if asset.percent_change < 0 %}style="color: darkred"{% else %}style="color: green"{% endif %}>
+                            {{ asset.percent_change|floatformat:"1"|intcomma }}%
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock content %}

@@ -1,134 +1,102 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-
-
-<div class="card">
-  <div class="card-title">
-
-    <h1>
-      Theme
-    </h1>
-
-  </div>
-
-  <p class="card-text">Set the theme for the application.
-  </p>
-
-  <table class="options">
-    <tr>
-      <td class="setting-label">Theme:
-      <td class="setting-control">
-        <form action="/settings/theme" method="post">
-
-          {% csrf_token %}
-
-          <select class="select form-select theme-select"
-            onchange="submit()"
-            name="theme">
-
-            <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>
-              Matcha
-            </option>
-            <option value="original" {% if user.theme == "original" %}selected{% endif %}>
-              Original
-            <option value="jay" {% if user.theme == "jay" %}selected{% endif %}>
-              Pinyon Jay
-
-          </select>
-
-        </form>
-
-  </table>
-
-</div>
-
-<div class="card">
-  <div class="card-title">
-
-    <h1>
-      Home Page Features
-    </h1>
-
-  </div>
-
-  <p class="card-text">Enable or disable optional home page features.
-  </p>
-
-  <table class="options">
-    <tr>
-      <td class="setting-label">Tasks:
-      <td class="setting-control">
-        {% if user.home_tasks %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/disable">
-            Disable
-          </a>
-        {% else %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/tasks/enable">
-            Enable
-          </a>
-        {% endif %}
-    <tr>
-      <td class="setting-label">Events:
-      <td class="setting-control">
-        {% if user.home_events %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/disable">
-            Disable
-          </a>
-        {% else %}
-          <a class="btn btn-primary btn-slim" href="/settings/home-options/events/enable">
-            Enable
-          </a>
-        {% endif %}
-  </table>
-
-
-</div>
-
-<div class="card">
-
-  <div class="card-title">
-    <h1>
-      Google Account
-    </h1>
-  </div>
-
-  <p class="card-text">Connect a Google account to syncronize contacts and/or view calendar events on your home page.
-  </p>
-
-
-  <table class="options">
-    <tr>
-      <td class="setting-label">Connection:
-      <td>
-        {% if logged_in %}
-          <a class="btn btn-primary" href="/settings/google/logout">Disconnect</a>
-        {% else %}
-          <a class="btn btn-primary" href="/settings/google/login">Connect</a>
-        {% endif %}
-      </td>
-
-  </table>
-
-</div>
-
-
-<div class="card">
-
-  <div class="card-title">
-    <h1>
-      Log Out
-    </h1>
-  </div>
-
-  <p class="card-text">Log out of all sessions on all devices.
-  </p>
-
-  <table class="options">
-    <tr>
-      <td class="setting-label">Session:
-      <td>
-      <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
-  </table>
-
-</div>
+    <div class="card">
+        <div class="card-title">
+            <h1>Theme</h1>
+        </div>
+        <p class="card-text">Set the theme for the application.</p>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Theme:</td>
+                <td class="setting-control">
+                    <form action="{% url 'settings-theme' %}" method="post">
+                        {% csrf_token %}
+                        <select class="select form-select theme-select"
+                                onchange="submit()"
+                                name="theme">
+                            <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>Matcha</option>
+                            <option value="original" {% if user.theme == "original" %}selected{% endif %}>Original</option>
+                            <option value="jay" {% if user.theme == "jay" %}selected{% endif %}>Pinyon Jay</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-title">
+            <h1>Home Page Features</h1>
+        </div>
+        <p class="card-text">Enable or disable optional home page features.</p>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Task Folders:</td>
+                <td class="setting-control">
+                    {% if user.home_tasks %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='tasks' value='disable' %}">Disable</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='tasks' value='enable' %}">Enable</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="setting-label">Due Tasks:</td>
+                <td class="setting-control">
+                    {% if user.home_due_tasks %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='due_tasks' value='disable' %}">Disable</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='due_tasks' value='enable' %}">Enable</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="setting-label">Events:</td>
+                <td class="setting-control">
+                    {% if user.home_events %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='events' value='disable' %}">Disable</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-home-options' option='events' value='enable' %}">Enable</a>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-title">
+            <h1>Google Account</h1>
+        </div>
+        <p class="card-text">Connect a Google account to syncronize contacts and/or view calendar events on your home page.</p>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Connection:</td>
+                <td>
+                    {% if logged_in %}
+                        <a class="btn btn-primary" href="{% url 'settings-google-logout' %}">Disconnect</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="{% url 'settings-google-login' %}">Connect</a>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-title">
+            <h1>Log Out</h1>
+        </div>
+        <p class="card-text">Log out of all sessions on all devices.</p>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Session:</td>
+                <td>
+                    <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+                </td>
+            </tr>
+        </table>
+    </div>
 {% endblock content %}

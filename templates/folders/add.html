@@ -1,33 +1,24 @@
-
 <form id="folder-add"
       class="list-group-item folder-add flex-center-space li-folder-edit"
-      style="border-bottom: none;"
-      action="/folders/insert/{{ page }}"
+      style="border-bottom: none"
+      action="{% url 'folder-insert' page=page %}"
       method="post">
-
-  {% if page == "tasks" %}
-
-      <span class="folder-icon">
-        <i class="bi bi-folder"></i>
-      </span>
-
-  {% else %}
-
-    <span class="folder-icon">
-      <i class="bi bi-folder"></i>
-    </span>
-
-  {% endif %}
-
-  {% csrf_token %}
-
-  <input class="form-control"
-      id="folder-add-input"
-      autofocus
-      type="text"
-      name="name"
-      onchange="submit()"
-      onblur="hideAddFolderForm()"
-      value="{{ folder.name }}">
-
+    {% if page == "tasks" %}
+        <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+        </span>
+    {% else %}
+        <span class="folder-icon">
+            <i class="bi bi-folder"></i>
+        </span>
+    {% endif %}
+    {% csrf_token %}
+    <input class="form-control"
+           id="folder-add-input"
+           autofocus
+           type="text"
+           name="name"
+           onchange="submit()"
+           onblur="hideAddFolderForm()"
+           value="{{ folder.name }}">
 </form>

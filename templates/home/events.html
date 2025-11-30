@@ -1,53 +1,30 @@
-
 <div class="card">
-
-  <div class="card-title flex-start-space">
-
-    <h1>
-      Pending Events
-    </h1>
-
-    <div class="card-close">
-
-      <a href="/home/toggle/events">
-        <i class="bi bi-x-lg"></i>
-      </a>
-
+    <div class="card-title flex-start-space">
+        <h1>Pending Events</h1>
+        <div class="card-close">
+            <a href="{% url 'home-toggle' section='events' %}">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
     </div>
-
-  </div>
-
-  <div class="table-responsive">
-  <table class="table">
-
-    <th>Date
-    <th>Month
-    <th>Weekday
-    <th>Summary
-    <th>Time
-
-    {% for event in events %}
-
-      <tr>
-
-        <td class="event-date {{event.soon}}">
-          {{ event.date }}
-
-        <td class="event-date {{event.soon}}">
-          {{ event.month }}
-
-        <td class="event-date {{event.soon}}">
-          {{ event.weekday }}
-
-        <td class="description {{event.soon}}">
-          {{ event.summary }}
-
-        <td class="event-date {{event.soon}}">
-          {{ event.time }}
-
-    {% endfor %}
-
-  </table>
-  </div>
-
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Date</th>
+                <th>Month</th>
+                <th>Weekday</th>
+                <th>Summary</th>
+                <th>Time</th>
+            </tr>
+            {% for event in events %}
+                <tr>
+                    <td class="event-date {{ event.soon }}">{{ event.date }}</td>
+                    <td class="event-date {{ event.soon }}">{{ event.month }}</td>
+                    <td class="event-date {{ event.soon }}">{{ event.weekday }}</td>
+                    <td class="description {{ event.soon }}">{{ event.summary }}</td>
+                    <td class="event-date {{ event.soon }}">{{ event.time }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>

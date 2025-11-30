@@ -1,31 +1,18 @@
-
 <div class="card">
-
-  <div class="card-title flex-center-space">
-    <h1>
-      Notes
-    </h1>
-
-    <a class="square-button" href="/notes/add">
-      <i class="bi bi-plus-lg"></i>
-    </a>
-
-  </div>
-
-  <ul class="list-group">
-
-    {% for note in notes %}
-
-    <li class="list-group-item">
-
-      <a href="/notes/{{ note.id }}"
-        {% if selected_note and selected_note.id == note.id %} class="strong"{% endif %}>
-        {{ note.subject }}
-      </a>
-
-    </li>
-
-    {% endfor %}
-
-  </ul>
+    <div class="card-title flex-center-space">
+        <h1>Notes</h1>
+        <a class="square-button" href="{% url 'notes-add' %}">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
+    <ul class="list-group">
+        {% for note in notes %}
+            <li class="list-group-item">
+                <a href="{% url 'notes-select' id=note.id %}"
+                   {% if selected_note and selected_note.id == note.id %}class="strong"{% endif %}>
+                    {{ note.subject }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 </div>

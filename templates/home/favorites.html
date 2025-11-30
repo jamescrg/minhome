@@ -1,81 +1,58 @@
-
 <div class="row align-items-start">
-
-{% for column in columns %}
-<div class="col-lg drop-zone" data-column="{{ forloop.counter }}">
-
-  {% for folder in column %}
-    <div class="card folder"
-         data-folder-id="{{ folder.id }}"
-         data-current-column="{{ folder.home_column }}">
-
-      {# card title #}
-
-      <div class="card-title drag-handle flex-center-space">
-
-        <a href="{% url 'folder-select' id=folder.id page='favorites' %}">{{ folder.name }}</a>
-
-        <a class="folder-icon" href="#" onclick="return false;">
-          <i class="bi-columns"></i>
-        </a>
-
-      </div>
-
-
-      {# folder controls #}
-
-      <div class="folder-controls flex-center-space folder-{{ folder.id }}" style="display: none;">
-
-        <a href="/home/folder/{{ folder.id }}/left">
-          <i class="bi bi-arrow-left-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/up">
-          <i class="bi bi-arrow-up-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/down">
-          <i class="bi bi-arrow-down-square"></i>
-        </a>
-        <a href="/home/folder/{{ folder.id }}/right">
-          <i class="bi bi-arrow-right-square"></i>
-        </a>
-
-      </div>
-
-
-      {# favorites #}
-
-      <ul class="list-group">
-
-        {% for favorite in folder.favorites %}
-          {% if favorite.folder_id == folder.id %}
-
-            <li class="list-group-item home-item flex-end-space favorite-item"
-                data-favorite-id="{{ favorite.id }}"
-                data-folder-id="{{ folder.id }}">
-
-              <a class="home-link favorite-drag-link"
-                 href="{{ favorite.url }}"
-                 data-favorite-id="{{ favorite.id }}"
-                 data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
-
-              <a class="favorite-controls home-link-controls-{{ folder.id }}"
-                style="display:none;"
-                href="/home/favorite/{{ favorite.id }}/up">
-
-                  <i class="bi bi-arrow-bar-up"></i>
-
-              </a>
-            </li>
-
-          {% endif %}
-        {% endfor %}
-
-      </ul>
-
-    </div> {# folders #}
+    {% for column in columns %}
+        <div class="col-lg drop-zone" data-column="{{ forloop.counter }}">
+            {% for folder in column %}
+                <div class="card folder"
+                     data-folder-id="{{ folder.id }}"
+                     data-current-column="{{ folder.home_column }}">
+                    {# card title #}
+                    <div class="card-title drag-handle flex-center-space">
+                        <a href="{% url 'folder-select' id=folder.id page='favorites' %}">{{ folder.name }}</a>
+                        <a class="folder-icon" href="#" onclick="return false;">
+                            <i class="bi-columns"></i>
+                        </a>
+                    </div>
+                    {# folder controls #}
+                    <div class="folder-controls flex-center-space folder-{{ folder.id }}"
+                         style="display: none">
+                        <a href="{% url 'home-folder' id=folder.id direction='left' %}">
+                            <i class="bi bi-arrow-left-square"></i>
+                        </a>
+                        <a href="{% url 'home-folder' id=folder.id direction='up' %}">
+                            <i class="bi bi-arrow-up-square"></i>
+                        </a>
+                        <a href="{% url 'home-folder' id=folder.id direction='down' %}">
+                            <i class="bi bi-arrow-down-square"></i>
+                        </a>
+                        <a href="{% url 'home-folder' id=folder.id direction='right' %}">
+                            <i class="bi bi-arrow-right-square"></i>
+                        </a>
+                    </div>
+                    {# favorites #}
+                    <ul class="list-group">
+                        {% for favorite in folder.favorites %}
+                            {% if favorite.folder_id == folder.id %}
+                                <li class="list-group-item home-item flex-end-space favorite-item"
+                                    data-favorite-id="{{ favorite.id }}"
+                                    data-folder-id="{{ folder.id }}">
+                                    <a class="home-link favorite-drag-link"
+                                       href="{{ favorite.url }}"
+                                       data-favorite-id="{{ favorite.id }}"
+                                       data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
+                                    <a class="favorite-controls home-link-controls-{{ folder.id }}"
+                                       style="display:none"
+                                       href="{% url 'home-favorite' id=favorite.id direction='up' %}">
+                                        <i class="bi bi-arrow-bar-up"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {# folders #}
+            {% endfor %}
+        </div>
+        {# columns #}
     {% endfor %}
-
-</div> {# columns #}
-{% endfor %}
-
-</div> {# row-centered #}
+</div>
+{# row-centered #}
