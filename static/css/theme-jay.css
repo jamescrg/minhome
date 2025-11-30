@@ -16,17 +16,9 @@ a:hover {
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--light-blue-900);
+  background: var(--sky-900);
 }
 
 .error-link {
   color: var(--blue-700);
-}
-
-.navbar-toggler-icon {
-  color: var(--neutral-700);
-}
-
-.navbar-toggler-chevron {
-  color: var(--neutral-700);
 }
