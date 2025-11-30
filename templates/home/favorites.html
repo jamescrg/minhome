@@ -13,8 +13,7 @@
                         </a>
                     </div>
                     {# folder controls #}
-                    <div class="folder-controls flex-center-space folder-{{ folder.id }}"
-                         style="display: none">
+                    <div class="folder-controls flex-center-space folder-{{ folder.id }} hidden">
                         <a href="{% url 'home-folder' id=folder.id direction='left' %}">
                             <i class="bi bi-arrow-left-square"></i>
                         </a>
@@ -39,8 +38,7 @@
                                        href="{{ favorite.url }}"
                                        data-favorite-id="{{ favorite.id }}"
                                        data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
-                                    <a class="favorite-controls home-link-controls-{{ folder.id }}"
-                                       style="display:none"
+                                    <a class="favorite-controls home-link-controls-{{ folder.id }} hidden"
                                        href="{% url 'home-favorite' id=favorite.id direction='up' %}">
                                         <i class="bi bi-arrow-bar-up"></i>
                                     </a>

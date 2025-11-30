@@ -2,24 +2,24 @@
 
 body {
   background: var(--stone-300);
-  color: #474747;
+  color: var(--neutral-700);
 }
 
 a,
 a:hover {
-  color: #0059b3;
+  color: var(--blue-700);
 }
 
 .navbar {
-  background: #474747;
+  background: var(--neutral-700);
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  color: #e4e4e4;
+  color: var(--neutral-200);
 }
 
 .nav-active {
-  background: #555555;
+  background: var(--neutral-600);
 }
 
 .navbar-toggler-icon {
@@ -27,22 +27,22 @@ a:hover {
 }
 
 .btn-nav {
-  color: #e4e4e4;
+  color: var(--neutral-200);
 }
 
 
 .folder-controls a,
 .favorite-controls {
-	color: #555555;
+	color: var(--neutral-600);
 }
 
 
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: #474747;
+  background: var(--neutral-700);
   border: none;
-  color: #e4e4e4;
+  color: var(--neutral-200);
 }
 
 .bi-plus-lg {

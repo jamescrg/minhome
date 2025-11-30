@@ -37,8 +37,8 @@
     {% if selected_contact.notes %}<div class="contact-item">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
     {% if google and not selected_contact.google_id %}
         <div class="contact-item">
-            <a href="{% url 'contacts-google-toggle' id=selected_contact.id %}"
-               style="color: darkred">Add to Google Contacts</a>
+            <a class="text-warning"
+               href="{% url 'contacts-google-toggle' id=selected_contact.id %}">Add to Google Contacts</a>
         </div>
     {% endif %}
 </div>

@@ -14,7 +14,7 @@
           role="form">
         {% csrf_token %}
         {% crispy form %}
-        <div class="flex-center-space" style="margin-top: 1rem">
+        <div class="flex-center-space mt-1">
             <button class="btn btn-primary" type="submit" tabindex="2">Submit</button>
             <a href="{% url 'tasks-delete' task.id %}"
                class="tasks-delete"

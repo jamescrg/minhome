@@ -286,3 +286,62 @@ li {
   color: var(--stone-700);
   border-color: var(--stone-300);
 }
+
+
+/*------------------------------------------------
+ * utility classes
+ * ------------------------------------------------*/
+
+/* display */
+.hidden {
+  display: none;
+}
+
+/* text styles */
+.text-bold {
+  font-weight: bold;
+}
+
+.text-semibold {
+  font-weight: 600;
+}
+
+.text-completed {
+  text-decoration: line-through;
+  color: var(--stone-400);
+}
+
+/* colors */
+.text-negative {
+  color: var(--red-800);
+}
+
+.text-positive {
+  color: var(--green-600);
+}
+
+.text-warning {
+  color: var(--red-800);
+}
+
+.text-lime {
+  color: var(--lime-600);
+}
+
+/* borders */
+.border-bottom-none {
+  border-bottom: none;
+}
+
+/* margins */
+.mt-0 {
+  margin-top: 0;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
