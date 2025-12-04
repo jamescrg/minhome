@@ -2,9 +2,8 @@
     <div class="card-title">
         <h1>Tasks</h1>
     </div>
-    {% include "tasks/taskform.html" %}
-    {% include "tasks/task_list.html" %}
-    <div class="clear">
-        <a href="{% url 'tasks-clear' %}">Clear Checked</a>
-    </div>
+    <div id="tasks-container"
+         hx-trigger="tasksChanged from:body"
+         hx-get="{% url 'tasks-list' %}"
+         hx-target="this">{% include "tasks/list.html" %}</div>
 </div>

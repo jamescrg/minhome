@@ -1,0 +1,29 @@
+<div class="card">
+    <div class="card-title flex-center-space">
+        <h1>Contacts</h1>
+        <a class="square-button"
+           href="#"
+           hx-get="{% url 'contacts-form-htmx' %}"
+           hx-target="#htmx-modal-container"
+           data-bs-toggle="modal"
+           data-bs-target="#htmx-modal-container">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
+    {% if contacts %}
+        <ul class="list-group">
+            {% for contact in contacts %}
+                <li class="list-group-item {% if selected_contact and selected_contact.id == contact.id %}active-item{% endif %}">
+                    <a href="#"
+                       hx-get="{% url 'contacts-select-htmx' id=contact.id %}"
+                       hx-target="#contact-detail"
+                       hx-swap="innerHTML">{{ contact.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="no-contacts">
+            <i class="bi bi-person-lines-fill"></i>
+        </div>
+    {% endif %}
+</div>
