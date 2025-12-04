@@ -1,13 +1,48 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import get_folders_for_page, select_folder
-from apps.folders.models import Folder
+from apps.folders.folders import (
+    get_folders_for_page,
+    get_folders_tree_flat,
+    get_valid_parent_folders,
+    select_folder,
+)
+
+
+def _get_contacts_context(request):
+    """Helper to build context for contacts partials."""
+    user = request.user
+    selected_folder = select_folder(request, "contacts")
+
+    if selected_folder:
+        contacts = Contact.objects.filter(user=user, folder=selected_folder)
+    else:
+        contacts = Contact.objects.filter(user=user, folder_id__isnull=True)
+
+    contacts = contacts.order_by("name")
+
+    selected_contact_id = user.contacts_contact
+    try:
+        selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
+    except ObjectDoesNotExist:
+        selected_contact = None
+
+    google_enabled = bool(user.google_credentials)
+
+    return {
+        "page": "contacts",
+        "contacts": contacts,
+        "selected_contact": selected_contact,
+        "selected_folder": selected_folder,
+        "google": google_enabled,
+    }
 
 
 @login_required
@@ -48,6 +83,8 @@ def index(request):
         "page": "contacts",
         "edit": False,
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "selected_folder": selected_folder,
         "contacts": contacts,
         "selected_contact": selected_contact,
@@ -130,6 +167,8 @@ def add(request):
         "add": True,
         "action": "/contacts/add",
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "form": form,
         "phone_labels": ["Mobile", "Home", "Work", "Fax", "Other"],
     }
@@ -164,9 +203,7 @@ def edit(request, id):
             raise Http404("Record not found.")
 
         form = ContactForm(request.POST, instance=contact)
-        form.fields["folder"].queryset = Folder.objects.filter(
-            user=user, page="contacts"
-        ).order_by("name")
+        form.fields["folder"].queryset = get_folders_for_page(request, "contacts")
 
         if form.is_valid():
             contact = form.save(commit=False)
@@ -194,6 +231,8 @@ def edit(request, id):
         "add": False,
         "action": f"/contacts/{id}/edit",
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "selected_folder": selected_folder,
         "contact": contact,
         "form": form,
@@ -259,3 +298,146 @@ def google_list(request):
     }
 
     return render(request, "contacts/google.html", context)
+
+
+# HTMX Views
+
+
+@login_required
+def contacts_list_htmx(request):
+    """Return contacts list partial for htmx."""
+    context = _get_contacts_context(request)
+    return render(request, "contacts/list.html", context)
+
+
+@login_required
+def contact_detail_htmx(request):
+    """Return contact detail partial for htmx."""
+    context = _get_contacts_context(request)
+    if context["selected_contact"]:
+        return render(request, "contacts/contact.html", context)
+    return HttpResponse("")
+
+
+@login_required
+def select_htmx(request, id):
+    """Select contact via htmx, return detail + updated list (oob)."""
+    user = request.user
+    user.contacts_contact = id
+    user.save()
+
+    context = _get_contacts_context(request)
+    return render(request, "contacts/contact-with-list-oob.html", context)
+
+
+@login_required
+def contacts_form_htmx(request, id=None):
+    """Return contact form in modal for htmx, or process form submission."""
+    user = request.user
+    contact = None
+
+    if id:
+        try:
+            contact = Contact.objects.filter(user=user, pk=id).get()
+        except ObjectDoesNotExist:
+            raise Http404("Record not found.")
+
+    if request.method == "POST":
+        if contact:
+            form = ContactForm(request.POST, instance=contact)
+        else:
+            form = ContactForm(request.POST)
+
+        form.fields["folder"].queryset = get_folders_for_page(request, "contacts")
+
+        if form.is_valid():
+            saved_contact = form.save(commit=False)
+            saved_contact.user = user
+            saved_contact.save()
+
+            # Handle Google sync for edits
+            if contact and user.google_credentials and saved_contact.google_id:
+                google.delete_contact(saved_contact)
+                saved_contact.google_id = google.add_contact(saved_contact)
+                saved_contact.save()
+
+            # Select the saved contact
+            user.contacts_contact = saved_contact.id
+            user.save()
+
+            return HttpResponse(
+                status=204,
+                headers={
+                    "HX-Trigger": json.dumps(
+                        {"contactsChanged": "", "contactDetailChanged": ""}
+                    )
+                },
+            )
+    else:
+        if contact:
+            form = ContactForm(instance=contact)
+        else:
+            form = ContactForm()
+
+    context = {
+        "page": "contacts",
+        "edit": id is not None,
+        "contact": contact,
+        "form": form,
+        "action": f"/contacts/{id}/form-htmx" if id else "/contacts/form-htmx",
+        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+    }
+
+    return render(request, "contacts/modal-form.html", context)
+
+
+@login_required
+def delete_htmx(request, id):
+    """Delete contact via htmx."""
+    user = request.user
+
+    try:
+        contact = Contact.objects.filter(user=user, pk=id).get()
+    except ObjectDoesNotExist:
+        raise Http404("Record not found.")
+
+    if contact.google_id:
+        google.delete_contact(contact)
+    contact.delete()
+
+    # Clear selected contact
+    user.contacts_contact = 0
+    user.save()
+
+    return HttpResponse(
+        status=204,
+        headers={
+            "HX-Trigger": json.dumps(
+                {"contactsChanged": "", "contactDetailChanged": ""}
+            )
+        },
+    )
+
+
+@login_required
+def google_toggle_htmx(request, id):
+    """Toggle Google sync for contact via htmx."""
+    user = request.user
+    contact = get_object_or_404(Contact, pk=id, user=user)
+
+    if contact.google_id:
+        google.delete_contact(contact)
+        contact.google_id = ""
+    else:
+        contact.google_id = google.add_contact(contact)
+
+    contact.save()
+
+    return HttpResponse(
+        status=204,
+        headers={
+            "HX-Trigger": json.dumps(
+                {"contactsChanged": "", "contactDetailChanged": ""}
+            )
+        },
+    )

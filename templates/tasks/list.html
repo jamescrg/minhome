@@ -1,0 +1,62 @@
+{% include "tasks/taskform.html" %}
+<ul class="list-group tasks-list">
+    <li class="list-group-item tasks-list-title">
+        {% if selected_folder %}
+            {% for ancestor in selected_folder.get_ancestors %}
+                <a href="#"
+                   hx-get="{% url 'folder-select-htmx' id=ancestor.id page='tasks' %}"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML">{{ ancestor.name }}</a> /
+            {% endfor %}
+            <a href="#"
+               hx-get="{% url 'folder-select-htmx' id=selected_folder.id page='tasks' %}"
+               hx-target="#main-content"
+               hx-swap="innerHTML">{{ selected_folder.name }}</a>
+        {% else %}
+            Unsorted
+        {% endif %}
+    </li>
+    {% for task in tasks %}
+        <li class="list-group-item tasks-row">
+            <div class="tasks-checkbox">
+                <a href="#"
+                   hx-post="{% url 'tasks-status' task.id %}"
+                   hx-target="#tasks-container"
+                   hx-swap="innerHTML">
+                    {% if task.status == 1 %}
+                        <i class="bi bi-check-square"></i>
+                    {% else %}
+                        <i class="bi bi-square"></i>
+                    {% endif %}
+                </a>
+            </div>
+            <div class="tasks-content">
+                <div class="tasks-title">
+                    <a class="{% if task.status == 1 %}text-completed{% endif %}"
+                       href="#"
+                       hx-get="{% url 'tasks-form' task.id %}"
+                       hx-target="#htmx-modal-container"
+                       data-bs-toggle="modal"
+                       data-bs-target="#htmx-modal-container">{{ task.title }}</a>
+                </div>
+                {% if task.due_date %}
+                    <div class="tasks-due">
+                        {{ task.due_date|date:"M j" }}
+                        {% if task.due_time %}{{ task.due_time|time:"g:i A" }}{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if task.parent_task %}
+                <div class="tasks-recurring">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<div class="clear">
+    <a href="#"
+       hx-post="{% url 'tasks-clear-htmx' %}"
+       hx-target="#tasks-container"
+       hx-swap="innerHTML">Clear Checked</a>
+</div>

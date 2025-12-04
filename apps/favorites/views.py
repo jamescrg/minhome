@@ -3,14 +3,41 @@ from functools import wraps
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import get_folders_for_page, select_folder
+from apps.folders.folders import (
+    get_folders_for_page,
+    get_folders_tree_flat,
+    get_valid_parent_folders,
+    select_folder,
+)
 from apps.folders.models import Folder
+
+
+def _get_favorites_list_context(request):
+    """Helper to build context for favorites list partial."""
+    user = request.user
+    selected_folder = select_folder(request, "favorites")
+
+    if selected_folder:
+        favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
+    else:
+        favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
+
+    favorites = favorites.order_by("name")
+
+    return {
+        "page": "favorites",
+        "folders": get_folders_for_page(request, "favorites"),
+        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
+        "selected_folder": selected_folder,
+        "favorites": favorites,
+    }
 
 
 def cors_headers(view_func):
@@ -58,6 +85,8 @@ def index(request):
         "page": "favorites",
         "edit": False,
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "favorites": favorites,
     }
@@ -100,6 +129,8 @@ def add(request):
         "add": True,
         "action": "/favorites/add",
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "form": form,
     }
@@ -154,6 +185,8 @@ def edit(request, id):
         "add": False,
         "action": f"/favorites/{id}/edit",
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "form": form,
     }
@@ -193,6 +226,88 @@ def home(request, id):
         favorite.home_rank = 1
     favorite.save()
     return redirect("favorites")
+
+
+# -----------------------------------------------------------------------------
+# HTMX Views
+# -----------------------------------------------------------------------------
+
+
+@login_required
+def favorites_list(request):
+    """Return favorites list partial for htmx."""
+    context = _get_favorites_list_context(request)
+    return render(request, "favorites/list.html", context)
+
+
+@login_required
+def favorites_form(request, id=None):
+    """Return favorite form in modal, or process form submission."""
+    user = request.user
+
+    if id:
+        favorite = get_object_or_404(Favorite, pk=id)
+        edit = True
+    else:
+        favorite = None
+        edit = False
+
+    if request.method == "POST":
+        if edit:
+            form = FavoriteForm(
+                request.POST, instance=favorite, use_required_attribute=False
+            )
+        else:
+            form = FavoriteForm(request.POST, use_required_attribute=False)
+
+        form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
+
+        if form.is_valid():
+            favorite = form.save(commit=False)
+            favorite.user = user
+            favorite.save()
+            return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+        # Form validation failed - re-render form with errors
+
+    else:
+        # GET request - display the form
+        if edit:
+            form = FavoriteForm(instance=favorite, use_required_attribute=False)
+        else:
+            form = FavoriteForm(use_required_attribute=False)
+
+    context = {
+        "page": "favorites",
+        "edit": edit,
+        "action": f"/favorites/{id}/form" if edit else "/favorites/form",
+        "favorite": favorite,
+        "form": form,
+        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+    }
+    return render(request, "favorites/modal-form.html", context)
+
+
+@login_required
+def delete_htmx(request, id):
+    """Delete favorite via htmx and close modal."""
+    favorite = get_object_or_404(Favorite, pk=id, user=request.user)
+    favorite.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+
+@login_required
+def home_htmx(request, id):
+    """Toggle favorite home status via htmx and return updated list."""
+    favorite = get_object_or_404(Favorite, pk=id)
+    if favorite.home_rank:
+        favorite.home_rank = 0
+    else:
+        favorite.home_rank = 1
+    favorite.save()
+
+    context = _get_favorites_list_context(request)
+    return render(request, "favorites/list.html", context)
 
 
 # -----------------------------------------------------------------------------
@@ -291,11 +406,10 @@ def extension_add(request):
     This provides a logged-in web form that the extension can open in a popup.
     """
     user = request.user
-    folders = get_folders_for_page(request, "favorites")
 
     if request.method == "POST":
         form = FavoriteExtensionForm(request.POST)
-        form.fields["folder"].queryset = folders
+        form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
         if form.is_valid():
             favorite = form.save(commit=False)
@@ -313,7 +427,7 @@ def extension_add(request):
             initial["name"] = request.GET.get("name")
 
         form = FavoriteExtensionForm(initial=initial)
-        form.fields["folder"].queryset = folders
+        form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
 
     context = {
         "form": form,
