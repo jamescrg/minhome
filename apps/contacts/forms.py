@@ -1,7 +1,8 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from crispy_forms.helper import FormHelper
 
 from .models import Contact
 
@@ -41,6 +42,24 @@ class ContactForm(forms.ModelForm):
             "phone2_label": forms.Select(choices=PHONE_LABELS),
             "phone3_label": forms.Select(choices=PHONE_LABELS),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            "name",
+            "company",
+            "address",
+            "phone1",
+            "phone1_label",
+            "phone2",
+            "phone2_label",
+            "phone3",
+            "phone3_label",
+            "email",
+            "notes",
+        )
 
     def clean_name(self):
         name = self.cleaned_data["name"]
@@ -90,7 +109,7 @@ class ContactForm(forms.ModelForm):
         if email:
             try:
                 validate_email(email)
-            except:
+            except ValidationError:
                 raise ValidationError("Invalid email address.")
         return email
 

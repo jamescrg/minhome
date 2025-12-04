@@ -1,0 +1,58 @@
+<ul class="list-group folder-tree">
+    {% for node in folder_tree_flat %}
+        <li class="list-group-item folder-item {% if node.folder.id == selected_folder.id %}active-item{% endif %}"
+            id="folder-{{ node.folder.id }}"
+            data-folder-name="{{ node.folder.name }}"
+            data-folder-parent="{{ node.folder.parent_id|default:'' }}"
+            data-folder-owner="{{ node.folder.user_id }}"
+            data-parent-id="{{ node.parent_id|default:'root' }}"
+            data-has-children="{{ node.has_children|yesno:'true,false' }}"
+            {% if not node.is_visible %}style="display: none"{% endif %}>
+            <div class="folder-row">
+                <div class="folder-content folder-depth-{{ node.level }}">
+                    {% if node.has_children %}
+                        <span class="folder-caret"
+                              onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();">
+                            <i class="bi bi-caret-{% if node.is_expanded %}down{% else %}right{% endif %}-fill caret-icon"
+                               id="caret-{{ node.folder.id }}"></i>
+                        </span>
+                    {% else %}
+                        <span class="folder-caret-placeholder"></span>
+                    {% endif %}
+                    {% if node.folder.home_column and node.folder.user == user %}
+                        <span class="folder-icon-home"
+                              {% if node.has_children %}onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();"{% endif %}>
+                            <i class="bi bi-house-door"></i>
+                        </span>
+                    {% else %}
+                        <span class="folder-icon"
+                              {% if node.has_children %}onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();"{% endif %}>
+                            <i class="bi bi-folder"></i>
+                        </span>
+                    {% endif %}
+                    <a class="folder-link"
+                       href="#"
+                       hx-get="{% url 'folder-select-htmx' id=node.folder.id page=page %}"
+                       hx-target="#main-content"
+                       hx-swap="innerHTML">{{ node.folder.name }}</a>
+                </div>
+                {% include "folders/menu.html" with folder=node.folder %}
+            </div>
+        </li>
+    {% endfor %}
+    <li class="list-group-item folder-item {% if not selected_folder %}active-item{% endif %}">
+        <div class="folder-row">
+            <div class="folder-content folder-depth-0">
+                <span class="folder-caret-placeholder"></span>
+                <span class="folder-icon">
+                    <i class="bi bi-folder"></i>
+                </span>
+                <a class="folder-link"
+                   href="#"
+                   hx-get="{% url 'folder-select-htmx' id=0 page=page %}"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML">Unsorted</a>
+            </div>
+        </div>
+    </li>
+</ul>

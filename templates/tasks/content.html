@@ -1,24 +1,7 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-
-<div class="row">
-
-	<div class="col-lg-9">
-
-		{% if edit  %}
-
-			{% include 'tasks/form.html' %}
-
-		{% else %}
-
-			{% include 'tasks/tasks.html' %}
-
-		{% endif %}
-	</div>
-
-	<div class="col-lg-3">
-		{% include 'folders/list.html' %}
-	</div>
-
-</div>
+    <div class="row">
+        <div class="col-lg-9" id="main-content">{% include "tasks/tasks.html" %}</div>
+        <div class="col-lg-3" id="sidebar">{% include "folders/list.html" %}</div>
+    </div>
 {% endblock content %}
