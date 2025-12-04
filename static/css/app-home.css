@@ -29,7 +29,7 @@
 }
 
 .search form {
-	margin-bottom: 1em;
+	margin-bottom: 0.5rem;
 	text-align: center;
 }
 
@@ -89,7 +89,6 @@
 
 .drop-zone {
   border-radius: 0.25rem;
-  padding: 0.5rem;
 }
 
 /* Prevent dark background when folders are drop targets */

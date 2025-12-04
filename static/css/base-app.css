@@ -60,7 +60,7 @@ a:hover {
 
 .card {
   background: var(--stone-100);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding: 1rem;
   padding-bottom: 1.5rem;
 }
