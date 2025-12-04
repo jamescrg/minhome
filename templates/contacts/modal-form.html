@@ -1,0 +1,58 @@
+{% load crispy_forms_tags %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                {% if edit %}
+                    Edit Contact
+                {% else %}
+                    Add Contact
+                {% endif %}
+            </h5>
+            <a href="#" data-bs-dismiss="modal">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
+        <div class="modal-body">
+            {% if user.id == 1 and not user.google_credentials %}
+                <div class="warn">
+                    Not connected to a Google contacts account. You may still add a contact, but it will not be posted to your google account. Click <a href="{% url 'settings' %}">here</a> to connect.
+                </div>
+            {% endif %}
+            <form hx-post="{{ action }}"
+                  hx-target="#htmx-modal-container"
+                  id="contact-edit"
+                  class="form-horizontal"
+                  role="form">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_folder" class="form-label">Folder</label>
+                    <select class="form-select" id="id_folder" name="folder">
+                        <option value="">---------</option>
+                        {% for node in folder_tree_flat %}
+                            <option value="{{ node.folder.id }}"
+                                    {% if contact and contact.folder_id == node.folder.id %}selected{% endif %}
+                                    style="padding-left: {{ node.level|add:1 }}rem">
+                                {% if node.level > 0 %}↳{% endif %}
+                                {{ node.folder.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% crispy form %}
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    {% if edit %}
+                        <a href="#"
+                           class="text-danger"
+                           hx-delete="{% url 'contacts-delete-htmx' contact.id %}"
+                           hx-target="#htmx-modal-container"
+                           hx-confirm="Are you sure you want to delete this contact?">
+                            <i class="bi bi-x-circle"></i> Delete
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

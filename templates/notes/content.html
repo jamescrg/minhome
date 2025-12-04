@@ -1,24 +1,7 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-
-<div class="row">
-
-	{% if edit or add %}
-
-		{% include 'notes/form.html' %}
-
-	{% else %}
-
-		{% include 'notes/notes.html' %}
-
-	{% endif %}
-
-	<div id="folders" class="col-lg-3 order-lg-1">
-
-		{% include 'folders/list.html' %}
-
-	</div>
-
-</div>
-
+    <div class="row" id="main-content">
+        {% include "notes/notes.html" %}
+        <div class="col-lg-3 order-lg-1" id="sidebar">{% include "folders/list.html" %}</div>
+    </div>
 {% endblock content %}

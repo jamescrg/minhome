@@ -1,13 +1,43 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
-from apps.folders.folders import get_task_folders, select_folder
+from apps.folders.folders import (
+    get_folders_tree_flat,
+    get_task_folders,
+    get_valid_parent_folders,
+    select_folder,
+)
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
+
+
+def _get_task_list_context(request):
+    """Helper to build context for task list partial."""
+    user = request.user
+    folders = get_task_folders(request)
+    selected_folder = select_folder(request, "tasks")
+
+    if selected_folder:
+        tasks = Task.objects.filter(
+            folder=selected_folder, is_recurring=False
+        ).order_by("status", "title")
+    else:
+        tasks = Task.objects.filter(
+            user=user, folder__isnull=True, is_recurring=False
+        ).order_by("status", "title")
+
+    return {
+        "page": "tasks",
+        "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
+        "selected_folder": selected_folder,
+        "tasks": tasks,
+    }
 
 
 @login_required
@@ -39,6 +69,8 @@ def index(request):
     context = {
         "page": "tasks",
         "folders": folders,
+        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
         "selected_folder": selected_folder,
         "tasks": tasks,
     }
@@ -231,6 +263,8 @@ def edit(request, id):
             "page": "tasks",
             "edit": True,
             "folders": folders,
+            "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+            "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
             "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
             "task": task,
@@ -289,3 +323,185 @@ def remove_editor(request, folder_id, user_id):
     folder.editors.remove(user)
     folder.save()
     return redirect("/tasks/")
+
+
+# HTMX Views
+
+
+@login_required
+def task_list(request):
+    """Return task list partial for htmx."""
+    context = _get_task_list_context(request)
+    return render(request, "tasks/list.html", context)
+
+
+@login_required
+def add_htmx(request):
+    """Add a new task via htmx and return updated list."""
+    if request.method == "POST":
+        task = Task()
+        task.user = request.user
+        task.title = request.POST.get("title", "").strip()
+
+        if task.title:
+            task.title = task.title[0].upper() + task.title[1:]
+
+            try:
+                folder = Folder.objects.filter(pk=request.POST.get("folder_id")).get()
+                task.folder = folder
+            except (ValueError, Folder.DoesNotExist):
+                pass
+
+            task.save()
+
+    context = _get_task_list_context(request)
+    return render(request, "tasks/list.html", context)
+
+
+@login_required
+def task_form(request, id):
+    """Return task edit form in modal, or process form submission."""
+    user = request.user
+    task = get_object_or_404(Task, pk=id)
+    folders = get_task_folders(request)
+
+    if request.method == "POST":
+        # Check if this task was already recurring before the edit
+        was_recurring = task.is_recurring
+        parent_task = task.parent_task
+
+        form = TaskForm(request.POST, instance=task, use_required_attribute=False)
+        form.fields["folder"].queryset = folders
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = user
+            task.title = task.title[0].upper() + task.title[1:]
+            recurrence = form.cleaned_data.get("recurrence")
+
+            # If editing a recurring instance, sync changes to the template
+            if parent_task:
+                task.save()
+                parent_task.folder = task.folder
+                parent_task.title = task.title
+                parent_task.due_time = task.due_time
+                if recurrence:
+                    parent_task.recurrence_type = recurrence
+                    if task.due_date:
+                        if recurrence == "daily":
+                            parent_task.recurrence_day = None
+                        elif recurrence == "monthly":
+                            parent_task.recurrence_day = task.due_date.day
+                        elif recurrence == "weekly":
+                            parent_task.recurrence_day = task.due_date.weekday()
+                        elif recurrence == "yearly":
+                            parent_task.recurrence_day = task.due_date.day
+                            parent_task.recurrence_month = task.due_date.month
+                    parent_task.save()
+                else:
+                    parent_task.delete()
+                    task.parent_task = None
+                    task.save()
+            else:
+                if recurrence:
+                    task.is_recurring = True
+                    task.recurrence_type = recurrence
+                    if task.due_date:
+                        if recurrence == "daily":
+                            task.recurrence_day = None
+                        elif recurrence == "monthly":
+                            task.recurrence_day = task.due_date.day
+                        elif recurrence == "weekly":
+                            task.recurrence_day = task.due_date.weekday()
+                        elif recurrence == "yearly":
+                            task.recurrence_day = task.due_date.day
+                            task.recurrence_month = task.due_date.month
+                else:
+                    task.is_recurring = False
+                    task.recurrence_type = None
+                    task.recurrence_day = None
+                    task.recurrence_month = None
+
+                task.save()
+
+                if task.is_recurring and not was_recurring:
+                    from datetime import date
+
+                    Task.objects.create(
+                        user=task.user,
+                        folder=task.folder,
+                        title=task.title,
+                        status=0,
+                        due_date=task.due_date,
+                        due_time=task.due_time,
+                        parent_task=task,
+                    )
+                    task.last_generated = date.today()
+                    task.save(update_fields=["last_generated"])
+                elif task.is_recurring and was_recurring:
+                    latest_instance = (
+                        Task.objects.filter(parent_task=task, status=0)
+                        .order_by("-due_date")
+                        .first()
+                    )
+                    if latest_instance:
+                        latest_instance.folder = task.folder
+                        latest_instance.title = task.title
+                        latest_instance.due_time = task.due_time
+                        latest_instance.save()
+
+            return HttpResponse(status=204, headers={"HX-Trigger": "tasksChanged"})
+
+        # Form validation failed - re-render form with errors
+
+    else:
+        # GET request - display the form
+        form = TaskForm(instance=task, use_required_attribute=False)
+
+        if task.parent_task:
+            form.fields["recurrence"].initial = task.parent_task.recurrence_type
+
+    context = {
+        "page": "tasks",
+        "edit": True,
+        "action": f"/tasks/{id}/form",
+        "task": task,
+        "form": form,
+        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+    }
+    return render(request, "tasks/modal-form.html", context)
+
+
+@login_required
+def status_htmx(request, id):
+    """Toggle task status via htmx and return updated list."""
+    task = get_object_or_404(Task, pk=id)
+    task.status = 0 if task.status == 1 else 1
+    task.save()
+
+    context = _get_task_list_context(request)
+    return render(request, "tasks/list.html", context)
+
+
+@login_required
+def delete_htmx(request, id):
+    """Delete task via htmx and close modal."""
+    task = get_object_or_404(Task, pk=id, user=request.user)
+    task.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "tasksChanged"})
+
+
+@login_required
+def clear_htmx(request):
+    """Clear completed tasks via htmx and return updated list."""
+    selected_folder = select_folder(request, "tasks")
+
+    if selected_folder:
+        tasks = Task.objects.filter(folder=selected_folder, status=1)
+    else:
+        tasks = Task.objects.filter(user=request.user, folder__isnull=True, status=1)
+
+    for task in tasks:
+        task.delete()
+
+    context = _get_task_list_context(request)
+    return render(request, "tasks/list.html", context)

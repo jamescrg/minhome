@@ -46,8 +46,7 @@ class TaskForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
-                Column("folder", css_class="col-12 col-md-4"),
-                Column("title", css_class="col-12 col-md-8"),
+                Column("title", css_class="col-12"),
             ),
             Row(
                 Column("due_date", css_class="col-4"),
