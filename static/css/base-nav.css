@@ -26,6 +26,30 @@
 .navbar .active {
   background: var(--stone-300);
   border-radius: 5px 5px 0 0;
+  box-shadow: 0 0.0625rem 0.2rem rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.navbar .active::before,
+.navbar .active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 5px;
+  height: 5px;
+  background: var(--stone-300);
+}
+
+.navbar .active::before {
+  left: -5px;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M8,0 L8,8 L0,8 A8,8 0 0,0 8,0 Z' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M8,0 L8,8 L0,8 A8,8 0 0,0 8,0 Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.navbar .active::after {
+  right: -5px;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M0,0 L0,8 L8,8 A8,8 0 0,1 0,0 Z' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M0,0 L0,8 L8,8 A8,8 0 0,1 0,0 Z' fill='white'/%3E%3C/svg%3E");
 }
 
 .navbar .settings-link {
@@ -56,6 +80,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   flex-shrink: 0;
+  padding-left: 5px;
 }
 
 .nav-scroll-container li {

@@ -22,6 +22,11 @@ a:hover {
   background: var(--stone-300);
 }
 
+.navbar .active::before,
+.navbar .active::after {
+  background: var(--stone-300);
+}
+
 .navbar .active a {
   color: var(--stone-600);
 }
