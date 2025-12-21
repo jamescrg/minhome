@@ -10,6 +10,10 @@
            type="text"
            name="title"
            id="task-title-input"
-           autofocus
            required>
+    <script>
+      if (window.innerWidth >= 768) {
+        document.getElementById('task-title-input').focus();
+      }
+    </script>
 </form>
