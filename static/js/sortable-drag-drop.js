@@ -132,12 +132,13 @@ function initializeFavoriteSortables() {
                 if (evt.oldIndex !== evt.newIndex || evt.from !== evt.to) {
                     const favoriteId = evt.item.getAttribute('data-favorite-id');
                     const newFolderId = evt.to.closest('.folder').getAttribute('data-folder-id');
+                    const oldPosition = evt.oldIndex;
                     const newPosition = evt.newIndex;
 
-                    console.log(`Moving favorite ${favoriteId} to folder ${newFolderId}, position ${newPosition}`);
+                    console.log(`Moving favorite ${favoriteId} to folder ${newFolderId}, from ${oldPosition} to ${newPosition}`);
 
                     // Update favorite position via API
-                    updateFavoritePosition(favoriteId, newFolderId, newPosition);
+                    updateFavoritePosition(favoriteId, newFolderId, oldPosition, newPosition);
                 }
             }
         });
@@ -187,47 +188,46 @@ function updateFolderPosition(folderId, newColumn, newPosition) {
 /**
  * Update favorite position via API
  */
-function updateFavoritePosition(favoriteId, newFolderId, newPosition) {
+function updateFavoritePosition(favoriteId, newFolderId, oldPosition, newPosition) {
     // Get the dragged favorite element to check its current folder
     const draggedFavorite = document.querySelector(`[data-favorite-id="${favoriteId}"]`);
     const currentFolderId = draggedFavorite?.getAttribute('data-folder-id');
 
-    // If moving within the same folder, use swap positions endpoint
+    // If moving within the same folder, reorder based on new DOM order
     if (currentFolderId === newFolderId) {
-        // Find the target favorite at the new position
-        const folderContainer = document.querySelector(`[data-folder-id="${newFolderId}"] .favorites-list`);
+        const folderContainer = document.querySelector(`[data-folder-id="${newFolderId}"] .list-group`);
         const favoritesInFolder = folderContainer?.querySelectorAll('[data-favorite-id]');
 
-        if (favoritesInFolder && favoritesInFolder[newPosition]) {
-            const targetFavoriteId = favoritesInFolder[newPosition].getAttribute('data-favorite-id');
+        if (favoritesInFolder && favoritesInFolder.length > 0) {
+            // Get all favorite IDs in their new DOM order
+            const orderedIds = Array.from(favoritesInFolder).map(el => el.getAttribute('data-favorite-id'));
 
             const formData = new FormData();
-            formData.append('dragged_favorite_id', favoriteId);
-            formData.append('target_favorite_id', targetFavoriteId);
+            formData.append('folder_id', newFolderId);
+            formData.append('favorite_ids', JSON.stringify(orderedIds));
             formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
-            fetch('/home/swap-favorite-positions/', {
+            fetch('/home/reorder-favorites/', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log('Favorite positions swapped successfully');
-                    window.location.reload();
+                    console.log('Favorites reordered successfully');
                 } else {
-                    console.error('Error swapping favorite positions:', data.error);
-                    alert('Error updating favorite position: ' + data.error);
+                    console.error('Error reordering favorites:', data.error);
+                    alert('Error updating favorite order: ' + data.error);
                     location.reload();
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error updating favorite position');
+                alert('Error updating favorite order');
                 location.reload();
             });
         } else {
-            console.log('No target favorite found for swap, position may already be correct');
+            console.log('No favorites found in folder');
             return;
         }
     } else {

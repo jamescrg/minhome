@@ -603,6 +603,32 @@ def swap_favorite_positions(request):
 
 
 @login_required
+def reorder_favorites(request):
+    """Reorder favorites within a folder based on new order from drag-and-drop."""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Only POST method allowed"})
+
+    try:
+        import json
+
+        folder_id = int(request.POST.get("folder_id"))
+        favorite_ids = json.loads(request.POST.get("favorite_ids", "[]"))
+
+        # Update home_rank for each favorite based on new order
+        for index, fav_id in enumerate(favorite_ids):
+            Favorite.objects.filter(
+                pk=int(fav_id), user=request.user, folder_id=folder_id
+            ).update(home_rank=index + 1)
+
+        return JsonResponse({"success": True, "message": "Favorites reordered"})
+
+    except (ValueError, TypeError, json.JSONDecodeError):
+        return JsonResponse({"success": False, "error": "Invalid parameters"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
 def insert_favorite_at_position(request):
     """Insert a favorite at a specific position within a folder via AJAX."""
     if request.method != "POST":

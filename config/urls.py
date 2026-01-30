@@ -80,6 +80,11 @@ urlpatterns = [
         name="home-swap-favorite-positions",
     ),
     path(
+        "home/reorder-favorites/",
+        home.reorder_favorites,
+        name="home-reorder-favorites",
+    ),
+    path(
         "home/insert-favorite-at-position/",
         home.insert_favorite_at_position,
         name="home-insert-favorite-at-position",
