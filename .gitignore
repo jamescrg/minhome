@@ -13,3 +13,4 @@ apps/lab
 gunicorn.conf.py
 gunicorn_cl.conf.py
 logs/
+.claude/settings.local.json
