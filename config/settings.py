@@ -45,6 +45,12 @@ ENV = env("ENV")
 # urls to which the application will respond
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
+# trusted origins for CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "https://dev.minhome.app",
+    "https://server-dev.site:8000",
+]
+
 
 # Application definition
 
