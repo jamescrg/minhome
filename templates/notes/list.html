@@ -1,29 +1,57 @@
-<div class="card">
-    <div class="card-title flex-center-space">
-        <h1>Notes</h1>
-        <a class="square-button"
-           href="#"
-           hx-get="{% url 'notes-form-htmx' %}"
-           hx-target="#htmx-modal-container"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
-        </a>
+<div class="section">
+    <div class="toolbar notes-toolbar">
+        <div class="toolbar-left">
+            <div class="filter-tools">
+                <button type="button"
+                        class="btn-icon"
+                        hx-get="{% url 'notes:add' %}"
+                        hx-target="#htmx-modal-container"
+                        data-bs-toggle="modal"
+                        data-bs-target="#htmx-modal-container"
+                        title="New Note">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+                <div class="dropdown">
+                    <button type="button"
+                            id="notes-folder-filter"
+                            class="select-btn filter-dropdown-button {% if selected_folder_id %}toggle-active{% endif %}"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        {{ selected_folder_name|default:"All Folders" }}
+                        <small><i class="bi bi-chevron-down"></i></small>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item {% if not selected_folder_id %}active{% endif %}"
+                               href="#"
+                               hx-get="{% url 'notes:filter-folder-clear' %}"
+                               hx-target="#notes">All Folders</a>
+                        </li>
+                        {% for item in folders %}
+                            <li>
+                                <a class="dropdown-item {% if selected_folder_id == item.folder.id %}active{% endif %}"
+                                   href="#"
+                                   hx-get="{% url 'notes:filter-folder' item.folder.id %}"
+                                   hx-target="#notes">{{ item.indent }}{{ item.folder.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <input type="text"
+                       id="notes-keyword-input"
+                       name="keyword"
+                       placeholder="Keyword Search"
+                       value="{{ keyword }}"
+                       class="filter-input keyword-input"
+                       hx-get="{% url 'notes:filter-keyword' %}"
+                       hx-target="#notes-table"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-include="this">
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <span class="app-badge app-badge-lg">Count: {{ number_notes }}</span>
+        </div>
     </div>
-    {% if notes %}
-        <ul class="list-group">
-            {% for note in notes %}
-                <li class="list-group-item {% if selected_note and selected_note.id == note.id %}active-item{% endif %}">
-                    <a href="#"
-                       hx-get="{% url 'notes-select-htmx' id=note.id %}"
-                       hx-target="#note-detail"
-                       hx-swap="innerHTML">{{ note.subject }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <ul class="list-group">
-            <li class="list-group-item">No notes.</li>
-        </ul>
-    {% endif %}
+    <div id="notes-table">{% include "notes/table.html" %}</div>
 </div>

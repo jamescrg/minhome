@@ -94,9 +94,9 @@
                             {% endif %}
                         </td>
                         <td class="note-subject">
-                            <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
+                            <a href="{% url 'notes:note-view' note_id=note.id %}" target="_blank">{{ note.title }}</a>
                         </td>
-                        <td class="note">{{ note.note|slice:":300"|safe }}</td>
+                        <td class="note">{{ note.content|slice:":300"|safe }}</td>
                     </tr>
                 {% endfor %}
             </table>

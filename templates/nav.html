@@ -15,7 +15,7 @@
                     <a href="{% url 'contacts' %}">Contacts</a>
                 </li>
                 <li {% if page == 'notes' %}class="active"{% endif %}>
-                    <a href="{% url 'notes' %}">Notes</a>
+                    <a href="{% url 'notes:index' %}">Notes</a>
                 </li>
                 <li {% if page == 'weather' %}class="active"{% endif %}>
                     <a href="{% url 'weather' %}">Weather</a>

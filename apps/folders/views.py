@@ -14,6 +14,13 @@ from apps.folders.folders import (
 from apps.folders.models import Folder, UserFolderPosition
 
 
+def _redirect_page(page):
+    """Redirect to the correct URL for a page, handling namespaced URLs."""
+    if page == "notes":
+        return redirect("notes:index")
+    return redirect(page)
+
+
 @login_required
 def select(request, id, page):
     """Select a folder for display, redirect to index if that folder's page.
@@ -26,7 +33,7 @@ def select(request, id, page):
     user = request.user
     setattr(user, page + "_folder", id)
     user.save()
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required
@@ -48,7 +55,7 @@ def insert(request, page):
     # Handle name
     folder.name = request.POST.get("name", "").strip()
     if not folder.name:
-        return redirect(page)
+        return _redirect_page(page)
 
     # Handle parent assignment
     parent_id = request.POST.get("parent")
@@ -69,7 +76,7 @@ def insert(request, page):
     except ValidationError:
         pass  # Validation failed, don't save
 
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required
@@ -154,7 +161,7 @@ def update(request, id, page):
         position.local_parent = new_parent
         position.save()
 
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required
@@ -207,7 +214,7 @@ def delete(request, id, page):
             setattr(user, attr, 0)
             user.save()
 
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required
@@ -251,7 +258,7 @@ def home(request, id, page):
         home_folder.home_column = 0
 
     home_folder.save(update_fields=["home_column", "home_rank"])
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required
@@ -538,44 +545,10 @@ def select_htmx(request, id, page):
         return render(request, "contacts/contacts-with-folders-oob.html", context)
 
     elif page == "notes":
-        import markdown
-
-        from apps.notes.models import Note
-
-        folders = get_folders_for_page(request, page)
-        selected_folder = select_folder(request, page)
-
-        if selected_folder:
-            notes = Note.objects.filter(
-                user=user, folder_id=selected_folder.id
-            ).order_by("subject")
-        else:
-            notes = Note.objects.filter(user=user, folder_id__isnull=True).order_by(
-                "subject"
-            )
-
-        selected_note_id = user.notes_note
-        try:
-            selected_note = Note.objects.filter(pk=selected_note_id).get()
-            selected_note.note = markdown.markdown(selected_note.note)
-        except Note.DoesNotExist:
-            selected_note = None
-
-        context = {
-            "page": page,
-            "user": user,
-            "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, page),
-            "valid_parent_folders": get_valid_parent_folders(request, page),
-            "selected_folder": selected_folder,
-            "notes": notes,
-            "selected_note": selected_note,
-        }
-
-        return render(request, "notes/notes-with-folders-oob.html", context)
+        return redirect("notes:index")
 
     # For other pages, redirect for now (can be extended later)
-    return redirect(page)
+    return _redirect_page(page)
 
 
 @login_required

@@ -1,22 +1,42 @@
 {% load crispy_forms_tags %}
-<div class="col-lg-9 order-lg-2">
-    <div class="card">
-        <div class="card-title flex-center-space">
-            <h1>
-                {% if not edit %}
-                    Add Note
-                {% else %}
-                    Edit Note
-                {% endif %}
-            </h1>
-            <a class="square-button" href="{% url 'notes' %}">
-                <i class="bi bi-arrow-return-left"></i>
-            </a>
-        </div>
-        <form class="large-form" action="{{ action }}" method="post" role="form">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
-    </div>
+<div class="modal-header">
+    <h1 class="modal-title">{{ action }} Note</h1>
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form id="note-form"
+          hx-post="{% if note %}{% url 'notes:edit' note.id %}{% else %}{% url 'notes:add' %}{% endif %}"
+          hx-target="#htmx-modal-container">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if folders_flat %}
+            <div class="mb-3">
+                <label for="id_folder" class="form-label">Folder</label>
+                <select name="folder" id="id_folder" class="form-select">
+                    <option value="">---------</option>
+                    {% for item in folders_flat %}
+                        <option value="{{ item.folder.id }}"
+                                {% if form.instance.folder_id == item.folder.id %}selected{% endif %}>
+                            {{ item.indent }}{{ item.folder.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+    </form>
+</div>
+<div class="modal-footer">
+    {% if note %}
+        <button type="button"
+                class="btn btn-danger"
+                hx-confirm="Are you sure you want to delete this note?"
+                hx-post="{% url 'notes:delete' note.id %}"
+                hx-target="#htmx-modal-container">Delete</button>
+    {% else %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    {% endif %}
+    <button type="submit" form="note-form" class="btn btn-success">Submit</button>
 </div>

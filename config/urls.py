@@ -8,7 +8,6 @@ from apps.finance import views as finance
 from apps.folders import views as folders
 from apps.home import views as home
 from apps.lab import views as lab
-from apps.notes import views as notes
 from apps.search import views as search
 from apps.settings import views as settings
 from apps.tasks import views as tasks
@@ -183,20 +182,7 @@ urlpatterns = [
         name="contacts-google-toggle-htmx",
     ),
     # notes
-    path("notes/", notes.index, name="notes"),
-    path("notes/<int:id>", notes.select, name="notes-select"),
-    path("notes/add", notes.add, name="notes-add"),
-    path("notes/<int:id>/edit", notes.edit, name="notes-edit"),
-    path("notes/<int:id>/delete", notes.delete, name="notes-delete"),
-    # notes htmx
-    path("notes/list-htmx/", notes.notes_list_htmx, name="notes-list-htmx"),
-    path("notes/detail-htmx/", notes.note_detail_htmx, name="notes-detail-htmx"),
-    path("notes/<int:id>/select-htmx", notes.select_htmx, name="notes-select-htmx"),
-    path("notes/form-htmx", notes.notes_form_htmx, name="notes-form-htmx"),
-    path(
-        "notes/<int:id>/form-htmx", notes.notes_form_htmx, name="notes-form-htmx-edit"
-    ),
-    path("notes/<int:id>/delete-htmx", notes.delete_htmx, name="notes-delete-htmx"),
+    path("notes/", include("apps.notes.urls")),
     # weather
     path("weather/", weather.index, name="weather"),
     path("weather/zip", weather.zip, name="weather-zip"),

@@ -1,0 +1,42 @@
+<div class="sidebar-header">
+    <span>Recent</span>
+</div>
+<div class="sidebar-panel-toolbar">
+    <button class="panel-btn"
+            hx-get="{% url 'notes:add' %}"
+            hx-target="#htmx-modal-container"
+            data-bs-toggle="modal"
+            data-bs-target="#htmx-modal-container"
+            title="New Note">
+        <i class="icon-square-pen"></i>
+    </button>
+    <div class="dropdown">
+        <button class="panel-btn"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                title="Sort notes">
+            <i class="icon-arrow-up-down"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            {% for key, label in sidebar_sort_options %}
+                <li>
+                    <a class="dropdown-item {% if current_sort == key %}active{% endif %}"
+                       href="#"
+                       hx-get="{% url 'notes:note-sidebar-sort' note.id key %}"
+                       hx-target="#sidebar-list-container">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<ul class="sidebar-notes-list">
+    {% for n in notes %}
+        <li class="{% if n.id == note.id %}active{% endif %}"
+            hx-get="{% url 'notes:note-content-partial' n.id %}"
+            hx-target="#note-editor-container"
+            hx-swap="innerHTML"
+            hx-push-url="{% url 'notes:note-view' n.id %}"
+            data-note-id="{{ n.id }}">{{ n.title }}</li>
+    {% endfor %}
+</ul>
