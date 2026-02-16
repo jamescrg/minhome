@@ -1,0 +1,45 @@
+<div class="table-container">
+    <table id="notes-list" class="table notes-list">
+        <tr>
+            <th class="folder">
+                Folder
+                <button class="btn-sort {% if 'folder' in current_order %}active{% endif %}"
+                        hx-get="{% url 'notes:order-by' 'folder__name' %}"
+                        hx-target="#notes">
+                    <i class="bi bi-chevron-expand"></i>
+                </button>
+            </th>
+            <th class="title">
+                Title
+                <button class="btn-sort {% if 'title' in current_order %}active{% endif %}"
+                        hx-get="{% url 'notes:order-by' 'title' %}"
+                        hx-target="#notes">
+                    <i class="bi bi-chevron-expand"></i>
+                </button>
+            </th>
+            <th class="created">
+                Created
+                <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
+                        hx-get="{% url 'notes:order-by' 'created_at' %}"
+                        hx-target="#notes">
+                    <i class="bi bi-chevron-expand"></i>
+                </button>
+            </th>
+            <th class="updated">
+                Updated
+                <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
+                        hx-get="{% url 'notes:order-by' 'updated_at' %}"
+                        hx-target="#notes">
+                    <i class="bi bi-chevron-expand"></i>
+                </button>
+            </th>
+        </tr>
+        {% for note in notes %}
+            {% include "notes/row.html" %}
+        {% empty %}
+            <tr>
+                <td colspan="4" class="empty-message">No notes found.</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>

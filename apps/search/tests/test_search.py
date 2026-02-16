@@ -36,8 +36,8 @@ def test_results(user, client):
 
     Note.objects.create(
         user=user,
-        subject="Tasks for James",
-        note="Some randome text that I put in here",
+        title="Tasks for James",
+        content="Some randome text that I put in here",
         folder=note_folder,
     )
 
@@ -62,7 +62,7 @@ def test_results(user, client):
 
     note = response.context["notes"]
     note = note.filter(pk=1).get()
-    assert note.subject == "Tasks for James"
+    assert note.title == "Tasks for James"
 
     contact = response.context["contacts"]
     contact = contact.filter(name="James Craig").get()

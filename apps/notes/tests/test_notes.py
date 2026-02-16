@@ -1,33 +1,24 @@
 import pytest
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from apps.notes.models import Note
 
-# This flags all tests in the file as needing database access
-# Once setup, the database is cached to be used for all subsequent tests
-# and rolls back transactions, to isolate tests from each other.
-# This is the same way the standard Django TestCase uses the database.
-# However pytest-django also caters for transaction test cases and allows you
-# to keep the test databases configured across different test runs.
-
 pytestmark = pytest.mark.django_db
 
 
 def test_note_string(note):
-    note = Note.objects.get(subject="Things I Like")
-    assert str(note) == f"{note.subject}"
+    note = Note.objects.get(title="Things I Like")
+    assert str(note) == f"{note.title}"
 
 
 def test_note_content(note, user, folder1):
-    note = Note.objects.filter(subject="Things I Like").get()
+    note = Note.objects.filter(title="Things I Like").get()
     expectedValues = {
         "user": user,
         "folder": folder1,
-        "selected": 1,
-        "subject": "Things I Like",
-        "note": "Ice cream and cookies are nice",
+        "title": "Things I Like",
+        "content": "Ice cream and cookies are nice",
     }
     for key, val in expectedValues.items():
         assert getattr(note, key) == val
@@ -36,21 +27,19 @@ def test_note_content(note, user, folder1):
 def test_index(client):
     response = client.get("/notes/")
     assert response.status_code == 200
-    response = client.get(reverse("notes"))
+    response = client.get(reverse("notes:index"))
     assert response.status_code == 200
-    response = client.get(reverse("notes"))
-    assertTemplateUsed(response, "notes/content.html")
+    assertTemplateUsed(response, "notes/main.html")
 
 
-def test_select(client, user, folder1, note):
-    response = client.get(f"/notes/{note.id}")
-    assert response.status_code == 302
-    selected_note = get_object_or_404(Note, pk=note.id)
-    assert selected_note.selected == 1
+def test_list(client):
+    response = client.get(reverse("notes:list"))
+    assert response.status_code == 200
+    assertTemplateUsed(response, "notes/list.html")
 
 
 def test_add_form(client):
-    response = client.get("/notes/add")
+    response = client.get(reverse("notes:add"))
     assert response.status_code == 200
     assertTemplateUsed(response, "notes/form.html")
 
@@ -58,17 +47,16 @@ def test_add_form(client):
 def test_add_data(client, folder1):
     data = {
         "folder": folder1.id,
-        "subject": "Plato",
-        "note": "A Greek philosopher",
+        "title": "Plato",
     }
-    response = client.post("/notes/add", data)
-    assert response.status_code == 302
-    found = Note.objects.filter(subject="Plato").exists()
+    response = client.post(reverse("notes:add"), data)
+    assert response.status_code == 200  # Returns HTML with script tag
+    found = Note.objects.filter(title="Plato").exists()
     assert found
 
 
 def test_edit_form(client, note):
-    response = client.get(f"/notes/{note.id}/edit")
+    response = client.get(reverse("notes:edit", args=[note.id]))
     assert response.status_code == 200
     assertTemplateUsed(response, "notes/form.html")
 
@@ -76,17 +64,42 @@ def test_edit_form(client, note):
 def test_edit_data(client, folder1, note):
     data = {
         "folder": folder1.id,
-        "subject": "Descartes",
-        "note": "A French philosopher",
+        "title": "Descartes",
     }
-    response = client.post(f"/notes/{note.id}/edit", data)
-    assert response.status_code == 302
-    found = Note.objects.filter(subject="Descartes").exists()
+    response = client.post(reverse("notes:edit", args=[note.id]), data)
+    assert response.status_code == 204
+    found = Note.objects.filter(title="Descartes").exists()
     assert found
 
 
 def test_delete(client, note):
-    response = client.get(f"/notes/{note.id}/delete")
-    assert response.status_code == 302
-    found = Note.objects.filter(subject="Things I like").exists()
+    response = client.post(reverse("notes:delete", args=[note.id]))
+    assert response.status_code == 204
+    found = Note.objects.filter(title="Things I Like").exists()
     assert not found
+
+
+def test_editor_view(client, note):
+    response = client.get(reverse("notes:note-view", args=[note.id]))
+    assert response.status_code == 200
+    assertTemplateUsed(response, "notes/editor.html")
+
+
+def test_autosave(client, note):
+    response = client.post(
+        reverse("notes:note-autosave", args=[note.id]),
+        {"content": "Updated content"},
+    )
+    assert response.status_code == 200
+    note.refresh_from_db()
+    assert note.content == "Updated content"
+
+
+def test_title_update(client, note):
+    response = client.post(
+        reverse("notes:note-title", args=[note.id]),
+        {"title": "New Title"},
+    )
+    assert response.status_code == 200
+    note.refresh_from_db()
+    assert note.title == "New Title"
