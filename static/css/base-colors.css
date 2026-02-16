@@ -310,4 +310,38 @@
   --button-secondary-background: var(--stone-150);
   --button-secondary-color: var(--stone-600);
   --button-toolbar: var(--stone-600);
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+
+  /* Typography */
+  --color-primary: var(--stone-600);
+  --color-secondary: var(--stone-500);
+  --color-muted: var(--stone-400);
+
+  /* Links */
+  --link: var(--lime-800);
+  --link-hover: var(--lime-700);
+
+  /* Backgrounds */
+  --background-subnav: var(--stone-200);
+  --background-control: var(--stone-150);
+  --background-section: var(--stone-100);
+  --background-light: var(--stone-50);
+
+  /* Borders */
+  --border-medium: var(--stone-300);
+  --border-dark: var(--stone-400);
+
+  /* Selection */
+  --selected-background: var(--violet-100);
+  --selected-color: var(--stone-700);
+  --selected-border: var(--stone-300);
+
+  /* Labels */
+  --label-gray: var(--stone-150);
+
+  /* Status */
+  --urgent: var(--orange-800);
 }
