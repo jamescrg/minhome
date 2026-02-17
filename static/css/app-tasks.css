@@ -18,10 +18,11 @@
 /* ------------------------------------------------------------------------- */
 
 .tasks-list-title {
-  border-left: none;
-  border-right: none;
-  border-top: none;
   font-weight: 600;
+}
+
+.list-group-item.tasks-list-title {
+  border-top: none;
 }
 
 .tasks-list-title a {
