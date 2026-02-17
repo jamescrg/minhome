@@ -1,4 +1,14 @@
 
+button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+
 .asteriskField {
   display: none;
 }

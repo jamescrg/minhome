@@ -3,11 +3,10 @@
         <div class="toolbar-left">
             <div class="filter-tools">
                 <button type="button"
-                        class="btn-icon"
                         hx-get="{% url 'notes:add' %}"
                         hx-target="#htmx-modal-container"
                         title="New Note">
-                    <i class="icon-square-pen"></i>
+                    <i class="icon-plus"></i>
                 </button>
                 <div class="dropdown" x-data="dropdown()">
                     <button type="button"

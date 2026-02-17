@@ -1,0 +1,18 @@
+/* Lucide icon vertical alignment fix */
+[class^="icon-"],
+[class*=" icon-"] {
+  vertical-align: -0.15em;
+}
+
+.toolbar .icon-plus {
+  font-size: 1.25rem;
+  margin-bottom: -2.5px;
+  margin-top: -2.5px;
+  vertical-align: middle;
+}
+
+.toolbar a:has(.icon-plus),
+.toolbar button:has(.icon-plus) {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
