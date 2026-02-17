@@ -35,6 +35,7 @@
         {% endif %}
         {% block head %}
         {% endblock head %}
+        <link rel="stylesheet" href="{% static_v 'css/icons.css' %}">
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
           {% if user.is_authenticated %}data-user-id="{{ user.id }}"{% endif %}>
