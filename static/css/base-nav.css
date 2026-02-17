@@ -25,7 +25,7 @@
 
 .navbar .active {
   background: var(--stone-300);
-  border-radius: 5px 5px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   box-shadow: 0 0.0625rem 0.2rem rgba(0, 0, 0, 0.05);
   position: relative;
 }

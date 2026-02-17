@@ -48,7 +48,7 @@ body {
 .favorite-info {
     background: var(--stone-50);
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     margin: 1.25rem 0;
     text-align: left;
 }
