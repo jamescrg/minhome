@@ -78,8 +78,10 @@
   border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   color: var(--color-primary);
+  font-family: inherit;
   font-size: 1rem;
-  line-height: 1.25;
+  height: calc(2.25rem + 2px);
+  line-height: 1.25rem;
   outline: none;
   padding: 0.5rem 0.75rem;
 }
