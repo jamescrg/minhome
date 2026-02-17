@@ -142,7 +142,7 @@ strong{
 
 .table th,
 .table td {
-  border-bottom: solid 1px var(--stone-200);
+  border-bottom: solid 1px var(--stone-300);
   padding: 0.5rem;
   text-align: left;
   vertical-align: top;
@@ -185,16 +185,13 @@ li {
 
 .list-group-item {
   background: none;
-  border-bottom: solid 1px var(--stone-200);
-  border-left: none;
-  border-right: none;
-  border-top: none;
+  border-bottom: solid 1px var(--stone-300);
   color: inherit;
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
-.list-group-item:last-child {
-  border-bottom: none;
+.list-group-item:first-child {
+  border-top: solid 1px var(--stone-300);
 }
 
 
@@ -308,8 +305,8 @@ li {
 
 .square-button {
   background: var(--stone-150);
-  border: solid 1px var(--stone-200);
-  border-radius: var(--radius-sm);
+  border: solid 1px var(--stone-300);
+  border-radius: var(--radius-md);
   color: var(--button-toolbar);
   outline: none;
   padding: 0.25rem 0.5rem;
