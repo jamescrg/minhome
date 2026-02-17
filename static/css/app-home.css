@@ -2,10 +2,6 @@
  * layout
  * ------------------------------------------------*/
 
-.row {
-	margin: 0 auto;
-}
-
 
 /*------------------------------------------------
  * tasks and events
@@ -24,7 +20,7 @@
  * ------------------------------------------------*/
 
 .search {
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
   max-width: 800px;
 }
 
@@ -88,7 +84,7 @@
  * ------------------------------------------------*/
 
 .drop-zone {
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
 }
 
 /* Prevent dark background when folders are drop targets */

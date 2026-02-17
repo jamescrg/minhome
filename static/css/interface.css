@@ -6,7 +6,7 @@
 .dropdown-menu {
   background: var(--stone-100);
   border: solid 1px var(--stone-300);
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   margin: 0;
   overflow: hidden;
   padding: 0;
@@ -58,12 +58,12 @@
 }
 
 .dropdown-menu li:first-child {
-  border-radius: 5px 5px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   border-top: none;
 }
 
 .dropdown-menu li:last-child {
-  border-radius: 0 0 5px 5px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .dropdown-menu li > a {
