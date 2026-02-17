@@ -37,8 +37,6 @@
                         <a href="#"
                            hx-get="{% url 'notes:note-import-modal' note.id %}"
                            hx-target="#htmx-modal-container"
-                           data-bs-toggle="modal"
-                           data-bs-target="#htmx-modal-container"
                            title="Import from markdown">
                             <i class="icon-upload"></i>
                         </a>
@@ -48,8 +46,6 @@
                         <a href="#"
                            hx-get="{% url 'notes:notes-shortcuts' %}"
                            hx-target="#htmx-modal-container"
-                           data-bs-toggle="modal"
-                           data-bs-target="#htmx-modal-container"
                            title="Keyboard shortcuts">
                             <i class="icon-keyboard"></i>
                         </a>

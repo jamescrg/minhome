@@ -4,7 +4,7 @@
         <h1>Edit Task</h1>
         <a href="{% if task.folder %}{% url 'folder-select' task.folder.id 'tasks' %}{% else %}{% url 'tasks' %}{% endif %}"
            class="square-button">
-            <i class="bi bi-x-lg"></i>
+            <i class="icon-x"></i>
         </a>
     </div>
     <form action="{{ action }}"
@@ -19,7 +19,7 @@
             <a href="{% url 'tasks-delete' task.id %}"
                class="tasks-delete"
                onclick="return confirm('Are you sure you want to delete this task?')">
-                <i class="bi bi-x-circle"></i> Delete
+                <i class="icon-x-circle"></i> Delete
             </a>
         </div>
     </form>

@@ -13,7 +13,7 @@
                     {% if node.has_children %}
                         <span class="folder-caret"
                               onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();">
-                            <i class="bi bi-caret-{% if node.is_expanded %}down{% else %}right{% endif %}-fill caret-icon"
+                            <i class="icon-chevron-{% if node.is_expanded %}down{% else %}right{% endif %} caret-icon"
                                id="caret-{{ node.folder.id }}"></i>
                         </span>
                     {% else %}
@@ -22,12 +22,12 @@
                     {% if node.folder.home_column and node.folder.user == user %}
                         <span class="folder-icon-home"
                               {% if node.has_children %}onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();"{% endif %}>
-                            <i class="bi bi-house-door"></i>
+                            <i class="icon-house"></i>
                         </span>
                     {% else %}
                         <span class="folder-icon"
                               {% if node.has_children %}onclick="toggleFolder({{ node.folder.id }}, '{{ page }}'); event.stopPropagation();"{% endif %}>
-                            <i class="bi bi-folder"></i>
+                            <i class="icon-folder"></i>
                         </span>
                     {% endif %}
                     <a class="folder-link"
@@ -45,7 +45,7 @@
             <div class="folder-content folder-depth-0">
                 <span class="folder-caret-placeholder"></span>
                 <span class="folder-icon">
-                    <i class="bi bi-folder"></i>
+                    <i class="icon-folder"></i>
                 </span>
                 <a class="folder-link"
                    href="#"

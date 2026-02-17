@@ -4,10 +4,8 @@
         <a class="square-button"
            href="#"
            hx-get="{% url 'contacts-form-htmx' %}"
-           hx-target="#htmx-modal-container"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
+           hx-target="#htmx-modal-container">
+            <i class="icon-plus"></i>
         </a>
     </div>
     {% if contacts %}
@@ -23,7 +21,7 @@
         </ul>
     {% else %}
         <div class="no-contacts">
-            <i class="bi bi-person-lines-fill"></i>
+            <i class="icon-contact"></i>
         </div>
     {% endif %}
 </div>

@@ -6,7 +6,7 @@
                 <button class="btn-sort {% if 'folder' in current_order %}active{% endif %}"
                         hx-get="{% url 'notes:order-by' 'folder__name' %}"
                         hx-target="#notes">
-                    <i class="bi bi-chevron-expand"></i>
+                    <i class="icon-chevrons-up-down"></i>
                 </button>
             </th>
             <th class="title">
@@ -14,7 +14,7 @@
                 <button class="btn-sort {% if 'title' in current_order %}active{% endif %}"
                         hx-get="{% url 'notes:order-by' 'title' %}"
                         hx-target="#notes">
-                    <i class="bi bi-chevron-expand"></i>
+                    <i class="icon-chevrons-up-down"></i>
                 </button>
             </th>
             <th class="created">
@@ -22,7 +22,7 @@
                 <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
                         hx-get="{% url 'notes:order-by' 'created_at' %}"
                         hx-target="#notes">
-                    <i class="bi bi-chevron-expand"></i>
+                    <i class="icon-chevrons-up-down"></i>
                 </button>
             </th>
             <th class="updated">
@@ -30,7 +30,7 @@
                 <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
                         hx-get="{% url 'notes:order-by' 'updated_at' %}"
                         hx-target="#notes">
-                    <i class="bi bi-chevron-expand"></i>
+                    <i class="icon-chevrons-up-down"></i>
                 </button>
             </th>
         </tr>

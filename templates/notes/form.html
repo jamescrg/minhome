@@ -1,10 +1,9 @@
 {% load crispy_forms_tags %}
 <div class="modal-header">
     <h1 class="modal-title">{{ action }} Note</h1>
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"></button>
+    <button type="button" @click="$dispatch('close-modal')">
+        <i class="icon-x"></i>
+    </button>
 </div>
 <div class="modal-body">
     <form id="note-form"
@@ -36,7 +35,9 @@
                 hx-post="{% url 'notes:delete' note.id %}"
                 hx-target="#htmx-modal-container">Delete</button>
     {% else %}
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button"
+                class="btn btn-secondary"
+                @click="$dispatch('close-modal')">Cancel</button>
     {% endif %}
     <button type="submit" form="note-form" class="btn btn-success">Submit</button>
 </div>

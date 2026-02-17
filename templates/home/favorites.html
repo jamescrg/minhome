@@ -9,22 +9,22 @@
                     <div class="card-title drag-handle flex-center-space">
                         <a href="{% url 'folder-select' id=folder.id page='favorites' %}">{{ folder.name }}</a>
                         <a class="folder-icon" href="#" onclick="return false;">
-                            <i class="bi-columns"></i>
+                            <i class="icon-columns-2"></i>
                         </a>
                     </div>
                     {# folder controls #}
                     <div class="folder-controls flex-center-space folder-{{ folder.id }} hidden">
                         <a href="{% url 'home-folder' id=folder.id direction='left' %}">
-                            <i class="bi bi-arrow-left-square"></i>
+                            <i class="icon-arrow-left"></i>
                         </a>
                         <a href="{% url 'home-folder' id=folder.id direction='up' %}">
-                            <i class="bi bi-arrow-up-square"></i>
+                            <i class="icon-arrow-up"></i>
                         </a>
                         <a href="{% url 'home-folder' id=folder.id direction='down' %}">
-                            <i class="bi bi-arrow-down-square"></i>
+                            <i class="icon-arrow-down"></i>
                         </a>
                         <a href="{% url 'home-folder' id=folder.id direction='right' %}">
-                            <i class="bi bi-arrow-right-square"></i>
+                            <i class="icon-arrow-right"></i>
                         </a>
                     </div>
                     {# favorites #}
@@ -40,7 +40,7 @@
                                        data-folder-id="{{ folder.id }}">{{ favorite.name }}</a>
                                     <a class="favorite-controls home-link-controls-{{ folder.id }} hidden"
                                        href="{% url 'home-favorite' id=favorite.id direction='up' %}">
-                                        <i class="bi bi-arrow-bar-up"></i>
+                                        <i class="icon-arrow-up-to-line"></i>
                                     </a>
                                 </li>
                             {% endif %}
