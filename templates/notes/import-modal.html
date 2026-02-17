@@ -1,9 +1,8 @@
 <div class="modal-header">
     <h1 class="modal-title">Import from Markdown</h1>
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"></button>
+    <button type="button" @click="$dispatch('close-modal')">
+        <i class="icon-x"></i>
+    </button>
 </div>
 <div class="modal-body">
     <div class="mb-3">
@@ -26,6 +25,8 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <button type="button"
+            class="btn btn-secondary"
+            @click="$dispatch('close-modal')">Cancel</button>
     <button type="button" class="btn btn-success" id="import-confirm-btn">Import</button>
 </div>

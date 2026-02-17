@@ -1,0 +1,106 @@
+/* Alpine.js cloak - hide elements until Alpine initializes */
+[x-cloak] {
+  display: none !important;
+}
+
+.dropdown-menu {
+  background: var(--stone-100);
+  border: solid 1px var(--stone-300);
+  border-radius: 5px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Alpine dropdown: hidden by default, shown via x-show */
+.dropdown-menu:not(.show) {
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+/* Fixed positioning for dropdowns (escapes overflow constraints) */
+.dropdown-menu[style*="position: fixed"] {
+  box-shadow: 0 0.25rem 0.5rem rgb(0 0 0 / 15%);
+  z-index: 1050;
+}
+
+.dropdown-menu li {
+  background: var(--stone-100);
+  border-radius: 0;
+  border-top: solid 1px var(--stone-200);
+}
+
+.dropdown-menu li:hover {
+  background: var(--stone-200);
+}
+
+.dropdown-item,
+.dropdown-menu li > a {
+  color: var(--stone-600);
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+}
+
+.dropdown-item.active,
+.dropdown-menu li.active > a {
+  background: var(--hl-gray);
+}
+
+.dropdown-item:hover,
+.dropdown-menu li > a:hover {
+  background: var(--stone-200);
+  color: var(--stone-600);
+  text-decoration: none;
+}
+
+.dropdown-menu li:first-child {
+  border-radius: 5px 5px 0 0;
+  border-top: none;
+}
+
+.dropdown-menu li:last-child {
+  border-radius: 0 0 5px 5px;
+}
+
+.dropdown-menu li > a {
+  background: none;
+  color: inherit;
+}
+
+.dropdown-item i {
+  color: var(--stone-400);
+  margin-right: 0.5rem;
+}
+
+.toggle-active {
+  background: var(--hl-gray);
+  border: solid 1px var(--stone-300);
+}
+
+.select-btn {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.select-btn > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-btn > small {
+  flex-shrink: 0;
+}
+
+i.icon-plus {
+  vertical-align: middle;
+}

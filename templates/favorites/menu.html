@@ -1,18 +1,17 @@
-<div class="dropdown favorite-menu">
+<div class="dropdown favorite-menu" x-data="dropdown()">
     <button class="btn-icon menu-icon"
             type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-        <i class="bi bi-three-dots-vertical"></i>
+            x-ref="button"
+            @click="toggle()"
+            :aria-expanded="open">
+        <i class="icon-ellipsis-vertical"></i>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" x-ref="menu" x-show="open">
         <li>
             <a class="dropdown-item"
                href="#"
                hx-get="{% url 'favorites-form-edit' id=favorite.id %}"
-               hx-target="#htmx-modal-container"
-               data-bs-toggle="modal"
-               data-bs-target="#htmx-modal-container">Edit</a>
+               hx-target="#htmx-modal-container">Edit</a>
         </li>
         <li>
             <a class="dropdown-item"

@@ -6,21 +6,20 @@
                         class="btn-icon"
                         hx-get="{% url 'notes:add' %}"
                         hx-target="#htmx-modal-container"
-                        data-bs-toggle="modal"
-                        data-bs-target="#htmx-modal-container"
                         title="New Note">
                     <i class="icon-square-pen"></i>
                 </button>
-                <div class="dropdown">
+                <div class="dropdown" x-data="dropdown()">
                     <button type="button"
                             id="notes-folder-filter"
                             class="select-btn filter-dropdown-button {% if selected_folder_id %}toggle-active{% endif %}"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                            x-ref="button"
+                            @click="toggle()"
+                            :aria-expanded="open">
                         {{ selected_folder_name|default:"All Folders" }}
-                        <small><i class="bi bi-chevron-down"></i></small>
+                        <small><i class="icon-chevron-down"></i></small>
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" x-ref="menu" x-show="open">
                         <li>
                             <a class="dropdown-item {% if not selected_folder_id %}active{% endif %}"
                                href="#"

@@ -9,8 +9,8 @@
                     Add Contact
                 {% endif %}
             </h5>
-            <a href="#" data-bs-dismiss="modal">
-                <i class="bi bi-x-lg"></i>
+            <a href="#" @click.prevent="$dispatch('close-modal')">
+                <i class="icon-x"></i>
             </a>
         </div>
         <div class="modal-body">
@@ -48,7 +48,7 @@
                            hx-delete="{% url 'contacts-delete-htmx' contact.id %}"
                            hx-target="#htmx-modal-container"
                            hx-confirm="Are you sure you want to delete this contact?">
-                            <i class="bi bi-x-circle"></i> Delete
+                            <i class="icon-x-circle"></i> Delete
                         </a>
                     {% endif %}
                 </div>

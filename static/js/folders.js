@@ -39,8 +39,8 @@ function toggleFolder(folderId, page) {
         children.forEach(child => {
             child.style.display = '';
         });
-        caretIcon.classList.remove('bi-caret-right-fill');
-        caretIcon.classList.add('bi-caret-down-fill');
+        caretIcon.classList.remove('icon-chevron-right');
+        caretIcon.classList.add('icon-chevron-down');
     } else {
         // Collapse - hide all descendants
         const allDescendantIds = getDescendantIds(folderId);
@@ -52,12 +52,12 @@ function toggleFolder(folderId, page) {
             // Also collapse expanded descendants visually
             const descCaret = document.getElementById('caret-' + descId);
             if (descCaret) {
-                descCaret.classList.remove('bi-caret-down-fill');
-                descCaret.classList.add('bi-caret-right-fill');
+                descCaret.classList.remove('icon-chevron-down');
+                descCaret.classList.add('icon-chevron-right');
             }
         });
-        caretIcon.classList.remove('bi-caret-down-fill');
-        caretIcon.classList.add('bi-caret-right-fill');
+        caretIcon.classList.remove('icon-chevron-down');
+        caretIcon.classList.add('icon-chevron-right');
     }
 
     // Persist state to server

@@ -1195,9 +1195,8 @@ function setupImportModal() {
     const replaceContent = document.getElementById("import-replace").checked;
     importMarkdown(content, replaceContent);
 
-    // Close modal using Bootstrap
-    const modal = bootstrap.Modal.getInstance(document.getElementById("htmx-modal-container"));
-    if (modal) modal.hide();
+    // Close modal
+    window.dispatchEvent(new CustomEvent('close-modal'));
   });
 }
 
