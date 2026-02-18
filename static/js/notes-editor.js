@@ -1134,13 +1134,16 @@ function replaceAllMatches() {
 // Import/Export
 // =============================================================================
 
+function handleExportClick(e) {
+  e.preventDefault();
+  exportToMarkdown();
+}
+
 function setupImportExport() {
   const exportBtn = document.getElementById("export-btn");
   if (exportBtn) {
-    exportBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      exportToMarkdown();
-    });
+    exportBtn.removeEventListener("click", handleExportClick);
+    exportBtn.addEventListener("click", handleExportClick);
   }
 
   document.body.addEventListener("htmx:afterSwap", function (e) {
