@@ -207,6 +207,12 @@ th {
   pointer-events: none;
 }
 
+.pagination-compact {
+  gap: 0.5rem;
+  justify-content: center;
+  padding-left: 0;
+}
+
 
 /*------------------------------------------------
  * lists
