@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
-from apps.folders.folders import get_folders_flat_indented
+from apps.folders.folders import get_folders_for_page
 
 from .forms import NoteForm
 from .models import Note
@@ -49,7 +49,7 @@ def get_notes_data(request):
     queryset = queryset.order_by(current_order)
 
     # Folders for dropdown
-    folders = get_folders_flat_indented(request, "notes")
+    folders = get_folders_for_page(request, "notes")
 
     return {
         "notes": queryset,
@@ -104,7 +104,7 @@ def notes_add(request):
         "page": "notes",
         "form": form,
         "action": "Add",
-        "folders_flat": get_folders_flat_indented(request, "notes"),
+        "folders": get_folders_for_page(request, "notes"),
     }
     return render(request, "notes/form.html", context)
 
@@ -243,7 +243,7 @@ def note_edit(request, note_id):
         "note": note,
         "form": form,
         "action": "Edit",
-        "folders_flat": get_folders_flat_indented(request, "notes"),
+        "folders": get_folders_for_page(request, "notes"),
     }
     return render(request, "notes/form.html", context)
 

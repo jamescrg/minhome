@@ -9,12 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
-from apps.folders.folders import (
-    get_folders_for_page,
-    get_folders_tree_flat,
-    get_valid_parent_folders,
-    select_folder,
-)
+from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
 
 
@@ -33,8 +28,6 @@ def _get_favorites_list_context(request):
     return {
         "page": "favorites",
         "folders": get_folders_for_page(request, "favorites"),
-        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
-        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "favorites": favorites,
     }
@@ -85,8 +78,6 @@ def index(request):
         "page": "favorites",
         "edit": False,
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
-        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "favorites": favorites,
     }
@@ -129,8 +120,6 @@ def add(request):
         "add": True,
         "action": "/favorites/add",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
-        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "form": form,
     }
@@ -185,8 +174,6 @@ def edit(request, id):
         "add": False,
         "action": f"/favorites/{id}/edit",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
-        "valid_parent_folders": get_valid_parent_folders(request, "favorites"),
         "selected_folder": selected_folder,
         "form": form,
     }
@@ -283,7 +270,7 @@ def favorites_form(request, id=None):
         "action": f"/favorites/{id}/form" if edit else "/favorites/form",
         "favorite": favorite,
         "form": form,
-        "folder_tree_flat": get_folders_tree_flat(request, "favorites"),
+        "folders": get_folders_for_page(request, "favorites"),
     }
     return render(request, "favorites/modal-form.html", context)
 

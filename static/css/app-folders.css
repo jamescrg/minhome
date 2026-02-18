@@ -90,7 +90,7 @@
 
 
 /*------------------------------------------------
- * folder tree hierarchy
+ * folder list display
  * ------------------------------------------------*/
 
 .folder-tree {
@@ -104,28 +104,6 @@
   align-items: center;
   width: 100%;
   padding: 0.5rem 0.75rem 0.5rem 0.1rem;
-}
-
-.folder-caret {
-  cursor: pointer;
-  width: 1rem;
-  flex-shrink: 0;
-  color: var(--stone-400);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  right: 0.25rem;
-}
-
-.folder-caret:hover {
-  color: var(--stone-600);
-}
-
-.folder-caret-placeholder {
-  width: 1rem;
-  flex-shrink: 0;
-  display: inline-block;
 }
 
 .folder-item {
@@ -143,20 +121,4 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.caret-icon {
-  font-size: 0.75rem;
-}
-
-.folder-depth-0 {
-  padding-left: 0;
-}
-
-.folder-depth-1 {
-  padding-left: 0.75rem;
-}
-
-.folder-depth-2 {
-  padding-left: 1.5rem;
 }

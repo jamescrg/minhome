@@ -25,12 +25,12 @@
                                hx-get="{% url 'notes:filter-folder-clear' %}"
                                hx-target="#notes">All Folders</a>
                         </li>
-                        {% for item in folders %}
+                        {% for folder in folders %}
                             <li>
-                                <a class="dropdown-item {% if selected_folder_id == item.folder.id %}active{% endif %}"
+                                <a class="dropdown-item {% if selected_folder_id == folder.id %}active{% endif %}"
                                    href="#"
-                                   hx-get="{% url 'notes:filter-folder' item.folder.id %}"
-                                   hx-target="#notes">{{ item.indent }}{{ item.folder.name }}</a>
+                                   hx-get="{% url 'notes:filter-folder' folder.id %}"
+                                   hx-target="#notes">{{ folder.name }}</a>
                             </li>
                         {% endfor %}
                     </ul>

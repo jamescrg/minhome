@@ -3,11 +3,7 @@
         <div class="modal-header">
             <h5 class="modal-title">
                 {% if folder %}
-                    {% if is_shared %}
-                        Move Folder
-                    {% else %}
-                        Edit Folder
-                    {% endif %}
+                    Edit Folder
                 {% else %}
                     Add Folder
                 {% endif %}
@@ -21,31 +17,15 @@
               method="post">
             {% csrf_token %}
             <div class="modal-body">
-                {% if not is_shared %}
-                    <div class="mb-3">
-                        <label for="folderName" class="form-label">Folder Name</label>
-                        <input type="text"
-                               class="form-control"
-                               id="folderName"
-                               name="name"
-                               value="{{ folder.name|default:'' }}"
-                               required
-                               autofocus>
-                    </div>
-                {% endif %}
                 <div class="mb-3">
-                    <label for="folderParent" class="form-label">Parent Folder</label>
-                    <select class="form-select" id="folderParent" name="parent">
-                        <option value="">None (Top Level)</option>
-                        {% for parent_folder in valid_parent_folders %}
-                            <option value="{{ parent_folder.id }}"
-                                    {% if folder and folder.parent_id == parent_folder.id %}selected{% endif %}
-                                    style="padding-left: {{ parent_folder.depth|add:1 }}rem">
-                                {% if parent_folder.depth > 0 %}↳{% endif %}
-                                {{ parent_folder.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                    <label for="folderName" class="form-label">Folder Name</label>
+                    <input type="text"
+                           class="form-control"
+                           id="folderName"
+                           name="name"
+                           value="{{ folder.name|default:'' }}"
+                           required
+                           autofocus>
                 </div>
             </div>
             <div class="modal-footer">

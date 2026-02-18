@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -7,11 +7,9 @@ from accounts.models import CustomUser
 from apps.folders.folders import (
     get_accessible_folder_ids,
     get_folders_for_page,
-    get_folders_tree_flat,
-    get_valid_parent_folders,
     select_folder,
 )
-from apps.folders.models import Folder, UserFolderPosition
+from apps.folders.models import Folder
 
 
 def _redirect_page(page):
@@ -52,29 +50,11 @@ def insert(request, page):
     folder.user = user
     folder.page = page
 
-    # Handle name
     folder.name = request.POST.get("name", "").strip()
     if not folder.name:
         return _redirect_page(page)
 
-    # Handle parent assignment
-    parent_id = request.POST.get("parent")
-    if parent_id:
-        try:
-            parent = Folder.objects.filter(
-                pk=parent_id,
-                user=user,  # Can only nest under own folders
-                page=page,
-                depth__lt=2,  # Parent must be at depth 0 or 1
-            ).get()
-            folder.parent = parent
-        except Folder.DoesNotExist:
-            pass  # Invalid parent, create as root folder
-
-    try:
-        folder.save()  # clean() will set depth and validate
-    except ValidationError:
-        pass  # Validation failed, don't save
+    folder.save()
 
     return _redirect_page(page)
 
@@ -89,13 +69,10 @@ def update(request, id, page):
 
     Notes:
         Only accepts post requests
-        For owners: updates actual folder parent
-        For shared recipients: updates their UserFolderPosition
 
     """
     user = request.user
 
-    # Check if user has access to this folder (owner or editor)
     accessible_ids = get_accessible_folder_ids(user, page)
     try:
         folder = Folder.objects.filter(pk=id, id__in=accessible_ids).get()
@@ -103,63 +80,8 @@ def update(request, id, page):
         raise Http404("Record not found.")
 
     if folder.user == user:
-        # Owner - update actual folder
         folder.name = request.POST.get("name", folder.name).strip()
-
-        # Handle parent change (moving folder)
-        new_parent_id = request.POST.get("parent")
-        if new_parent_id == "" or new_parent_id is None:
-            # Moving to root
-            if folder.parent is not None:
-                folder.parent = None
-        elif new_parent_id:
-            try:
-                new_parent = (
-                    Folder.objects.filter(
-                        pk=new_parent_id,
-                        user=user,
-                        page=page,
-                        depth__lt=2,
-                    )
-                    .exclude(pk=id)
-                    .get()
-                )
-
-                # Verify not creating circular reference
-                descendant_ids = [d.id for d in folder.get_descendants()]
-                if new_parent.id not in descendant_ids:
-                    folder.parent = new_parent
-            except Folder.DoesNotExist:
-                pass
-
-        try:
-            folder.save()
-            # Update descendant depths if parent changed
-            folder.update_descendant_depths()
-        except ValidationError:
-            pass  # Validation failed
-
-    else:
-        # Shared recipient - update their position record
-        new_parent_id = request.POST.get("parent")
-
-        if new_parent_id == "" or new_parent_id is None:
-            new_parent = None
-        else:
-            try:
-                # Recipient can position under their own folders
-                new_parent = Folder.objects.filter(
-                    pk=new_parent_id,
-                    user=user,
-                    page=page,
-                    depth__lt=2,
-                ).get()
-            except Folder.DoesNotExist:
-                new_parent = None
-
-        position, _ = UserFolderPosition.objects.get_or_create(user=user, folder=folder)
-        position.local_parent = new_parent
-        position.save()
+        folder.save()
 
     return _redirect_page(page)
 
@@ -173,13 +95,12 @@ def delete(request, id, page):
         page (str): the page to which the delete function should redirect
 
     Notes:
-        For owners: deletes the folder and all children (CASCADE)
+        For owners: deletes the folder
         For shared recipients: removes themselves from the folder's editors
 
     """
     user = request.user
 
-    # Check if user has access to this folder
     accessible_ids = get_accessible_folder_ids(user, page)
     try:
         folder = Folder.objects.filter(pk=id, id__in=accessible_ids).get()
@@ -187,28 +108,17 @@ def delete(request, id, page):
         raise Http404("Record not found.")
 
     if folder.user == user:
-        # Owner - delete the folder (CASCADE handles children)
-        # Clear selected folder if needed
         attr = f"{page}_folder"
         selected_folder_id = getattr(user, attr)
 
-        # Get all descendant IDs that will be deleted
-        descendant_ids = [d.id for d in folder.get_descendants()]
-        all_deleted_ids = [folder.id] + descendant_ids
-
-        if selected_folder_id in all_deleted_ids:
+        if selected_folder_id == folder.id:
             setattr(user, attr, 0)
             user.save()
 
         folder.delete()
     else:
-        # Shared recipient - remove themselves from sharing
         folder.editors.remove(user)
 
-        # Also delete their position record if exists
-        UserFolderPosition.objects.filter(user=user, folder=folder).delete()
-
-        # Clear selected folder if it was this one
         attr = f"{page}_folder"
         if getattr(user, attr) == folder.id:
             setattr(user, attr, 0)
@@ -268,9 +178,6 @@ def share(request, id, page):
     Args:
         id (int): a Folder instance id
         page (str): the page to which the folder belongs
-
-    Notes:
-        Sharing a folder also grants access to all its descendants.
     """
     try:
         folder = Folder.objects.filter(user=request.user, pk=id).get()
@@ -278,7 +185,6 @@ def share(request, id, page):
         raise Http404("Record not found.")
 
     if request.method == "POST":
-        # Handle adding/removing users from sharing
         user_id = request.POST.get("user_id")
         action = request.POST.get("action")
 
@@ -287,21 +193,12 @@ def share(request, id, page):
                 target_user = CustomUser.objects.get(pk=user_id)
                 if action == "add":
                     folder.editors.add(target_user)
-                    # Create default position (root level)
-                    UserFolderPosition.objects.get_or_create(
-                        user=target_user, folder=folder
-                    )
                 elif action == "remove":
                     folder.editors.remove(target_user)
-                    # Remove position record
-                    UserFolderPosition.objects.filter(
-                        user=target_user, folder=folder
-                    ).delete()
                 return JsonResponse({"status": "success"})
             except CustomUser.DoesNotExist:
                 return JsonResponse({"status": "error", "message": "User not found"})
 
-    # Get all users for sharing dropdown
     all_users = CustomUser.objects.exclude(pk=request.user.pk)
     current_editors = folder.editors.all()
     available_users = all_users.exclude(
@@ -321,21 +218,20 @@ def share(request, id, page):
 # HTMX Views
 
 
-def _get_folder_tree_context(request, page):
-    """Helper to build context for folder tree partial."""
+def _get_folder_context(request, page):
+    """Helper to build context for folder list partial."""
     return {
         "page": page,
-        "folder_tree_flat": get_folders_tree_flat(request, page),
-        "valid_parent_folders": get_valid_parent_folders(request, page),
+        "folders": get_folders_for_page(request, page),
         "selected_folder": select_folder(request, page),
     }
 
 
 @login_required
 def folder_tree(request):
-    """Return folder tree partial for htmx."""
+    """Return folder list partial for htmx."""
     page = request.GET.get("page", "tasks")
-    context = _get_folder_tree_context(request, page)
+    context = _get_folder_context(request, page)
     return render(request, "folders/tree.html", context)
 
 
@@ -356,53 +252,10 @@ def folder_form(request, page, id=None):
 
     if request.method == "POST":
         if folder:
-            # Edit existing folder
             if folder.user == user:
                 folder.name = request.POST.get("name", folder.name).strip()
-
-            new_parent_id = request.POST.get("parent")
-            if new_parent_id == "" or new_parent_id is None:
-                if folder.user == user and folder.parent is not None:
-                    folder.parent = None
-                elif folder.user != user:
-                    position, _ = UserFolderPosition.objects.get_or_create(
-                        user=user, folder=folder
-                    )
-                    position.local_parent = None
-                    position.save()
-            elif new_parent_id:
-                try:
-                    new_parent = (
-                        Folder.objects.filter(
-                            pk=new_parent_id,
-                            user=user,
-                            page=page,
-                            depth__lt=2,
-                        )
-                        .exclude(pk=id)
-                        .get()
-                    )
-                    if folder.user == user:
-                        descendant_ids = [d.id for d in folder.get_descendants()]
-                        if new_parent.id not in descendant_ids:
-                            folder.parent = new_parent
-                    else:
-                        position, _ = UserFolderPosition.objects.get_or_create(
-                            user=user, folder=folder
-                        )
-                        position.local_parent = new_parent
-                        position.save()
-                except Folder.DoesNotExist:
-                    pass
-
-            try:
                 folder.save()
-                if folder.user == user:
-                    folder.update_descendant_depths()
-            except ValidationError:
-                pass
         else:
-            # Create new folder
             folder = Folder()
             folder.user = user
             folder.page = page
@@ -413,23 +266,7 @@ def folder_form(request, page, id=None):
                     status=204, headers={"HX-Trigger": "foldersChanged"}
                 )
 
-            parent_id = request.POST.get("parent")
-            if parent_id:
-                try:
-                    parent = Folder.objects.filter(
-                        pk=parent_id,
-                        user=user,
-                        page=page,
-                        depth__lt=2,
-                    ).get()
-                    folder.parent = parent
-                except Folder.DoesNotExist:
-                    pass
-
-            try:
-                folder.save()
-            except ValidationError:
-                pass
+            folder.save()
 
         return HttpResponse(status=204, headers={"HX-Trigger": "foldersChanged"})
 
@@ -438,7 +275,6 @@ def folder_form(request, page, id=None):
         "page": page,
         "folder": folder,
         "is_shared": is_shared,
-        "valid_parent_folders": get_valid_parent_folders(request, page),
         "action": f"/folders/form/{id}/{page}" if id else f"/folders/form/{page}",
     }
     return render(request, "folders/form.html", context)
@@ -451,7 +287,6 @@ def select_htmx(request, id, page):
     setattr(user, page + "_folder", id)
     user.save()
 
-    # Return the appropriate list partial based on page
     if page == "tasks":
         from apps.folders.folders import get_task_folders
         from apps.tasks.models import Task
@@ -472,8 +307,6 @@ def select_htmx(request, id, page):
             "page": page,
             "user": user,
             "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, page),
-            "valid_parent_folders": get_valid_parent_folders(request, page),
             "selected_folder": selected_folder,
             "tasks": tasks,
         }
@@ -499,8 +332,6 @@ def select_htmx(request, id, page):
             "page": page,
             "user": user,
             "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, page),
-            "valid_parent_folders": get_valid_parent_folders(request, page),
             "selected_folder": selected_folder,
             "favorites": favorites,
         }
@@ -534,8 +365,6 @@ def select_htmx(request, id, page):
             "page": page,
             "user": user,
             "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, page),
-            "valid_parent_folders": get_valid_parent_folders(request, page),
             "selected_folder": selected_folder,
             "contacts": contacts,
             "selected_contact": selected_contact,
@@ -547,7 +376,6 @@ def select_htmx(request, id, page):
     elif page == "notes":
         return redirect("notes:index")
 
-    # For other pages, redirect for now (can be extended later)
     return _redirect_page(page)
 
 
@@ -579,7 +407,7 @@ def home_htmx(request, id, page):
 
     home_folder.save(update_fields=["home_column", "home_rank"])
 
-    context = _get_folder_tree_context(request, page)
+    context = _get_folder_context(request, page)
     return render(request, "folders/tree.html", context)
 
 
@@ -597,43 +425,18 @@ def delete_htmx(request, id, page):
     if folder.user == user:
         attr = f"{page}_folder"
         selected_folder_id = getattr(user, attr)
-        descendant_ids = [d.id for d in folder.get_descendants()]
-        all_deleted_ids = [folder.id] + descendant_ids
 
-        if selected_folder_id in all_deleted_ids:
+        if selected_folder_id == folder.id:
             setattr(user, attr, 0)
             user.save()
 
         folder.delete()
     else:
         folder.editors.remove(user)
-        UserFolderPosition.objects.filter(user=user, folder=folder).delete()
         attr = f"{page}_folder"
         if getattr(user, attr) == folder.id:
             setattr(user, attr, 0)
             user.save()
 
-    context = _get_folder_tree_context(request, page)
+    context = _get_folder_context(request, page)
     return render(request, "folders/tree.html", context)
-
-
-@login_required
-def toggle_expand_htmx(request, id, page):
-    """Toggle folder expand state via htmx, return empty 204 response."""
-    user = request.user
-
-    # Ensure expanded_folders is a dict
-    if not isinstance(user.expanded_folders, dict):
-        user.expanded_folders = {}
-
-    expanded = user.expanded_folders.get(page, [])
-
-    if id in expanded:
-        expanded.remove(id)
-    else:
-        expanded.append(id)
-
-    user.expanded_folders[page] = expanded
-    user.save(update_fields=["expanded_folders"])
-
-    return HttpResponse(status=204)
