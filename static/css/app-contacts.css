@@ -13,30 +13,36 @@
 }
 
 
-
 /* ------------------------------------------------------------------------- */
-/* contacts form */
+/* contacts form                                                             */
 /* ------------------------------------------------------------------------- */
-
-#id_name,
-#id_email,
-#id_company,
-#id_notes {
-  max-width: 37.5rem;
-}
 
 #id_address,
 #id_notes {
   height: 9.5rem;
-  max-width: 37.5rem;
 }
 
-#id_folder,
-#id_phone1,
-#id_phone2,
-#id_phone3,
-#id_phone1_label,
-#id_phone2_label,
-#id_phone3_label {
-	max-width: 18.75rem;
+.contacts-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contacts-form-grid input,
+.contacts-form-grid select,
+.contacts-form-grid textarea {
+  width: 100%;
+}
+
+@media (width >= 768px) {
+  .contacts-form-grid {
+    align-items: start;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contacts-form-right.col2 {
+    grid-template-columns: 2fr 1fr;
+  }
 }

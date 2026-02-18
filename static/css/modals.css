@@ -52,7 +52,7 @@
 .modal-content {
   background: var(--stone-100);
   border: 1px solid var(--stone-300);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
 }
 
@@ -156,7 +156,7 @@ body.modal-open .confirm-modal-overlay {
 .confirm-modal-dialog {
   background: var(--stone-100);
   border: 1px solid var(--stone-300);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
   max-width: 28rem;
   min-width: 20rem;
