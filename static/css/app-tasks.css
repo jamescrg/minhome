@@ -57,14 +57,12 @@
 } /* end media exception */
 
 .tasks-checkbox {
-  font-size: 0.96rem;
+  font-size: 1.25rem;
   margin-right: 1rem;
-  margin-top: 0.2rem;
 }
 
 .tasks-checkbox i {
-  position: relative;
-  top: -0.15rem;
+  display: block;
 }
 
 .tasks-checkbox a,
@@ -74,7 +72,7 @@
 
 .tasks-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .tasks-folder {
