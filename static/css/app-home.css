@@ -20,7 +20,7 @@
  * ------------------------------------------------*/
 
 .search {
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.5rem;
   max-width: 800px;
 }
 
@@ -37,6 +37,11 @@
 .search-input {
   box-shadow: none;
   outline: none;
+  padding: 0.5rem 0.75rem;
+}
+
+.search-bar .dropdown-menu {
+  min-width: 12rem;
 }
 
 .search-engine-btn {
@@ -46,7 +51,7 @@
   box-sizing: border-box;
   color: var(--stone-600);
   font-family: inherit;
-  font-size: 1.05em;
+  font-size: 1rem;
   gap: 0.5rem;
   line-height: 1.5;
   min-width: 12rem;
