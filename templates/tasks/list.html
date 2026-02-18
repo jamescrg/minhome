@@ -52,6 +52,7 @@
         </li>
     {% endfor %}
 </ul>
+{% include "pagination.html" %}
 <div class="clear">
     <a href="#"
        hx-post="{% url 'tasks-clear-htmx' %}"

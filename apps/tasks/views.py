@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from accounts.models import CustomUser
 from apps.folders.folders import get_folders_for_page, get_task_folders, select_folder
 from apps.folders.models import Folder
+from apps.management.pagination import CustomPaginator
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
 
@@ -25,11 +26,18 @@ def _get_task_list_context(request):
             user=user, folder__isnull=True, is_recurring=False
         ).order_by("status", "title")
 
+    session_key = "tasks_page"
+    trigger_key = "tasksChanged"
+    pagination = CustomPaginator(tasks, 20, request, session_key)
+
     return {
         "page": "tasks",
         "folders": folders,
         "selected_folder": selected_folder,
-        "tasks": tasks,
+        "tasks": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -45,27 +53,7 @@ def index(request):
           folder system for the whole site.
     """
 
-    user = request.user
-    folders = get_task_folders(request)
-
-    selected_folder = select_folder(request, "tasks")
-
-    if selected_folder:
-        tasks = Task.objects.filter(
-            folder=selected_folder, is_recurring=False
-        ).order_by("status", "title")
-    else:
-        tasks = Task.objects.filter(
-            user=user, folder__isnull=True, is_recurring=False
-        ).order_by("status", "title")
-
-    context = {
-        "page": "tasks",
-        "folders": folders,
-        "selected_folder": selected_folder,
-        "tasks": tasks,
-    }
-
+    context = _get_task_list_context(request)
     return render(request, "tasks/content.html", context)
 
 

@@ -8,6 +8,7 @@ from apps.finance import views as finance
 from apps.folders import views as folders
 from apps.home import views as home
 from apps.lab import views as lab
+from apps.management.pagination import change_page
 from apps.search import views as search
 from apps.settings import views as settings
 from apps.tasks import views as tasks
@@ -15,6 +16,11 @@ from apps.weather import views as weather
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "pagination/change-page/<str:session_key>/<str:trigger_key>/<int:page>/",
+        change_page,
+        name="change-page",
+    ),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     # folders
