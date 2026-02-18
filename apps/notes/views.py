@@ -94,9 +94,7 @@ def notes_add(request):
             note_url = reverse("notes:note-view", args=[note.id])
             return HttpResponse(
                 f'<script>window.open("{note_url}", "_blank");'
-                f"bootstrap.Modal.getInstance("
-                f"document.getElementById('htmx-modal-container')"
-                f")?.hide();</script>",
+                "window.dispatchEvent(new CustomEvent('close-modal'));</script>",
                 headers={"HX-Trigger": "notesChanged"},
             )
     else:
