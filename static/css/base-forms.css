@@ -100,3 +100,27 @@ form .errorlist {
   flex-direction: column;
   justify-content: center;
 }
+
+/* file input */
+
+input[type="file"],
+input[type="file"].form-control {
+  padding: 0;
+}
+
+input[type="file"]::file-selector-button {
+  appearance: none;
+  -moz-appearance: none;
+  background: var(--background-control);
+  border: none;
+  border-right: solid 1px var(--border-medium);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  color: var(--color-primary);
+  padding: 0.5rem 0.75rem;
+  margin-right: 0.75rem;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--background-control);
+}
