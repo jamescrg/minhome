@@ -20,19 +20,59 @@
                     </button>
                     <ul class="dropdown-menu" x-ref="menu" x-show="open">
                         <li>
-                            <a class="dropdown-item {% if not selected_folder_id %}active{% endif %}"
+                            <a class="dropdown-item"
                                href="#"
                                hx-get="{% url 'notes:filter-folder-clear' %}"
                                hx-target="#notes">All Folders</a>
                         </li>
                         {% for folder in folders %}
-                            <li>
-                                <a class="dropdown-item {% if selected_folder_id == folder.id %}active{% endif %}"
-                                   href="#"
-                                   hx-get="{% url 'notes:filter-folder' folder.id %}"
-                                   hx-target="#notes">{{ folder.name }}</a>
+                            <li x-data="{ submenu: false }">
+                                <div class="dropdown-item-row">
+                                    <a class="dropdown-item {% if selected_folder_id == folder.id %}active{% endif %}"
+                                       href="#"
+                                       hx-get="{% url 'notes:filter-folder' folder.id %}"
+                                       hx-target="#notes">{{ folder.name }}</a>
+                                    <button class="dropdown-item-kebab"
+                                            type="button"
+                                            @click.stop="submenu = !submenu"
+                                            title="Folder options">
+                                        <i class="icon-ellipsis-vertical"></i>
+                                    </button>
+                                </div>
+                                <ul class="dropdown-submenu"
+                                    x-show="submenu"
+                                    @click.outside="submenu = false"
+                                    x-cloak>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           hx-get="{% url 'folder-form-edit' id=folder.id page='notes' %}"
+                                           hx-target="#htmx-modal-container">
+                                            <i class="icon-pencil"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           hx-delete="{% url 'folder-delete-htmx' id=folder.id page='notes' %}"
+                                           hx-target="#notes"
+                                           hx-swap="innerHTML"
+                                           hx-confirm="Are you sure you want to delete this folder?">
+                                            <i class="icon-trash-2"></i> Delete
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         {% endfor %}
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               hx-get="{% url 'folder-form' page='notes' %}"
+                               hx-target="#htmx-modal-container">
+                                <i class="icon-plus"></i> Add Folder
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <input type="text"

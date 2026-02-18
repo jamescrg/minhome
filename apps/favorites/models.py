@@ -1,10 +1,11 @@
 from django.db import models
 
 from accounts.models import CustomUser
+from apps.common.models import TimestampMixin
 from apps.folders.models import Folder
 
 
-class Favorite(models.Model):
+class Favorite(TimestampMixin, models.Model):
     """A favorite url belonging to the user.
 
     Attributes:
