@@ -1,5 +1,4 @@
 {% extends "favorites/extension_base.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
     <div class="card-title">
         <div class="title-left">
@@ -14,7 +13,7 @@
     </div>
     <form class="large-form" method="post" role="form">
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ form }}
         <div class="button-container">
             <button class="btn btn-primary" type="submit">Submit</button>
             <button type="button" class="btn btn-secondary" onclick="window.close()">Cancel</button>

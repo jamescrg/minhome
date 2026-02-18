@@ -24,44 +24,8 @@ button {
   line-height: 1.25rem;
 }
 
-/* hide crispy asterisks (still used on some forms) */
-.asteriskField {
-  display: none;
-}
-
-/* bootstrap compat (still used by crispy on notes, registration, extension) */
-.form-control,
-.form-select {
-  background-color: var(--stone-50);
-  border-radius: var(--radius-md);
-  font-size: 1.05em;
-  padding: 0.5rem;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border: solid 1px var(--border-medium);
-  box-shadow: none;
-  outline: none;
-}
-
-.form-label {
-  color: inherit;
-  margin-bottom: 0.3rem;
-  margin-top: 0.6rem;
-}
-
-.form-select {
-  font-size: inherit;
-}
-
 .large-form {
   padding-left: 0.8rem;
-}
-
-.invalid-feedback {
-  color: var(--red-700);
-  font-size: 1.1rem;
 }
 
 /* error messages */
