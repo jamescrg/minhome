@@ -65,8 +65,6 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.forms",
     "mathfilters",
-    "crispy_forms",
-    "crispy_bootstrap5",
     "accounts",
     "apps.folders",
     "apps.home",
@@ -284,11 +282,6 @@ SMS_RECIPIENT = env("SMS_RECIPIENT", default="")
 SESSION_COOKIE_AGE = 1209600 * 4
 
 SESSION_SAVE_EVERY_REQUEST = True
-
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 class CustomFormRenderer(TemplatesSetting):

@@ -1,4 +1,3 @@
-{% load crispy_forms_tags %}
 <div class="modal-header">
     <h1 class="modal-title">{{ action }} Note</h1>
     <button type="button" @click="$dispatch('close-modal')">
@@ -10,19 +9,21 @@
           hx-post="{% if note %}{% url 'notes:edit' note.id %}{% else %}{% url 'notes:add' %}{% endif %}"
           hx-target="#htmx-modal-container">
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form }}
         {% if folders_flat %}
-            <div class="mb-3">
-                <label for="id_folder" class="form-label">Folder</label>
-                <select name="folder" id="id_folder" class="form-select">
-                    <option value="">---------</option>
-                    {% for item in folders_flat %}
-                        <option value="{{ item.folder.id }}"
-                                {% if form.instance.folder_id == item.folder.id %}selected{% endif %}>
-                            {{ item.indent }}{{ item.folder.name }}
-                        </option>
-                    {% endfor %}
-                </select>
+            <div class="form-group">
+                <label for="id_folder">Folder</label>
+                <div>
+                    <select name="folder" id="id_folder">
+                        <option value="">---------</option>
+                        {% for item in folders_flat %}
+                            <option value="{{ item.folder.id }}"
+                                    {% if form.instance.folder_id == item.folder.id %}selected{% endif %}>
+                                {{ item.indent }}{{ item.folder.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         {% endif %}
     </form>
@@ -39,5 +40,5 @@
                 class="btn btn-secondary"
                 @click="$dispatch('close-modal')">Cancel</button>
     {% endif %}
-    <button type="submit" form="note-form" class="btn btn-success">Submit</button>
+    <button type="submit" form="note-form" class="btn btn-primary">Submit</button>
 </div>

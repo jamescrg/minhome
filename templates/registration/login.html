@@ -1,10 +1,9 @@
 {% extends "registration/base.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
     <p class="card-text">Log in to your account.</p>
     <form id="login-form" class="account-form" method="post">
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form }}
         <div class="flex-container login-bottom">
             <div class="login-bottom-left">
                 <button class="btn btn-primary" type="submit">Submit</button>
