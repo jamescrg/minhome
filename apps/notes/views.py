@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -318,3 +320,24 @@ def notes_shortcuts(request):
 def note_import_modal(request, note_id):
     """Show import markdown modal."""
     return render(request, "notes/import-modal.html")
+
+
+@login_required
+@require_POST
+def notes_bulk_delete(request):
+    """Bulk delete notes."""
+    data = json.loads(request.body)
+    note_ids = data.get("note_ids", [])
+    Note.objects.filter(user=request.user, id__in=note_ids).delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
+
+
+@login_required
+@require_POST
+def notes_bulk_move_folder(request):
+    """Bulk move notes to a folder."""
+    data = json.loads(request.body)
+    note_ids = data.get("note_ids", [])
+    folder_id = data.get("folder_id")
+    Note.objects.filter(user=request.user, id__in=note_ids).update(folder_id=folder_id)
+    return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})

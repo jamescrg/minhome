@@ -17,6 +17,8 @@ urlpatterns = [
     ),
     path("filter/folder/", views.notes_filter_folder_clear, name="filter-folder-clear"),
     path("filter/keyword/", views.notes_filter_keyword, name="filter-keyword"),
+    path("bulk-delete/", views.notes_bulk_delete, name="bulk-delete"),
+    path("bulk-move-folder/", views.notes_bulk_move_folder, name="bulk-move-folder"),
     # Editor views
     path("<int:note_id>/", views.note_view, name="note-view"),
     path(

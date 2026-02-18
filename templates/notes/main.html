@@ -180,5 +180,266 @@
         }
       }
     });
+
+    // =========================================================================
+    // Multi-select / Bulk Actions
+    // =========================================================================
+
+    const selectedNoteIds = new Set();
+
+    function setIconChecked(icon, checked) {
+      if (checked) {
+        icon.classList.remove("icon-square");
+        icon.classList.add("icon-square-check");
+      } else {
+        icon.classList.remove("icon-square-check");
+        icon.classList.add("icon-square");
+      }
+    }
+
+    function isIconChecked(icon) {
+      return icon.classList.contains("icon-square-check");
+    }
+
+    function updateSelectionUI() {
+      const normalToolbar = document.getElementById("notes-normal-toolbar");
+      const bulkToolbar = document.getElementById("notes-bulk-toolbar");
+      if (!normalToolbar || !bulkToolbar) return;
+
+      const hasSelection = selectedNoteIds.size > 0;
+      normalToolbar.style.display = hasSelection ? "none" : "";
+      bulkToolbar.style.display = hasSelection ? "" : "none";
+
+      // Update count label
+      const countEl = bulkToolbar.querySelector(".bulk-count");
+      if (countEl) countEl.textContent = selectedNoteIds.size + " selected";
+
+      // Reset move folder dropdown
+      const moveSelect = document.getElementById("bulk-move-folder");
+      if (moveSelect) moveSelect.selectedIndex = 0;
+
+      // Sync icons with selection state (after HTMX swaps)
+      document.querySelectorAll(".note-select-checkbox").forEach(function(icon) {
+        setIconChecked(icon, selectedNoteIds.has(icon.dataset.value));
+      });
+
+      // Update select-all icon
+      const selectAll = document.getElementById("select-all-notes");
+      if (selectAll) {
+        const icons = document.querySelectorAll(".note-select-checkbox");
+        const total = icons.length;
+        const checked = Array.from(icons).filter(function(i) { return isIconChecked(i); }).length;
+        setIconChecked(selectAll, total > 0 && checked === total);
+      }
+    }
+
+    // Event delegation for icon clicks
+    document.getElementById("notes").addEventListener("click", function(e) {
+      if (e.target.id === "select-all-notes") {
+        const willCheck = !isIconChecked(e.target);
+        document.querySelectorAll(".note-select-checkbox").forEach(function(icon) {
+          if (willCheck) selectedNoteIds.add(icon.dataset.value);
+          else selectedNoteIds.delete(icon.dataset.value);
+        });
+        updateSelectionUI();
+        return;
+      }
+
+      if (e.target.classList.contains("note-select-checkbox")) {
+        const val = e.target.dataset.value;
+        if (selectedNoteIds.has(val)) selectedNoteIds.delete(val);
+        else selectedNoteIds.add(val);
+        updateSelectionUI();
+      }
+    });
+
+    // Re-apply selection state after HTMX table swaps
+    document.addEventListener("htmx:afterSettle", function(e) {
+      if (e.detail.target && (e.detail.target.id === "notes" || e.detail.target.id === "notes-table")) {
+        updateSelectionUI();
+      }
+    });
+
+    // Clear selection on notesChanged
+    document.body.addEventListener("notesChanged", function() {
+      selectedNoteIds.clear();
+      updateSelectionUI();
+    });
+
+    // Cancel button
+    document.addEventListener("click", function(e) {
+      if (e.target.closest("#bulk-cancel-btn")) {
+        selectedNoteIds.clear();
+        updateSelectionUI();
+      }
+    });
+
+    // Bulk delete
+    document.addEventListener("click", async function(e) {
+      if (!e.target.closest("#bulk-delete-btn")) return;
+      const ids = Array.from(selectedNoteIds);
+      if (!ids.length) return;
+
+      const confirmed = await window.showConfirm({
+        title: "Delete Notes",
+        message: "Are you sure you want to delete " + ids.length + " note" + (ids.length > 1 ? "s" : "") + "?",
+        confirmText: "Delete",
+        isDangerous: true,
+      });
+      if (!confirmed) return;
+
+      await fetch("{% url 'notes:bulk-delete' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+        body: JSON.stringify({ note_ids: ids.map(Number) }),
+      });
+      selectedNoteIds.clear();
+      htmx.trigger(document.body, "notesChanged");
+    });
+
+    // Bulk move folder
+    document.addEventListener("change", async function(e) {
+      const select = e.target.closest("#bulk-move-folder");
+      if (!select) return;
+      const ids = Array.from(selectedNoteIds);
+      if (!ids.length) return;
+
+      const folderId = select.value === "null" ? null : Number(select.value);
+      await fetch("{% url 'notes:bulk-move-folder' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+        body: JSON.stringify({ note_ids: ids.map(Number), folder_id: folderId }),
+      });
+      selectedNoteIds.clear();
+      htmx.trigger(document.body, "notesChanged");
+    });
+
+    // Bulk encrypt
+    document.addEventListener("click", async function(e) {
+      if (!e.target.closest("#bulk-encrypt-btn")) return;
+      const salt = document.getElementById("notes")?.dataset.encryptionSalt;
+      if (!salt) {
+        await window.showConfirm({
+          title: "Encryption Not Set Up",
+          message: "Go to Settings > Encryption to set a passphrase before encrypting notes.",
+          confirmText: "OK",
+          isDangerous: false,
+        });
+        return;
+      }
+
+      const key = await getEncryptionKey(salt);
+      if (!key) return;
+
+      // Fetch all notes to get content
+      const resp = await fetch("{% url 'settings-encryption-notes' %}", {
+        headers: { "X-CSRFToken": getCSRFToken() },
+      });
+      const data = await resp.json();
+      const allNotes = data.notes || [];
+
+      // Filter to selected, unencrypted notes
+      const toEncrypt = allNotes.filter(function(n) {
+        return selectedNoteIds.has(String(n.id)) && !n.is_encrypted;
+      });
+
+      if (!toEncrypt.length) {
+        await window.showConfirm({
+          title: "Nothing to Encrypt",
+          message: "All selected notes are already encrypted.",
+          confirmText: "OK",
+          isDangerous: false,
+        });
+        return;
+      }
+
+      // Encrypt each note
+      const updates = [];
+      for (const note of toEncrypt) {
+        const encrypted = note.content ? await encrypt(note.content, key) : "";
+        updates.push({ id: note.id, content: encrypted, is_encrypted: true });
+      }
+
+      await fetch("{% url 'settings-encryption-notes-update' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+        body: JSON.stringify({ notes: updates }),
+      });
+
+      selectedNoteIds.clear();
+      htmx.trigger(document.body, "notesChanged");
+    });
+
+    // Bulk decrypt
+    document.addEventListener("click", async function(e) {
+      if (!e.target.closest("#bulk-decrypt-btn")) return;
+      const salt = document.getElementById("notes")?.dataset.encryptionSalt;
+      if (!salt) return;
+
+      const confirmed = await window.showConfirm({
+        title: "Remove Encryption",
+        message: "This will decrypt the selected notes and save them as plaintext.",
+        confirmText: "Remove Encryption",
+        isDangerous: true,
+      });
+      if (!confirmed) return;
+
+      const key = await getEncryptionKey(salt);
+      if (!key) return;
+
+      // Fetch all notes to get content
+      const resp = await fetch("{% url 'settings-encryption-notes' %}", {
+        headers: { "X-CSRFToken": getCSRFToken() },
+      });
+      const data = await resp.json();
+      const allNotes = data.notes || [];
+
+      // Filter to selected, encrypted notes
+      const toDecrypt = allNotes.filter(function(n) {
+        return selectedNoteIds.has(String(n.id)) && n.is_encrypted;
+      });
+
+      if (!toDecrypt.length) {
+        await window.showConfirm({
+          title: "Nothing to Decrypt",
+          message: "None of the selected notes are encrypted.",
+          confirmText: "OK",
+          isDangerous: false,
+        });
+        return;
+      }
+
+      // Decrypt each note
+      const updates = [];
+      let failCount = 0;
+      for (const note of toDecrypt) {
+        try {
+          const plaintext = note.content ? await decrypt(note.content, key) : "";
+          updates.push({ id: note.id, content: plaintext, is_encrypted: false });
+        } catch (err) {
+          failCount++;
+        }
+      }
+
+      if (updates.length > 0) {
+        await fetch("{% url 'settings-encryption-notes-update' %}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+          body: JSON.stringify({ notes: updates }),
+        });
+      }
+
+      if (failCount > 0) {
+        await window.showConfirm({
+          title: "Decryption Partially Failed",
+          message: failCount + " note" + (failCount > 1 ? "s" : "") + " could not be decrypted. The passphrase may be incorrect.",
+          confirmText: "OK",
+          isDangerous: false,
+        });
+      }
+
+      selectedNoteIds.clear();
+      htmx.trigger(document.body, "notesChanged");
+    });
     </script>
 {% endblock content %}
