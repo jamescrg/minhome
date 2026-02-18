@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <div id="notes"
-         hx-trigger="notesChanged from:body"
+         hx-trigger="notesChanged from:body, foldersChanged from:body"
          hx-get="{% url 'notes:list' %}"
          hx-target="this">{% include "notes/list.html" %}</div>
 {% endblock content %}

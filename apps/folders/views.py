@@ -438,5 +438,8 @@ def delete_htmx(request, id, page):
             setattr(user, attr, 0)
             user.save()
 
+    if request.headers.get("HX-Target") != "folder-tree-container":
+        return HttpResponse(status=204, headers={"HX-Trigger": "foldersChanged"})
+
     context = _get_folder_context(request, page)
     return render(request, "folders/tree.html", context)
