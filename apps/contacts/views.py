@@ -375,9 +375,9 @@ def contacts_form_htmx(request, id=None):
             )
     else:
         if contact:
-            form = ContactForm(instance=contact)
+            form = ContactForm(instance=contact, use_required_attribute=False)
         else:
-            form = ContactForm()
+            form = ContactForm(use_required_attribute=False)
 
     context = {
         "page": "contacts",

@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 import environ
+from django.forms.renderers import TemplatesSetting
 
 # Initialize environ
 env = environ.Env(
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.forms",
     "mathfilters",
     "crispy_forms",
     "crispy_bootstrap5",
@@ -287,6 +289,14 @@ SESSION_SAVE_EVERY_REQUEST = True
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+class CustomFormRenderer(TemplatesSetting):
+    form_template_name = "components/form-fields.html"
+    label_suffix = ""
+
+
+FORM_RENDERER = "config.settings.CustomFormRenderer"
 
 LOGGING = {
     # The version number of our log

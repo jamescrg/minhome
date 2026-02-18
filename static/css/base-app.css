@@ -8,6 +8,12 @@ background and primary font
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
 
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   height: 100%;
 }
@@ -209,7 +215,7 @@ li {
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.5;
-  padding: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   text-align: center;
   text-decoration: none;
 }
@@ -242,17 +248,17 @@ li {
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--button-primary-background);
-  border: none;
+  background: var(--lime-100);
+  border-color: var(--stone-300);
   box-shadow: none;
-  color: var(--button-primary-color);
+  color: var(--stone-600);
 }
 
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
   background: var(--button-secondary-background);
-  border: none;
+  border-color: var(--stone-300);
   box-shadow: none;
   color: var(--button-secondary-color);
 }

@@ -1,11 +1,14 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Column, Layout, Row
 from django import forms
+
+from config.settings import CustomFormRenderer
 
 from .models import Task
 
 
 class TaskForm(forms.ModelForm):
+    default_renderer = CustomFormRenderer
+    use_required_attribute = False
+
     RECURRENCE_CHOICES = [
         ("", "No recurrence"),
         ("daily", "Daily"),
@@ -29,7 +32,9 @@ class TaskForm(forms.ModelForm):
             "due_time",
         )
         widgets = {
-            "title": forms.TextInput(attrs={"tabindex": "1", "autofocus": True}),
+            "title": forms.TextInput(
+                attrs={"tabindex": "1", "autofocus": True, "class": "span3"}
+            ),
             "due_date": forms.DateInput(attrs={"type": "date"}),
             "due_time": forms.TimeInput(attrs={"type": "time"}),
         }
@@ -42,15 +47,7 @@ class TaskForm(forms.ModelForm):
             if self.instance.is_recurring and self.instance.recurrence_type:
                 self.fields["recurrence"].initial = self.instance.recurrence_type
 
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            Row(
-                Column("title", css_class="col-12"),
-            ),
-            Row(
-                Column("due_date", css_class="col-4"),
-                Column("due_time", css_class="col-4"),
-                Column("recurrence", css_class="col-4"),
-            ),
-        )
+    def __iter__(self):
+        for field in super().__iter__():
+            if field.name != "folder":
+                yield field

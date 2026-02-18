@@ -61,7 +61,7 @@
   border-bottom: 1px solid var(--stone-300);
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
 }
 
 .modal-header .icon-x {
@@ -93,6 +93,7 @@
 .modal-title {
   color: var(--stone-600);
   font-size: 1.25rem;
+  font-weight: normal;
   margin: 0;
 }
 
@@ -173,7 +174,7 @@ body.modal-open .confirm-modal-overlay {
 .confirm-modal-title {
   color: var(--stone-600);
   font-size: 1.25rem;
-  font-weight: 500;
+  font-weight: normal;
   margin: 0;
 }
 
