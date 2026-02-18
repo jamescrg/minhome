@@ -11,6 +11,7 @@ class Note(TimestampMixin, models.Model):
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, blank=True, null=True)
     title = models.CharField(max_length=255, null=True)
     content = models.TextField(blank=True, default="")
+    is_encrypted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title}"

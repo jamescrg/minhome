@@ -27,3 +27,4 @@ class CustomUser(AbstractUser):
     tasks_folder = models.IntegerField(default=0)
     tasks_folders = models.JSONField(default=list)
     tasks_active_folder = models.IntegerField(default=0)
+    encryption_salt = models.CharField(max_length=44, blank=True, default="")
