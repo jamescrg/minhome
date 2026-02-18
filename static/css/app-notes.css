@@ -1005,3 +1005,28 @@ body:has(.dev-banner) .note-editor-layout {
   font-size: 0.8125rem;
   padding: 0.125rem 0.375rem;
 }
+
+/* ==========================================================================
+   Encryption
+   ========================================================================== */
+
+.locked-placeholder {
+  align-items: center;
+  color: var(--color-secondary);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.locked-placeholder i {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.locked-placeholder p {
+  font-size: 1rem;
+  margin: 0;
+}

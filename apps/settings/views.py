@@ -4,10 +4,13 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import requests
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.finance.forms import CryptoSymbolForm, SecuritiesSymbolForm
 from apps.finance.models import CryptoSymbol, SecuritiesSymbol
+from apps.notes.models import Note
 
 
 @login_required
@@ -153,6 +156,81 @@ def google_logout(request):
     user.save()
 
     return redirect("/settings/google/")
+
+
+@login_required
+def encryption_index(request):
+    """Show the Encryption settings tab."""
+    notes = Note.objects.filter(user=request.user)
+    context = {
+        "page": "settings",
+        "subapp": "encryption",
+        "has_salt": bool(request.user.encryption_salt),
+        "note_count": notes.count(),
+        "encrypted_count": notes.filter(is_encrypted=True).count(),
+    }
+    return render(request, "settings/encryption.html", context)
+
+
+@login_required
+def encryption_save_salt(request):
+    """Save the encryption salt generated client-side."""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    body = json.loads(request.body)
+    salt = body.get("salt", "").strip()
+
+    if not salt:
+        return JsonResponse({"error": "Salt is required"}, status=400)
+
+    request.user.encryption_salt = salt
+    request.user.save(update_fields=["encryption_salt"])
+
+    return JsonResponse({"saved": True})
+
+
+@login_required
+def encryption_clear_salt(request):
+    """Clear the encryption salt (disable encryption)."""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    request.user.encryption_salt = ""
+    request.user.save(update_fields=["encryption_salt"])
+
+    return JsonResponse({"saved": True})
+
+
+@login_required
+def encryption_notes_list(request):
+    """Return all notes as JSON for bulk encrypt/decrypt."""
+    notes = Note.objects.filter(user=request.user).values(
+        "id", "content", "is_encrypted"
+    )
+    return JsonResponse({"notes": list(notes)})
+
+
+@login_required
+@require_POST
+def encryption_notes_bulk_update(request):
+    """Bulk update notes content and is_encrypted flag."""
+    body = json.loads(request.body)
+    notes_data = body.get("notes", [])
+
+    for item in notes_data:
+        note_id = item.get("id")
+        if not note_id:
+            continue
+        try:
+            note = Note.objects.get(pk=note_id, user=request.user)
+        except Note.DoesNotExist:
+            continue
+        note.content = item.get("content", "")
+        note.is_encrypted = item.get("is_encrypted", False)
+        note.save(update_fields=["content", "is_encrypted", "updated_at"])
+
+    return JsonResponse({"saved": True})
 
 
 @login_required

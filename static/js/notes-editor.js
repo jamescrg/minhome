@@ -1,3 +1,10 @@
+import {
+  encrypt,
+  decrypt,
+  hasStoredKey,
+  getStoredKey,
+} from "./crypto.js";
+
 // Tiptap imports from local bundle (built with: npm run build)
 import {
   Editor,
@@ -102,18 +109,54 @@ let editor = null;
 let autosaveTimer = null;
 let lastSavedContent = "";
 
+// Encryption state
+let noteIsEncrypted = false;
+let encryptionKey = null;
+
 // Search state
 let searchMatches = [];
 let currentMatchIndex = -1;
 
 // Initialize editor
-function initEditor() {
+async function initEditor() {
   const container = document.getElementById("note-editor");
   if (!container || !window.NOTE_DATA) return;
 
-  // Parse initial content - convert markdown to HTML
+  noteIsEncrypted = window.NOTE_DATA.isEncrypted || false;
+  encryptionKey = null;
+
+  // Load stored key if available
+  if (hasStoredKey()) {
+    try {
+      encryptionKey = await getStoredKey();
+    } catch (e) {
+      encryptionKey = null;
+    }
+  }
+
   let initialContent = window.NOTE_DATA.content || "";
-  initialContent = markdownToHtml(initialContent);
+
+  // Handle encrypted notes
+  if (noteIsEncrypted && initialContent) {
+    if (encryptionKey) {
+      try {
+        initialContent = await decrypt(initialContent, encryptionKey);
+      } catch (e) {
+        encryptionKey = null;
+        showLockedPlaceholder(container);
+        return;
+      }
+    } else {
+      showLockedPlaceholder(container);
+      return;
+    }
+  }
+
+  startEditor(container, initialContent);
+}
+
+function startEditor(container, markdownContent) {
+  const initialContent = markdownToHtml(markdownContent);
 
   editor = new Editor({
     element: container,
@@ -530,7 +573,7 @@ function scheduleAutosave() {
   autosaveTimer = setTimeout(performAutosave, 2000);
 }
 
-function performAutosave() {
+async function performAutosave() {
   const content = getMarkdownContent();
   if (content === lastSavedContent) {
     updateSaveStatus("saved");
@@ -540,7 +583,14 @@ function performAutosave() {
   updateSaveStatus("saving");
 
   const formData = new FormData();
-  formData.append("content", content);
+
+  if (encryptionKey) {
+    const encrypted = await encrypt(content, encryptionKey);
+    formData.append("content", encrypted);
+    formData.append("is_encrypted", "true");
+  } else {
+    formData.append("content", content);
+  }
 
   fetch(window.NOTE_DATA.autosaveUrl, {
     method: "POST",
@@ -1219,6 +1269,19 @@ function importMarkdown(markdown, replace) {
 }
 
 // =============================================================================
+// Encryption
+// =============================================================================
+
+function showLockedPlaceholder(container) {
+  container.innerHTML =
+    '<div class="locked-placeholder">' +
+      '<i class="icon-lock"></i>' +
+      '<p>This note is encrypted</p>' +
+      '<p>Log in again to access encrypted notes</p>' +
+    '</div>';
+}
+
+// =============================================================================
 // Outline Panel - Heading Navigation
 // =============================================================================
 
@@ -1426,7 +1489,7 @@ function setupHtmxHandlers() {
   document.body.addEventListener("htmx:beforeRequest", function(e) {
     if (e.detail.target && e.detail.target.id === "note-editor-container") {
       if (autosaveTimer) clearTimeout(autosaveTimer);
-      performAutosave();
+      if (editor) performAutosave();
 
       const clickedItem = e.detail.elt;
       if (clickedItem && clickedItem.dataset.noteId) {
@@ -1445,6 +1508,8 @@ function setupHtmxHandlers() {
       lastSavedContent = "";
       searchMatches = [];
       currentMatchIndex = -1;
+      noteIsEncrypted = false;
+      encryptionKey = null;
 
       setTimeout(function() {
         initEditor();

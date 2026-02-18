@@ -210,7 +210,11 @@ def note_view(request, note_id):
 def note_content_partial(request, note_id):
     """HTMX partial for switching notes in the editor."""
     note = get_object_or_404(Note, pk=note_id, user=request.user)
-    return render(request, "notes/editor-content.html", {"note": note})
+    return render(
+        request,
+        "notes/editor-content.html",
+        {"note": note},
+    )
 
 
 @login_required
@@ -277,7 +281,14 @@ def note_autosave(request, note_id):
 
     content = request.POST.get("content", "")
     note.content = content
-    note.save(update_fields=["content", "updated_at"])
+    update_fields = ["content", "updated_at"]
+
+    is_encrypted = request.POST.get("is_encrypted")
+    if is_encrypted is not None:
+        note.is_encrypted = is_encrypted == "true"
+        update_fields.append("is_encrypted")
+
+    note.save(update_fields=update_fields)
 
     return JsonResponse({"saved": True, "updated_at": note.updated_at.isoformat()})
 

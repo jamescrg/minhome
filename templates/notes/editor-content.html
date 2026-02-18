@@ -15,5 +15,6 @@
     content: "{{ note.content|escapejs }}",
     autosaveUrl: "{% url 'notes:note-autosave' note.id %}",
     titleUrl: "{% url 'notes:note-title' note.id %}",
+    isEncrypted: {{ note.is_encrypted|yesno:"true,false" }},
   };
 </script>

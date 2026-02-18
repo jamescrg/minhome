@@ -200,6 +200,31 @@ urlpatterns = [
     path("settings/", settings.index, name="settings"),
     path("settings/google/", settings.google_index, name="settings-google"),
     path("settings/session/", settings.session_index, name="settings-session"),
+    path(
+        "settings/encryption/",
+        settings.encryption_index,
+        name="settings-encryption",
+    ),
+    path(
+        "settings/encryption/save-salt",
+        settings.encryption_save_salt,
+        name="settings-encryption-save-salt",
+    ),
+    path(
+        "settings/encryption/clear-salt",
+        settings.encryption_clear_salt,
+        name="settings-encryption-clear-salt",
+    ),
+    path(
+        "settings/encryption/notes",
+        settings.encryption_notes_list,
+        name="settings-encryption-notes",
+    ),
+    path(
+        "settings/encryption/notes/update",
+        settings.encryption_notes_bulk_update,
+        name="settings-encryption-notes-update",
+    ),
     path("settings/google/login", settings.google_login, name="settings-google-login"),
     path("settings/google/store", settings.google_store, name="settings-google-store"),
     path(
