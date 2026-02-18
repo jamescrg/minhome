@@ -50,10 +50,6 @@
     padding-top: 0;
   }
 
-  .tasks-checkbox a {
-    font-size: 1.1rem;
-  }
-
 } /* end media exception */
 
 .tasks-checkbox {
