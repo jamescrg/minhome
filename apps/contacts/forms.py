@@ -37,6 +37,15 @@ class ContactForm(forms.ModelForm):
             ("Other", "Other"),
         )
 
+        labels = {
+            "phone1": "Phone",
+            "phone1_label": "For",
+            "phone2": "Phone 2",
+            "phone2_label": "For",
+            "phone3": "Phone 3",
+            "phone3_label": "For",
+        }
+
         widgets = {
             "address": forms.Textarea(attrs={"class": "span2"}),
             "notes": forms.Textarea(attrs={"class": "span2"}),

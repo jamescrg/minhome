@@ -6,7 +6,7 @@ select,
 textarea {
   background: var(--stone-50);
   border: solid 1px var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.5;

@@ -21,25 +21,44 @@
             <form id="contact-form"
                   hx-post="{{ action }}"
                   hx-target="#htmx-modal-container"
-                  class="form-compact col2">
+                  class="contacts-form-grid">
                 {% csrf_token %}
-                <div class="form-group span2">
-                    <label for="id_folder">Folder</label>
-                    <div>
-                        <select id="id_folder" name="folder">
-                            <option value="">---------</option>
-                            {% for node in folder_tree_flat %}
-                                <option value="{{ node.folder.id }}"
-                                        {% if contact and contact.folder_id == node.folder.id %}selected{% endif %}
-                                        style="padding-left: {{ node.level|add:1 }}rem">
-                                    {% if node.level > 0 %}↳{% endif %}
-                                    {{ node.folder.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                <div class="contacts-form-left form-compact col2">
+                    <div class="form-group span2">
+                        <label for="id_folder">Folder</label>
+                        <div>
+                            <select id="id_folder" name="folder">
+                                <option value="">---------</option>
+                                {% for node in folder_tree_flat %}
+                                    <option value="{{ node.folder.id }}"
+                                            {% if contact and contact.folder_id == node.folder.id %}selected{% endif %}
+                                            style="padding-left: {{ node.level|add:1 }}rem">
+                                        {% if node.level > 0 %}↳{% endif %}
+                                        {{ node.folder.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
+                    {% for field in form %}
+                        {% if field.name == 'name' or field.name == 'company' or field.name == 'email' or field.name == 'address' %}
+                            <div class="form-group span2">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                <div>{{ field }}{{ field.errors }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                {{ form }}
+                <div class="contacts-form-right form-compact col2">
+                    {% for field in form %}
+                        {% if field.name == 'phone1' or field.name == 'phone1_label' or field.name == 'phone2' or field.name == 'phone2_label' or field.name == 'phone3' or field.name == 'phone3_label' or field.name == 'notes' %}
+                            <div class="form-group{% if field.name == 'notes' %} span2{% endif %}">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                <div>{{ field }}{{ field.errors }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </form>
         </div>
         <div class="modal-footer">
