@@ -192,6 +192,8 @@ urlpatterns = [
     path("search/results", search.results, name="search-results"),
     # settings
     path("settings/", settings.index, name="settings"),
+    path("settings/google/", settings.google_index, name="settings-google"),
+    path("settings/session/", settings.session_index, name="settings-session"),
     path("settings/google/login", settings.google_login, name="settings-google-login"),
     path("settings/google/store", settings.google_store, name="settings-google-store"),
     path(
