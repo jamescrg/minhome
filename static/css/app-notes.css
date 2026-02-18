@@ -25,7 +25,7 @@
   background: var(--background-control);
   border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
-  color: var(--button-toolbar);
+  color: var(--link);
   display: inline-flex;
   line-height: 1.25;
   outline: none;
@@ -62,6 +62,10 @@
 
 .filter-dropdown-button {
   width: 11rem;
+}
+
+.filter-tools .dropdown-menu {
+  min-width: 11rem;
 }
 
 .toggle-active,
