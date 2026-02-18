@@ -2,7 +2,6 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-from apps.folders.models import Folder
 from apps.tasks.models import Task
 
 pytestmark = pytest.mark.django_db(transaction=True, reset_sequences=True)
@@ -69,7 +68,7 @@ def test_edit(client, task):
     response = client.get(f"/tasks/{task.id}/edit")
     assert response.status_code == 200
     assert response.context["page"] == "tasks"
-    assertTemplateUsed(response, "tasks/form.html")
+    assertTemplateUsed(response, "tasks/content.html")
 
 
 def test_edit_data(user, client, folder, task):
@@ -86,6 +85,6 @@ def test_edit_data(user, client, folder, task):
 
 def test_clear(client, folder):
     tasks = Task.objects.filter(folder=folder).update(status=1)
-    client.get(f"/tasks/clear")
+    client.get("/tasks/clear")
     tasks = Task.objects.filter(folder=folder)
     assert not tasks
