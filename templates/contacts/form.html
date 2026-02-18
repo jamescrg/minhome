@@ -1,4 +1,3 @@
-{% load crispy_forms_tags %}
 <div class="col-lg-9 order-lg-2">
     <div class="card">
         <div class="card-title flex-center-space">
@@ -20,7 +19,7 @@
         {% endif %}
         <form action="{{ action }}" class="large-form" method="post" role="form">
             {% csrf_token %}
-            {{ form|crispy }}
+            {{ form }}
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
     </div>

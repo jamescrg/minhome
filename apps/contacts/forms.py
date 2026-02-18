@@ -1,13 +1,15 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+
+from config.settings import CustomFormRenderer
 
 from .models import Contact
 
 
 class ContactForm(forms.ModelForm):
+    default_renderer = CustomFormRenderer
+    use_required_attribute = False
 
     class Meta:
         model = Contact
@@ -36,30 +38,17 @@ class ContactForm(forms.ModelForm):
         )
 
         widgets = {
-            "address": forms.Textarea(),
-            "notes": forms.Textarea(),
+            "address": forms.Textarea(attrs={"class": "span2"}),
+            "notes": forms.Textarea(attrs={"class": "span2"}),
             "phone1_label": forms.Select(choices=PHONE_LABELS),
             "phone2_label": forms.Select(choices=PHONE_LABELS),
             "phone3_label": forms.Select(choices=PHONE_LABELS),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            "name",
-            "company",
-            "address",
-            "phone1",
-            "phone1_label",
-            "phone2",
-            "phone2_label",
-            "phone3",
-            "phone3_label",
-            "email",
-            "notes",
-        )
+    def __iter__(self):
+        for field in super().__iter__():
+            if field.name != "folder":
+                yield field
 
     def clean_name(self):
         name = self.cleaned_data["name"]
