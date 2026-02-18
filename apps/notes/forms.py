@@ -13,6 +13,9 @@ class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ("folder", "title")
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "span2"}),
+        }
 
     def __init__(self, *args, request=None, **kwargs):
         super().__init__(*args, **kwargs)
