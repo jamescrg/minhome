@@ -36,6 +36,14 @@
             hx-target="#note-editor-container"
             hx-swap="innerHTML"
             hx-push-url="{% url 'notes:note-view' n.id %}"
-            data-note-id="{{ n.id }}">{{ n.title }}</li>
+            data-note-id="{{ n.id }}">
+            {% if n.is_encrypted %}
+                <i class="icon-lock"
+                   style="font-size:0.8em;
+                          opacity:0.5;
+                          margin-right:0.25rem"></i>
+            {% endif %}
+            {{ n.title }}
+        </li>
     {% endfor %}
 </ul>

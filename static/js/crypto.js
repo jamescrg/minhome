@@ -6,6 +6,8 @@ const SALT_BYTES = 16;
 const IV_BYTES = 12;
 const SESSION_KEY = "notes_encryption_key";
 
+export const KEY_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
 // Generate a random 16-byte salt, returned as base64
 export function generateSalt() {
   const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
@@ -76,14 +78,37 @@ export async function decrypt(encoded, key) {
 
 // Key management (JWK in localStorage for persistence across sessions)
 export function hasStoredKey() {
-  return localStorage.getItem(SESSION_KEY) !== null;
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return false;
+  const stored = JSON.parse(raw);
+  // Support both old (plain JWK) and new (JWK + timestamp) formats
+  return stored && (stored.jwk || stored.kty);
+}
+
+export function hasFreshKey(ttlMs) {
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return false;
+  const stored = JSON.parse(raw);
+  if (!stored || !stored.jwk || !stored.timestamp) return false;
+  return (Date.now() - stored.timestamp) < ttlMs;
+}
+
+export function refreshKeyTimestamp() {
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return;
+  const stored = JSON.parse(raw);
+  if (!stored || !stored.jwk) return;
+  stored.timestamp = Date.now();
+  localStorage.setItem(SESSION_KEY, JSON.stringify(stored));
 }
 
 export async function getStoredKey() {
-  const jwkStr = localStorage.getItem(SESSION_KEY);
-  if (!jwkStr) return null;
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
 
-  const jwk = JSON.parse(jwkStr);
+  const stored = JSON.parse(raw);
+  // Support old format (plain JWK object with "kty" property)
+  const jwk = stored.jwk || stored;
   return crypto.subtle.importKey(
     "jwk",
     jwk,
@@ -95,7 +120,10 @@ export async function getStoredKey() {
 
 export async function storeKey(key) {
   const jwk = await crypto.subtle.exportKey("jwk", key);
-  localStorage.setItem(SESSION_KEY, JSON.stringify(jwk));
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    jwk: jwk,
+    timestamp: Date.now(),
+  }));
 }
 
 export function clearStoredKey() {
