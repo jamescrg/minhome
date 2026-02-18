@@ -22,8 +22,10 @@
                 </li>
             </ul>
             <ul class="navbar-right">
-                <li {% if page == 'search' %}class="active"{% endif %}>
-                    <a href="{% url 'search' %}">
+                <li>
+                    <a href="#"
+                       hx-get="{% url 'search' %}"
+                       hx-target="#htmx-modal-container">
                         <i class="icon-search"></i>
                     </a>
                 </li>

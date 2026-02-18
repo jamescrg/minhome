@@ -1,13 +1,54 @@
-
-<form role="form" class="search" action="{{ action }}" method="post" >
-
-  {% csrf_token %}
-
-  <input class="form-control mh-no-shadow"
-    autofocus
-    type="text"
-    maxLength="255"
-    name="search_text"
-    placeholder="Search for favorites, contacts, and notes . . . ">
-
-</form>
+<div class="modal-dialog modal-lg search">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title">Search</h1>
+            <div>
+                <button type="button" @click="$dispatch('close-modal')">
+                    <i class="icon-x"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="search-form">
+                <div class="input-group">
+                    <label for="search-text"></label>
+                    <input type="text"
+                           id="search-text"
+                           class="search-text"
+                           name="search_text"
+                           hx-post="{% url 'search-results' %}"
+                           hx-trigger="keyup changed delay:500ms, search"
+                           hx-target="#search-results"
+                           hx-include=".search-scope-checkbox"
+                           autocomplete="off"
+                           placeholder="Search..."
+                           autofocus />
+                    <span class="input-group-text">
+                        <i class="icon-search"></i>
+                    </span>
+                </div>
+                <div class="search-scopes">
+                    {% for key, label, model in scopes %}
+                        <label class="search-scope">
+                            <input type="checkbox"
+                                   class="search-scope-checkbox"
+                                   name="scope_{{ key }}"
+                                   {% if key in active_scopes %}checked{% endif %}
+                                   hx-post="{% url 'search-results' %}"
+                                   hx-trigger="change"
+                                   hx-target="#search-results"
+                                   hx-include="#search-text, .search-scope-checkbox" />
+                            {{ label }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="search-results" class="search-results">
+                <div class="search-results-placeholder">
+                    <i class="icon-search"></i>
+                    <p>Search across your data</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

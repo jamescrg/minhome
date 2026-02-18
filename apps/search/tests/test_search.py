@@ -18,7 +18,6 @@ def test_index(user, client):
     assert response.status_code == 200
 
     response = client.get(reverse("search"))
-    assertTemplateUsed(response, "search/content.html")
     assertTemplateUsed(response, "search/form.html")
 
 
@@ -53,17 +52,13 @@ def test_results(user, client):
 
     response = client.post("/search/results", data)
     assert response.status_code == 200
-    assertTemplateUsed(response, "search/content.html")
     assertTemplateUsed(response, "search/results.html")
 
     favorites = response.context["favorites"]
-    favorite = favorites.filter(name="Google").get()
-    assert favorite.name == "Google"
+    assert any(f.name == "Google" for f in favorites)
 
-    note = response.context["notes"]
-    note = note.filter(pk=1).get()
-    assert note.title == "Tasks for James"
+    notes = response.context["notes"]
+    assert any(n.title == "Tasks for James" for n in notes)
 
-    contact = response.context["contacts"]
-    contact = contact.filter(name="James Craig").get()
-    assert contact.name == "James Craig"
+    contacts = response.context["contacts"]
+    assert any(c.name == "James Craig" for c in contacts)
