@@ -45,11 +45,6 @@ urlpatterns = [
         folders.delete_htmx,
         name="folder-delete-htmx",
     ),
-    path(
-        "folders/<int:id>/<str:page>/toggle-expand",
-        folders.toggle_expand_htmx,
-        name="folder-toggle-expand",
-    ),
     # home
     path("", home.index, name="home-index"),
     path("home/", home.index, name="home"),

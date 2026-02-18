@@ -12,16 +12,16 @@
                   hx-target="#htmx-modal-container"
                   class="form-compact col2">
                 {% csrf_token %}
-                {% if folders_flat %}
+                {% if folders %}
                     <div class="form-group span2">
                         <label for="id_folder">Folder</label>
                         <div>
                             <select name="folder" id="id_folder">
                                 <option value="">---------</option>
-                                {% for item in folders_flat %}
-                                    <option value="{{ item.folder.id }}"
-                                            {% if form.instance.folder_id == item.folder.id %}selected{% endif %}>
-                                        {{ item.indent }}{{ item.folder.name }}
+                                {% for folder in folders %}
+                                    <option value="{{ folder.id }}"
+                                            {% if form.instance.folder_id == folder.id %}selected{% endif %}>
+                                        {{ folder.name }}
                                     </option>
                                 {% endfor %}
                             </select>

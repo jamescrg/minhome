@@ -16,7 +16,6 @@
                 <div class="modal-body">
                     <input type="hidden" id="folderId" name="folder_id" value="">
                     <input type="hidden" id="folderPage" name="page" value="{{ page }}">
-                    <input type="hidden" id="folderIsShared" name="is_shared" value="">
                     <div class="mb-3" id="folderNameGroup">
                         <label for="folderName" class="form-label">Folder Name</label>
                         <input type="text"
@@ -25,20 +24,6 @@
                                name="name"
                                required
                                autofocus>
-                    </div>
-                    <div class="mb-3">
-                        <label for="folderParent" class="form-label">Parent Folder</label>
-                        <select class="form-select" id="folderParent" name="parent">
-                            <option value="">None (Top Level)</option>
-                            {% for folder in valid_parent_folders %}
-                                <option value="{{ folder.id }}"
-                                        data-depth="{{ folder.depth }}"
-                                        style="padding-left: {{ folder.depth|add:1 }}rem">
-                                    {% if folder.depth > 0 %}↳{% endif %}
-                                    {{ folder.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

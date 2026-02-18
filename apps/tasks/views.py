@@ -4,12 +4,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
-from apps.folders.folders import (
-    get_folders_tree_flat,
-    get_task_folders,
-    get_valid_parent_folders,
-    select_folder,
-)
+from apps.folders.folders import get_folders_for_page, get_task_folders, select_folder
 from apps.folders.models import Folder
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
@@ -33,8 +28,6 @@ def _get_task_list_context(request):
     return {
         "page": "tasks",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
         "selected_folder": selected_folder,
         "tasks": tasks,
     }
@@ -69,8 +62,6 @@ def index(request):
     context = {
         "page": "tasks",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
         "selected_folder": selected_folder,
         "tasks": tasks,
     }
@@ -263,8 +254,6 @@ def edit(request, id):
             "page": "tasks",
             "edit": True,
             "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-            "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
             "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
             "task": task,
@@ -466,7 +455,7 @@ def task_form(request, id):
         "action": f"/tasks/{id}/form",
         "task": task,
         "form": form,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+        "folders": get_folders_for_page(request, "tasks"),
     }
     return render(request, "tasks/modal-form.html", context)
 

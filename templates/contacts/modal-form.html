@@ -29,12 +29,10 @@
                         <div>
                             <select id="id_folder" name="folder">
                                 <option value="">---------</option>
-                                {% for node in folder_tree_flat %}
-                                    <option value="{{ node.folder.id }}"
-                                            {% if contact and contact.folder_id == node.folder.id %}selected{% endif %}
-                                            style="padding-left: {{ node.level|add:1 }}rem">
-                                        {% if node.level > 0 %}↳{% endif %}
-                                        {{ node.folder.name }}
+                                {% for folder in folders %}
+                                    <option value="{{ folder.id }}"
+                                            {% if contact and contact.folder_id == folder.id %}selected{% endif %}>
+                                        {{ folder.name }}
                                     </option>
                                 {% endfor %}
                             </select>

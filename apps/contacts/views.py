@@ -8,12 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import (
-    get_folders_for_page,
-    get_folders_tree_flat,
-    get_valid_parent_folders,
-    select_folder,
-)
+from apps.folders.folders import get_folders_for_page, select_folder
 
 
 def _get_contacts_context(request):
@@ -83,8 +78,6 @@ def index(request):
         "page": "contacts",
         "edit": False,
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "selected_folder": selected_folder,
         "contacts": contacts,
         "selected_contact": selected_contact,
@@ -167,8 +160,6 @@ def add(request):
         "add": True,
         "action": "/contacts/add",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "form": form,
         "phone_labels": ["Mobile", "Home", "Work", "Fax", "Other"],
     }
@@ -231,8 +222,6 @@ def edit(request, id):
         "add": False,
         "action": f"/contacts/{id}/edit",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "selected_folder": selected_folder,
         "contact": contact,
         "form": form,
@@ -385,7 +374,7 @@ def contacts_form_htmx(request, id=None):
         "contact": contact,
         "form": form,
         "action": f"/contacts/{id}/form-htmx" if id else "/contacts/form-htmx",
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+        "folders": get_folders_for_page(request, "contacts"),
     }
 
     return render(request, "contacts/modal-form.html", context)

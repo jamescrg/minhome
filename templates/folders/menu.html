@@ -50,12 +50,6 @@
             <li>
                 <a class="dropdown-item"
                    href="#"
-                   hx-get="{% url 'folder-form-edit' id=folder.id page=page %}"
-                   hx-target="#htmx-modal-container">Move</a>
-            </li>
-            <li>
-                <a class="dropdown-item"
-                   href="#"
                    hx-delete="{% url 'folder-delete-htmx' id=folder.id page=page %}"
                    hx-target="#folder-tree-container"
                    hx-swap="innerHTML"

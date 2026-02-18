@@ -78,7 +78,7 @@ def test_update(client, folder):
 
 
 def test_delete(client, folder):
-    client.get(f"/folders/delete/{folder.id}/notes")
+    client.get(f"/folders/delete/{folder.id}/favorites")
     found = Folder.objects.filter(id=folder.id).exists()
     assert not found
 
