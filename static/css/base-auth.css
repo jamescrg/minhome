@@ -1,14 +1,23 @@
 
+.account-form input {
+  width: 100%;
+}
+
+.account-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.account-form .form-group + .form-group {
+  margin-top: 1rem;
+}
+
 .login-bottom {
   align-items: flex-end;
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   justify-content: space-between;
   margin-top: 2rem;
-}
-
-.login-bottom-right {
-  margin-bottom: 2px;
 }
 
 .reset-confirm {
@@ -33,4 +42,13 @@ li {
 
 .account-form .invalid-feedback {
   text-align: left;
+}
+
+#password-reset-form label {
+  display: none;
+}
+
+.reset-message {
+  margin: 1.5rem 0;
+  text-align: center;
 }
