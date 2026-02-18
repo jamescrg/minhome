@@ -345,6 +345,39 @@ document.addEventListener('DOMContentLoaded', () => {
  * Global showConfirm() function
  * Promise-based replacement for browser's native confirm()
  */
+/**
+ * Copy to clipboard (delegated for HTMX compatibility)
+ */
+document.addEventListener('click', function(e) {
+  const copyBtn = e.target.closest('.copy-btn');
+  if (!copyBtn) return;
+
+  e.preventDefault();
+  let data = copyBtn.getAttribute('data-copy');
+
+  // If data-copy-target is specified, get text from target element
+  const targetSelector = copyBtn.getAttribute('data-copy-target');
+  if (targetSelector) {
+    const targetElement = document.querySelector(targetSelector);
+    if (targetElement) {
+      data = targetElement.textContent.trim();
+    }
+  }
+
+  navigator.clipboard.writeText(data).then(() => {
+    const originalHtml = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<i class="icon-check"></i>';
+    copyBtn.style.color = 'green';
+    setTimeout(() => {
+      copyBtn.innerHTML = originalHtml;
+      copyBtn.style.color = '';
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy value: ', err);
+  });
+});
+
+
 window.showConfirm = function(options) {
   return new Promise((resolve) => {
     const confirmModal = document.getElementById('confirm-modal');
