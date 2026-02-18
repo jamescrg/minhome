@@ -15,21 +15,39 @@ def index(request):
     """Show the settings page.
 
     Notes:
-        Shows whether the user has linked a Google account.
-        If not, provides a url to link one.
-        If so, provides a url to log out.
+        Shows the General tab with theme and home page features.
     """
-
-    if request.user.google_credentials:
-        logged_in = True
-    else:
-        logged_in = False
 
     context = {
         "page": "settings",
-        "logged_in": logged_in,
+        "subapp": "general",
     }
     return render(request, "settings/content.html", context)
+
+
+@login_required
+def google_index(request):
+    """Show the Google settings tab."""
+
+    logged_in = bool(request.user.google_credentials)
+
+    context = {
+        "page": "settings",
+        "subapp": "google",
+        "logged_in": logged_in,
+    }
+    return render(request, "settings/google.html", context)
+
+
+@login_required
+def session_index(request):
+    """Show the Session settings tab."""
+
+    context = {
+        "page": "settings",
+        "subapp": "session",
+    }
+    return render(request, "settings/session.html", context)
 
 
 @login_required
@@ -103,7 +121,7 @@ def google_store(request):
     user.google_credentials = google_credentials_json
     user.save()
 
-    return redirect("/settings")
+    return redirect("/settings/google/")
 
 
 @login_required
@@ -134,7 +152,7 @@ def google_logout(request):
     user.google_credentials = None
     user.save()
 
-    return redirect("/settings")
+    return redirect("/settings/google/")
 
 
 @login_required
@@ -144,7 +162,7 @@ def theme(request):
     user = request.user
     user.theme = request.POST["theme"]
     user.save()
-    return redirect("/settings")
+    return redirect("/settings/")
 
 
 @login_required
@@ -186,7 +204,7 @@ def home_options(request, option, value):
         user.home_due_tasks = value
 
     user.save()
-    return redirect("/settings")
+    return redirect("/settings/")
 
 
 @login_required
@@ -195,6 +213,7 @@ def crypto_symbols(request):
     symbols = CryptoSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "symbols": symbols,
     }
     return render(request, "settings/crypto_symbols.html", context)
@@ -215,6 +234,7 @@ def crypto_symbol_add(request):
 
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "form": form,
         "action": "Add",
     }
@@ -236,6 +256,7 @@ def crypto_symbol_edit(request, id):
 
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "form": form,
         "symbol": symbol,
         "action": "Edit",
@@ -257,6 +278,7 @@ def securities_symbols(request):
     symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
+        "subapp": "securities",
         "symbols": symbols,
     }
     return render(request, "settings/securities_symbols.html", context)
@@ -277,6 +299,7 @@ def securities_symbol_add(request):
 
     context = {
         "page": "settings",
+        "subapp": "securities",
         "form": form,
         "action": "Add",
     }
@@ -298,6 +321,7 @@ def securities_symbol_edit(request, id):
 
     context = {
         "page": "settings",
+        "subapp": "securities",
         "form": form,
         "symbol": symbol,
         "action": "Edit",
