@@ -858,6 +858,20 @@ body:has(.dev-banner) .note-editor-layout {
   white-space: normal;
 }
 
+.notes-list .encrypted {
+  text-align: center;
+  width: 3rem;
+}
+
+.notes-list .encrypted i {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.notes-list th.encrypted i {
+  font-size: 1rem;
+}
+
 .notes-list .created {
   width: 8rem;
 }
@@ -1021,7 +1035,7 @@ body:has(.dev-banner) .note-editor-layout {
   padding: 4rem 2rem;
 }
 
-.locked-placeholder i {
+.locked-placeholder > i {
   font-size: 2.5rem;
   opacity: 0.4;
 }
@@ -1029,4 +1043,121 @@ body:has(.dev-banner) .note-editor-layout {
 .locked-placeholder p {
   font-size: 1rem;
   margin: 0;
+}
+
+.locked-placeholder .passphrase-form {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.locked-placeholder .passphrase-form .password-wrapper {
+  position: relative;
+}
+
+.locked-placeholder .passphrase-form .password-wrapper input {
+  padding-right: 2.5rem;
+  width: 16rem;
+}
+
+.locked-placeholder .passphrase-form .password-toggle {
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: flex;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.locked-placeholder .passphrase-form .password-toggle:hover {
+  color: var(--color-primary);
+}
+
+.locked-placeholder .passphrase-form .password-toggle i {
+  font-size: 1rem;
+}
+
+.locked-placeholder .unlock-error {
+  color: var(--red-600);
+  font-size: 0.85rem;
+  min-height: 1.25rem;
+}
+
+
+/* Passphrase Dialog Overlay */
+.passphrase-dialog-overlay {
+  align-items: center;
+  background: rgb(0 0 0 / 40%);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+}
+
+.passphrase-dialog {
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 20%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 24rem;
+  padding: 1.5rem;
+  width: 90vw;
+}
+
+.passphrase-dialog p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.passphrase-dialog .password-wrapper {
+  position: relative;
+}
+
+.passphrase-dialog .password-wrapper input {
+  padding-right: 2.5rem;
+  width: 100%;
+}
+
+.passphrase-dialog .password-toggle {
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: flex;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.passphrase-dialog .password-toggle:hover {
+  color: var(--color-primary);
+}
+
+.passphrase-dialog .password-toggle i {
+  font-size: 1rem;
+}
+
+.passphrase-dialog .unlock-error {
+  color: var(--red-600);
+  font-size: 0.85rem;
+  min-height: 1.25rem;
+}
+
+.passphrase-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
 }

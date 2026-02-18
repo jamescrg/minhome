@@ -1,7 +1,184 @@
 {% extends "base.html" %}
+{% load cache_buster %}
 {% block content %}
     <div id="notes"
+         {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}
          hx-trigger="notesChanged from:body, foldersChanged from:body"
          hx-get="{% url 'notes:list' %}"
          hx-target="this">{% include "notes/list.html" %}</div>
+    <script type="module">
+    import { encrypt, decrypt, deriveKey, hasFreshKey, refreshKeyTimestamp, getStoredKey, storeKey, KEY_TTL_MS } from "{% static_v 'js/crypto.js' %}";
+
+    function getCSRFToken() {
+      const el = document.querySelector("[name=csrfmiddlewaretoken]");
+      if (el) return el.value;
+      // Fall back to htmx header on body
+      const hxHeaders = document.body.getAttribute("hx-headers");
+      if (hxHeaders) {
+        try { return JSON.parse(hxHeaders)["X-CSRFToken"]; } catch (e) {}
+      }
+      return "";
+    }
+
+    async function getEncryptionKey(salt) {
+      if (hasFreshKey(KEY_TTL_MS)) {
+        try {
+          const key = await getStoredKey();
+          refreshKeyTimestamp();
+          return key;
+        } catch (e) { /* fall through to prompt */ }
+      }
+
+      // Prompt for passphrase
+      return new Promise(function(resolve) {
+        const overlay = document.createElement("div");
+        overlay.className = "passphrase-dialog-overlay";
+        overlay.innerHTML =
+          '<div class="passphrase-dialog">' +
+            '<p>Enter your passphrase:</p>' +
+            '<div class="password-wrapper">' +
+              '<input type="password" class="form-control" placeholder="Passphrase" autocomplete="off">' +
+              '<button type="button" class="password-toggle" tabindex="-1" aria-label="Toggle visibility">' +
+                '<i class="icon-eye-off"></i>' +
+              '</button>' +
+            '</div>' +
+            '<p class="unlock-error" id="dialog-error"></p>' +
+            '<div class="passphrase-dialog-actions">' +
+              '<button type="button" class="btn btn-secondary btn-slim dialog-cancel">Cancel</button>' +
+              '<button type="button" class="btn btn-primary btn-slim dialog-confirm">OK</button>' +
+            '</div>' +
+          '</div>';
+
+        document.body.appendChild(overlay);
+        const input = overlay.querySelector("input");
+        const confirmBtn = overlay.querySelector(".dialog-confirm");
+        const cancelBtn = overlay.querySelector(".dialog-cancel");
+        const errorEl = overlay.querySelector("#dialog-error");
+        const toggle = overlay.querySelector(".password-toggle");
+
+        if (toggle) {
+          toggle.addEventListener("click", function() {
+            const ico = toggle.querySelector("i");
+            if (input.type === "password") { input.type = "text"; ico.className = "icon-eye"; }
+            else { input.type = "password"; ico.className = "icon-eye-off"; }
+          });
+        }
+
+        function cleanup() { overlay.remove(); }
+
+        async function doConfirm() {
+          const passphrase = input.value;
+          if (!passphrase) { errorEl.textContent = "Please enter a passphrase."; return; }
+          confirmBtn.disabled = true;
+          errorEl.textContent = "";
+          try {
+            const key = await deriveKey(passphrase, salt);
+            await storeKey(key);
+            cleanup();
+            resolve(key);
+          } catch (e) {
+            errorEl.textContent = "Error deriving key.";
+            confirmBtn.disabled = false;
+          }
+        }
+
+        confirmBtn.addEventListener("click", doConfirm);
+        input.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") doConfirm();
+          if (e.key === "Escape") { cleanup(); resolve(null); }
+        });
+        cancelBtn.addEventListener("click", function() { cleanup(); resolve(null); });
+        overlay.addEventListener("click", function(e) {
+          if (e.target === overlay) { cleanup(); resolve(null); }
+        });
+        setTimeout(function() { input.focus(); }, 50);
+      });
+    }
+
+    async function fetchNoteContent(noteId) {
+      const resp = await fetch("{% url 'settings-encryption-notes' %}", {
+        headers: { "X-CSRFToken": getCSRFToken() },
+      });
+      const data = await resp.json();
+      return data.notes.find(function(n) { return n.id === noteId; });
+    }
+
+    async function saveNote(url, content, isEncrypted) {
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.append("is_encrypted", isEncrypted ? "true" : "false");
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() },
+        body: formData,
+      });
+      return resp.ok;
+    }
+
+    document.addEventListener("click", async function(e) {
+      const link = e.target.closest(".note-encrypt-toggle");
+      if (!link) return;
+      e.preventDefault();
+
+      const noteId = parseInt(link.dataset.noteId, 10);
+      const isEncrypted = link.dataset.encrypted === "true";
+      const autosaveUrl = link.dataset.autosaveUrl;
+      const salt = document.getElementById("notes")?.dataset.encryptionSalt;
+
+      if (!isEncrypted) {
+        // Encrypt the note
+        if (!salt) {
+          await window.showConfirm({
+            title: "Encryption Not Set Up",
+            message: "Go to Settings > Encryption to set a passphrase before encrypting notes.",
+            confirmText: "OK",
+            isDangerous: false,
+          });
+          return;
+        }
+
+        const key = await getEncryptionKey(salt);
+        if (!key) return;
+
+        const note = await fetchNoteContent(noteId);
+        if (!note) return;
+
+        const encrypted = note.content ? await encrypt(note.content, key) : "";
+        if (await saveNote(autosaveUrl, encrypted, true)) {
+          htmx.trigger(document.body, "notesChanged");
+        }
+      } else {
+        // Remove encryption: decrypt the note
+        if (!salt) return;
+
+        const confirmed = await window.showConfirm({
+          title: "Remove Encryption",
+          message: "This will decrypt this note and save the content as plaintext.",
+          confirmText: "Remove Encryption",
+          isDangerous: true,
+        });
+        if (!confirmed) return;
+
+        const key = await getEncryptionKey(salt);
+        if (!key) return;
+
+        const note = await fetchNoteContent(noteId);
+        if (!note) return;
+
+        try {
+          const plaintext = note.content ? await decrypt(note.content, key) : "";
+          if (await saveNote(autosaveUrl, plaintext, false)) {
+            htmx.trigger(document.body, "notesChanged");
+          }
+        } catch (e) {
+          await window.showConfirm({
+            title: "Decryption Failed",
+            message: "Could not decrypt this note. The passphrase may be incorrect.",
+            confirmText: "OK",
+            isDangerous: false,
+          });
+        }
+      }
+    });
+    </script>
 {% endblock content %}

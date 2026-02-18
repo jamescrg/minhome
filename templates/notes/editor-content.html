@@ -1,4 +1,5 @@
-<div class="note-canvas">
+<div class="note-canvas"
+     {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}>
     <div class="note-header">
         <input type="text"
                id="note-title"
