@@ -1,16 +1,6 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-
-	<div class="row text-center">
-
-		{% include 'search/form.html' %}
-
-		{% if results %}
-
-			{% include 'search/results.html' %}
-
-		{% endif %}
-
-	</div>
-
+    <div class="row text-center">
+        <p>Use the search icon in the navigation bar to search.</p>
+    </div>
 {% endblock content %}
