@@ -154,6 +154,10 @@ strong{
   vertical-align: top;
 }
 
+.table th {
+  border-top: solid 1px var(--stone-300);
+}
+
 .table th:last-child,
 .table td:last-child {
   border-right: none;
@@ -341,6 +345,14 @@ li {
   font-weight: 600;
 }
 
+.btn-sort:hover {
+  color: var(--stone-500);
+}
+
+.btn-sort.active {
+  color: var(--violet-700);
+}
+
 .button-link {
   background: none;
   border: none;
@@ -358,13 +370,13 @@ li {
   background: var(--stone-150);
   border: solid 1px var(--stone-300);
   border-radius: var(--radius-md);
-  color: var(--button-toolbar);
+  color: var(--link);
   outline: none;
   padding: 0.25rem 0.5rem;
 }
 
 .square-button:hover {
-  color: var(--button-toolbar);
+  color: var(--link-hover);
 }
 
 
