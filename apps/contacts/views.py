@@ -9,6 +9,7 @@ import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
 from apps.folders.folders import get_folders_for_page, select_folder
+from apps.management.pagination import CustomPaginator
 
 
 def _get_contacts_context(request):
@@ -23,6 +24,10 @@ def _get_contacts_context(request):
 
     contacts = contacts.order_by("name")
 
+    session_key = "contacts_page"
+    trigger_key = "contactsChanged"
+    pagination = CustomPaginator(contacts, 20, request, session_key)
+
     selected_contact_id = user.contacts_contact
     try:
         selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
@@ -33,10 +38,13 @@ def _get_contacts_context(request):
 
     return {
         "page": "contacts",
-        "contacts": contacts,
+        "contacts": pagination.get_object_list(),
         "selected_contact": selected_contact,
         "selected_folder": selected_folder,
         "google": google_enabled,
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -51,38 +59,10 @@ def index(request):
 
     """
 
-    folders = get_folders_for_page(request, "contacts")
-
-    selected_folder = select_folder(request, "contacts")
-
-    if selected_folder:
-        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
-    else:
-        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
-
-    contacts = contacts.order_by("name")
-
-    selected_contact_id = request.user.contacts_contact
-
-    try:
-        selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
-    except ObjectDoesNotExist:
-        selected_contact = None
-
-    if request.user.google_credentials:
-        google = True
-    else:
-        google = False
-
     context = {
-        "page": "contacts",
         "edit": False,
-        "folders": folders,
-        "selected_folder": selected_folder,
-        "contacts": contacts,
-        "selected_contact": selected_contact,
-        "google": google,
-    }
+        "folders": get_folders_for_page(request, "contacts"),
+    } | _get_contacts_context(request)
 
     return render(request, "contacts/content.html", context)
 

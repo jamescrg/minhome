@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from apps.folders.folders import get_folders_for_page
+from apps.management.pagination import CustomPaginator
 
 from .forms import NoteForm
 from .models import Note
@@ -51,14 +52,21 @@ def get_notes_data(request):
     # Folders for dropdown
     folders = get_folders_for_page(request, "notes")
 
+    session_key = "notes_page"
+    trigger_key = "notesChanged"
+    pagination = CustomPaginator(queryset, 20, request, session_key)
+
     return {
-        "notes": queryset,
+        "notes": pagination.get_object_list(),
         "number_notes": queryset.count(),
         "current_order": current_order.lstrip("-"),
         "keyword": keyword,
         "selected_folder_id": selected_folder_id,
         "selected_folder_name": selected_folder_name,
         "folders": folders,
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -122,6 +130,7 @@ def notes_order_by(request, order):
 
     filter_data["order_by"] = new_order
     request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
     request.session.modified = True
 
     return redirect("notes:list")
@@ -133,6 +142,7 @@ def notes_filter_folder(request, folder_id):
     filter_data = request.session.get("notes_filter", {})
     filter_data["folder_id"] = folder_id
     request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
     request.session.modified = True
 
     return redirect("notes:list")
@@ -144,6 +154,7 @@ def notes_filter_folder_clear(request):
     filter_data = request.session.get("notes_filter", {})
     filter_data.pop("folder_id", None)
     request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
     request.session.modified = True
 
     return redirect("notes:list")
@@ -161,6 +172,7 @@ def notes_filter_keyword(request):
         filter_data.pop("keyword", None)
 
     request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
     request.session.modified = True
 
     context = {"page": "notes"} | get_notes_data(request)

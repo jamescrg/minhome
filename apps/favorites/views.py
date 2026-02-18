@@ -11,6 +11,7 @@ from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
 from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
+from apps.management.pagination import CustomPaginator
 
 
 def _get_favorites_list_context(request):
@@ -25,11 +26,18 @@ def _get_favorites_list_context(request):
 
     favorites = favorites.order_by("name")
 
+    session_key = "favorites_page"
+    trigger_key = "favoritesChanged"
+    pagination = CustomPaginator(favorites, 20, request, session_key)
+
     return {
         "page": "favorites",
         "folders": get_folders_for_page(request, "favorites"),
         "selected_folder": selected_folder,
-        "favorites": favorites,
+        "favorites": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -61,26 +69,7 @@ def index(request):
 
     """
 
-    user = request.user
-
-    folders = get_folders_for_page(request, "favorites")
-
-    selected_folder = select_folder(request, "favorites")
-
-    if selected_folder:
-        favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
-    else:
-        favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
-
-    favorites = favorites.order_by("name")
-
-    context = {
-        "page": "favorites",
-        "edit": False,
-        "folders": folders,
-        "selected_folder": selected_folder,
-        "favorites": favorites,
-    }
+    context = {"edit": False} | _get_favorites_list_context(request)
     return render(request, "favorites/content.html", context)
 
 
