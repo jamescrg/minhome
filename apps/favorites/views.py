@@ -404,6 +404,10 @@ def extension_add(request):
             favorite = form.save(commit=False)
             favorite.user = user
             favorite.save()
+
+            user.favorites_folder = favorite.folder_id or 0
+            user.save()
+
             return render(
                 request, "favorites/extension_success.html", {"favorite": favorite}
             )
@@ -414,6 +418,10 @@ def extension_add(request):
             initial["url"] = request.GET.get("url")
         if request.GET.get("name"):
             initial["name"] = request.GET.get("name")
+
+        selected_folder = select_folder(request, "favorites")
+        if selected_folder:
+            initial["folder"] = selected_folder.id
 
         form = FavoriteExtensionForm(initial=initial)
         form.fields["folder"].queryset = get_folders_for_page(request, "favorites")
