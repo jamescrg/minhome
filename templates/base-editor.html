@@ -33,7 +33,7 @@
         <link rel="stylesheet" href="{% static_v 'css/base-forms.css' %}">
         <link rel="stylesheet" href="{% static_v 'css/modals.css' %}">
         <link rel="stylesheet" href="{% static_v 'css/interface.css' %}">
-        {% if user.theme and user.theme != "matcha" %}
+        {% if theme and theme != "matcha" %}
             <link rel="stylesheet" href="{% static_v_theme %}">
         {% endif %}
         {% block head %}

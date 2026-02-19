@@ -39,7 +39,7 @@
             <link rel="stylesheet" href="{% static_v_page %}">
         {% endif %}
         <link rel="stylesheet" href="{% static_v 'css/icons.css' %}">
-        {% if user.theme and user.theme != "matcha" %}
+        {% if theme and theme != "matcha" %}
             <link rel="stylesheet" href="{% static_v_theme %}">
         {% endif %}
     </head>

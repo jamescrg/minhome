@@ -244,9 +244,7 @@ def encryption_notes_bulk_update(request):
 def theme(request):
     """Sets the user's preferred  theme."""
 
-    user = request.user
-    user.theme = request.POST["theme"]
-    user.save()
+    request.session["theme"] = request.POST["theme"]
     return redirect("/settings/")
 
 
