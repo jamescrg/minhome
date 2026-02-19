@@ -15,17 +15,24 @@ from apps.notes.models import Note
 
 @login_required
 def index(request):
-    """Show the settings page.
-
-    Notes:
-        Shows the General tab with theme and home page features.
-    """
+    """Show the settings page — Theme tab."""
 
     context = {
         "page": "settings",
-        "subapp": "general",
+        "subapp": "theme",
     }
     return render(request, "settings/content.html", context)
+
+
+@login_required
+def homepage_index(request):
+    """Show the Homepage settings tab."""
+
+    context = {
+        "page": "settings",
+        "subapp": "homepage",
+    }
+    return render(request, "settings/homepage.html", context)
 
 
 @login_required
@@ -282,7 +289,7 @@ def home_options(request, option, value):
         user.home_due_tasks = value
 
     user.save()
-    return redirect("/settings/")
+    return redirect("/settings/homepage/")
 
 
 @login_required
