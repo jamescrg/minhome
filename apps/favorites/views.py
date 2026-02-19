@@ -21,8 +21,11 @@ def _get_favorites_list_context(request):
     """Helper to build context for favorites list partial."""
     user = request.user
     selected_folder = select_folder(request, "favorites")
+    favorites_folder_all = request.session.get("favorites_all", False)
 
-    if selected_folder:
+    if favorites_folder_all:
+        favorites = Favorite.objects.filter(user=user)
+    elif selected_folder:
         favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
@@ -42,6 +45,7 @@ def _get_favorites_list_context(request):
         "page": "favorites",
         "folders": get_folders_for_page(request, "favorites"),
         "selected_folder": selected_folder,
+        "favorites_folder_all": favorites_folder_all,
         "favorites": pagination.get_object_list(),
         "pagination": pagination,
         "session_key": session_key,
@@ -216,6 +220,16 @@ def home(request, id):
 # -----------------------------------------------------------------------------
 # HTMX Views
 # -----------------------------------------------------------------------------
+
+
+@login_required
+def favorites_all(request):
+    """Select 'All' folder view and return updated favorites with folders OOB."""
+    request.session["favorites_all"] = True
+    request.user.favorites_folder = 0
+    request.user.save()
+    context = _get_favorites_list_context(request)
+    return render(request, "favorites/favorites-with-folders-oob.html", context)
 
 
 @login_required

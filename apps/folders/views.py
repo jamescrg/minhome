@@ -220,11 +220,14 @@ def share(request, id, page):
 
 def _get_folder_context(request, page):
     """Helper to build context for folder list partial."""
-    return {
+    context = {
         "page": page,
         "folders": get_folders_for_page(request, page),
         "selected_folder": select_folder(request, page),
     }
+    if page == "favorites":
+        context["favorites_folder_all"] = request.session.get("favorites_all", False)
+    return context
 
 
 @login_required
@@ -315,6 +318,8 @@ def select_htmx(request, id, page):
 
     elif page == "favorites":
         from apps.favorites.models import Favorite
+
+        request.session.pop("favorites_all", None)
 
         folders = get_folders_for_page(request, page)
         selected_folder = select_folder(request, page)
