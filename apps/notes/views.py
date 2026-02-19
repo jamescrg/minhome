@@ -115,6 +115,7 @@ def notes_add(request):
         "form": form,
         "action": "Add",
         "folders": get_folders_for_page(request, "notes"),
+        "selected_folder_id": request.user.notes_folder,
     }
     return render(request, "notes/form.html", context)
 
