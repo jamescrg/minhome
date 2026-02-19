@@ -104,6 +104,7 @@ urlpatterns = [
     path("favorites/api/folders", favorites.api_folders, name="favorites-api-folders"),
     path("favorites/extension", favorites.extension_add, name="favorites-extension"),
     # favorites htmx
+    path("favorites/all/", favorites.favorites_all, name="favorites-all"),
     path("favorites/list/", favorites.favorites_list, name="favorites-list"),
     path(
         "favorites/order-by/<str:order>/",

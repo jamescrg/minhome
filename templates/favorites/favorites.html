@@ -4,7 +4,9 @@
      hx-target="#main-content">
     <div class="card-title flex-center-space">
         <h1>
-            {% if selected_folder %}
+            {% if favorites_folder_all %}
+                All
+            {% elif selected_folder %}
                 {{ selected_folder.name }}
             {% else %}
                 Unsorted
