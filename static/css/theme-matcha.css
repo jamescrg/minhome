@@ -1,0 +1,91 @@
+:root {
+  /* Highlight Colors */
+  --hl-blue: var(--blue-50);
+  --hl-gray: var(--stone-125);
+  --hl-green: var(--lime-50);
+  --hl-orange: var(--orange-50);
+  --hl-purple: var(--purple-50);
+  --hl-red: var(--red-50);
+  --hl-slate: var(--slate-100);
+  --hl-yellow: var(--yellow-50);
+
+  /* Button Colors */
+  --button-primary-background: var(--lime-800);
+  --button-primary-color: var(--stone-100);
+  --button-secondary-background: var(--stone-150);
+  --button-secondary-color: var(--stone-600);
+  --button-toolbar: var(--stone-600);
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+
+  /* Body & Navigation */
+  --background-body: var(--stone-300);
+  --background-nav: var(--stone-350);
+  --color-nav: var(--color-primary);
+
+  /* Typography */
+  --color-primary: var(--stone-600);
+  --color-secondary: var(--stone-500);
+  --color-muted: var(--stone-400);
+  --color-strong: var(--stone-700);
+
+  /* Links */
+  --link: var(--lime-800);
+  --link-hover: var(--lime-700);
+
+  /* Backgrounds */
+  --background-subnav: var(--stone-200);
+  --background-subnav-tab-active: var(--background-section);
+  --background-control: var(--stone-150);
+  --background-section: var(--stone-100);
+  --background-light: var(--stone-50);
+
+  /* Borders */
+  --border-medium: var(--stone-300);
+  --border-dark: var(--stone-400);
+
+  /* Shadows & Overlays */
+  --shadow-color: rgb(0 0 0 / 14%);
+  --shadow-color-heavy: rgb(0 0 0 / 20%);
+  --overlay-backdrop: rgb(0 0 0 / 50%);
+  --overlay-heavy: rgb(0 0 0 / 40%);
+
+  /* Selection */
+  --selected-background: var(--violet-100);
+  --selected-color: var(--stone-700);
+  --selected-border: var(--stone-300);
+
+  /* Labels */
+  --label-gray: var(--stone-150);
+
+  /* Status */
+  --color-danger: var(--red-700);
+  --color-success: var(--green-600);
+  --urgent: var(--orange-800);
+
+  /* Accent (interactive elements) */
+  --color-accent: var(--violet-500);
+  --color-accent-strong: var(--violet-700);
+
+  /* Alerts */
+  --alert-success-bg: var(--lime-100);
+  --alert-success-border: var(--lime-200);
+  --alert-success-color: var(--green-800);
+  --alert-danger-bg: var(--red-100);
+  --alert-danger-border: var(--red-200);
+  --alert-danger-color: var(--red-800);
+
+  /* Editor marks */
+  --mark-yellow: var(--yellow-100);
+  --mark-green: var(--lime-100);
+  --mark-red: var(--red-100);
+  --mark-purple: var(--purple-100);
+  --mark-orange: var(--orange-100);
+  --mark-citation: var(--stone-150);
+  --mark-gray: var(--stone-200);
+  --search-highlight: var(--yellow-200);
+  --search-highlight-current: var(--amber-300);
+}

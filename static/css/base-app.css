@@ -24,8 +24,8 @@ html {
 }
 
 body {
-  background: var(--stone-300);
-  color: var(--stone-600);
+  background: var(--background-body);
+  color: var(--color-primary);
   font-family: 'Open Sans', sans-serif;
   font-size: 1em;
   min-height: 100%;
@@ -58,7 +58,7 @@ body {
 
 a,
 a:hover {
-  color: var(--lime-800);
+  color: var(--link);
   outline: none;
   text-decoration: none;
 }
@@ -69,7 +69,7 @@ a:hover {
  * ------------------------------------------------*/
 
 .card {
-  background: var(--stone-100);
+  background: var(--background-section);
   border-radius: var(--radius-md);
   margin-bottom: 1.5rem;
   padding: 1rem;
@@ -98,7 +98,7 @@ a:hover {
  * ------------------------------------------------*/
 
 .page-vertical-centered h1 {
-  color: var(--lime-900);
+  color: var(--link);
   font-size: 1.5em;
 }
 
@@ -128,11 +128,11 @@ strong{
 }
 
 .mh-alert {
-  color: var(--red-700);
+  color: var(--color-danger);
 }
 
 .soon {
-  color: var(--red-700);
+  color: var(--color-danger);
 }
 
 
@@ -148,14 +148,14 @@ strong{
 
 .table th,
 .table td {
-  border-bottom: solid 1px var(--stone-300);
+  border-bottom: solid 1px var(--border-medium);
   padding: 0.5rem;
   text-align: left;
   vertical-align: top;
 }
 
 .table th {
-  border-top: solid 1px var(--stone-300);
+  border-top: solid 1px var(--border-medium);
 }
 
 .table th:last-child,
@@ -240,13 +240,13 @@ li {
 
 .list-group-item {
   background: none;
-  border-bottom: solid 1px var(--stone-300);
+  border-bottom: solid 1px var(--border-medium);
   color: inherit;
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
 .list-group-item:first-child {
-  border-top: solid 1px var(--stone-300);
+  border-top: solid 1px var(--border-medium);
 }
 
 
@@ -281,33 +281,33 @@ li {
 }
 
 .btn-danger {
-  background: var(--red-100);
-  border-color: var(--stone-300);
+  background: var(--alert-danger-bg);
+  border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .btn-success {
-  background: var(--lime-100);
-  border-color: var(--stone-300);
+  background: var(--alert-success-bg);
+  border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--lime-100);
-  border-color: var(--stone-300);
+  background: var(--alert-success-bg);
+  border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
   background: var(--button-secondary-background);
-  border-color: var(--stone-300);
+  border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
 }
@@ -316,15 +316,15 @@ li {
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background: transparent;
-  border: solid 1px var(--stone-350);
+  border: solid 1px var(--border-dark);
   box-shadow: none;
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .btn-outline-danger {
-  color: var(--orange-700);
-  background-color: var(--stone-100);
-  border-color: var(--orange-700);
+  color: var(--urgent);
+  background-color: var(--background-section);
+  border-color: var(--urgent);
 }
 
 .btn-icon {
@@ -341,34 +341,34 @@ li {
 .btn-sort {
   background: none;
   border: none;
-  color: var(--stone-400);
+  color: var(--color-muted);
   font-weight: 600;
 }
 
 .btn-sort:hover {
-  color: var(--stone-500);
+  color: var(--color-secondary);
 }
 
 .btn-sort.active {
-  color: var(--violet-700);
+  color: var(--color-accent-strong);
 }
 
 .button-link {
   background: none;
   border: none;
-  color: var(--lime-800);
+  color: var(--link);
   cursor: pointer;
   margin: 0;
   padding: 0;
 }
 
 .button-link:hover {
-  color: var(--lime-700);
+  color: var(--link-hover);
 }
 
 .square-button {
-  background: var(--stone-150);
-  border: solid 1px var(--stone-300);
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   color: var(--link);
   outline: none;
@@ -386,7 +386,7 @@ li {
  * ------------------------------------------------*/
 
 .menu-icon {
-  color: var(--stone-350);
+  color: var(--border-dark);
   padding: 0;
 }
 
@@ -453,9 +453,9 @@ li {
 /* alerts */
 
 .alert-info {
-  background-color: var(--stone-50);
-  color: var(--stone-700);
-  border-color: var(--stone-300);
+  background-color: var(--background-light);
+  color: var(--color-strong);
+  border-color: var(--border-medium);
 }
 
 
@@ -479,20 +479,20 @@ li {
 
 .text-completed {
   text-decoration: line-through;
-  color: var(--stone-400);
+  color: var(--color-muted);
 }
 
 /* colors */
 .text-negative {
-  color: var(--red-800);
+  color: var(--alert-danger-color);
 }
 
 .text-positive {
-  color: var(--green-600);
+  color: var(--color-success);
 }
 
 .text-warning {
-  color: var(--red-800);
+  color: var(--alert-danger-color);
 }
 
 .text-lime {
@@ -601,8 +601,8 @@ li {
 .align-items-start { align-items: start; }
 
 /* text */
-.text-muted { color: var(--stone-400); }
-.text-danger { color: var(--red-700); }
+.text-muted { color: var(--color-muted); }
+.text-danger { color: var(--color-danger); }
 .text-center { text-align: center; }
 .small { font-size: 0.875rem; }
 
@@ -613,8 +613,8 @@ li {
 
 .form-control,
 .form-select {
-  background-color: var(--stone-50);
-  border: solid 1px var(--stone-300);
+  background-color: var(--background-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   box-sizing: border-box;
   color: inherit;
@@ -632,7 +632,7 @@ li {
 }
 
 .form-text {
-  color: var(--stone-400);
+  color: var(--color-muted);
   font-size: 0.875rem;
 }
 
@@ -683,13 +683,13 @@ li {
 }
 
 .alert-success {
-  background: var(--lime-100);
-  border-color: var(--lime-200);
-  color: var(--green-800);
+  background: var(--alert-success-bg);
+  border-color: var(--alert-success-border);
+  color: var(--alert-success-color);
 }
 
 .alert-danger {
-  background: var(--red-100);
-  border-color: var(--red-200);
-  color: var(--red-800);
+  background: var(--alert-danger-bg);
+  border-color: var(--alert-danger-border);
+  color: var(--alert-danger-color);
 }
