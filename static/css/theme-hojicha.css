@@ -1,0 +1,84 @@
+:root {
+  color-scheme: dark;
+
+  /* Body & Navigation */
+  --background-body: var(--stone-950);
+  --background-nav: var(--stone-800);
+  --color-nav: var(--stone-300);
+
+  /* Backgrounds */
+  --background-subnav: var(--stone-800);
+  --background-subnav-tab-active: var(--stone-900);
+  --background-control: var(--stone-800);
+  --background-section: var(--stone-900);
+  --background-light: var(--stone-950);
+
+  /* Borders */
+  --border-medium: var(--stone-700);
+  --border-dark: var(--stone-600);
+
+  /* Typography */
+  --color-primary: var(--stone-200);
+  --color-secondary: var(--stone-300);
+  --color-muted: var(--stone-400);
+  --color-strong: var(--stone-100);
+
+  /* Links */
+  --link: var(--hojicha-300);
+  --link-hover: var(--hojicha-400);
+
+  /* Buttons */
+  --button-primary-background: var(--hojicha-500);
+  --button-primary-color: var(--stone-100);
+  --button-secondary-background: var(--stone-800);
+  --button-secondary-color: var(--stone-300);
+  --button-toolbar: var(--stone-300);
+
+  /* Shadows */
+  --shadow-color: rgb(0 0 0 / 30%);
+  --shadow-color-heavy: rgb(0 0 0 / 40%);
+
+  /* Selection */
+  --selected-background: var(--violet-950);
+  --selected-color: var(--violet-200);
+  --selected-border: var(--violet-800);
+
+  /* Highlights */
+  --hl-blue: var(--blue-950);
+  --hl-gray: var(--stone-800);
+  --hl-green: var(--lime-950);
+  --hl-orange: var(--orange-950);
+  --hl-purple: var(--purple-950);
+  --hl-red: var(--red-950);
+  --hl-slate: var(--slate-900);
+  --hl-yellow: var(--yellow-950);
+
+  /* Status */
+  --color-danger: var(--red-400);
+  --color-success: var(--green-400);
+  --color-accent: var(--violet-400);
+  --color-accent-strong: var(--violet-300);
+  --urgent: var(--orange-400);
+
+  /* Alerts */
+  --alert-success-bg: var(--green-950);
+  --alert-success-border: var(--green-900);
+  --alert-success-color: var(--green-300);
+  --alert-danger-bg: var(--red-950);
+  --alert-danger-border: var(--red-900);
+  --alert-danger-color: var(--red-300);
+
+  /* Editor marks */
+  --mark-yellow: var(--yellow-950);
+  --mark-green: var(--lime-950);
+  --mark-red: var(--red-950);
+  --mark-purple: var(--purple-950);
+  --mark-orange: var(--orange-950);
+  --mark-citation: var(--stone-800);
+  --mark-gray: var(--stone-700);
+  --search-highlight: var(--yellow-900);
+  --search-highlight-current: var(--amber-800);
+
+  /* Labels */
+  --label-gray: var(--stone-800);
+}

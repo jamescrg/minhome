@@ -11,13 +11,35 @@
                 <td class="setting-control">
                     <form action="{% url 'settings-theme' %}" method="post">
                         {% csrf_token %}
-                        <select class="select form-select theme-select"
-                                onchange="submit()"
-                                name="theme">
-                            <option value="matcha" {% if user.theme == "matcha" %}selected{% endif %}>Matcha</option>
-                            <option value="original" {% if user.theme == "original" %}selected{% endif %}>Original</option>
-                            <option value="jay" {% if user.theme == "jay" %}selected{% endif %}>Pinyon Jay</option>
-                        </select>
+                        <input type="hidden" name="theme" value="{{ user.theme }}">
+                        <div class="dropdown theme-select" x-data="dropdown()">
+                            <button class="btn btn-secondary"
+                                    type="button"
+                                    x-ref="button"
+                                    @click="toggle()"
+                                    :aria-expanded="open">
+                                <span>
+                                    {% if user.theme == "hojicha" %}
+                                        Hojicha
+                                    {% else %}
+                                        Matcha
+                                    {% endif %}
+                                </span>
+                                <i class="icon-chevron-down"></i>
+                            </button>
+                            <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                                <li {% if user.theme != "hojicha" %}class="active"{% endif %}>
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       @click.prevent="$el.closest('form').querySelector('[name=theme]').value='matcha'; $el.closest('form').submit();">Matcha</a>
+                                </li>
+                                <li {% if user.theme == "hojicha" %}class="active"{% endif %}>
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       @click.prevent="$el.closest('form').querySelector('[name=theme]').value='hojicha'; $el.closest('form').submit();">Hojicha</a>
+                                </li>
+                            </ul>
+                        </div>
                     </form>
                 </td>
             </tr>

@@ -63,7 +63,7 @@
 }
 
 .search .search-scope input[type="checkbox"] {
-  accent-color: var(--violet-500);
+  accent-color: var(--color-accent);
   cursor: pointer;
   height: 1rem;
   width: 1rem;
@@ -89,7 +89,7 @@
 }
 
 .search .search-results-placeholder i {
-  color: var(--stone-300);
+  color: var(--border-medium);
   display: block;
   font-size: 2rem;
   margin-bottom: 0.75rem;
@@ -214,8 +214,8 @@
 }
 
 .search .badge-gray {
-  background: var(--stone-200);
-  color: var(--stone-500);
+  background: var(--background-subnav);
+  color: var(--color-secondary);
 }
 
 /* Empty State */
@@ -227,7 +227,7 @@
 }
 
 .search .search-empty i {
-  color: var(--stone-300);
+  color: var(--border-medium);
   display: block;
   font-size: 2rem;
   margin-bottom: 0.75rem;

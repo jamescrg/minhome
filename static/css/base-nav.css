@@ -1,6 +1,6 @@
 
 .navbar {
-  background: var(--stone-350);
+  background: var(--background-nav);
   margin-bottom: 0;
   padding: 0.25rem 0 0 0;
 }
@@ -16,7 +16,7 @@
 }
 
 .navbar a {
-  color: var(--stone-600);
+  color: var(--color-nav);
   margin: 0;
   padding-bottom: 0.5rem;
   position: relative;
@@ -24,9 +24,9 @@
 }
 
 .navbar .active {
-  background: var(--stone-300);
+  background: var(--background-body);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  box-shadow: 0 0.0625rem 0.2rem rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0.0625rem 0.2rem var(--shadow-color);
   position: relative;
 }
 
@@ -37,7 +37,7 @@
   bottom: 0;
   width: var(--radius-lg);
   height: var(--radius-lg);
-  background: var(--stone-300);
+  background: var(--background-body);
 }
 
 .navbar .active::before {

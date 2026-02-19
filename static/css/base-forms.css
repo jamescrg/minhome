@@ -4,7 +4,7 @@
 input,
 select,
 textarea {
-  background: var(--stone-50);
+  background: var(--background-light);
   border: solid 1px var(--border-medium);
   border-radius: var(--radius-sm);
   font-family: inherit;

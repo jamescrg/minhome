@@ -25,7 +25,8 @@
               rel="stylesheet">
         <!-- project stylesheets -->
         <link rel="stylesheet" href="{% static_v 'css/lucide.css' %}">
-        <link rel="stylesheet" href="{% static_v 'css/base-colors.css' %}">
+        <link rel="stylesheet" href="{% static_v 'css/base-palette.css' %}">
+        <link rel="stylesheet" href="{% static_v 'css/theme-matcha.css' %}">
         <link rel="stylesheet" href="{% static_v 'css/base-app.css' %}">
         <link rel="stylesheet" href="{% static_v 'css/base-forms.css' %}">
         <link rel="stylesheet" href="{% static_v 'css/base-nav.css' %}">
@@ -38,7 +39,7 @@
             <link rel="stylesheet" href="{% static_v_page %}">
         {% endif %}
         <link rel="stylesheet" href="{% static_v 'css/icons.css' %}">
-        {% if user.theme %}
+        {% if user.theme and user.theme != "matcha" %}
             <link rel="stylesheet" href="{% static_v_theme %}">
         {% endif %}
     </head>
