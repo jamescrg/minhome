@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="section">
+        <nav class="section-nav">
+            <ul>
+                <li {% if subapp == "theme" %}class="active"{% endif %}>
+                    <a href="{% url 'settings' %}">Theme</a>
+                </li>
+                <li {% if subapp == "homepage" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-homepage' %}">Homepage</a>
+                </li>
+                <li {% if subapp == "google" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-google' %}">Google</a>
+                </li>
+                <li {% if subapp == "crypto" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-crypto-symbols' %}">Crypto</a>
+                </li>
+                <li {% if subapp == "securities" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-securities-symbols' %}">Securities</a>
+                </li>
+                <li {% if subapp == "encryption" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-encryption' %}">Encryption</a>
+                </li>
+                <li {% if subapp == "session" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-session' %}">Session</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="section-body">
+            {% block subcontent %}
+            {% endblock subcontent %}
+        </div>
+    </div>
+{% endblock content %}

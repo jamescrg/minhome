@@ -4,13 +4,9 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import CustomUser
-from apps.folders.folders import (
-    get_folders_tree_flat,
-    get_task_folders,
-    get_valid_parent_folders,
-    select_folder,
-)
+from apps.folders.folders import get_folders_for_page, get_task_folders, select_folder
 from apps.folders.models import Folder
+from apps.management.pagination import CustomPaginator
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
 
@@ -30,13 +26,18 @@ def _get_task_list_context(request):
             user=user, folder__isnull=True, is_recurring=False
         ).order_by("status", "title")
 
+    session_key = "tasks_page"
+    trigger_key = "tasksChanged"
+    pagination = CustomPaginator(tasks, 20, request, session_key)
+
     return {
         "page": "tasks",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
         "selected_folder": selected_folder,
-        "tasks": tasks,
+        "tasks": pagination.get_object_list(),
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -52,29 +53,7 @@ def index(request):
           folder system for the whole site.
     """
 
-    user = request.user
-    folders = get_task_folders(request)
-
-    selected_folder = select_folder(request, "tasks")
-
-    if selected_folder:
-        tasks = Task.objects.filter(
-            folder=selected_folder, is_recurring=False
-        ).order_by("status", "title")
-    else:
-        tasks = Task.objects.filter(
-            user=user, folder__isnull=True, is_recurring=False
-        ).order_by("status", "title")
-
-    context = {
-        "page": "tasks",
-        "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-        "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
-        "selected_folder": selected_folder,
-        "tasks": tasks,
-    }
-
+    context = _get_task_list_context(request)
     return render(request, "tasks/content.html", context)
 
 
@@ -263,8 +242,6 @@ def edit(request, id):
             "page": "tasks",
             "edit": True,
             "folders": folders,
-            "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
-            "valid_parent_folders": get_valid_parent_folders(request, "tasks"),
             "selected_folder": selected_folder,
             "action": f"/tasks/{id}/edit",
             "task": task,
@@ -466,7 +443,7 @@ def task_form(request, id):
         "action": f"/tasks/{id}/form",
         "task": task,
         "form": form,
-        "folder_tree_flat": get_folders_tree_flat(request, "tasks"),
+        "folders": get_folders_for_page(request, "tasks"),
     }
     return render(request, "tasks/modal-form.html", context)
 

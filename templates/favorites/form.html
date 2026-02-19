@@ -1,4 +1,3 @@
-{% load crispy_forms_tags %}
 <div class="card">
     <div class="card-title flex-center-space">
         <h1>
@@ -9,12 +8,12 @@
             {% endif %}
         </h1>
         <a class="square-button" href="{% url 'favorites' %}">
-            <i class="bi bi-arrow-return-left"></i>
+            <i class="icon-undo-2"></i>
         </a>
     </div>
     <form class="large-form" action="{{ action }}" method="post" role="form">
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form }}
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 </div>

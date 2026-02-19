@@ -18,10 +18,11 @@
 /* ------------------------------------------------------------------------- */
 
 .tasks-list-title {
-  border-left: none;
-  border-right: none;
-  border-top: none;
   font-weight: 600;
+}
+
+.list-group-item.tasks-list-title {
+  border-top: none;
 }
 
 .tasks-list-title a {
@@ -49,21 +50,15 @@
     padding-top: 0;
   }
 
-  .tasks-checkbox a {
-    font-size: 1.1rem;
-  }
-
 } /* end media exception */
 
 .tasks-checkbox {
-  font-size: 0.96rem;
+  font-size: 1.15rem;
   margin-right: 1rem;
-  margin-top: 0.2rem;
 }
 
 .tasks-checkbox i {
-  position: relative;
-  top: -0.15rem;
+  display: block;
 }
 
 .tasks-checkbox a,
@@ -73,7 +68,7 @@
 
 .tasks-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .tasks-folder {

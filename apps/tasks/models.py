@@ -1,10 +1,11 @@
 from django.db import models
 
 from accounts.models import CustomUser
+from apps.common.models import TimestampMixin
 from apps.folders.models import Folder
 
 
-class Task(models.Model):
+class Task(TimestampMixin, models.Model):
     """A user's task.
 
     Attributes:

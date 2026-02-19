@@ -1,26 +1,25 @@
-<div class="dropdown">
+<div class="dropdown" x-data="dropdown()">
     <button class="btn-icon menu-icon"
             type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
+            x-ref="button"
+            @click="toggle()"
+            :aria-expanded="open">
         {% if folder.editors.all %}
             <span class="shared-indicator"
                   title="Shared with {{ folder.editors.count }} user{{ folder.editors.count|pluralize }}">
-                <i class="bi bi-people-fill"></i>
+                <i class="icon-users"></i>
             </span>
         {% else %}
-            <i class="bi bi-three-dots-vertical"></i>
+            <i class="icon-ellipsis-vertical"></i>
         {% endif %}
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" x-ref="menu" x-show="open">
         {% if folder.user == user %}
             <li>
                 <a class="dropdown-item"
                    href="#"
                    hx-get="{% url 'folder-form-edit' id=folder.id page=page %}"
-                   hx-target="#htmx-modal-container"
-                   data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container">Edit</a>
+                   hx-target="#htmx-modal-container">Edit</a>
             </li>
             <li>
                 <a class="dropdown-item"
@@ -48,14 +47,6 @@
                    hx-confirm="Are you sure you want to delete this folder?">Delete</a>
             </li>
         {% else %}
-            <li>
-                <a class="dropdown-item"
-                   href="#"
-                   hx-get="{% url 'folder-form-edit' id=folder.id page=page %}"
-                   hx-target="#htmx-modal-container"
-                   data-bs-toggle="modal"
-                   data-bs-target="#htmx-modal-container">Move</a>
-            </li>
             <li>
                 <a class="dropdown-item"
                    href="#"

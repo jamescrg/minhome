@@ -1,7 +1,7 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.core.exceptions import ValidationError
+
+from config.settings import CustomFormRenderer
 
 from .models import Favorite
 
@@ -9,18 +9,17 @@ from .models import Favorite
 class FavoriteExtensionForm(forms.ModelForm):
     """Form for adding favorites via browser extension."""
 
+    default_renderer = CustomFormRenderer
+
     class Meta:
         model = Favorite
         fields = ("folder", "name", "url")
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.add_input(Submit("submit", "Save Favorite"))
-
 
 class FavoriteForm(forms.ModelForm):
+    default_renderer = CustomFormRenderer
+    use_required_attribute = False
+
     class Meta:
         model = Favorite
         fields = (
@@ -30,14 +29,15 @@ class FavoriteForm(forms.ModelForm):
             "description",
         )
         widgets = {
-            "description": forms.Textarea(),
+            "name": forms.TextInput(attrs={"class": "span2"}),
+            "url": forms.TextInput(attrs={"class": "span2"}),
+            "description": forms.Textarea(attrs={"class": "span2"}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout("name", "url", "description")
+    def __iter__(self):
+        for field in super().__iter__():
+            if field.name != "folder":
+                yield field
 
     def clean_name(self):
         name = self.cleaned_data["name"]

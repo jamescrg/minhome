@@ -1,4 +1,7 @@
-<div class="card favorites">
+<div class="card favorites"
+     hx-trigger="favoritesChanged from:body"
+     hx-get="{% url 'favorites-list' %}"
+     hx-target="#main-content">
     <div class="card-title flex-center-space">
         <h1>
             {% if selected_folder %}
@@ -10,14 +13,9 @@
         <a class="square-button"
            href="#"
            hx-get="{% url 'favorites-form' %}"
-           hx-target="#htmx-modal-container"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
+           hx-target="#htmx-modal-container">
+            <i class="icon-plus"></i>
         </a>
     </div>
-    <div id="favorites-container"
-         hx-trigger="favoritesChanged from:body"
-         hx-get="{% url 'favorites-list' %}"
-         hx-target="this">{% include "favorites/list.html" %}</div>
+    <div id="favorites-container">{% include "favorites/list.html" %}</div>
 </div>

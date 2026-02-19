@@ -1,10 +1,11 @@
 from django.db import models
 
 from accounts.models import CustomUser
+from apps.common.models import TimestampMixin
 from apps.folders.models import Folder
 
 
-class Contact(models.Model):
+class Contact(TimestampMixin, models.Model):
     """A person or entity and its associated contact information.
 
     Attributes:

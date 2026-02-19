@@ -1,29 +1,123 @@
-<div class="card">
-    <div class="card-title flex-center-space">
-        <h1>Notes</h1>
-        <a class="square-button"
-           href="#"
-           hx-get="{% url 'notes-form-htmx' %}"
-           hx-target="#htmx-modal-container"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
-        </a>
+<div class="section">
+    <div class="toolbar notes-toolbar" id="notes-normal-toolbar">
+        <div class="toolbar-left">
+            <div class="filter-tools">
+                <button type="button"
+                        hx-get="{% url 'notes:add' %}"
+                        hx-target="#htmx-modal-container"
+                        title="New Note">
+                    <i class="icon-plus"></i>
+                </button>
+                <div class="dropdown" x-data="dropdown()">
+                    <button type="button"
+                            id="notes-folder-filter"
+                            class="select-btn filter-dropdown-button {% if selected_folder_id %}toggle-active{% endif %}"
+                            x-ref="button"
+                            @click="toggle()"
+                            :aria-expanded="open">
+                        {{ selected_folder_name|default:"All Folders" }}
+                        <small><i class="icon-chevron-down"></i></small>
+                    </button>
+                    <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               hx-get="{% url 'notes:filter-folder-clear' %}"
+                               hx-target="#notes">All Folders</a>
+                        </li>
+                        {% for folder in folders %}
+                            <li x-data="{ submenu: false }">
+                                <div class="dropdown-item-row">
+                                    <a class="dropdown-item {% if selected_folder_id == folder.id %}active{% endif %}"
+                                       href="#"
+                                       hx-get="{% url 'notes:filter-folder' folder.id %}"
+                                       hx-target="#notes">{{ folder.name }}</a>
+                                    <button class="dropdown-item-kebab"
+                                            type="button"
+                                            @click.stop="submenu = !submenu"
+                                            title="Folder options">
+                                        <i class="icon-ellipsis-vertical"></i>
+                                    </button>
+                                </div>
+                                <ul class="dropdown-submenu"
+                                    x-show="submenu"
+                                    @click.outside="submenu = false"
+                                    x-cloak>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           hx-get="{% url 'folder-form-edit' id=folder.id page='notes' %}"
+                                           hx-target="#htmx-modal-container">
+                                            <i class="icon-pencil"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           hx-delete="{% url 'folder-delete-htmx' id=folder.id page='notes' %}"
+                                           hx-target="#notes"
+                                           hx-swap="innerHTML"
+                                           hx-confirm="Are you sure you want to delete this folder?">
+                                            <i class="icon-trash-2"></i> Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endfor %}
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               hx-get="{% url 'folder-form' page='notes' %}"
+                               hx-target="#htmx-modal-container">
+                                <i class="icon-plus"></i> Add Folder
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <input type="text"
+                       id="notes-keyword-input"
+                       name="keyword"
+                       placeholder="Keyword Search"
+                       value="{{ keyword }}"
+                       class="filter-input keyword-input"
+                       hx-get="{% url 'notes:filter-keyword' %}"
+                       hx-target="#notes-table"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-include="this">
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <span class="app-badge app-badge-lg">Count: {{ number_notes }}</span>
+        </div>
     </div>
-    {% if notes %}
-        <ul class="list-group">
-            {% for note in notes %}
-                <li class="list-group-item {% if selected_note and selected_note.id == note.id %}active-item{% endif %}">
-                    <a href="#"
-                       hx-get="{% url 'notes-select-htmx' id=note.id %}"
-                       hx-target="#note-detail"
-                       hx-swap="innerHTML">{{ note.subject }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <ul class="list-group">
-            <li class="list-group-item">No notes.</li>
-        </ul>
-    {% endif %}
+    <div class="toolbar notes-bulk-toolbar"
+         id="notes-bulk-toolbar"
+         style="display: none">
+        <div class="toolbar-left">
+            <span class="bulk-count"></span>
+            <div class="bulk-actions">
+                <select id="bulk-move-folder" class="filter-input">
+                    <option value="" disabled selected>Move to Folder…</option>
+                    <option value="null">No Folder</option>
+                    {% for folder in folders %}<option value="{{ folder.id }}">{{ folder.name }}</option>{% endfor %}
+                </select>
+                <button type="button"
+                        id="bulk-encrypt-btn"
+                        class="btn btn-secondary btn-slim">
+                    <i class="icon-lock"></i> Encrypt
+                </button>
+                <button type="button"
+                        id="bulk-decrypt-btn"
+                        class="btn btn-secondary btn-slim">
+                    <i class="icon-lock-open"></i> Remove Encryption
+                </button>
+                <button type="button" id="bulk-delete-btn" class="btn btn-danger btn-slim">
+                    <i class="icon-trash-2"></i> Delete
+                </button>
+                <button type="button" id="bulk-cancel-btn" class="btn btn-secondary btn-slim">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="notes-table">{% include "notes/table.html" %}</div>
 </div>

@@ -1,73 +1,63 @@
 {% extends "base.html" %}
 {% load static %}
-
-{% block title %}Share Folder - {{ folder.name }}{% endblock %}
-
+{% block title %}
+    Share Folder - {{ folder.name }}
+{% endblock title %}
 {% block content %}
-<div class="container edit-share">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-title">
-                    <h1>Share Folder: {{ folder.name }}</h1>
-                </div>
-                <div class="card-text">
-                    <p class="text-muted">Manage who can access and edit this folder.</p>
-
-                    <!-- Current shared users -->
-                    <h2>Currently Shared With:</h2>
-                    {% if current_editors %}
-                        <div class="list-group mb-3">
-                            {% for editor in current_editors %}
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>
-                                        <i class="bi bi-person-fill me-2"></i>
-                                        {{ editor.email }}
-                                    </span>
-                                    <button class="btn btn-sm btn-outline-danger"
-                                            onclick="removeAccess({{ editor.id }})">
-                                        Remove
-                                    </button>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted">This folder is not shared with anyone.</p>
-                    {% endif %}
-
-                    <!-- Add new user -->
-                    <h2>Add New User:</h2>
-                    {% if available_users %}
-                        <div class="input-group mb-3">
-                            <select class="form-select" id="userSelect">
-                                <option value="">Select a user...</option>
-                                {% for user in available_users %}
-                                    <option value="{{ user.id }}">{{ user.email }}</option>
+    <div class="container edit-share">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-title">
+                        <h1>Share Folder: {{ folder.name }}</h1>
+                    </div>
+                    <div class="card-text">
+                        <p class="text-muted">Manage who can access and edit this folder.</p>
+                        <!-- Current shared users -->
+                        <h2>Currently Shared With:</h2>
+                        {% if current_editors %}
+                            <div class="list-group mb-3">
+                                {% for editor in current_editors %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="icon-user" style="margin-right: 0.5rem"></i>
+                                            {{ editor.email }}
+                                        </span>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                onclick="removeAccess({{ editor.id }})">Remove</button>
+                                    </div>
                                 {% endfor %}
-                            </select>
-                            <button class="btn btn-primary" onclick="addAccess()">
-                                Add User
-                            </button>
-                        </div>
-                    {% else %}
-                        <p class="text-muted">No additional users available to share with.</p>
-                    {% endif %}
-                    
-                    <!-- Action buttons -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="/{{ page }}/" class="btn btn-secondary">Back to {{ page|title }}</a>
-                        <div class="text-muted small">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Users with access can view and edit all items in this folder
+                            </div>
+                        {% else %}
+                            <p class="text-muted">This folder is not shared with anyone.</p>
+                        {% endif %}
+                        <!-- Add new user -->
+                        <h2>Add New User:</h2>
+                        {% if available_users %}
+                            <div class="input-group mb-3">
+                                <select class="form-select" id="userSelect">
+                                    <option value="">Select a user...</option>
+                                    {% for user in available_users %}<option value="{{ user.id }}">{{ user.email }}</option>{% endfor %}
+                                </select>
+                                <button class="btn btn-primary" onclick="addAccess()">Add User</button>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No additional users available to share with.</p>
+                        {% endif %}
+                        <!-- Action buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url page %}" class="btn btn-secondary">Back to {{ page|title }}</a>
+                            <div class="text-muted small">
+                                <i class="icon-info" style="margin-right: 0.25rem"></i>
+                                Users with access can view and edit all items in this folder
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<script>
+    <script>
 function addAccess() {
     const userSelect = document.getElementById('userSelect');
     const userId = userSelect.value;
@@ -140,5 +130,5 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-</script>
-{% endblock %}
+    </script>
+{% endblock content %}
