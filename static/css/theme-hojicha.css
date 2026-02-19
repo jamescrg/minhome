@@ -57,7 +57,7 @@
   --color-danger: var(--red-400);
   --color-success: var(--green-400);
   --color-accent: var(--violet-400);
-  --color-accent-strong: var(--violet-300);
+  --color-accent-strong: var(--violet-400);
   --urgent: var(--orange-400);
 
   /* Alerts */

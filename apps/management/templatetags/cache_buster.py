@@ -56,7 +56,7 @@ def static_v_theme(context):
     """
 
     # Gets the static file from the /static directory
-    static_file = f"{settings.STATIC_URL}css/theme-{context["user"].theme}.css"
+    static_file = f"{settings.STATIC_URL}css/theme-{context["theme"]}.css"
     modified_url = (
         static_file
         + "?v="
