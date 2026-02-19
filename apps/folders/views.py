@@ -317,30 +317,11 @@ def select_htmx(request, id, page):
         return render(request, "tasks/tasks-with-folders-oob.html", context)
 
     elif page == "favorites":
-        from apps.favorites.models import Favorite
+        from apps.favorites.views import _get_favorites_list_context
 
         request.session.pop("favorites_all", None)
 
-        folders = get_folders_for_page(request, page)
-        selected_folder = select_folder(request, page)
-
-        if selected_folder:
-            favorites = Favorite.objects.filter(
-                user=user, folder_id=selected_folder.id
-            ).order_by("name")
-        else:
-            favorites = Favorite.objects.filter(
-                user=user, folder_id__isnull=True
-            ).order_by("name")
-
-        context = {
-            "page": page,
-            "user": user,
-            "folders": folders,
-            "selected_folder": selected_folder,
-            "favorites": favorites,
-        }
-
+        context = _get_favorites_list_context(request)
         return render(request, "favorites/favorites-with-folders-oob.html", context)
 
     elif page == "contacts":
