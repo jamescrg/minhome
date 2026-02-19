@@ -91,9 +91,7 @@
             <span class="app-badge app-badge-lg">Count: {{ number_notes }}</span>
         </div>
     </div>
-    <div class="toolbar notes-bulk-toolbar"
-         id="notes-bulk-toolbar"
-         style="display: none">
+    <div class="bulk-toolbar" id="notes-bulk-toolbar" style="display: none">
         <div class="toolbar-left">
             <span class="bulk-count"></span>
             <div class="bulk-actions">
@@ -102,20 +100,16 @@
                     <option value="null">No Folder</option>
                     {% for folder in folders %}<option value="{{ folder.id }}">{{ folder.name }}</option>{% endfor %}
                 </select>
-                <button type="button"
-                        id="bulk-encrypt-btn"
-                        class="btn btn-secondary btn-slim">
+                <button type="button" id="bulk-encrypt-btn" class="btn btn-secondary">
                     <i class="icon-lock"></i> Encrypt
                 </button>
-                <button type="button"
-                        id="bulk-decrypt-btn"
-                        class="btn btn-secondary btn-slim">
+                <button type="button" id="bulk-decrypt-btn" class="btn btn-secondary">
                     <i class="icon-lock-open"></i> Remove Encryption
                 </button>
-                <button type="button" id="bulk-delete-btn" class="btn btn-danger btn-slim">
+                <button type="button" id="bulk-delete-btn" class="btn btn-danger">
                     <i class="icon-trash-2"></i> Delete
                 </button>
-                <button type="button" id="bulk-cancel-btn" class="btn btn-secondary btn-slim">Cancel</button>
+                <button type="button" id="bulk-cancel-btn" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
