@@ -3,6 +3,19 @@
   max-width: 12.5rem;
 }
 
+.theme-select .btn {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.theme-select .btn i {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
 .setting-label {
   padding-bottom: 1rem;
   width: 12.5rem;
