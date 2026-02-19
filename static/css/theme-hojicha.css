@@ -24,11 +24,11 @@
   --color-strong: var(--stone-100);
 
   /* Links */
-  --link: var(--lime-500);
-  --link-hover: var(--lime-400);
+  --link: var(--hojicha-300);
+  --link-hover: var(--hojicha-400);
 
   /* Buttons */
-  --button-primary-background: var(--lime-700);
+  --button-primary-background: var(--hojicha-500);
   --button-primary-color: var(--stone-100);
   --button-secondary-background: var(--stone-800);
   --button-secondary-color: var(--stone-300);
