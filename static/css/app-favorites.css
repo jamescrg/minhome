@@ -70,37 +70,6 @@ th.fav-actions i {
   text-align: center;
 }
 
-/* multi-select bulk toolbar */
-
-.favorites-bulk-toolbar {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-}
-
-.favorites-bulk-toolbar .toolbar-left {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  width: 100%;
-}
-
-.favorites-bulk-toolbar .bulk-count {
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.favorites-bulk-toolbar .bulk-actions {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-}
-
-.favorites-bulk-toolbar .bulk-actions > button,
-.favorites-bulk-toolbar .bulk-actions > .dropdown > button {
-  white-space: nowrap;
-}
 
 /* ------------------------------------------------------------------------- */
 /* favorites form */
