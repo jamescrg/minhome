@@ -36,14 +36,10 @@
   font-size: 0.85em;
 }
 
-.fav-home {
-  text-align: center;
-  width: 2.5rem;
-}
-
 .favorite-home-indicator {
   color: var(--color-muted);
   font-size: 0.8rem;
+  margin-left: 0.4rem;
 }
 
 .fav-date {

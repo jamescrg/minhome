@@ -14,6 +14,8 @@ from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
 from apps.management.pagination import CustomPaginator
 
+FAVORITES_ALLOWED_ORDER_FIELDS = {"name", "created_at", "updated_at"}
+
 
 def _get_favorites_list_context(request):
     """Helper to build context for favorites list partial."""
@@ -25,7 +27,12 @@ def _get_favorites_list_context(request):
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
-    favorites = favorites.order_by("name")
+    order_by = request.session.get("favorites_order", "name")
+    bare_field = order_by.lstrip("-")
+    if bare_field not in FAVORITES_ALLOWED_ORDER_FIELDS:
+        order_by = "name"
+        bare_field = "name"
+    favorites = favorites.order_by(order_by)
 
     session_key = "favorites_page"
     trigger_key = "favoritesChanged"
@@ -39,6 +46,7 @@ def _get_favorites_list_context(request):
         "pagination": pagination,
         "session_key": session_key,
         "trigger_key": trigger_key,
+        "current_order": bare_field,
     }
 
 
@@ -215,6 +223,18 @@ def favorites_list(request):
     """Return favorites card partial for htmx."""
     context = _get_favorites_list_context(request)
     return render(request, "favorites/favorites.html", context)
+
+
+@login_required
+def favorites_order_by(request, order):
+    """Toggle sort order for favorites list."""
+    current = request.session.get("favorites_order", "name")
+    if current == order:
+        order = f"-{order}" if not current.startswith("-") else order
+    request.session["favorites_order"] = order
+    request.session["favorites_page"] = 1
+    request.session.modified = True
+    return redirect("favorites-list")
 
 
 @login_required
