@@ -51,6 +51,10 @@
   width: 2.5rem;
 }
 
+th.fav-actions i {
+  color: var(--color-muted);
+}
+
 .favorites-table td {
   vertical-align: middle;
   white-space: nowrap;
