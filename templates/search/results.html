@@ -6,7 +6,7 @@
         </div>
         <div class="search-cards">
             {% for favorite in favorites %}
-                <a href="{{ favorite.url }}" class="search-card">
+                <div class="search-card" data-href="{{ favorite.url }}">
                     <span class="app-badge app-badge-lg badge-gray"><i class="icon-star"></i></span>
                     <div class="search-card-content">
                         <div class="search-card-title">{{ favorite.name }}</div>
@@ -16,7 +16,13 @@
                             {% if favorite.description %}{{ favorite.description|truncatewords:8 }}{% endif %}
                         </div>
                     </div>
-                </a>
+                    {% if favorite.folder %}
+                        <a href="{% url 'folder-select' id=favorite.folder_id page='favorites' %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ favorite.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -29,7 +35,8 @@
         </div>
         <div class="search-cards">
             {% for contact in contacts %}
-                <a href="{% url 'contacts-select' id=contact.id %}" class="search-card">
+                <div class="search-card"
+                     data-href="{% url 'contacts-select' id=contact.id %}">
                     <span class="app-badge app-badge-lg badge-gray"><i class="icon-user"></i></span>
                     <div class="search-card-content">
                         <div class="search-card-title">{{ contact.name }}</div>
@@ -39,7 +46,13 @@
                             {% if contact.email %}{{ contact.email }}{% endif %}
                         </div>
                     </div>
-                </a>
+                    {% if contact.folder %}
+                        <a href="{% url 'folder-select' id=contact.folder_id page='contacts' %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ contact.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -52,15 +65,20 @@
         </div>
         <div class="search-cards">
             {% for note in notes %}
-                <a href="{% url 'notes:note-view' note_id=note.id %}"
-                   class="search-card"
-                   target="_blank">
+                <div class="search-card"
+                     data-href="{% url 'notes:note-view' note_id=note.id %}"
+                     data-target="_blank">
                     <span class="app-badge app-badge-lg badge-gray"><i class="icon-sticky-note"></i></span>
                     <div class="search-card-content">
                         <div class="search-card-title">{{ note.title }}</div>
-                        {% if note.folder %}<div class="search-card-meta">{{ note.folder.name }}</div>{% endif %}
                     </div>
-                </a>
+                    {% if note.folder %}
+                        <a href="{% url 'notes:filter-folder' note.folder_id %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ note.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
             {% endfor %}
         </div>
     </div>

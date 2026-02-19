@@ -148,7 +148,9 @@ def notes_filter_folder(request, folder_id):
     request.session["notes_page"] = 1
     request.session.modified = True
 
-    return redirect("notes:list")
+    if request.headers.get("HX-Request"):
+        return redirect("notes:list")
+    return redirect("notes:index")
 
 
 @login_required
