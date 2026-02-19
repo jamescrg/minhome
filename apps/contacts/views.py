@@ -78,6 +78,14 @@ def select(request, id):
 
     user = request.user
     user.contacts_contact = id
+
+    # Switch to the contact's folder
+    try:
+        contact = Contact.objects.get(pk=id, user=user)
+        user.contacts_folder = contact.folder_id or 0
+    except Contact.DoesNotExist:
+        pass
+
     user.save()
     return redirect("/contacts/")
 
@@ -330,15 +338,20 @@ def contacts_form_htmx(request, id=None):
                 saved_contact.google_id = google.add_contact(saved_contact)
                 saved_contact.save()
 
-            # Select the saved contact
+            # Select the saved contact and switch to its folder
             user.contacts_contact = saved_contact.id
+            user.contacts_folder = saved_contact.folder_id or 0
             user.save()
 
             return HttpResponse(
                 status=204,
                 headers={
                     "HX-Trigger": json.dumps(
-                        {"contactsChanged": "", "contactDetailChanged": ""}
+                        {
+                            "contactsChanged": "",
+                            "contactDetailChanged": "",
+                            "foldersChanged": "",
+                        }
                     )
                 },
             )

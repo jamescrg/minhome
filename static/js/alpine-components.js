@@ -346,6 +346,26 @@ document.addEventListener('DOMContentLoaded', () => {
  * Promise-based replacement for browser's native confirm()
  */
 /**
+ * Search card navigation (delegated for HTMX compatibility)
+ * Navigates to data-href on click, unless a link inside was clicked.
+ */
+document.addEventListener('click', function(e) {
+  // Skip if a real link was clicked
+  if (e.target.closest('a[href]')) return;
+
+  const card = e.target.closest('.search-card[data-href]');
+  if (!card) return;
+
+  const href = card.getAttribute('data-href');
+  if (card.getAttribute('data-target') === '_blank') {
+    window.open(href, '_blank');
+  } else {
+    window.location.href = href;
+  }
+});
+
+
+/**
  * Copy to clipboard (delegated for HTMX compatibility)
  */
 document.addEventListener('click', function(e) {

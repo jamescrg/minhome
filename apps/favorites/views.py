@@ -211,9 +211,9 @@ def home(request, id):
 
 @login_required
 def favorites_list(request):
-    """Return favorites list partial for htmx."""
+    """Return favorites card partial for htmx."""
     context = _get_favorites_list_context(request)
-    return render(request, "favorites/list.html", context)
+    return render(request, "favorites/favorites.html", context)
 
 
 @login_required
@@ -242,7 +242,19 @@ def favorites_form(request, id=None):
             favorite = form.save(commit=False)
             favorite.user = user
             favorite.save()
-            return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+            # Switch to the saved favorite's folder
+            user.favorites_folder = favorite.folder_id or 0
+            user.save()
+
+            return HttpResponse(
+                status=204,
+                headers={
+                    "HX-Trigger": json.dumps(
+                        {"favoritesChanged": "", "foldersChanged": ""}
+                    )
+                },
+            )
 
         # Form validation failed - re-render form with errors
 
