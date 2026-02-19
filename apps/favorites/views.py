@@ -260,6 +260,7 @@ def favorites_form(request, id=None):
         "favorite": favorite,
         "form": form,
         "folders": get_folders_for_page(request, "favorites"),
+        "selected_folder_id": user.favorites_folder,
     }
     return render(request, "favorites/modal-form.html", context)
 

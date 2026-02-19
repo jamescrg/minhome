@@ -20,7 +20,7 @@
                                 <option value="">---------</option>
                                 {% for folder in folders %}
                                     <option value="{{ folder.id }}"
-                                            {% if form.instance.folder_id == folder.id %}selected{% endif %}>
+                                            {% if form.instance.folder_id == folder.id or not form.instance.pk and folder.id == selected_folder_id %}selected{% endif %}>
                                         {{ folder.name }}
                                     </option>
                                 {% endfor %}

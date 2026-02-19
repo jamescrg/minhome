@@ -355,6 +355,7 @@ def contacts_form_htmx(request, id=None):
         "form": form,
         "action": f"/contacts/{id}/form-htmx" if id else "/contacts/form-htmx",
         "folders": get_folders_for_page(request, "contacts"),
+        "selected_folder_id": user.contacts_folder,
     }
 
     return render(request, "contacts/modal-form.html", context)

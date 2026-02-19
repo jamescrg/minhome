@@ -31,7 +31,7 @@
                                 <option value="">---------</option>
                                 {% for folder in folders %}
                                     <option value="{{ folder.id }}"
-                                            {% if contact and contact.folder_id == folder.id %}selected{% endif %}>
+                                            {% if contact and contact.folder_id == folder.id or not contact and folder.id == selected_folder_id %}selected{% endif %}>
                                         {{ folder.name }}
                                     </option>
                                 {% endfor %}
