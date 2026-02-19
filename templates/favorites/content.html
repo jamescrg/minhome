@@ -4,4 +4,136 @@
         <div class="col-lg-9 order-lg-2" id="main-content">{% include "favorites/favorites.html" %}</div>
         <div class="col-lg-3 order-lg-1" id="sidebar">{% include "folders/list.html" %}</div>
     </div>
+    <script>
+    (function() {
+        const selectedFavIds = new Set();
+
+        function getCSRFToken() {
+            const el = document.querySelector("[name=csrfmiddlewaretoken]");
+            if (el) return el.value;
+            const hxHeaders = document.body.getAttribute("hx-headers");
+            if (hxHeaders) {
+                try { return JSON.parse(hxHeaders)["X-CSRFToken"]; } catch (e) {}
+            }
+            return "";
+        }
+
+        function setIconChecked(icon, checked) {
+            if (checked) {
+                icon.classList.remove("icon-square");
+                icon.classList.add("icon-square-check");
+            } else {
+                icon.classList.remove("icon-square-check");
+                icon.classList.add("icon-square");
+            }
+        }
+
+        function isIconChecked(icon) {
+            return icon.classList.contains("icon-square-check");
+        }
+
+        function updateSelectionUI() {
+            var addBtn = document.getElementById("favorites-add-btn");
+            var bulkToolbar = document.getElementById("favorites-bulk-toolbar");
+            if (!bulkToolbar) return;
+
+            var hasSelection = selectedFavIds.size > 0;
+            if (addBtn) addBtn.style.display = hasSelection ? "none" : "";
+            bulkToolbar.style.display = hasSelection ? "" : "none";
+
+            var countEl = bulkToolbar.querySelector(".bulk-count");
+            if (countEl) countEl.textContent = selectedFavIds.size + " selected";
+
+            document.querySelectorAll(".fav-select-checkbox").forEach(function(icon) {
+                setIconChecked(icon, selectedFavIds.has(icon.dataset.value));
+            });
+
+            var selectAll = document.getElementById("select-all-favorites");
+            if (selectAll) {
+                var icons = document.querySelectorAll(".fav-select-checkbox");
+                var total = icons.length;
+                var checked = Array.from(icons).filter(function(i) { return isIconChecked(i); }).length;
+                setIconChecked(selectAll, total > 0 && checked === total);
+            }
+        }
+
+        document.getElementById("main-content").addEventListener("click", function(e) {
+            if (e.target.id === "select-all-favorites") {
+                var willCheck = !isIconChecked(e.target);
+                document.querySelectorAll(".fav-select-checkbox").forEach(function(icon) {
+                    if (willCheck) selectedFavIds.add(icon.dataset.value);
+                    else selectedFavIds.delete(icon.dataset.value);
+                });
+                updateSelectionUI();
+                return;
+            }
+
+            if (e.target.classList.contains("fav-select-checkbox")) {
+                var val = e.target.dataset.value;
+                if (selectedFavIds.has(val)) selectedFavIds.delete(val);
+                else selectedFavIds.add(val);
+                updateSelectionUI();
+                return;
+            }
+        });
+
+        document.addEventListener("click", function(e) {
+            if (e.target.closest("#fav-bulk-cancel-btn")) {
+                selectedFavIds.clear();
+                updateSelectionUI();
+            }
+        });
+
+        document.addEventListener("click", async function(e) {
+            if (!e.target.closest("#fav-bulk-delete-btn")) return;
+            var ids = Array.from(selectedFavIds);
+            if (!ids.length) return;
+
+            var confirmed = await window.showConfirm({
+                title: "Delete Favorites",
+                message: "Are you sure you want to delete " + ids.length + " favorite" + (ids.length > 1 ? "s" : "") + "?",
+                confirmText: "Delete",
+                isDangerous: true,
+            });
+            if (!confirmed) return;
+
+            await fetch("{% url 'favorites-bulk-delete' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+                body: JSON.stringify({ favorite_ids: ids.map(Number) }),
+            });
+            selectedFavIds.clear();
+            htmx.trigger(document.body, "favoritesChanged");
+        });
+
+        document.addEventListener("click", async function(e) {
+            var option = e.target.closest(".fav-bulk-move-option");
+            if (!option) return;
+            e.preventDefault();
+            var ids = Array.from(selectedFavIds);
+            if (!ids.length) return;
+
+            var raw = option.dataset.folderId;
+            var folderId = raw === "null" ? null : Number(raw);
+            await fetch("{% url 'favorites-bulk-move-folder' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
+                body: JSON.stringify({ favorite_ids: ids.map(Number), folder_id: folderId }),
+            });
+            selectedFavIds.clear();
+            htmx.trigger(document.body, "favoritesChanged");
+        });
+
+        document.addEventListener("htmx:afterSettle", function(e) {
+            if (e.detail.target && (e.detail.target.id === "main-content" || e.detail.target.id === "favorites-container")) {
+                updateSelectionUI();
+            }
+        });
+
+        document.body.addEventListener("favoritesChanged", function() {
+            selectedFavIds.clear();
+            updateSelectionUI();
+        });
+    })();
+    </script>
 {% endblock content %}

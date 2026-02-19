@@ -1,22 +1,17 @@
 <ul class="list-group favorites-list">
     {% for favorite in favorites %}
-        <li class="list-group-item flex-start-space">
+        <li class="list-group-item favorite-row flex-center-space"
+            data-id="{{ favorite.id }}">
             <div class="favorite-left flex-start-left">
-                <div class="favorite-left-icon">
-                    {% if selected_folder.home_column and favorite.home_rank %}
-                        <div class="favorite-icon-home">
-                            <i class="icon-house"></i>
-                        </div>
-                    {% else %}
-                        <div class="favorite-icon">
-                            <i class="icon-bookmark"></i>
-                        </div>
-                    {% endif %}
-                </div>
+                <i class="icon-square fav-select-checkbox"
+                   data-value="{{ favorite.id }}"></i>
                 <div class="favorite-left-text">
                     <div class="favorite-text">
                         <div class="link">
                             <a href="{{ favorite.url }}">{{ favorite.name }}</a>
+                            {% if selected_folder.home_column and favorite.home_rank %}
+                                <i class="icon-house favorite-home-indicator"></i>
+                            {% endif %}
                         </div>
                         <div class="description">{{ favorite.description|default:"" }}</div>
                     </div>
