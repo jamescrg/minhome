@@ -20,7 +20,7 @@
 }
 
 .modal-backdrop {
-  background-color: rgb(0 0 0 / 50%);
+  background-color: var(--overlay-backdrop);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -53,7 +53,7 @@
   background: var(--stone-100);
   border: 1px solid var(--stone-300);
   border-radius: var(--radius-md);
-  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
 }
 
 .modal-header {
@@ -140,7 +140,7 @@
 
 .confirm-modal-overlay {
   align-items: center;
-  background: rgb(0 0 0 / 40%);
+  background: var(--overlay-heavy);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -157,7 +157,7 @@ body.modal-open .confirm-modal-overlay {
   background: var(--stone-100);
   border: 1px solid var(--stone-300);
   border-radius: var(--radius-md);
-  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
   max-width: 28rem;
   min-width: 20rem;
   overflow: hidden;
