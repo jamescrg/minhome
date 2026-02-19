@@ -379,9 +379,10 @@ li {
   color: var(--link);
   display: inline-flex;
   align-items: center;
+  font-size: 1.1rem;
   line-height: 1.25;
   outline: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.438rem 0.625rem;
 }
 
 .square-button:hover {
