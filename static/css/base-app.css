@@ -281,14 +281,14 @@ li {
 }
 
 .btn-danger {
-  background: var(--red-100, #fee2e2);
+  background: var(--red-100);
   border-color: var(--stone-300);
   box-shadow: none;
   color: var(--stone-600);
 }
 
 .btn-success {
-  background: var(--lime-100, #ecfccb);
+  background: var(--lime-100);
   border-color: var(--stone-300);
   box-shadow: none;
   color: var(--stone-600);
@@ -683,13 +683,13 @@ li {
 }
 
 .alert-success {
-  background: var(--lime-100, #ecfccb);
-  border-color: var(--lime-200, #d9f99d);
-  color: var(--green-800, #166534);
+  background: var(--lime-100);
+  border-color: var(--lime-200);
+  color: var(--green-800);
 }
 
 .alert-danger {
-  background: var(--red-100, #fee2e2);
-  border-color: var(--red-200, #fecaca);
+  background: var(--red-100);
+  border-color: var(--red-200);
   color: var(--red-800);
 }

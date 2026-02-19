@@ -336,6 +336,12 @@
   --border-medium: var(--stone-300);
   --border-dark: var(--stone-400);
 
+  /* Shadows & Overlays */
+  --shadow-color: rgb(0 0 0 / 14%);
+  --shadow-color-heavy: rgb(0 0 0 / 20%);
+  --overlay-backdrop: rgb(0 0 0 / 50%);
+  --overlay-heavy: rgb(0 0 0 / 40%);
+
   /* Selection */
   --selected-background: var(--violet-100);
   --selected-color: var(--stone-700);
