@@ -167,6 +167,11 @@ th {
   font-weight: 500;
 }
 
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 .table-responsive {
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;

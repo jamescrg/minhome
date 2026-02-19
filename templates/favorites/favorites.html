@@ -3,16 +3,13 @@
      hx-get="{% url 'favorites-list' %}"
      hx-target="#main-content">
     <div class="card-title flex-center-space">
-        <div class="favorites-title-left">
-            <i class="icon-square" id="select-all-favorites"></i>
-            <h1>
-                {% if selected_folder %}
-                    {{ selected_folder.name }}
-                {% else %}
-                    Unsorted
-                {% endif %}
-            </h1>
-        </div>
+        <h1>
+            {% if selected_folder %}
+                {{ selected_folder.name }}
+            {% else %}
+                Unsorted
+            {% endif %}
+        </h1>
         <a class="square-button"
            id="favorites-add-btn"
            href="#"
