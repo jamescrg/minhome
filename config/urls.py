@@ -117,6 +117,12 @@ urlpatterns = [
     path(
         "favorites/<int:id>/home-htmx", favorites.home_htmx, name="favorites-home-htmx"
     ),
+    path("favorites/bulk-delete/", favorites.bulk_delete, name="favorites-bulk-delete"),
+    path(
+        "favorites/bulk-move-folder/",
+        favorites.bulk_move_folder,
+        name="favorites-bulk-move-folder",
+    ),
     # tasks
     path("tasks/", tasks.index, name="tasks"),
     path("tasks/add", tasks.add, name="tasks-add"),

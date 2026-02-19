@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
@@ -282,6 +283,27 @@ def delete_htmx(request, id):
     """Delete favorite via htmx and close modal."""
     favorite = get_object_or_404(Favorite, pk=id, user=request.user)
     favorite.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+
+@login_required
+@require_POST
+def bulk_delete(request):
+    """Bulk delete favorites."""
+    data = json.loads(request.body)
+    ids = data.get("favorite_ids", [])
+    Favorite.objects.filter(user=request.user, id__in=ids).delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+
+@login_required
+@require_POST
+def bulk_move_folder(request):
+    """Bulk move favorites to a folder."""
+    data = json.loads(request.body)
+    ids = data.get("favorite_ids", [])
+    folder_id = data.get("folder_id")
+    Favorite.objects.filter(user=request.user, id__in=ids).update(folder_id=folder_id)
     return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
 
 
