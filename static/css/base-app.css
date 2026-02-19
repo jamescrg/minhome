@@ -375,9 +375,13 @@ li {
   background: var(--background-control);
   border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
+  box-sizing: border-box;
   color: var(--link);
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.25;
   outline: none;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .square-button:hover {
