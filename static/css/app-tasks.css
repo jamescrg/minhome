@@ -63,7 +63,7 @@
 
 .tasks-checkbox a,
 .tasks-checkbox a:hover {
-  color: var(--stone-400);
+  color: var(--color-muted);
 }
 
 .tasks-row {
@@ -72,7 +72,7 @@
 }
 
 .tasks-folder {
-  color: var(--stone-400);
+  color: var(--color-muted);
   min-width: 15rem;
   white-space: nowrap;
 }
@@ -96,13 +96,13 @@
 }
 
 .tasks-due {
-  color: var(--stone-500);
+  color: var(--color-secondary);
   font-size: 0.85rem;
   white-space: nowrap;
 }
 
 .tasks-recurring {
-  color: var(--stone-400);
+  color: var(--color-muted);
   margin-left: 0.75rem;
 }
 
@@ -144,7 +144,7 @@
 
 .tasks-delete,
 .tasks-delete:hover {
-  color: var(--orange-800);
+  color: var(--urgent);
 }
 
 .tasks-delete i {

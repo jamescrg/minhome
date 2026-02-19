@@ -6,7 +6,7 @@
  * ------------------------------------------------*/
 
 .folder-icon {
-  color: var(--stone-400);
+  color: var(--color-muted);
   margin-right: 1rem;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .folder-icon-home {
-  color: var(--stone-400);
+  color: var(--color-muted);
   margin-right: 1rem;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .shared-indicator .bi-people-fill {
-  color: var(--stone-300);
+  color: var(--border-medium);
 }
 
 
@@ -80,11 +80,11 @@
 
 /* for the entire list item when editing is turned on */
 .li-folder-edit {
-  background: var(--stone-50);
+  background: var(--background-light);
 }
 
 .edit-share .list-group-item {
-  border: solid 1px var(--stone-300);
+  border: solid 1px var(--border-medium);
   padding-right: 0.5rem;
 }
 

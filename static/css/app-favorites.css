@@ -22,13 +22,13 @@
 }
 
 .favorite-icon{
-  color: var(--stone-400);
+  color: var(--color-muted);
 	float: left;
   margin-top: 0.2rem;
 }
 
 .favorite-icon-home{
-  color: var(--stone-400);
+  color: var(--color-muted);
 	float: left;
 }
 
@@ -49,11 +49,11 @@
 }
 
 .credentials a {
-  color: var(--stone-300);
+  color: var(--border-medium);
 }
 
 .credential-data{
-  color: var(--stone-500);
+  color: var(--color-secondary);
 	font-size: 0.8em;
 }
 

@@ -42,7 +42,7 @@
 }
 
 .table td, th {
-  border: solid 1px var(--stone-300);
+  border: solid 1px var(--border-medium);
   border-left: none;
   border-right: none;
 }
