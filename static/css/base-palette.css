@@ -290,6 +290,12 @@
   --rose-900: oklch(0.41 0.159 10.272);
   --rose-950: oklch(0.271 0.105 12.094);
 
+  /* Hojicha — warm golden-brown for dark theme accents */
+  --hojicha-300: oklch(0.72 0.1 62);
+  --hojicha-400: oklch(0.65 0.11 58);
+  --hojicha-500: oklch(0.58 0.1 55);
+  --hojicha-600: oklch(0.5 0.09 52);
+
   /* Black & White */
   --black: oklch(0 0 0);
   --white: oklch(1 0 0);
