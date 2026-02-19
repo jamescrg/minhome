@@ -1,24 +1,39 @@
-<ul class="list-group favorites-list">
-    {% for favorite in favorites %}
-        <li class="list-group-item favorite-row flex-center-space"
-            data-id="{{ favorite.id }}">
-            <div class="favorite-left flex-start-left">
-                <i class="icon-square fav-select-checkbox"
-                   data-value="{{ favorite.id }}"></i>
-                <div class="favorite-left-text">
-                    <div class="favorite-text">
-                        <div class="link">
-                            <a href="{{ favorite.url }}">{{ favorite.name }}</a>
-                            {% if selected_folder.home_column and favorite.home_rank %}
-                                <i class="icon-house favorite-home-indicator"></i>
-                            {% endif %}
-                        </div>
-                        <div class="description">{{ favorite.description|default:"" }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="favorite-right flex-start-left">{% include "favorites/menu.html" %}</div>
-        </li>
-    {% endfor %}
-</ul>
-{% include "pagination.html" %}
+<div class="table-container">
+    <table class="table favorites-table">
+        <tr>
+            <th class="fav-select-col">
+                <i class="icon-square" id="select-all-favorites"></i>
+            </th>
+            <th class="fav-name">Name</th>
+            <th class="fav-home"></th>
+            <th class="fav-date">Added</th>
+            <th class="fav-date">Updated</th>
+            <th class="fav-actions"></th>
+        </tr>
+        {% for favorite in favorites %}
+            <tr class="favorite-row" data-id="{{ favorite.id }}">
+                <td class="fav-select-col">
+                    <i class="icon-square fav-select-checkbox"
+                       data-value="{{ favorite.id }}"></i>
+                </td>
+                <td class="fav-name">
+                    <a href="{{ favorite.url }}">{{ favorite.name }}</a>
+                    {% if favorite.description %}<div class="description">{{ favorite.description }}</div>{% endif %}
+                </td>
+                <td class="fav-home">
+                    {% if selected_folder.home_column and favorite.home_rank %}
+                        <i class="icon-house favorite-home-indicator"></i>
+                    {% endif %}
+                </td>
+                <td class="fav-date">{{ favorite.created_at|date:"Y-m-d" }}</td>
+                <td class="fav-date">{{ favorite.updated_at|date:"Y-m-d" }}</td>
+                <td class="fav-actions">{% include "favorites/menu.html" %}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="empty-message">No favorites found.</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "pagination.html" %}
+</div>

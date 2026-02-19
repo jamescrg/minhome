@@ -1,100 +1,76 @@
 
 /* ------------------------------------------------------------------------- */
-/* favorites list */
+/* favorites table */
 /* ------------------------------------------------------------------------- */
 
-.favorites-list-title {
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  font-weight: 600;
+.favorites-table {
+  min-width: 40rem;
 }
 
-.favorites-list {
-  margin-bottom: 1.5rem;
+.fav-select-col {
+  text-align: center;
+  width: 2.5rem;
 }
 
-.favorites .list-group-item{
-  border-left: none;
-  border-right: none;
-  padding: 1rem 0;
-}
-
-.favorite-text{
-	float: left;
-  margin-left: 0.8rem;
-}
-
-.description{
-	font-size: 0.9em;
-  margin-left: 0.1rem;
-}
-
-.credentials{
-	float: right;
-  margin-right: 1rem;
-	text-align: right;
-}
-
-.credentials a {
-  color: var(--border-medium);
-}
-
-.credential-data{
-  color: var(--color-secondary);
-	font-size: 0.8em;
-}
-
-.favorite-menu {
-  float: right;
-}
-
-/* multi-select */
-
-.favorites > .card-title {
-  min-height: 2.5rem;
-}
-
-.favorites-title-left {
-  align-items: center;
-  display: flex;
-  gap: 0.75rem;
-}
-
-.fav-select-checkbox {
+.fav-select-col i {
   color: var(--color-muted);
   cursor: pointer;
   font-size: 1.15rem;
 }
 
-.fav-select-checkbox:hover {
+.fav-select-col i:hover {
   color: var(--color-primary);
 }
 
-.fav-select-checkbox.icon-square-check {
+.fav-select-col i.icon-square-check {
   color: var(--color-accent);
 }
 
-#select-all-favorites {
+.fav-name {
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.fav-name .description {
   color: var(--color-muted);
-  cursor: pointer;
-  font-size: 1.15rem;
+  font-size: 0.85em;
 }
 
-#select-all-favorites:hover {
-  color: var(--color-primary);
-}
-
-#select-all-favorites.icon-square-check {
-  color: var(--color-accent);
+.fav-home {
+  text-align: center;
+  width: 2.5rem;
 }
 
 .favorite-home-indicator {
   color: var(--color-muted);
   font-size: 0.8rem;
-  margin-left: 0.4rem;
-  vertical-align: baseline;
 }
+
+.fav-date {
+  width: 7rem;
+}
+
+.fav-actions {
+  text-align: center;
+  width: 2.5rem;
+}
+
+.favorites-table td {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.favorites-table .fav-name {
+  white-space: normal;
+}
+
+.favorites-table .empty-message {
+  color: var(--color-muted);
+  font-style: italic;
+  text-align: center;
+}
+
+/* multi-select bulk toolbar */
 
 .favorites-bulk-toolbar {
   align-items: center;
@@ -126,12 +102,10 @@
   white-space: nowrap;
 }
 
-
 /* ------------------------------------------------------------------------- */
 /* favorites form */
 /* ------------------------------------------------------------------------- */
 
-
-#id_description{
+#id_description {
   height: 6.25rem;
 }
