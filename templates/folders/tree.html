@@ -1,4 +1,20 @@
 <ul class="list-group folder-tree">
+    {% if page == "favorites" %}
+        <li class="list-group-item folder-item {% if favorites_folder_all %}active-item{% endif %}">
+            <div class="folder-row">
+                <div class="folder-content">
+                    <span class="folder-icon">
+                        <i class="icon-folder"></i>
+                    </span>
+                    <a class="folder-link"
+                       href="#"
+                       hx-get="{% url 'favorites-all' %}"
+                       hx-target="#main-content"
+                       hx-swap="innerHTML">All</a>
+                </div>
+            </div>
+        </li>
+    {% endif %}
     {% for folder in folders %}
         <li class="list-group-item folder-item {% if folder.id == selected_folder.id %}active-item{% endif %}"
             id="folder-{{ folder.id }}"
@@ -25,7 +41,7 @@
             </div>
         </li>
     {% endfor %}
-    <li class="list-group-item folder-item {% if not selected_folder %}active-item{% endif %}">
+    <li class="list-group-item folder-item {% if not selected_folder and not favorites_folder_all %}active-item{% endif %}">
         <div class="folder-row">
             <div class="folder-content">
                 <span class="folder-icon">

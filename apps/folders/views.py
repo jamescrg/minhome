@@ -220,11 +220,14 @@ def share(request, id, page):
 
 def _get_folder_context(request, page):
     """Helper to build context for folder list partial."""
-    return {
+    context = {
         "page": page,
         "folders": get_folders_for_page(request, page),
         "selected_folder": select_folder(request, page),
     }
+    if page == "favorites":
+        context["favorites_folder_all"] = request.session.get("favorites_all", False)
+    return context
 
 
 @login_required
@@ -314,28 +317,11 @@ def select_htmx(request, id, page):
         return render(request, "tasks/tasks-with-folders-oob.html", context)
 
     elif page == "favorites":
-        from apps.favorites.models import Favorite
+        from apps.favorites.views import _get_favorites_list_context
 
-        folders = get_folders_for_page(request, page)
-        selected_folder = select_folder(request, page)
+        request.session.pop("favorites_all", None)
 
-        if selected_folder:
-            favorites = Favorite.objects.filter(
-                user=user, folder_id=selected_folder.id
-            ).order_by("name")
-        else:
-            favorites = Favorite.objects.filter(
-                user=user, folder_id__isnull=True
-            ).order_by("name")
-
-        context = {
-            "page": page,
-            "user": user,
-            "folders": folders,
-            "selected_folder": selected_folder,
-            "favorites": favorites,
-        }
-
+        context = _get_favorites_list_context(request)
         return render(request, "favorites/favorites-with-folders-oob.html", context)
 
     elif page == "contacts":
