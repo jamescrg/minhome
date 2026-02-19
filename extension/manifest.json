@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "MinHome Favorites",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "Save any webpage to your MinHome favorites with one click. Easily organize bookmarks with folders and quick access.",
   "author": "MinHome",
   "homepage_url": "https://dev.minhome.app",
@@ -21,7 +21,7 @@
 
   "background": {
     "scripts": ["background.js"],
-    "persistent": false
+    "persistent": true
   },
 
   "browser_action": {

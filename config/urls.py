@@ -104,7 +104,13 @@ urlpatterns = [
     path("favorites/api/folders", favorites.api_folders, name="favorites-api-folders"),
     path("favorites/extension", favorites.extension_add, name="favorites-extension"),
     # favorites htmx
+    path("favorites/all/", favorites.favorites_all, name="favorites-all"),
     path("favorites/list/", favorites.favorites_list, name="favorites-list"),
+    path(
+        "favorites/order-by/<str:order>/",
+        favorites.favorites_order_by,
+        name="favorites-order-by",
+    ),
     path("favorites/form", favorites.favorites_form, name="favorites-form"),
     path(
         "favorites/<int:id>/form", favorites.favorites_form, name="favorites-form-edit"
@@ -116,6 +122,12 @@ urlpatterns = [
     ),
     path(
         "favorites/<int:id>/home-htmx", favorites.home_htmx, name="favorites-home-htmx"
+    ),
+    path("favorites/bulk-delete/", favorites.bulk_delete, name="favorites-bulk-delete"),
+    path(
+        "favorites/bulk-move-folder/",
+        favorites.bulk_move_folder,
+        name="favorites-bulk-move-folder",
     ),
     # tasks
     path("tasks/", tasks.index, name="tasks"),

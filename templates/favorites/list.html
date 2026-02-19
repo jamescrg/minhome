@@ -1,29 +1,59 @@
-<ul class="list-group favorites-list">
-    {% for favorite in favorites %}
-        <li class="list-group-item flex-start-space">
-            <div class="favorite-left flex-start-left">
-                <div class="favorite-left-icon">
+<div class="table-container">
+    <table class="table favorites-table">
+        <tr>
+            <th class="fav-select-col">
+                <i class="icon-square" id="select-all-favorites"></i>
+            </th>
+            <th class="fav-name">
+                Name
+                <button class="btn-sort {% if 'name' in current_order %}active{% endif %}"
+                        hx-get="{% url 'favorites-order-by' 'name' %}"
+                        hx-target="#main-content">
+                    <i class="icon-chevrons-up-down"></i>
+                </button>
+            </th>
+            <th class="fav-date">
+                Added
+                <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
+                        hx-get="{% url 'favorites-order-by' 'created_at' %}"
+                        hx-target="#main-content">
+                    <i class="icon-chevrons-up-down"></i>
+                </button>
+            </th>
+            <th class="fav-date">
+                Updated
+                <button class="btn-sort {% if 'updated_at' in current_order %}active{% endif %}"
+                        hx-get="{% url 'favorites-order-by' 'updated_at' %}"
+                        hx-target="#main-content">
+                    <i class="icon-chevrons-up-down"></i>
+                </button>
+            </th>
+            <th class="fav-actions">
+                <i class="icon-ellipsis-vertical"></i>
+            </th>
+        </tr>
+        {% for favorite in favorites %}
+            <tr class="favorite-row" data-id="{{ favorite.id }}">
+                <td class="fav-select-col">
+                    <i class="icon-square fav-select-checkbox"
+                       data-value="{{ favorite.id }}"></i>
+                </td>
+                <td class="fav-name">
+                    <a href="{{ favorite.url }}">{{ favorite.name }}</a>
                     {% if selected_folder.home_column and favorite.home_rank %}
-                        <div class="favorite-icon-home">
-                            <i class="icon-house"></i>
-                        </div>
-                    {% else %}
-                        <div class="favorite-icon">
-                            <i class="icon-bookmark"></i>
-                        </div>
+                        <i class="icon-house favorite-home-indicator"></i>
                     {% endif %}
-                </div>
-                <div class="favorite-left-text">
-                    <div class="favorite-text">
-                        <div class="link">
-                            <a href="{{ favorite.url }}">{{ favorite.name }}</a>
-                        </div>
-                        <div class="description">{{ favorite.description|default:"" }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="favorite-right flex-start-left">{% include "favorites/menu.html" %}</div>
-        </li>
-    {% endfor %}
-</ul>
-{% include "pagination.html" %}
+                    {% if favorite.description %}<div class="description">{{ favorite.description }}</div>{% endif %}
+                </td>
+                <td class="fav-date">{{ favorite.created_at|date:"Y-m-d" }}</td>
+                <td class="fav-date">{{ favorite.updated_at|date:"Y-m-d" }}</td>
+                <td class="fav-actions">{% include "favorites/menu.html" %}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5" class="empty-message">No favorites found.</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "pagination.html" %}
+</div>

@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from apps.favorites.forms import FavoriteExtensionForm, FavoriteForm
 from apps.favorites.models import Favorite
@@ -13,18 +14,28 @@ from apps.folders.folders import get_folders_for_page, select_folder
 from apps.folders.models import Folder
 from apps.management.pagination import CustomPaginator
 
+FAVORITES_ALLOWED_ORDER_FIELDS = {"name", "created_at", "updated_at"}
+
 
 def _get_favorites_list_context(request):
     """Helper to build context for favorites list partial."""
     user = request.user
     selected_folder = select_folder(request, "favorites")
+    favorites_folder_all = request.session.get("favorites_all", False)
 
-    if selected_folder:
+    if favorites_folder_all:
+        favorites = Favorite.objects.filter(user=user)
+    elif selected_folder:
         favorites = Favorite.objects.filter(user=user, folder_id=selected_folder.id)
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
-    favorites = favorites.order_by("name")
+    order_by = request.session.get("favorites_order", "name")
+    bare_field = order_by.lstrip("-")
+    if bare_field not in FAVORITES_ALLOWED_ORDER_FIELDS:
+        order_by = "name"
+        bare_field = "name"
+    favorites = favorites.order_by(order_by)
 
     session_key = "favorites_page"
     trigger_key = "favoritesChanged"
@@ -34,10 +45,12 @@ def _get_favorites_list_context(request):
         "page": "favorites",
         "folders": get_folders_for_page(request, "favorites"),
         "selected_folder": selected_folder,
+        "favorites_folder_all": favorites_folder_all,
         "favorites": pagination.get_object_list(),
         "pagination": pagination,
         "session_key": session_key,
         "trigger_key": trigger_key,
+        "current_order": bare_field,
     }
 
 
@@ -210,10 +223,32 @@ def home(request, id):
 
 
 @login_required
+def favorites_all(request):
+    """Select 'All' folder view and return updated favorites with folders OOB."""
+    request.session["favorites_all"] = True
+    request.user.favorites_folder = 0
+    request.user.save()
+    context = _get_favorites_list_context(request)
+    return render(request, "favorites/favorites-with-folders-oob.html", context)
+
+
+@login_required
 def favorites_list(request):
     """Return favorites card partial for htmx."""
     context = _get_favorites_list_context(request)
     return render(request, "favorites/favorites.html", context)
+
+
+@login_required
+def favorites_order_by(request, order):
+    """Toggle sort order for favorites list."""
+    current = request.session.get("favorites_order", "name")
+    if current == order:
+        order = f"-{order}" if not current.startswith("-") else order
+    request.session["favorites_order"] = order
+    request.session["favorites_page"] = 1
+    request.session.modified = True
+    return redirect("favorites-list")
 
 
 @login_required
@@ -282,6 +317,27 @@ def delete_htmx(request, id):
     """Delete favorite via htmx and close modal."""
     favorite = get_object_or_404(Favorite, pk=id, user=request.user)
     favorite.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+
+@login_required
+@require_POST
+def bulk_delete(request):
+    """Bulk delete favorites."""
+    data = json.loads(request.body)
+    ids = data.get("favorite_ids", [])
+    Favorite.objects.filter(user=request.user, id__in=ids).delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
+
+
+@login_required
+@require_POST
+def bulk_move_folder(request):
+    """Bulk move favorites to a folder."""
+    data = json.loads(request.body)
+    ids = data.get("favorite_ids", [])
+    folder_id = data.get("folder_id")
+    Favorite.objects.filter(user=request.user, id__in=ids).update(folder_id=folder_id)
     return HttpResponse(status=204, headers={"HX-Trigger": "favoritesChanged"})
 
 

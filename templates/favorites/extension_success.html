@@ -1,32 +1,30 @@
 {% extends "favorites/extension_base.html" %}
 {% block content %}
-    <div class="card-title">
-        <div class="title-left">
-            <i class="icon-house mh-logo"></i>
-            <h1 class="mt-0">Favorite Saved</h1>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Favorite Saved</h5>
+            <button type="button" onclick="closeWindow()">
+                <i class="icon-x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="favorite-info">
+                <div class="favorite-folder">{{ favorite.folder.name }}</div>
+                <div class="favorite-name">{{ favorite.name }}</div>
+                <div class="favorite-url">{{ favorite.url }}</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeWindow()">Close</button>
         </div>
     </div>
-    <div class="favorite-info">
-        <div class="favorite-folder">{{ favorite.folder.name }}</div>
-        <div class="favorite-name">{{ favorite.name }}</div>
-        <div class="favorite-url">{{ favorite.url }}</div>
-    </div>
-    <div class="flex-end-space">
-        <button type="button" class="btn btn-secondary" onclick="closeWindow()">Close</button>
-    </div>
     <script>
-  function closeWindow() {
-    if (typeof window.closeExtensionPopup === 'function') {
-        console.log('Using extension close function');
-        window.closeExtensionPopup();
-    } else {
-        console.log('Extension close function not available - trying direct close');
-        try {
-            window.close();
-        } catch(e) {
-            console.log('Direct close failed:', e);
+    function closeWindow() {
+        if (typeof window.closeExtensionPopup === 'function') {
+            window.closeExtensionPopup();
+        } else {
+            try { window.close(); } catch(e) {}
         }
     }
-  }
     </script>
 {% endblock content %}

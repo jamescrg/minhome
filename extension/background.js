@@ -22,12 +22,11 @@ api.browserAction.onClicked.addListener(function(tab) {
 
   // Get current window to position popup relative to it
   api.windows.getCurrent(function(currentWindow) {
-    // Calculate popup position on the right side of current window
+    // Center popup over current window
     const popupWidth = 450;
-    const popupHeight = 550;
-    const left = Math.round(currentWindow.left + currentWindow.width - popupWidth - 20); // 20px margin from edge
-    const top = Math.round(currentWindow.top + (currentWindow.height - popupHeight) / 2);
-
+    const popupHeight = 400;
+    const left = Math.round(currentWindow.left + (currentWindow.width - popupWidth) / 2);
+    const top = currentWindow.top + 150;
     // Get the configured domain and open popup
     getFavoritesDomain(function(domain) {
       const popupUrl = `https://${domain}/favorites/extension?name=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
@@ -39,12 +38,10 @@ api.browserAction.onClicked.addListener(function(tab) {
           type: 'popup',
           width: popupWidth,
           height: popupHeight,
-          left: left,
-          top: top,
           focused: true
-        }).then(function(window) {
-          popupWindowId = window.id;
-          console.log('Created popup window:', window.id);
+        }).then(function(win) {
+          popupWindowId = win.id;
+          return api.windows.update(win.id, { left: left, top: top });
         });
       } else {
         // Chrome - uses callbacks
@@ -53,12 +50,10 @@ api.browserAction.onClicked.addListener(function(tab) {
           type: 'popup',
           width: popupWidth,
           height: popupHeight,
-          left: left,
-          top: top,
           focused: true
-        }, function(window) {
-          popupWindowId = window.id;
-          console.log('Created popup window:', window.id);
+        }, function(win) {
+          popupWindowId = win.id;
+          api.windows.update(win.id, { left: left, top: top });
         });
       }
     });
@@ -73,7 +68,6 @@ api.runtime.onInstalled.addListener(function() {
     contexts: ['page', 'link']
   });
 
-  console.log('Add to Favorites extension installed');
 });
 
 // Handle context menu clicks
@@ -84,11 +78,11 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
 
     // Get current window to position popup relative to it
     api.windows.getCurrent(function(currentWindow) {
-      // Calculate popup position on the right side of current window
+      // Center popup over current window
       const popupWidth = 450;
-      const popupHeight = 550;
-      const left = Math.round(currentWindow.left + currentWindow.width - popupWidth - 20); // 20px margin from edge
-      const top = Math.round(currentWindow.top + (currentWindow.height - popupHeight) / 2);
+      const popupHeight = 400;
+      const left = Math.round(currentWindow.left + (currentWindow.width - popupWidth) / 2);
+      const top = currentWindow.top + 150;
 
       // Get the configured domain and open popup
       getFavoritesDomain(function(domain) {
@@ -101,12 +95,10 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
             type: 'popup',
             width: popupWidth,
             height: popupHeight,
-            left: left,
-            top: top,
             focused: true
-          }).then(function(window) {
-            popupWindowId = window.id;
-            console.log('Created popup window from context menu:', window.id);
+          }).then(function(win) {
+            popupWindowId = win.id;
+            return api.windows.update(win.id, { left: left, top: top });
           });
         } else {
           // Chrome - uses callbacks
@@ -115,12 +107,10 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
             type: 'popup',
             width: popupWidth,
             height: popupHeight,
-            left: left,
-            top: top,
             focused: true
-          }, function(window) {
-            popupWindowId = window.id;
-            console.log('Created popup window from context menu:', window.id);
+          }, function(win) {
+            popupWindowId = win.id;
+            api.windows.update(win.id, { left: left, top: top });
           });
         }
       });
@@ -131,31 +121,17 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
 // Listen for messages from the popup to close it
 
 api.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log('Background script received message:', request);
-  console.log('Current popupWindowId:', popupWindowId);
-
   if (request.action === 'closePopup') {
     if (popupWindowId) {
-      console.log('Attempting to close popup window:', popupWindowId);
-
-      // Firefox uses promises, Chrome uses callbacks
       if (typeof browser !== 'undefined') {
-        // Firefox
         api.windows.remove(popupWindowId).then(() => {
-          console.log('Closed popup window:', popupWindowId);
           popupWindowId = null;
-        }).catch(err => {
-          console.error('Failed to close popup:', err);
-        });
+        }).catch(err => {});
       } else {
-        // Chrome
         api.windows.remove(popupWindowId, function() {
-          console.log('Closed popup window:', popupWindowId);
           popupWindowId = null;
         });
       }
-    } else {
-      console.log('No popup window ID stored');
     }
   }
 });

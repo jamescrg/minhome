@@ -4,18 +4,54 @@
      hx-target="#main-content">
     <div class="card-title flex-center-space">
         <h1>
-            {% if selected_folder %}
+            {% if favorites_folder_all %}
+                All
+            {% elif selected_folder %}
                 {{ selected_folder.name }}
             {% else %}
                 Unsorted
             {% endif %}
         </h1>
         <a class="square-button"
+           id="favorites-add-btn"
            href="#"
            hx-get="{% url 'favorites-form' %}"
            hx-target="#htmx-modal-container">
             <i class="icon-plus"></i>
         </a>
+        <div class="bulk-actions"
+             id="favorites-bulk-toolbar"
+             style="display: none">
+            <span class="bulk-count"></span>
+            <div class="dropdown" x-data="dropdown()">
+                <button class="btn btn-secondary"
+                        type="button"
+                        x-ref="button"
+                        @click="toggle()"
+                        :aria-expanded="open">
+                    <span>Move to Folder…</span>
+                    <i class="icon-chevron-down"></i>
+                </button>
+                <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                    <li>
+                        <a class="dropdown-item fav-bulk-move-option"
+                           href="#"
+                           data-folder-id="null">No Folder</a>
+                    </li>
+                    {% for folder in folders %}
+                        <li>
+                            <a class="dropdown-item fav-bulk-move-option"
+                               href="#"
+                               data-folder-id="{{ folder.id }}">{{ folder.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <button type="button" id="fav-bulk-delete-btn" class="btn btn-danger">
+                <i class="icon-trash-2"></i> Delete
+            </button>
+            <button type="button" id="fav-bulk-cancel-btn" class="btn btn-secondary">Cancel</button>
+        </div>
     </div>
     <div id="favorites-container">{% include "favorites/list.html" %}</div>
 </div>
