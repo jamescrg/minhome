@@ -290,66 +290,13 @@
   --rose-900: oklch(0.41 0.159 10.272);
   --rose-950: oklch(0.271 0.105 12.094);
 
+  /* Hojicha — warm golden-brown for dark theme accents */
+  --hojicha-300: oklch(0.72 0.06 65);
+  --hojicha-400: oklch(0.65 0.07 60);
+  --hojicha-500: oklch(0.58 0.065 58);
+  --hojicha-600: oklch(0.5 0.06 55);
+
   /* Black & White */
   --black: oklch(0 0 0);
   --white: oklch(1 0 0);
-
-  /* Highlight Colors */
-  --hl-blue: var(--blue-50);
-  --hl-gray: var(--stone-125);
-  --hl-green: var(--lime-50);
-  --hl-orange: var(--orange-50);
-  --hl-purple: var(--purple-50);
-  --hl-red: var(--red-50);
-  --hl-slate: var(--slate-100);
-  --hl-yellow: var(--yellow-50);
-
-  /* Button Colors */
-  --button-primary-background: var(--lime-800);
-  --button-primary-color: var(--stone-100);
-  --button-secondary-background: var(--stone-150);
-  --button-secondary-color: var(--stone-600);
-  --button-toolbar: var(--stone-600);
-
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.25rem;
-  --radius-lg: 0.5rem;
-
-  /* Typography */
-  --color-primary: var(--stone-600);
-  --color-secondary: var(--stone-500);
-  --color-muted: var(--stone-400);
-
-  /* Links */
-  --link: var(--lime-800);
-  --link-hover: var(--lime-700);
-
-  /* Backgrounds */
-  --background-subnav: var(--stone-200);
-  --background-subnav-tab-active: var(--background-section);
-  --background-control: var(--stone-150);
-  --background-section: var(--stone-100);
-  --background-light: var(--stone-50);
-
-  /* Borders */
-  --border-medium: var(--stone-300);
-  --border-dark: var(--stone-400);
-
-  /* Shadows & Overlays */
-  --shadow-color: rgb(0 0 0 / 14%);
-  --shadow-color-heavy: rgb(0 0 0 / 20%);
-  --overlay-backdrop: rgb(0 0 0 / 50%);
-  --overlay-heavy: rgb(0 0 0 / 40%);
-
-  /* Selection */
-  --selected-background: var(--violet-100);
-  --selected-color: var(--stone-700);
-  --selected-border: var(--stone-300);
-
-  /* Labels */
-  --label-gray: var(--stone-150);
-
-  /* Status */
-  --urgent: var(--orange-800);
 }

@@ -45,11 +45,11 @@
 }
 
 .search-engine-btn {
-  background: var(--stone-50);
-  border: solid 1px var(--stone-300);
+  background: var(--background-light);
+  border: solid 1px var(--border-medium);
   border-radius: var(--radius-md);
   box-sizing: border-box;
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-family: inherit;
   font-size: 1rem;
   gap: 0.5rem;
@@ -75,7 +75,7 @@
 
 .folder .card-title a {
 	font-weight: 500;
-	color: var(--stone-600);
+	color: var(--color-primary);
 }
 
 .folder .list-group-item {
@@ -94,7 +94,7 @@
 
 .folder-controls a,
 .favorite-controls {
-	color: var(--lime-600);
+	color: var(--link);
   font-size: 1.3rem;
 }
 
@@ -118,7 +118,7 @@
 /* Mobile-only border at bottom of columns */
 @media (max-width: 992px) {
   .drop-zone {
-    border-bottom: 2px solid var(--stone-500);
+    border-bottom: 2px solid var(--color-secondary);
     border-radius: 0;
     margin-bottom: 1rem;
   }
@@ -138,35 +138,35 @@
 
 .sortable-ghost {
   opacity: 0.4;
-  background: var(--stone-200);
+  background: var(--background-subnav);
 }
 
 .sortable-chosen.dragging {
-  background: var(--stone-200);
+  background: var(--background-subnav);
 }
 
 .sortable-drag {
-  background: var(--stone-100);
+  background: var(--background-section);
   transform: rotate(5deg);
 }
 
 .dragging {
   opacity: 0.8;
   transform: scale(1.02);
-  background: var(--stone-200);
+  background: var(--background-subnav);
 }
 
 /* Ensure folders maintain their normal appearance during drag operations */
 .folder.dragging {
-  background: var(--stone-100);
+  background: var(--background-section);
   opacity: 0.9;
 }
 
 /* insertion indicator for drag and drop */
 .folder.insertion-target {
-  border-top: 4px solid var(--lime-600) !important;
+  border-top: 4px solid var(--link) !important;
 }
 
 .favorite-item.insertion-target {
-  border-top: 4px solid var(--lime-600) !important;
+  border-top: 4px solid var(--link) !important;
 }

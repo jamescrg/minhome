@@ -1,49 +1,7 @@
-
-body {
-  background: var(--stone-300);
-  color: var(--stone-700);
-}
-
-a,
-a:hover {
-  /* color: var(--sky-700); */
-}
-
-.navbar {
-  background: var(--stone-700);
-}
-
-.navbar a {
-  color: var(--stone-350);
-  font-weight: 400;
-}
-
-.navbar .active {
-  background: var(--stone-300);
-}
-
-.navbar .active::before,
-.navbar .active::after {
-  background: var(--stone-300);
-}
-
-.navbar .active a {
-  color: var(--stone-600);
-}
-
-.folder-controls a,
-.favorite-controls {
-  color: var(--stone-600);
-}
-
-.btn-primary,
-.btn-primary:hover,
-.btn-primary:focus {
-  background: var(--stone-700);
-  border: none;
-  color: var(--stone-200);
-}
-
-.bi-plus-lg {
-  color: var(--lime-700);
+:root {
+  --background-nav: var(--stone-700);
+  --color-nav: var(--stone-350);
+  --color-primary: var(--stone-700);
+  --button-primary-background: var(--stone-700);
+  --button-primary-color: var(--stone-200);
 }

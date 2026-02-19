@@ -20,7 +20,7 @@
 }
 
 .modal-backdrop {
-  background-color: rgb(0 0 0 / 50%);
+  background-color: var(--overlay-backdrop);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -50,15 +50,15 @@
    ========================================================================== */
 
 .modal-content {
-  background: var(--stone-100);
-  border: 1px solid var(--stone-300);
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
 }
 
 .modal-header {
   align-items: center;
-  border-bottom: 1px solid var(--stone-300);
+  border-bottom: 1px solid var(--border-medium);
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
@@ -72,26 +72,26 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-500);
+  color: var(--color-secondary);
   cursor: pointer;
   display: flex;
   padding: 0.25rem;
 }
 
 .modal-header button:hover {
-  background: var(--stone-200);
+  background: var(--background-subnav);
 }
 
 .modal-header a {
-  color: var(--stone-500);
+  color: var(--color-secondary);
 }
 
 .modal-header a:hover {
-  color: var(--stone-600);
+  color: var(--color-primary);
 }
 
 .modal-title {
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-size: 1.25rem;
   font-weight: normal;
   margin: 0;
@@ -103,7 +103,7 @@
 
 .modal-footer {
   align-items: center;
-  border-top: 1px solid var(--stone-300);
+  border-top: 1px solid var(--border-medium);
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
@@ -140,7 +140,7 @@
 
 .confirm-modal-overlay {
   align-items: center;
-  background: rgb(0 0 0 / 40%);
+  background: var(--overlay-heavy);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -154,10 +154,10 @@ body.modal-open .confirm-modal-overlay {
 }
 
 .confirm-modal-dialog {
-  background: var(--stone-100);
-  border: 1px solid var(--stone-300);
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
   max-width: 28rem;
   min-width: 20rem;
   overflow: hidden;
@@ -165,14 +165,14 @@ body.modal-open .confirm-modal-overlay {
 
 .confirm-modal-header {
   align-items: center;
-  border-bottom: 1px solid var(--stone-300);
+  border-bottom: 1px solid var(--border-medium);
   display: flex;
   justify-content: space-between;
   padding: 1rem;
 }
 
 .confirm-modal-title {
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-size: 1.25rem;
   font-weight: normal;
   margin: 0;
@@ -183,7 +183,7 @@ body.modal-open .confirm-modal-overlay {
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--stone-500);
+  color: var(--color-secondary);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -191,7 +191,7 @@ body.modal-open .confirm-modal-overlay {
 }
 
 .confirm-modal-close:hover {
-  background: var(--stone-200);
+  background: var(--background-subnav);
 }
 
 .confirm-modal-close i {
@@ -203,14 +203,14 @@ body.modal-open .confirm-modal-overlay {
 }
 
 .confirm-modal-message {
-  color: var(--stone-600);
+  color: var(--color-primary);
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
 }
 
 .confirm-modal-actions {
-  border-top: 1px solid var(--stone-300);
+  border-top: 1px solid var(--border-medium);
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
