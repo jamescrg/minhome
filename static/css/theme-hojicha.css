@@ -2,23 +2,23 @@
   color-scheme: dark;
 
   /* Body & Navigation */
-  --background-body: var(--stone-950);
-  --background-nav: var(--stone-800);
-  --color-nav: var(--stone-300);
+  --background-body: var(--stone-850);
+  --background-nav: var(--stone-700);
+  --color-nav: var(--stone-400);
 
   /* Backgrounds */
-  --background-subnav: var(--stone-800);
-  --background-subnav-tab-active: var(--stone-900);
-  --background-control: var(--stone-800);
-  --background-section: var(--stone-900);
-  --background-light: var(--stone-950);
+  --background-subnav: var(--stone-600);
+  --background-subnav-tab-active: var(--stone-700);
+  --background-control: var(--stone-700);
+  --background-section: var(--stone-700);
+  --background-light: var(--stone-850);
 
   /* Borders */
-  --border-medium: var(--stone-700);
-  --border-dark: var(--stone-600);
+  --border-medium: var(--stone-600);
+  --border-dark: var(--stone-500);
 
   /* Typography */
-  --color-primary: var(--stone-200);
+  --color-primary: var(--stone-400);
   --color-secondary: var(--stone-300);
   --color-muted: var(--stone-400);
   --color-strong: var(--stone-100);
@@ -39,13 +39,13 @@
   --shadow-color-heavy: rgb(0 0 0 / 40%);
 
   /* Selection */
-  --selected-background: var(--violet-950);
+  --selected-background: var(--violet-800);
   --selected-color: var(--violet-200);
-  --selected-border: var(--violet-800);
+  --selected-border: var(--violet-700);
 
   /* Highlights */
   --hl-blue: var(--blue-950);
-  --hl-gray: var(--stone-800);
+  --hl-gray: var(--stone-600);
   --hl-green: var(--lime-950);
   --hl-orange: var(--orange-950);
   --hl-purple: var(--purple-950);
@@ -57,7 +57,7 @@
   --color-danger: var(--red-400);
   --color-success: var(--green-400);
   --color-accent: var(--violet-400);
-  --color-accent-strong: var(--violet-300);
+  --color-accent-strong: var(--violet-400);
   --urgent: var(--orange-400);
 
   /* Alerts */
