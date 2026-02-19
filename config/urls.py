@@ -105,6 +105,11 @@ urlpatterns = [
     path("favorites/extension", favorites.extension_add, name="favorites-extension"),
     # favorites htmx
     path("favorites/list/", favorites.favorites_list, name="favorites-list"),
+    path(
+        "favorites/order-by/<str:order>/",
+        favorites.favorites_order_by,
+        name="favorites-order-by",
+    ),
     path("favorites/form", favorites.favorites_form, name="favorites-form"),
     path(
         "favorites/<int:id>/form", favorites.favorites_form, name="favorites-form-edit"
