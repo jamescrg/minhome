@@ -34,8 +34,8 @@ body {
 }
 
 .mh-logo {
-    width: 1.25rem;
-    height: 1.25rem;
+    font-size: 1.25rem;
+    color: var(--link);
     margin-right: 0.5rem;
 }
 
@@ -70,6 +70,10 @@ body {
 }
 
 /* form elements */
+.large-form .form-group + .form-group {
+    margin-top: 1rem;
+}
+
 /* Adjust form field sizes for smaller extension window */
 #id_name,
 #id_url,
