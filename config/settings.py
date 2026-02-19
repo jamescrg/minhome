@@ -113,6 +113,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "config.context.env",
                 "config.context.site_handle",
+                "config.context.theme",
             ],
             "loaders": default_loaders if DEBUG else cached_loaders,
             "libraries": {
