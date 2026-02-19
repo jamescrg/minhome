@@ -1,357 +1,346 @@
 import json
 
-import markdown
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.http import require_POST
 
-from apps.folders.folders import (
-    get_folders_for_page,
-    get_folders_tree_flat,
-    get_valid_parent_folders,
-    select_folder,
-)
-from apps.notes.forms import NoteForm
-from apps.notes.models import Note
+from apps.folders.folders import get_folders_for_page
+from apps.management.pagination import CustomPaginator
+
+from .forms import NoteForm
+from .models import Note
+
+SIDEBAR_SORT_OPTIONS = [
+    ("-updated_at", "Modified, new to old"),
+    ("-created_at", "Created, new to old"),
+    ("title", "Title (A-Z)"),
+]
 
 
-def _get_notes_context(request):
-    """Helper to build context for notes partials."""
-    user = request.user
-    selected_folder = select_folder(request, "notes")
+def get_notes_data(request):
+    """Get notes data with filters applied from session."""
+    filter_data = request.session.get("notes_filter", {})
 
-    if selected_folder:
-        notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
-    else:
-        notes = Note.objects.filter(user=user, folder_id__isnull=True)
+    queryset = Note.objects.filter(user=request.user)
 
-    notes = notes.order_by("subject")
+    # Folder filter
+    folder_id = filter_data.get("folder_id")
+    selected_folder_id = None
+    selected_folder_name = ""
+    if folder_id:
+        try:
+            folder_id = int(folder_id)
+            queryset = queryset.filter(folder_id=folder_id)
+            selected_folder_id = folder_id
+            from apps.folders.models import Folder
 
-    selected_note_id = user.notes_note
-    try:
-        selected_note = Note.objects.filter(pk=selected_note_id).get()
-        # Convert markdown to HTML for display
-        selected_note.note = markdown.markdown(selected_note.note)
-    except ObjectDoesNotExist:
-        selected_note = None
+            folder = Folder.objects.filter(pk=folder_id).first()
+            if folder:
+                selected_folder_name = folder.name
+        except (ValueError, TypeError):
+            pass
+
+    # Keyword filter
+    keyword = filter_data.get("keyword", "")
+    if keyword:
+        queryset = queryset.filter(title__icontains=keyword)
+
+    # Ordering
+    current_order = filter_data.get("order_by", "-updated_at")
+    queryset = queryset.order_by(current_order)
+
+    # Folders for dropdown
+    folders = get_folders_for_page(request, "notes")
+
+    session_key = "notes_page"
+    trigger_key = "notesChanged"
+    pagination = CustomPaginator(queryset, 20, request, session_key)
 
     return {
-        "page": "notes",
-        "notes": notes,
-        "selected_note": selected_note,
-        "selected_folder": selected_folder,
-    }
-
-
-@login_required
-def index(request):
-    """Display a list of folders and notes, along with a note.
-
-    Notes:
-        Always displays folders.
-        If a folder is selected, displays the notes for a folder.
-        If a note is selected, displays the note.
-
-    """
-
-    user = request.user
-    page = "notes"
-
-    folders = get_folders_for_page(request, page)
-
-    selected_folder = select_folder(request, "notes")
-
-    if selected_folder:
-        notes = Note.objects.filter(user=user, folder_id=selected_folder.id)
-    else:
-        notes = Note.objects.filter(user=user, folder_id__isnull=True)
-
-    notes = notes.order_by("subject")
-
-    selected_note_id = request.user.notes_note
-
-    try:
-        selected_note = Note.objects.filter(pk=selected_note_id).get()
-    except ObjectDoesNotExist:
-        selected_note = None
-
-    if selected_note:
-        selected_note.note = markdown.markdown(selected_note.note)
-
-    context = {
-        "page": page,
-        "edit": False,
+        "notes": pagination.get_object_list(),
+        "number_notes": queryset.count(),
+        "current_order": current_order.lstrip("-"),
+        "keyword": keyword,
+        "selected_folder_id": selected_folder_id,
+        "selected_folder_name": selected_folder_name,
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, page),
-        "valid_parent_folders": get_valid_parent_folders(request, page),
-        "selected_folder": selected_folder,
-        "notes": notes,
-        "selected_note": selected_note,
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
-    return render(request, "notes/content.html", context)
+
+# =============================================================================
+# List Views
+# =============================================================================
 
 
 @login_required
-def select(request, id):
-    """Select a note for display, redirect to index.
-
-    Args:
-        id (int): a Note instance id
-
-    """
-    user = request.user
-    user.notes_note = id
-    user.save()
-    return redirect("/notes/")
+def notes_index(request):
+    """Main notes list view."""
+    context = {"page": "notes"} | get_notes_data(request)
+    return render(request, "notes/main.html", context)
 
 
 @login_required
-def add(request):
-    """Add a new note.
-
-    Notes:
-        GET: Display new note form.
-        POST: Add note to database.
-
-    """
-
-    user = request.user
-    folders = get_folders_for_page(request, "notes")
-
-    selected_folder = select_folder(request, "notes")
-
-    if request.method == "POST":
-        # create a bound note form loaded with the post values
-        # this will render even if the post values are invalid
-        form = NoteForm(request.POST)
-
-        if form.is_valid():
-            note = form.save(commit=False)
-            note.user = user
-            note.save()
-
-            # deselect previously selected note
-            try:
-                old = Note.objects.filter(user=user, selected=1).get()
-            except Note.DoesNotExist:
-                pass
-            else:
-                old.selected = 0
-                old.save()
-
-            # select newest note for user
-            new = Note.objects.filter(user=user).latest("id")
-            new.selected = 1
-            new.save()
-
-            return redirect("notes")
-
-    else:
-        # request is a get request
-        # create unbound note form
-
-        if selected_folder:
-            form = NoteForm(initial={"folder": selected_folder.id})
-        else:
-            form = NoteForm()
-
-    # set the initial range of values for folder attribute
-    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
-
-    context = {
-        "page": "notes",
-        "edit": False,
-        "add": True,
-        "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "notes"),
-        "valid_parent_folders": get_valid_parent_folders(request, "notes"),
-        "selected_folder": selected_folder,
-        "action": "/notes/add",
-        "form": form,
-    }
-
-    return render(request, "notes/content.html", context)
-
-
-@login_required
-def edit(request, id):
-    """Edit a note.
-
-    Args:
-        id (int): A Note instance id
-
-    Notes:
-        GET: Display note form.
-        POST: Update note in database.
-    """
-
-    user = request.user
-    folders = get_folders_for_page(request, "notes")
-
-    selected_folder = select_folder(request, "notes")
-
-    note = get_object_or_404(Note, pk=id)
-
-    if request.method == "POST":
-        try:
-            note = Note.objects.filter(user=request.user, pk=id).get()
-        except ObjectDoesNotExist:
-            raise Http404("Record not found.")
-
-        form = NoteForm(request.POST, instance=note)
-
-        if form.is_valid():
-            note = form.save(commit=False)
-            note.user = user
-            note.save()
-            return redirect("notes")
-
-    else:
-        if selected_folder:
-            form = NoteForm(instance=note, initial={"folder": selected_folder.id})
-        else:
-            form = NoteForm(instance=note)
-
-    form.fields["folder"].queryset = get_folders_for_page(request, "notes")
-
-    context = {
-        "page": "notes",
-        "edit": True,
-        "add": False,
-        "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "notes"),
-        "valid_parent_folders": get_valid_parent_folders(request, "notes"),
-        "selected_folder": selected_folder,
-        "action": f"/notes/{id}/edit",
-        "form": form,
-        "note": note,
-    }
-
-    return render(request, "notes/content.html", context)
-
-
-@login_required
-def delete(request, id):
-    """Delete a note.
-
-    Args:
-        id (int):  a Note instance id
-
-    """
-    try:
-        note = Note.objects.filter(user=request.user, pk=id).get()
-    except ObjectDoesNotExist:
-        raise Http404("Record not found.")
-    note.delete()
-    return redirect("notes")
-
-
-# HTMX Views
-
-
-@login_required
-def notes_list_htmx(request):
-    """Return notes list partial for htmx."""
-    context = _get_notes_context(request)
+def notes_list(request):
+    """HTMX partial for notes list."""
+    context = {"page": "notes"} | get_notes_data(request)
     return render(request, "notes/list.html", context)
 
 
 @login_required
-def note_detail_htmx(request):
-    """Return note detail partial for htmx."""
-    context = _get_notes_context(request)
-    if context["selected_note"]:
-        return render(request, "notes/note.html", context)
-    return HttpResponse("")
-
-
-@login_required
-def select_htmx(request, id):
-    """Select note via htmx, return detail + updated list (oob)."""
-    user = request.user
-    user.notes_note = id
-    user.save()
-
-    context = _get_notes_context(request)
-    return render(request, "notes/note-with-list-oob.html", context)
-
-
-@login_required
-def notes_form_htmx(request, id=None):
-    """Return note form in modal for htmx, or process form submission."""
-    user = request.user
-    note = None
-
-    if id:
-        try:
-            note = Note.objects.filter(user=user, pk=id).get()
-        except ObjectDoesNotExist:
-            raise Http404("Record not found.")
-
+def notes_add(request):
+    """Add a new note via modal."""
     if request.method == "POST":
-        if note:
-            form = NoteForm(request.POST, instance=note)
-        else:
-            form = NoteForm(request.POST)
-
-        form.fields["folder"].queryset = get_folders_for_page(request, "notes")
-
+        form = NoteForm(request.POST, request=request, use_required_attribute=False)
         if form.is_valid():
-            saved_note = form.save(commit=False)
-            saved_note.user = user
-            saved_note.save()
+            note = form.save(commit=False)
+            note.user = request.user
+            note.save()
 
-            # Select the saved note
-            user.notes_note = saved_note.id
-            user.save()
-
+            note_url = reverse("notes:note-view", args=[note.id])
             return HttpResponse(
-                status=204,
-                headers={
-                    "HX-Trigger": json.dumps(
-                        {"notesChanged": "", "noteDetailChanged": ""}
-                    )
-                },
+                f'<script>window.open("{note_url}", "_blank");'
+                "window.dispatchEvent(new CustomEvent('close-modal'));</script>",
+                headers={"HX-Trigger": "notesChanged"},
             )
     else:
-        if note:
-            form = NoteForm(instance=note)
-        else:
-            form = NoteForm()
+        form = NoteForm(request=request, use_required_attribute=False)
 
     context = {
         "page": "notes",
-        "edit": id is not None,
-        "note": note,
         "form": form,
-        "action": f"/notes/{id}/form-htmx" if id else "/notes/form-htmx",
-        "folder_tree_flat": get_folders_tree_flat(request, "notes"),
+        "action": "Add",
+        "folders": get_folders_for_page(request, "notes"),
+        "selected_folder_id": request.user.notes_folder,
     }
-
-    return render(request, "notes/modal-form.html", context)
+    return render(request, "notes/form.html", context)
 
 
 @login_required
-def delete_htmx(request, id):
-    """Delete note via htmx."""
-    user = request.user
+def notes_order_by(request, order):
+    """Sort notes by field."""
+    filter_data = request.session.get("notes_filter", {})
 
-    try:
-        note = Note.objects.filter(user=user, pk=id).get()
-    except ObjectDoesNotExist:
-        raise Http404("Record not found.")
+    current_order = filter_data.get("order_by", "")
+    if current_order == order:
+        new_order = f"-{order}" if not current_order.startswith("-") else order
+    else:
+        new_order = order
 
-    note.delete()
+    filter_data["order_by"] = new_order
+    request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
+    request.session.modified = True
 
-    # Clear selected note
-    user.notes_note = 0
-    user.save()
+    return redirect("notes:list")
 
-    return HttpResponse(
-        status=204,
-        headers={
-            "HX-Trigger": json.dumps({"notesChanged": "", "noteDetailChanged": ""})
-        },
+
+@login_required
+def notes_filter_folder(request, folder_id):
+    """Filter notes by folder."""
+    filter_data = request.session.get("notes_filter", {})
+    filter_data["folder_id"] = folder_id
+    request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
+    request.session.modified = True
+
+    if request.headers.get("HX-Request"):
+        return redirect("notes:list")
+    return redirect("notes:index")
+
+
+@login_required
+def notes_filter_folder_clear(request):
+    """Clear folder filter."""
+    filter_data = request.session.get("notes_filter", {})
+    filter_data.pop("folder_id", None)
+    request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
+    request.session.modified = True
+
+    return redirect("notes:list")
+
+
+@login_required
+def notes_filter_keyword(request):
+    """Filter notes by keyword."""
+    filter_data = request.session.get("notes_filter", {})
+    keyword = request.GET.get("keyword", "").strip()
+
+    if keyword:
+        filter_data["keyword"] = keyword
+    else:
+        filter_data.pop("keyword", None)
+
+    request.session["notes_filter"] = filter_data
+    request.session["notes_page"] = 1
+    request.session.modified = True
+
+    context = {"page": "notes"} | get_notes_data(request)
+    return render(request, "notes/table.html", context)
+
+
+# =============================================================================
+# Editor Views
+# =============================================================================
+
+
+def get_sorted_notes(user, sort_order="-updated_at"):
+    """Get notes sorted by specified order."""
+    return Note.objects.filter(user=user).order_by(sort_order)[:20]
+
+
+@login_required
+def note_view(request, note_id):
+    """Standalone editor view for a note."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+
+    sort_order = request.session.get("notes_sidebar_sort", "-updated_at")
+    notes = get_sorted_notes(request.user, sort_order)
+
+    context = {
+        "note": note,
+        "notes": notes,
+        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
+        "current_sort": sort_order,
+    }
+    return render(request, "notes/editor.html", context)
+
+
+@login_required
+def note_content_partial(request, note_id):
+    """HTMX partial for switching notes in the editor."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+    return render(
+        request,
+        "notes/editor-content.html",
+        {"note": note},
     )
+
+
+@login_required
+def sidebar_sort(request, note_id, sort_key):
+    """Change sidebar sort order and return updated sidebar list."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+
+    valid_keys = [key for key, _ in SIDEBAR_SORT_OPTIONS]
+    if sort_key not in valid_keys:
+        sort_key = "-updated_at"
+
+    request.session["notes_sidebar_sort"] = sort_key
+
+    notes = get_sorted_notes(request.user, sort_key)
+
+    context = {
+        "note": note,
+        "notes": notes,
+        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
+        "current_sort": sort_key,
+    }
+    return render(request, "notes/sidebar-list.html", context)
+
+
+@login_required
+def note_edit(request, note_id):
+    """Edit note metadata (title + folder)."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+
+    if request.method == "POST":
+        form = NoteForm(
+            request.POST, instance=note, request=request, use_required_attribute=False
+        )
+        if form.is_valid():
+            form.save()
+            return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
+    else:
+        form = NoteForm(instance=note, request=request, use_required_attribute=False)
+
+    context = {
+        "page": "notes",
+        "note": note,
+        "form": form,
+        "action": "Edit",
+        "folders": get_folders_for_page(request, "notes"),
+    }
+    return render(request, "notes/form.html", context)
+
+
+@login_required
+@require_POST
+def note_delete(request, note_id):
+    """Delete a note."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+    note.delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
+
+
+@login_required
+@require_POST
+def note_autosave(request, note_id):
+    """Autosave endpoint for the editor."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+
+    content = request.POST.get("content", "")
+    note.content = content
+    update_fields = ["content", "updated_at"]
+
+    is_encrypted = request.POST.get("is_encrypted")
+    if is_encrypted is not None:
+        note.is_encrypted = is_encrypted == "true"
+        update_fields.append("is_encrypted")
+
+    note.save(update_fields=update_fields)
+
+    return JsonResponse({"saved": True, "updated_at": note.updated_at.isoformat()})
+
+
+@login_required
+@require_POST
+def note_title(request, note_id):
+    """Update note title."""
+    note = get_object_or_404(Note, pk=note_id, user=request.user)
+
+    title = request.POST.get("title", "").strip()
+    if title:
+        note.title = title
+        note.save(update_fields=["title", "updated_at"])
+        return JsonResponse({"saved": True, "title": note.title})
+
+    return JsonResponse({"saved": False, "error": "Title cannot be empty"}, status=400)
+
+
+@login_required
+def notes_shortcuts(request):
+    """Show keyboard shortcuts modal."""
+    return render(request, "notes/shortcuts-modal.html")
+
+
+@login_required
+def note_import_modal(request, note_id):
+    """Show import markdown modal."""
+    return render(request, "notes/import-modal.html")
+
+
+@login_required
+@require_POST
+def notes_bulk_delete(request):
+    """Bulk delete notes."""
+    data = json.loads(request.body)
+    note_ids = data.get("note_ids", [])
+    Note.objects.filter(user=request.user, id__in=note_ids).delete()
+    return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})
+
+
+@login_required
+@require_POST
+def notes_bulk_move_folder(request):
+    """Bulk move notes to a folder."""
+    data = json.loads(request.body)
+    note_ids = data.get("note_ids", [])
+    folder_id = data.get("folder_id")
+    Note.objects.filter(user=request.user, id__in=note_ids).update(folder_id=folder_id)
+    return HttpResponse(status=204, headers={"HX-Trigger": "notesChanged"})

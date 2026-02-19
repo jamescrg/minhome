@@ -8,28 +8,30 @@
                 <li {% if page == 'favorites' %}class="active"{% endif %}>
                     <a href="{% url 'favorites' %}">Favorites</a>
                 </li>
-                <li {% if page == 'tasks' %}class="active"{% endif %}>
-                    <a href="{% url 'tasks' %}">Tasks</a>
-                </li>
                 <li {% if page == 'contacts' %}class="active"{% endif %}>
                     <a href="{% url 'contacts' %}">Contacts</a>
                 </li>
+                <li {% if page == 'tasks' %}class="active"{% endif %}>
+                    <a href="{% url 'tasks' %}">Tasks</a>
+                </li>
                 <li {% if page == 'notes' %}class="active"{% endif %}>
-                    <a href="{% url 'notes' %}">Notes</a>
+                    <a href="{% url 'notes:index' %}">Notes</a>
                 </li>
                 <li {% if page == 'weather' %}class="active"{% endif %}>
                     <a href="{% url 'weather' %}">Weather</a>
                 </li>
             </ul>
             <ul class="navbar-right">
-                <li {% if page == 'search' %}class="active"{% endif %}>
-                    <a href="{% url 'search' %}">
-                        <i class="bi bi-search"></i>
+                <li>
+                    <a href="#"
+                       hx-get="{% url 'search' %}"
+                       hx-target="#htmx-modal-container">
+                        <i class="icon-search"></i>
                     </a>
                 </li>
                 <li {% if page == 'settings' %}class="active"{% endif %}>
                     <a class="settings-link" href="{% url 'settings' %}">
-                        <i class="bi bi-person-circle"></i>
+                        <i class="icon-user"></i>
                     </a>
                 </li>
             </ul>

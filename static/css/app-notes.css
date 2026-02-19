@@ -1,78 +1,1217 @@
+/* =============================================================================
+   Notes List View Styles
+   ============================================================================= */
 
-
-/* ------------------------------------------------------------------------- */
-/* markdown formatting */
-/* ------------------------------------------------------------------------- */
-
-.note h1 {
-  font-size: 1.5rem;
+/* Section Container */
+.section {
+  background: var(--background-section);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.0625rem 0.2rem rgb(0 0 0 / 14%);
   margin-bottom: 1.5rem;
+  padding: 1.25rem 1rem 1.5rem;
 }
 
-.note h2 {
-  font-size: 1.1rem;
-  font-weight: 500;
+/* Toolbar */
+.toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 1.25rem;
 }
 
-.note h3 {
-  font-size: 1.0rem;
+.toolbar a:not(.dropdown-menu *),
+.toolbar button:not(.dropdown-menu *) {
+  align-items: center;
+  background: var(--background-control);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  line-height: 1.25;
+  outline: none;
+  padding: 0.5rem 0.75rem;
 }
 
-.note strong {
+.filter-tools > button:first-child {
+  color: var(--link);
+}
+
+.toolbar-left {
+  align-items: center;
+  display: flex;
+}
+
+.toolbar-right {
+  align-items: center;
+  display: flex;
+  justify-content: right;
+}
+
+/* Filter Tools */
+.filter-tools {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+/* Select / Dropdown Button */
+.select-btn {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.filter-dropdown-button {
+  width: 15rem;
+}
+
+.filter-tools .dropdown-menu {
+  min-width: 15rem;
+}
+
+
+.toggle-active,
+.toolbar button.toggle-active,
+.toolbar a.toggle-active {
+  background: var(--selected-background);
+  border: solid 1px var(--selected-border);
+  color: var(--selected-color);
+}
+
+/* Filter Input */
+.filter-input {
+  background: var(--background-light);
+  border: solid 1px var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  height: calc(2.25rem + 2px);
+  line-height: 1.25rem;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+}
+
+.filter-input:focus {
+  border-color: var(--border-dark);
+}
+
+.keyword-input {
+  width: 16rem;
+}
+
+/* Folder Dropdown Actions */
+.dropdown-item-row {
+  align-items: center;
+  display: flex;
+}
+
+.dropdown-item-row .dropdown-item {
+  flex: 1;
+}
+
+.dropdown-item-kebab {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--stone-400);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.375rem;
+}
+
+.dropdown-item-kebab:hover {
+  background: var(--stone-300);
+  color: var(--stone-600);
+}
+
+.dropdown-submenu {
+  background: var(--stone-100);
+  border: solid 1px var(--stone-300);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 12%);
+  list-style: none;
+  margin: 0.125rem 0.5rem 0.25rem;
+  padding: 0;
+}
+
+.dropdown-submenu li > a {
+  align-items: center;
+  display: flex;
+  gap: 0.375rem;
+}
+
+.dropdown-submenu li > a i {
+  font-size: 0.85rem;
+}
+
+.dropdown-divider {
+  border-top: solid 1px var(--stone-300);
+}
+
+/* Badge */
+.app-badge {
+  background-color: var(--label-gray);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: normal;
+  padding: 0.25rem 0.625rem;
+  white-space: nowrap;
+}
+
+.app-badge-lg {
+  font-size: 0.95rem;
+  padding: 0.375rem 0.625rem;
+}
+
+/* Table Container */
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (width <= 1000px) {
+  .filter-tools {
+    gap: 0.75rem;
+  }
+
+  .filter-dropdown-button {
+    min-width: 7.5rem;
+    width: auto;
+  }
+
+  .keyword-input {
+    min-width: 7.5rem;
+    width: auto;
+  }
+}
+
+/* =============================================================================
+   Notes Editor Styles
+   ============================================================================= */
+
+/* =============================================================================
+   Body Background for Standalone Note Page
+   ============================================================================= */
+
+body:has(.note-page.standalone) {
+  background: var(--background-subnav);
+}
+
+/* =============================================================================
+   Editor Layout - Three Column Obsidian-style
+   ============================================================================= */
+
+.note-editor-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dev-banner + .note-editor-layout,
+body:has(.dev-banner) .note-editor-layout {
+  height: calc(100vh - 1.5rem);
+}
+
+/* Left Panel - Notes List */
+.note-sidebar {
+  background: var(--background-section);
+  border-right: 1px solid var(--border-medium);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.2s ease;
+  width: 17rem;
+}
+
+.note-sidebar.collapsed {
+  border-right: none;
+  width: 0;
+}
+
+/* Collapse sidebar by default on smaller screens */
+@media (width <= 1199px) {
+  .note-sidebar:not(.expanded) {
+    border-right: none;
+    width: 0;
+  }
+}
+
+.note-sidebar .sidebar-header {
+  align-items: center;
+  background: var(--background-subnav);
+  border-bottom: 1px solid var(--border-medium);
+  color: var(--color-secondary);
+  display: flex;
+  flex-shrink: 0;
+  font-size: 1rem;
   font-weight: 600;
+  gap: 0.5rem;
+  height: 3rem;
+  justify-content: space-between;
+  padding: 0 1rem;
 }
 
-.note b {
-  font-weight: 600;
+.note-sidebar .sidebar-header > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.note ul,
-.note ol {
-  padding-left: 1.2rem;
-  margin-bottom: 1.5rem;
+/* Common panel button style */
+.panel-btn {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: var(--button-toolbar);
+  cursor: pointer;
+  display: flex;
+  font-size: 1.25rem;
+  justify-content: center;
+  padding: 0.125rem 0.375rem;
+  transition: all 0.15s ease;
 }
 
-.note ul li {
-  list-style-type: disc;
-  padding-left: 0.5rem;
+.panel-btn:hover {
+  background: var(--background-section);
+  color: var(--color-primary);
 }
 
-.note ol li {
-  list-style-type: decimal;
-  padding-left: 0.5rem;
+.note-sidebar .sidebar-panel-toolbar {
+  align-items: center;
+  border-bottom: none;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem 0 0;
 }
 
-.note p {
-  /* font-size: 1.05rem; */
+.note-sidebar .sidebar-panel-toolbar .panel-btn:hover {
+  background: var(--background-subnav);
 }
 
-.note a {
-  text-decoration: underline;
-}
-
-code{
-  background: inherit;
+.note-sidebar .sidebar-panel-toolbar .panel-btn i {
   color: inherit;
+}
+
+.note-sidebar .sidebar-notes-list {
+  flex: 1;
+  list-style: none;
+  margin: 0 0.5rem;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.note-sidebar .sidebar-notes-list li {
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  overflow: hidden;
+  padding: 0.5rem 1rem;
+  text-overflow: ellipsis;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.note-sidebar .sidebar-notes-list li:hover {
+  background: var(--background-subnav);
+}
+
+.note-sidebar .sidebar-notes-list li.active {
+  background: var(--selected-background);
+  color: var(--selected-color);
+}
+
+/* Center Panel - Editor */
+.note-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.note-main .note-page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  max-width: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+}
+
+.note-main .note-page #note-editor-container {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.note-main .note-page .note-canvas {
+  border-radius: 0;
+  box-shadow: none;
+  flex: 1 0 auto;
+  margin: 0;
+  padding: 2rem 3rem 8rem;
+}
+
+/* Right Panel - Outline */
+.note-outline {
+  background: var(--background-section);
+  border-left: 1px solid var(--border-medium);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.2s ease;
+  width: 17rem;
+}
+
+.note-outline.collapsed {
+  border-left: none;
+  width: 0;
+}
+
+/* Collapse outline by default on mobile screens */
+@media (width <= 767px) {
+  .note-outline:not(.expanded) {
+    border-left: none;
+    width: 0;
+  }
+}
+
+.note-outline .outline-header {
+  align-items: center;
+  background: var(--background-subnav);
+  border-bottom: 1px solid var(--border-medium);
+  color: var(--color-secondary);
+  display: flex;
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 3rem;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.note-outline .outline-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.375rem;
+  list-style: none;
+  margin: 0;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.note-outline .outline-item {
+  align-items: flex-start;
+  color: var(--color-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1rem;
+  gap: 0.25rem;
+  padding: 0 0.75rem;
+}
+
+.note-outline .outline-toggle,
+.note-outline .outline-toggle-spacer {
+  flex-shrink: 0;
+  width: 1rem;
+}
+
+.note-outline .outline-toggle {
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.note-outline .outline-toggle:hover {
+  color: var(--color-primary);
+}
+
+.note-outline .outline-toggle i {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.note-outline .outline-item.collapsed .outline-toggle i {
+  transform: rotate(-90deg);
+}
+
+.note-outline .outline-text {
+  cursor: pointer;
+  flex: 1;
+}
+
+.note-outline .outline-text:hover {
+  color: var(--color-primary);
+}
+
+.note-outline .outline-children {
+  border-left: 1px solid rgb(0 0 0 / 15%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  list-style: none;
+  margin: 0;
+  margin-left: 7px;
+  padding: 0;
+  padding-left: 1rem;
+  padding-top: 0.375rem;
+  width: 100%;
+}
+
+.note-outline .outline-item.collapsed > .outline-children {
+  display: none;
+}
+
+.note-outline .outline-item.level-2 {
+  padding-left: 0.75rem;
+}
+
+.note-outline .outline-item.level-3 {
+  padding-left: 0.5rem;
+}
+
+.note-outline .outline-item.level-4,
+.note-outline .outline-item.level-5 {
+  padding-left: 0.5rem;
+}
+
+.note-outline .outline-empty {
+  color: var(--color-muted);
+  font-size: 1rem;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* =============================================================================
+   Toolbar Wrapper - Full Width Background
+   ============================================================================= */
+
+.note-toolbar-wrapper {
+  background: var(--background-subnav);
+  border-bottom: 1px solid var(--border-medium);
+  flex-shrink: 0;
+  height: 3rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* =============================================================================
+   Toolbar - Constrained Width
+   ============================================================================= */
+
+.note-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  margin: 0 auto;
+  max-width: 62rem;
+  padding: 0 1.5rem;
+}
+
+.note-toolbar .toolbar-left {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.note-toolbar .toolbar-left a:not(.dropdown-menu a) {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: var(--button-toolbar);
+  display: flex;
+  font-size: 1.25rem;
+  gap: 0.25rem;
+  justify-content: center;
+  outline: none;
+  padding: 0.125rem 0.375rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.note-toolbar .toolbar-left a:not(.dropdown-menu a):hover {
+  background: var(--background-section);
+  color: var(--color-primary);
+}
+
+.note-toolbar .toolbar-center {
+  flex: 1;
+}
+
+.note-toolbar .toolbar-right {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  min-width: 8rem;
+}
+
+.note-toolbar .toolbar-right a {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: var(--button-toolbar);
+  display: flex;
+  font-size: 1.25rem;
+  justify-content: center;
+  margin: 0;
+  outline: none;
+  padding: 0.125rem 0.375rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.note-toolbar .toolbar-right a:hover {
+  background: var(--background-section);
+  color: var(--color-primary);
+}
+
+.note-toolbar .toolbar-left #save-status-btn.active {
+  color: var(--urgent);
+}
+
+/* =============================================================================
+   Note Page - Virtual Page Container
+   ============================================================================= */
+
+.note-page {
+  margin: 0 auto;
+  max-width: 62rem;
+  padding: 0 1rem 1rem;
+}
+
+.note-page.standalone {
+  min-height: 100vh;
+}
+
+/* =============================================================================
+   Note Canvas - The "Paper" Page
+   ============================================================================= */
+
+.note-canvas {
+  background: var(--background-light);
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  min-height: 32rem;
+  padding: 2rem 3rem 3rem;
+}
+
+/* =============================================================================
+   Note Header - Title and Badge
+   ============================================================================= */
+
+.note-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  padding-bottom: 2rem;
+}
+
+.note-header .note-title-input {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  cursor: text;
   display: block;
-  font-family: 'Courier Prime';
-  font-size: 1.03rem;
-  margin-left: 1.25rem;
-  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: -1rem;
+  outline: none;
+  padding: 0;
+  width: 100%;
 }
 
-/* ------------------------------------------------------------------------- */
-/* notes form */
-/* ------------------------------------------------------------------------- */
+/* =============================================================================
+   Note Editor - Tiptap/ProseMirror Content
+   ============================================================================= */
 
-
-#id_folder {
-  max-width: 18.75rem;
+#note-editor {
+  min-height: 20rem;
+  outline: none;
 }
 
-#id_subject {
-    width: 37.5rem;
+#note-editor .ProseMirror {
+  min-height: 20rem;
+  outline: none;
 }
 
-#id_note {
-  min-height: 22rem;
+#note-editor .ProseMirror > * + * {
+  margin-top: 0.75rem;
+}
+
+#note-editor .ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--color-muted);
+  content: "Start typing...";
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+#note-editor .ProseMirror h1,
+#note-editor .ProseMirror h2,
+#note-editor .ProseMirror h3,
+#note-editor .ProseMirror h4,
+#note-editor .ProseMirror h5 {
+  scroll-margin-top: 4rem;
+}
+
+#note-editor .ProseMirror h1 {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+}
+
+#note-editor .ProseMirror h2 {
+  border-bottom: 1px solid var(--border-medium);
+  color: var(--color-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-left: -0.75rem;
+  margin-top: 2.25rem;
+  padding-bottom: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+#note-editor .ProseMirror h3 {
+  border-bottom: 1px solid var(--border-medium);
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-left: 0.25rem;
+  margin-top: 2rem;
+  padding-bottom: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+#note-editor .ProseMirror h4 {
+  border-bottom: 1px solid var(--border-medium);
+  color: var(--color-primary);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-left: 0.5rem;
+  margin-top: 2rem;
+  padding-bottom: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+#note-editor .ProseMirror h5 {
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.75rem;
+}
+
+/* Reduce spacing for first paragraph after headings */
+#note-editor .ProseMirror h1 + p,
+#note-editor .ProseMirror h2 + p,
+#note-editor .ProseMirror h3 + p,
+#note-editor .ProseMirror h4 + p,
+#note-editor .ProseMirror h5 + p {
+  margin-top: 0.25rem;
+}
+
+/* Minimize empty paragraphs (blank lines) - Tiptap adds br to empty p */
+/* Only apply to top-level paragraphs, not inside lists */
+#note-editor .ProseMirror > p:has(> br:only-child) {
+  line-height: 1;
+  margin-bottom: 0;
+  margin-top: 0.25rem;
+}
+
+#note-editor p {
+  color: var(--color-primary);
+  line-height: 1.7;
+}
+
+#note-editor strong {
+  font-weight: 600;
+}
+
+#note-editor em {
+  font-style: italic;
+}
+
+#note-editor s {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+#note-editor ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+#note-editor ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+#note-editor li ul,
+#note-editor li ol {
+  margin: 0;
+}
+
+#note-editor ul li {
+  line-height: 1.6;
+  list-style-type: disc;
+  margin: 0.375rem 0;
+}
+
+#note-editor ol li {
+  line-height: 1.6;
+  list-style-type: decimal;
+  margin: 0.5rem 0;
+}
+
+#note-editor li p {
+  margin: 0;
+}
+
+#note-editor blockquote {
+  border-left: 3px solid var(--border-dark);
+  color: var(--color-muted);
+  font-style: italic;
+  margin: 1rem 0;
+  padding-left: 1rem;
+}
+
+/* Highlight colors */
+#note-editor mark {
+  background: var(--yellow-100);
+  border-radius: 0.125rem;
+  color: inherit;
+  padding: 0.0625rem 0.125rem;
+}
+
+#note-editor mark.mark-green,
+#note-editor mark[data-color="mark-green"] {
+  background: var(--lime-100);
+}
+
+#note-editor mark.mark-red,
+#note-editor mark[data-color="mark-red"] {
+  background: var(--red-100);
+}
+
+#note-editor mark.mark-purple,
+#note-editor mark[data-color="mark-purple"] {
+  background: var(--purple-100);
+}
+
+#note-editor mark.mark-orange,
+#note-editor mark[data-color="mark-orange"] {
+  background: var(--orange-100);
+}
+
+#note-editor mark.mark-citation,
+#note-editor mark[data-color="mark-citation"] {
+  background: var(--stone-150);
+}
+
+#note-editor mark.mark-gray,
+#note-editor mark[data-color="mark-gray"] {
+  background: var(--stone-200);
+}
+
+/* =============================================================================
+   Multi-select / Bulk Actions
+   ============================================================================= */
+
+.select-col {
+  text-align: center;
+  width: 2.5rem;
+}
+
+.select-col i {
+  color: var(--stone-400);
+  cursor: pointer;
+  font-size: 1.15rem;
+}
+
+.select-col i:hover {
+  color: var(--stone-600);
+}
+
+.select-col i.icon-square-check {
+  color: var(--violet-500, #8b5cf6);
+}
+
+.notes-bulk-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  padding: 0 0 1.25rem;
+}
+
+.notes-bulk-toolbar .toolbar-left {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.bulk-count {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bulk-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bulk-actions button i {
+  margin-right: 0.5rem;
+}
+
+/* =============================================================================
+   Notes List Table Styles
+   ============================================================================= */
+
+.notes-list {
+  min-width: 40rem;
+}
+
+.notes-list .folder {
+  width: 10rem;
+}
+
+.notes-list .title {
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.notes-list .encrypted {
+  text-align: center;
+  width: 3rem;
+}
+
+.notes-list .encrypted i {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.notes-list th.encrypted i {
+  font-size: 1rem;
+}
+
+.notes-list .created {
+  width: 8rem;
+}
+
+.notes-list .updated {
+  width: 8rem;
+}
+
+.notes-list td {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.notes-list .title {
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.notes-list .note-title-link {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.notes-list .note-title-link:hover {
+  color: var(--link-hover);
+}
+
+.notes-list .dropdown-menu {
+  z-index: 1050;
+}
+
+.notes-list .empty-message {
+  color: var(--color-muted);
+  font-style: italic;
+  text-align: center;
+}
+
+/* =============================================================================
+   Search and Replace Bar
+   ============================================================================= */
+
+.search-replace-bar {
+  align-items: center;
+  background: var(--background-subnav);
+  border-bottom: 1px solid var(--border-medium);
+  box-shadow: none;
+  display: none;
+  gap: 1rem;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.search-replace-bar.visible {
+  display: flex;
+}
+
+.search-replace-bar input[type="text"] {
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
+  border-radius: 0.375rem;
+  color: var(--color-primary);
+  font-size: 1rem;
+  min-width: 10rem;
+  padding: 0.375rem 0.625rem;
+}
+
+.search-replace-bar input[type="text"]:focus {
+  border-color: var(--border-medium);
+  outline: none;
+}
+
+.search-replace-bar #search-count {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  min-width: 4rem;
+  text-align: center;
+}
+
+.search-replace-bar button {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: var(--button-toolbar);
+  cursor: pointer;
+  display: flex;
+  font-size: 1.25rem;
+  justify-content: center;
+  outline: none;
+  padding: 0.125rem 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.search-replace-bar button i {
+  color: inherit;
+  font-size: inherit;
+}
+
+.search-replace-bar button:hover {
+  background: var(--background-section);
+  color: var(--color-primary);
+}
+
+/* Search match highlight */
+#note-editor .search-match {
+  background: var(--yellow-200);
+}
+
+#note-editor .search-match-current {
+  background: var(--amber-300);
+}
+
+/* =============================================================================
+   Shortcuts Table
+   ============================================================================= */
+
+.shortcuts-table {
+  width: 100%;
+}
+
+.shortcuts-table th {
+  color: var(--color-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 1rem 0 0.25rem;
+  text-transform: uppercase;
+}
+
+.shortcuts-table td {
+  padding: 0.25rem 0;
+}
+
+.shortcuts-table td:first-child {
+  white-space: nowrap;
+  width: 45%;
+}
+
+.shortcuts-table kbd {
+  background: var(--background-subnav);
+  border: 1px solid var(--border-medium);
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  padding: 0.125rem 0.375rem;
+}
+
+/* ==========================================================================
+   Encryption
+   ========================================================================== */
+
+.locked-placeholder {
+  align-items: center;
+  color: var(--color-secondary);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.locked-placeholder > i {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.locked-placeholder p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.locked-placeholder .passphrase-form {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.locked-placeholder .passphrase-form .password-wrapper {
+  position: relative;
+}
+
+.locked-placeholder .passphrase-form .password-wrapper input {
+  padding-right: 2.5rem;
+  width: 16rem;
+}
+
+.locked-placeholder .passphrase-form .password-toggle {
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: flex;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.locked-placeholder .passphrase-form .password-toggle:hover {
+  color: var(--color-primary);
+}
+
+.locked-placeholder .passphrase-form .password-toggle i {
+  font-size: 1rem;
+}
+
+.locked-placeholder .unlock-error {
+  color: var(--red-600);
+  font-size: 0.85rem;
+  min-height: 1.25rem;
+}
+
+
+/* Passphrase Dialog Overlay */
+.passphrase-dialog-overlay {
+  align-items: center;
+  background: rgb(0 0 0 / 40%);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+}
+
+.passphrase-dialog {
+  background: var(--background-section);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 20%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 24rem;
+  padding: 1.5rem;
+  width: 90vw;
+}
+
+.passphrase-dialog p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.passphrase-dialog .password-wrapper {
+  position: relative;
+}
+
+.passphrase-dialog .password-wrapper input {
+  padding-right: 2.5rem;
+  width: 100%;
+}
+
+.passphrase-dialog .password-toggle {
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: flex;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.passphrase-dialog .password-toggle:hover {
+  color: var(--color-primary);
+}
+
+.passphrase-dialog .password-toggle i {
+  font-size: 1rem;
+}
+
+.passphrase-dialog .unlock-error {
+  color: var(--red-600);
+  font-size: 0.85rem;
+  min-height: 1.25rem;
+}
+
+.passphrase-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
 }

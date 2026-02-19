@@ -11,3 +11,123 @@
 .setting-control {
   padding-bottom: 1rem;
 }
+
+
+/* ==========================================================================
+Section Layout (nav / body)
+========================================================================== */
+
+/* Container resets when using section layout children */
+.section:has(.section-body) {
+  padding: 0;
+}
+
+/* Section Nav - tab navigation */
+.section-nav {
+  background: var(--background-subnav);
+  margin: 0;
+  padding: 0.25rem 0 0;
+}
+
+.section-nav ul {
+  margin: 0.25rem 0 0;
+  padding: 0;
+}
+
+.section-nav li {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+}
+
+.section-nav a {
+  color: var(--color-primary);
+  margin: 0;
+  padding-bottom: 0.5rem;
+  position: relative;
+  top: 0.05rem;
+}
+
+.section-nav .active {
+  background: var(--background-subnav-tab-active);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  position: relative;
+}
+
+.section-nav .active::before,
+.section-nav .active::after {
+  background: var(--background-subnav-tab-active);
+  bottom: 0;
+  content: "";
+  height: var(--radius-lg);
+  position: absolute;
+  width: var(--radius-lg);
+}
+
+.section-nav .active::before {
+  left: calc(-1 * var(--radius-lg));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M8,0 L8,8 L0,8 A8,8 0 0,0 8,0 Z' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M8,0 L8,8 L0,8 A8,8 0 0,0 8,0 Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.section-nav .active::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M0,0 L0,8 L8,8 A8,8 0 0,1 0,0 Z' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M0,0 L0,8 L8,8 A8,8 0 0,1 0,0 Z' fill='white'/%3E%3C/svg%3E");
+  right: calc(-1 * var(--radius-lg));
+}
+
+.section-nav li:first-child.active {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.section-nav li:first-child.active::before {
+  display: none;
+}
+
+/* Section Nav without header - rounded top corners */
+.section > .section-nav:first-child {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+/* Section Body - main content area */
+.section-body {
+  background: var(--background-section);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.section-body .options th,
+.section-body .options td {
+  border-bottom: solid 1px var(--border-medium);
+  border-top: solid 1px var(--border-medium);
+  padding: 0.5rem;
+}
+
+.section-body .options + .btn {
+  margin-top: 1rem;
+}
+
+
+/* ==========================================================================
+ Mobile Responsive
+========================================================================== */
+
+@media (width <= 1000px) {
+  /* Section nav mobile: horizontal scroll */
+  .section-nav {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+  }
+
+  .section-nav ul {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .section-nav li {
+    flex-shrink: 0;
+  }
+
+  .section-nav .active {
+    padding-bottom: 0;
+  }
+}

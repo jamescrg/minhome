@@ -4,32 +4,60 @@ import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import requests
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from apps.finance.forms import CryptoSymbolForm, SecuritiesSymbolForm
 from apps.finance.models import CryptoSymbol, SecuritiesSymbol
+from apps.notes.models import Note
 
 
 @login_required
 def index(request):
-    """Show the settings page.
-
-    Notes:
-        Shows whether the user has linked a Google account.
-        If not, provides a url to link one.
-        If so, provides a url to log out.
-    """
-
-    if request.user.google_credentials:
-        logged_in = True
-    else:
-        logged_in = False
+    """Show the settings page — Theme tab."""
 
     context = {
         "page": "settings",
-        "logged_in": logged_in,
+        "subapp": "theme",
     }
     return render(request, "settings/content.html", context)
+
+
+@login_required
+def homepage_index(request):
+    """Show the Homepage settings tab."""
+
+    context = {
+        "page": "settings",
+        "subapp": "homepage",
+    }
+    return render(request, "settings/homepage.html", context)
+
+
+@login_required
+def google_index(request):
+    """Show the Google settings tab."""
+
+    logged_in = bool(request.user.google_credentials)
+
+    context = {
+        "page": "settings",
+        "subapp": "google",
+        "logged_in": logged_in,
+    }
+    return render(request, "settings/google.html", context)
+
+
+@login_required
+def session_index(request):
+    """Show the Session settings tab."""
+
+    context = {
+        "page": "settings",
+        "subapp": "session",
+    }
+    return render(request, "settings/session.html", context)
 
 
 @login_required
@@ -103,7 +131,7 @@ def google_store(request):
     user.google_credentials = google_credentials_json
     user.save()
 
-    return redirect("/settings")
+    return redirect("/settings/google/")
 
 
 @login_required
@@ -134,7 +162,82 @@ def google_logout(request):
     user.google_credentials = None
     user.save()
 
-    return redirect("/settings")
+    return redirect("/settings/google/")
+
+
+@login_required
+def encryption_index(request):
+    """Show the Encryption settings tab."""
+    notes = Note.objects.filter(user=request.user)
+    context = {
+        "page": "settings",
+        "subapp": "encryption",
+        "has_salt": bool(request.user.encryption_salt),
+        "note_count": notes.count(),
+        "encrypted_count": notes.filter(is_encrypted=True).count(),
+    }
+    return render(request, "settings/encryption.html", context)
+
+
+@login_required
+def encryption_save_salt(request):
+    """Save the encryption salt generated client-side."""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    body = json.loads(request.body)
+    salt = body.get("salt", "").strip()
+
+    if not salt:
+        return JsonResponse({"error": "Salt is required"}, status=400)
+
+    request.user.encryption_salt = salt
+    request.user.save(update_fields=["encryption_salt"])
+
+    return JsonResponse({"saved": True})
+
+
+@login_required
+def encryption_clear_salt(request):
+    """Clear the encryption salt (disable encryption)."""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    request.user.encryption_salt = ""
+    request.user.save(update_fields=["encryption_salt"])
+
+    return JsonResponse({"saved": True})
+
+
+@login_required
+def encryption_notes_list(request):
+    """Return all notes as JSON for bulk encrypt/decrypt."""
+    notes = Note.objects.filter(user=request.user).values(
+        "id", "content", "is_encrypted"
+    )
+    return JsonResponse({"notes": list(notes)})
+
+
+@login_required
+@require_POST
+def encryption_notes_bulk_update(request):
+    """Bulk update notes content and is_encrypted flag."""
+    body = json.loads(request.body)
+    notes_data = body.get("notes", [])
+
+    for item in notes_data:
+        note_id = item.get("id")
+        if not note_id:
+            continue
+        try:
+            note = Note.objects.get(pk=note_id, user=request.user)
+        except Note.DoesNotExist:
+            continue
+        note.content = item.get("content", "")
+        note.is_encrypted = item.get("is_encrypted", False)
+        note.save(update_fields=["content", "is_encrypted", "updated_at"])
+
+    return JsonResponse({"saved": True})
 
 
 @login_required
@@ -144,7 +247,7 @@ def theme(request):
     user = request.user
     user.theme = request.POST["theme"]
     user.save()
-    return redirect("/settings")
+    return redirect("/settings/")
 
 
 @login_required
@@ -186,7 +289,7 @@ def home_options(request, option, value):
         user.home_due_tasks = value
 
     user.save()
-    return redirect("/settings")
+    return redirect("/settings/homepage/")
 
 
 @login_required
@@ -195,6 +298,7 @@ def crypto_symbols(request):
     symbols = CryptoSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "symbols": symbols,
     }
     return render(request, "settings/crypto_symbols.html", context)
@@ -215,6 +319,7 @@ def crypto_symbol_add(request):
 
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "form": form,
         "action": "Add",
     }
@@ -236,6 +341,7 @@ def crypto_symbol_edit(request, id):
 
     context = {
         "page": "settings",
+        "subapp": "crypto",
         "form": form,
         "symbol": symbol,
         "action": "Edit",
@@ -257,6 +363,7 @@ def securities_symbols(request):
     symbols = SecuritiesSymbol.objects.filter(user=request.user).order_by("symbol")
     context = {
         "page": "settings",
+        "subapp": "securities",
         "symbols": symbols,
     }
     return render(request, "settings/securities_symbols.html", context)
@@ -277,6 +384,7 @@ def securities_symbol_add(request):
 
     context = {
         "page": "settings",
+        "subapp": "securities",
         "form": form,
         "action": "Add",
     }
@@ -298,6 +406,7 @@ def securities_symbol_edit(request, id):
 
     context = {
         "page": "settings",
+        "subapp": "securities",
         "form": form,
         "symbol": symbol,
         "action": "Edit",

@@ -39,8 +39,6 @@ def test_select_folder(client, folders):
     folder = Folder.objects.filter(name="Philosophy").get()
     response = client.get(f"/folders/{folder.id}/notes")
     assert response.status_code == 302
-    response = client.get("/notes/")
-    assert folder == response.context["selected_folder"]
 
 
 def test_select_task_folders(client, task_folders):
@@ -80,7 +78,7 @@ def test_update(client, folder):
 
 
 def test_delete(client, folder):
-    client.get(f"/folders/delete/{folder.id}/notes")
+    client.get(f"/folders/delete/{folder.id}/favorites")
     found = Folder.objects.filter(id=folder.id).exists()
     assert not found
 

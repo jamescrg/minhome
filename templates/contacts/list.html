@@ -4,10 +4,8 @@
         <a class="square-button"
            href="#"
            hx-get="{% url 'contacts-form-htmx' %}"
-           hx-target="#htmx-modal-container"
-           data-bs-toggle="modal"
-           data-bs-target="#htmx-modal-container">
-            <i class="bi bi-plus-lg"></i>
+           hx-target="#htmx-modal-container">
+            <i class="icon-plus"></i>
         </a>
     </div>
     {% if contacts %}
@@ -21,9 +19,20 @@
                 </li>
             {% endfor %}
         </ul>
+        {% if pagination.paginator.num_pages > 1 %}
+            <div class="pagination-row pagination-compact">
+                <a {% if pagination.has_previous %} hx-get="{% url 'change-page' session_key=session_key trigger_key=trigger_key page=pagination.previous_page_number %}" {% endif %}
+                   href="#"
+                   class="{% if not pagination.has_previous %}pagination-disabled{% endif %}">&lt;</a>
+                <p>{{ pagination.number }} of {{ pagination.paginator.num_pages }}</p>
+                <a {% if pagination.has_next %} hx-get="{% url 'change-page' session_key=session_key trigger_key=trigger_key page=pagination.next_page_number %}" {% endif %}
+                   href="#"
+                   class="{% if not pagination.has_next %}pagination-disabled{% endif %}">&gt;</a>
+            </div>
+        {% endif %}
     {% else %}
         <div class="no-contacts">
-            <i class="bi bi-person-lines-fill"></i>
+            <i class="icon-contact"></i>
         </div>
     {% endif %}
 </div>

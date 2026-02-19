@@ -1,105 +1,91 @@
-<div class="row">
-    <div class="card">
-        <div class="card-title">
-            <h1>Favorites</h1>
+{% if favorites %}
+    <div class="search-section">
+        <div class="search-section-header">
+            <span class="search-section-title">Favorites</span>
+            <span class="app-badge badge-gray">{{ favorites|length }}</span>
         </div>
-        {% if favorites %}
-            <table class="table">
-                <tr>
-                    <th>Folder</th>
-                    <th>Favorite</th>
-                    <th>Description</th>
-                    <th></th>
-                </tr>
-                {% for favorite in favorites %}
-                    <tr>
-                        <td class="folder">
-                            {% if favorite.folder.name %}
-                                <a href="{% url 'folder-select' id=favorite.folder.id page='favorites' %}">{{ favorite.folder.name }}</a>
-                            {% else %}
-                                <a href="{% url 'folder-select' id=0 page='favorites' %}">Unsorted</a>
-                            {% endif %}
-                        </td>
-                        <td class="favorite-name">
-                            <a href="{{ favorite.url }}">{{ favorite.name }}</a>
-                        </td>
-                        <td class="favorite-description">{{ favorite.description|slice:"0:50"|default:"" }}</td>
-                        <td class="credentials">
-                            {% if favorite.login %}
-                                <div id="credential-hint-{{ favorite.id }}">
-                                    <a href="#"
-                                       onclick="showHideCredentials('{{ favorite.id }}'); return false;">
-                                        <i class="bi bi-briefcase-fill"></i>
-                                    </a>
-                                </div>
-                                <div id="credential-data-{{ favorite.id }}" class="credential-data hidden">
-                                    {{ favorite.login }} | {{ favorite.root }} {{ favorite.passkey }}
-                                </div>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
-    </div>
-    <div class="card">
-        <div class="card-title">
-            <h1>Contacts</h1>
+        <div class="search-cards">
+            {% for favorite in favorites %}
+                <div class="search-card" data-href="{{ favorite.url }}">
+                    <span class="app-badge app-badge-lg badge-gray"><i class="icon-star"></i></span>
+                    <div class="search-card-content">
+                        <div class="search-card-title">{{ favorite.name }}</div>
+                        <div class="search-card-meta">
+                            {% if favorite.url %}{{ favorite.url|truncatechars:60 }}{% endif %}
+                            {% if favorite.url and favorite.description %}·{% endif %}
+                            {% if favorite.description %}{{ favorite.description|truncatewords:8 }}{% endif %}
+                        </div>
+                    </div>
+                    {% if favorite.folder %}
+                        <a href="{% url 'folder-select' id=favorite.folder_id page='favorites' %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ favorite.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
         </div>
-        {% if contacts %}
-            <table class="table">
-                <tr>
-                    <th>Folder</th>
-                    <th>Name</th>
-                    <th>Phone1</th>
-                    <th>Email</th>
-                </tr>
-                {% for contact in contacts %}
-                    <tr>
-                        <td class="folder">
-                            {% if contact.folder %}
-                                <a href="{% url 'folder-select' id=contact.folder.id page='contacts' %}">{{ contact.folder.name }}</a>
-                            {% else %}
-                                <a href="{% url 'folder-select' id=0 page='contacts' %}">Unsorted</a>
-                            {% endif %}
-                        </td>
-                        <td class="contact-name">
-                            <a href="{% url 'contacts-select' id=contact.id %}">{{ contact.name }}</a>
-                        </td>
-                        <td class="contact-phone1">{{ contact.phone1 }}</td>
-                        <td class="contact-email">{{ contact.email|default:"" }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
     </div>
-    <div class="card">
-        <div class="card-title">
-            <h1>Notes</h1>
+{% endif %}
+{% if contacts %}
+    <div class="search-section">
+        <div class="search-section-header">
+            <span class="search-section-title">Contacts</span>
+            <span class="app-badge badge-gray">{{ contacts|length }}</span>
         </div>
-        {% if notes %}
-            <table class="table">
-                <tr>
-                    <th>Folder</th>
-                    <th>Subject</th>
-                    <th>Preview (Raw Text)</th>
-                </tr>
-                {% for note in notes %}
-                    <tr>
-                        <td class="folder">
-                            {% if note.folder %}
-                                <a href="{% url 'folder-select' id=note.folder.id page='notes' %}">{{ note.folder.name }}</a>
-                            {% else %}
-                                <a href="{% url 'folder-select' id=0 page='notes' %}">Unsorted</a>
-                            {% endif %}
-                        </td>
-                        <td class="note-subject">
-                            <a href="{% url 'notes-select' id=note.id %}">{{ note.subject }}</a>
-                        </td>
-                        <td class="note">{{ note.note|slice:":300"|safe }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
+        <div class="search-cards">
+            {% for contact in contacts %}
+                <div class="search-card"
+                     data-href="{% url 'contacts-select' id=contact.id %}">
+                    <span class="app-badge app-badge-lg badge-gray"><i class="icon-user"></i></span>
+                    <div class="search-card-content">
+                        <div class="search-card-title">{{ contact.name }}</div>
+                        <div class="search-card-meta">
+                            {% if contact.phone1 %}{{ contact.phone1 }}{% endif %}
+                            {% if contact.phone1 and contact.email %}·{% endif %}
+                            {% if contact.email %}{{ contact.email }}{% endif %}
+                        </div>
+                    </div>
+                    {% if contact.folder %}
+                        <a href="{% url 'folder-select' id=contact.folder_id page='contacts' %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ contact.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
+{% endif %}
+{% if notes %}
+    <div class="search-section">
+        <div class="search-section-header">
+            <span class="search-section-title">Notes</span>
+            <span class="app-badge badge-gray">{{ notes|length }}</span>
+        </div>
+        <div class="search-cards">
+            {% for note in notes %}
+                <div class="search-card"
+                     data-href="{% url 'notes:note-view' note_id=note.id %}"
+                     data-target="_blank">
+                    <span class="app-badge app-badge-lg badge-gray"><i class="icon-sticky-note"></i></span>
+                    <div class="search-card-content">
+                        <div class="search-card-title">{{ note.title }}</div>
+                    </div>
+                    {% if note.folder %}
+                        <a href="{% url 'notes:filter-folder' note.folder_id %}"
+                           class="search-card-folder">
+                            <i class="icon-folder"></i> {{ note.folder.name }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% if not favorites and not contacts and not notes %}
+    <div class="search-empty">
+        <i class="icon-search"></i>
+        <p>No results found</p>
+    </div>
+{% endif %}

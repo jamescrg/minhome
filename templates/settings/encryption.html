@@ -1,0 +1,361 @@
+{% extends "settings/main.html" %}
+{% load cache_buster %}
+{% block subcontent %}
+    {% csrf_token %}
+    <div class="card">
+        <div class="card-title">
+            <h1>Notes Encryption</h1>
+        </div>
+        <p class="card-text">
+            End-to-end encryption uses a standalone passphrase to derive an AES-256 key.
+            The key is stored in this browser's local storage and never sent to the server.
+            Individual notes can be encrypted using the lock icon in the editor.
+        </p>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Status:</td>
+                <td class="setting-control">
+                    <span id="encryption-status">
+                        {% if has_salt %}
+                            <span style="color:var(--green-600)">Enabled</span>
+                        {% else %}
+                            Disabled
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% if has_salt %}
+                <tr>
+                    <td class="setting-label">Notes:</td>
+                    <td class="setting-control">
+                        <span id="encryption-stats">{{ encrypted_count }} of {{ note_count }} encrypted</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="setting-label">Key:</td>
+                    <td class="setting-control">
+                        <span id="key-status"></span>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+        <div style="margin-top:1.25rem">
+            {% if not has_salt %}
+                <!-- State: Disabled — show passphrase + confirm to enable -->
+                <div id="enable-section">
+                    <p class="card-text" style="margin-bottom:0.75rem">Choose a passphrase to enable encryption:</p>
+                    <div style="display:flex;flex-direction:column;gap:0.5rem;max-width:20rem">
+                        <div class="password-wrapper">
+                            <input type="password"
+                                   id="enable-passphrase"
+                                   class="form-control"
+                                   placeholder="Passphrase"
+                                   autocomplete="off">
+                            <button type="button"
+                                    class="password-toggle"
+                                    tabindex="-1"
+                                    aria-label="Toggle visibility">
+                                <i class="icon-eye-off"></i>
+                            </button>
+                        </div>
+                        <div class="password-wrapper">
+                            <input type="password"
+                                   id="enable-passphrase-confirm"
+                                   class="form-control"
+                                   placeholder="Confirm passphrase"
+                                   autocomplete="off">
+                            <button type="button"
+                                    class="password-toggle"
+                                    tabindex="-1"
+                                    aria-label="Toggle visibility">
+                                <i class="icon-eye-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button"
+                            class="btn btn-primary"
+                            style="margin-top:0.75rem"
+                            id="enable-btn">Enable Encryption</button>
+                </div>
+            {% else %}
+                <!-- State: Enabled — disable button with passphrase if key not loaded -->
+                <div id="disable-section">
+                    <div id="passphrase-row" style="display:none;margin-bottom:0.75rem">
+                        <p class="card-text" style="margin-bottom:0.75rem">Enter your passphrase to decrypt all encrypted notes:</p>
+                        <div class="password-wrapper" style="max-width:20rem">
+                            <input type="password"
+                                   id="passphrase-input"
+                                   class="form-control"
+                                   placeholder="Encryption passphrase"
+                                   autocomplete="off">
+                            <button type="button"
+                                    class="password-toggle"
+                                    tabindex="-1"
+                                    aria-label="Toggle visibility">
+                                <i class="icon-eye-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-danger" id="disable-btn">Disable Encryption</button>
+                </div>
+            {% endif %}
+            <div id="encryption-progress" style="display:none;margin-top:1rem">
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                    <span id="progress-text"
+                          style="font-size:0.85rem;
+                                 color:var(--color-secondary)"></span>
+                </div>
+            </div>
+            <p id="encryption-message" style="margin-top:0.75rem;font-size:0.85rem"></p>
+        </div>
+        <p class="card-text"
+           style="margin-top:1.5rem;
+                  color:var(--stone-500);
+                  font-size:0.85rem">
+            <i class="icon-triangle-alert" style="font-size:0.85rem"></i>
+            If you clear browser data or use a different browser, you'll be prompted to re-enter your passphrase when opening an encrypted note.
+            Changing your login password does not affect encryption.
+        </p>
+    </div>
+    <style>
+    .password-wrapper {
+        position: relative;
+    }
+    .password-wrapper input {
+        padding-right: 2.5rem;
+    }
+    .password-toggle {
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--color-secondary);
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+    .password-toggle:hover {
+        color: var(--color-primary);
+    }
+    .password-toggle i {
+        font-size: 1rem;
+    }
+    </style>
+    <script>
+    document.querySelectorAll(".password-toggle").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        const input = btn.parentElement.querySelector("input");
+        const icon = btn.querySelector("i");
+        if (input.type === "password") {
+          input.type = "text";
+          icon.className = "icon-eye";
+        } else {
+          input.type = "password";
+          icon.className = "icon-eye-off";
+        }
+      });
+    });
+    </script>
+    <script type="module">
+    import { generateSalt, deriveKey, encrypt, decrypt, storeKey, getStoredKey, hasStoredKey, hasFreshKey, clearStoredKey, KEY_TTL_MS } from "{% static_v 'js/crypto.js' %}";
+
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const messageEl = document.getElementById("encryption-message");
+    const progressEl = document.getElementById("encryption-progress");
+    const progressText = document.getElementById("progress-text");
+
+    function showMessage(text, isError) {
+      messageEl.textContent = text;
+      messageEl.style.color = isError ? "var(--red-600)" : "var(--green-600)";
+    }
+
+    function showProgress(text) {
+      progressEl.style.display = "";
+      progressText.textContent = text;
+    }
+
+    function hideProgress() {
+      progressEl.style.display = "none";
+    }
+
+    async function fetchNotes() {
+      const resp = await fetch("{% url 'settings-encryption-notes' %}", {
+        headers: { "X-CSRFToken": csrfToken },
+      });
+      const data = await resp.json();
+      return data.notes;
+    }
+
+    async function saveNotes(notes) {
+      const resp = await fetch("{% url 'settings-encryption-notes-update' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/json" },
+        body: JSON.stringify({ notes: notes }),
+      });
+      return resp.ok;
+    }
+
+    async function bulkDecrypt(key) {
+      showProgress("Fetching notes...");
+      const notes = await fetchNotes();
+      const toDecrypt = notes.filter(function(n) { return n.is_encrypted && n.content; });
+
+      if (toDecrypt.length > 0) {
+        const updates = [];
+        for (let i = 0; i < toDecrypt.length; i++) {
+          showProgress("Decrypting note " + (i + 1) + " of " + toDecrypt.length + "...");
+          const plaintext = await decrypt(toDecrypt[i].content, key);
+          updates.push({ id: toDecrypt[i].id, content: plaintext, is_encrypted: false });
+        }
+        showProgress("Saving decrypted notes...");
+        await saveNotes(updates);
+      }
+    }
+
+    async function clearSalt() {
+      await fetch("{% url 'settings-encryption-clear-salt' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── State: Disabled — Enable encryption ──
+    const enableBtn = document.getElementById("enable-btn");
+    const passphraseInput = document.getElementById("enable-passphrase");
+    const passphraseConfirm = document.getElementById("enable-passphrase-confirm");
+
+    if (enableBtn) {
+      enableBtn.addEventListener("click", async function() {
+        const passphrase = passphraseInput.value;
+        const confirm = passphraseConfirm.value;
+
+        if (!passphrase) {
+          showMessage("Passphrase cannot be empty.", true);
+          return;
+        }
+        if (passphrase !== confirm) {
+          showMessage("Passphrases do not match.", true);
+          return;
+        }
+
+        enableBtn.disabled = true;
+        messageEl.textContent = "";
+
+        try {
+          showProgress("Generating encryption key...");
+          const salt = generateSalt();
+          const resp = await fetch("{% url 'settings-encryption-save-salt' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/json" },
+            body: JSON.stringify({ salt: salt }),
+          });
+          if (!resp.ok) {
+            showMessage("Failed to save encryption settings.", true);
+            enableBtn.disabled = false;
+            hideProgress();
+            return;
+          }
+
+          const key = await deriveKey(passphrase, salt);
+          await storeKey(key);
+
+          hideProgress();
+          showMessage("Encryption enabled. Use the lock icon in the editor to encrypt individual notes.", false);
+          setTimeout(function() { location.reload(); }, 1000);
+        } catch (e) {
+          hideProgress();
+          showMessage("Error: " + e.message, true);
+          enableBtn.disabled = false;
+        }
+      });
+
+      passphraseConfirm.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") enableBtn.click();
+      });
+    }
+
+    // ── State: Enabled — show key status and disable button ──
+    const keyStatusEl = document.getElementById("key-status");
+    const passphraseRow = document.getElementById("passphrase-row");
+    const disableBtn = document.getElementById("disable-btn");
+    const disablePassphrase = document.getElementById("passphrase-input");
+    const keyIsLoaded = hasFreshKey(KEY_TTL_MS);
+
+    if (keyStatusEl) {
+      if (keyIsLoaded) {
+        const raw = localStorage.getItem("notes_encryption_key");
+        const stored = raw ? JSON.parse(raw) : null;
+        const remaining = stored ? Math.max(0, Math.round((KEY_TTL_MS - (Date.now() - stored.timestamp)) / 60000)) : 0;
+        keyStatusEl.innerHTML = '<span style="color:var(--green-600)">Loaded (expires in ' + remaining + ' min)</span>';
+      } else if (hasStoredKey()) {
+        keyStatusEl.textContent = "Expired — re-enter passphrase when opening an encrypted note";
+      } else {
+        keyStatusEl.textContent = "Not loaded in this browser";
+      }
+    }
+
+    // Show passphrase input if key is not loaded (needed for bulk decrypt on disable)
+    if (passphraseRow && !keyIsLoaded) {
+      passphraseRow.style.display = "";
+    }
+
+    if (disableBtn) {
+      disableBtn.addEventListener("click", async function() {
+        // If key is not fresh, require passphrase
+        let key;
+        if (keyIsLoaded) {
+          key = await getStoredKey();
+        } else {
+          const passphrase = disablePassphrase ? disablePassphrase.value : "";
+          if (!passphrase) {
+            showMessage("Please enter the passphrase to decrypt notes.", true);
+            return;
+          }
+          try {
+            const salt = "{{ user.encryption_salt|escapejs }}";
+            key = await deriveKey(passphrase, salt);
+          } catch (e) {
+            showMessage("Error deriving key: " + e.message, true);
+            return;
+          }
+        }
+
+        const confirmed = await window.showConfirm({
+          title: "Disable Encryption",
+          message: "This will decrypt all encrypted notes and store them as plaintext. Continue?",
+          confirmText: "Disable Encryption",
+          isDangerous: true,
+        });
+        if (!confirmed) return;
+
+        disableBtn.disabled = true;
+        messageEl.textContent = "";
+
+        try {
+          await bulkDecrypt(key);
+
+          showProgress("Clearing encryption settings...");
+          await clearSalt();
+          clearStoredKey();
+
+          hideProgress();
+          showMessage("Encryption disabled. All notes are now plaintext.", false);
+          setTimeout(function() { location.reload(); }, 1000);
+        } catch (e) {
+          hideProgress();
+          showMessage("Error: " + e.message, true);
+          disableBtn.disabled = false;
+        }
+      });
+
+      if (disablePassphrase) {
+        disablePassphrase.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") disableBtn.click();
+        });
+      }
+    }
+    </script>
+{% endblock subcontent %}

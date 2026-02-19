@@ -5,11 +5,11 @@
                 <div class="favorite-left-icon">
                     {% if selected_folder.home_column and favorite.home_rank %}
                         <div class="favorite-icon-home">
-                            <i class="bi bi-house-door"></i>
+                            <i class="icon-house"></i>
                         </div>
                     {% else %}
                         <div class="favorite-icon">
-                            <i class="bi bi-bookmark"></i>
+                            <i class="icon-bookmark"></i>
                         </div>
                     {% endif %}
                 </div>
@@ -26,3 +26,4 @@
         </li>
     {% endfor %}
 </ul>
+{% include "pagination.html" %}

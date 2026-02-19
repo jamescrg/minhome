@@ -1,0 +1,54 @@
+<tr id="note-{{ note.id }}"
+    data-note-id="{{ note.id }}"
+    data-encrypted="{{ note.is_encrypted|yesno:'true,false' }}">
+    <td class="select-col">
+        <i class="icon-square note-select-checkbox" data-value="{{ note.id }}"></i>
+    </td>
+    <td class="folder">{{ note.folder.name|default:"—" }}</td>
+    <td class="title">
+        <div class="dropdown" x-data="dropdown()">
+            <a href="#"
+               class="note-title-link"
+               x-ref="button"
+               @click.prevent="toggle()"
+               :aria-expanded="open">{{ note.title }}</a>
+            <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                <li>
+                    <a class="dropdown-item"
+                       href="{% url 'notes:note-view' note.id %}"
+                       target="_blank"><i class="icon-external-link"></i> Open</a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       href="#"
+                       hx-get="{% url 'notes:edit' note.id %}"
+                       hx-target="#htmx-modal-container"><i class="icon-pencil"></i> Edit Details</a>
+                </li>
+                <li>
+                    <a class="dropdown-item note-encrypt-toggle"
+                       href="#"
+                       data-note-id="{{ note.id }}"
+                       data-encrypted="{{ note.is_encrypted|yesno:'true,false' }}"
+                       data-autosave-url="{% url 'notes:note-autosave' note.id %}">
+                        {% if note.is_encrypted %}
+                            <i class="icon-lock-open"></i> Remove Encryption
+                        {% else %}
+                            <i class="icon-lock"></i> Encrypt
+                        {% endif %}
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-danger"
+                       href="#"
+                       hx-confirm="Are you sure you want to delete this note?"
+                       hx-post="{% url 'notes:delete' note.id %}"><i class="icon-trash-2"></i> Delete</a>
+                </li>
+            </ul>
+        </div>
+    </td>
+    <td class="encrypted">
+        {% if note.is_encrypted %}<i class="icon-lock"></i>{% endif %}
+    </td>
+    <td class="created">{{ note.created_at|date:"Y-m-d" }}</td>
+    <td class="updated">{{ note.updated_at|date:"Y-m-d" }}</td>
+</tr>

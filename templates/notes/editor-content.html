@@ -1,0 +1,21 @@
+<div class="note-canvas"
+     {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}>
+    <div class="note-header">
+        <input type="text"
+               id="note-title"
+               class="note-title-input"
+               data-note-id="{{ note.id }}"
+               value="{{ note.title }}">
+    </div>
+    <div id="note-editor"></div>
+</div>
+<script>
+  window.NOTE_DATA = {
+    id: {{ note.id }},
+    title: "{{ note.title|escapejs }}",
+    content: "{{ note.content|escapejs }}",
+    autosaveUrl: "{% url 'notes:note-autosave' note.id %}",
+    titleUrl: "{% url 'notes:note-title' note.id %}",
+    isEncrypted: {{ note.is_encrypted|yesno:"true,false" }},
+  };
+</script>

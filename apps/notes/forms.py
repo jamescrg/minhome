@@ -1,31 +1,29 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
 from django import forms
-from django.core.exceptions import ValidationError
+
+from apps.folders.folders import get_folders_for_page
+from config.settings import CustomFormRenderer
 
 from .models import Note
 
 
 class NoteForm(forms.ModelForm):
+    default_renderer = CustomFormRenderer
+    use_required_attribute = False
+
     class Meta:
         model = Note
-        fields = (
-            "folder",
-            "subject",
-            "note",
-        )
+        fields = ("folder", "title")
         widgets = {
-            "note": forms.Textarea(),
+            "title": forms.TextInput(attrs={"class": "span2"}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, request=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout("subject", "note")
 
-    def clean_subject(self):
-        subject = self.cleaned_data["subject"]
-        if len(subject) > 50:
-            raise ValidationError("Subject must be fewer than 50 characters")
-        return subject
+        if request:
+            self.fields["folder"].queryset = get_folders_for_page(request, "notes")
+
+    def __iter__(self):
+        for field in super().__iter__():
+            if field.name != "folder":
+                yield field

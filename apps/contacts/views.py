@@ -8,12 +8,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 import apps.contacts.google as google
 from apps.contacts.forms import ContactForm
 from apps.contacts.models import Contact
-from apps.folders.folders import (
-    get_folders_for_page,
-    get_folders_tree_flat,
-    get_valid_parent_folders,
-    select_folder,
-)
+from apps.folders.folders import get_folders_for_page, select_folder
+from apps.management.pagination import CustomPaginator
 
 
 def _get_contacts_context(request):
@@ -28,6 +24,10 @@ def _get_contacts_context(request):
 
     contacts = contacts.order_by("name")
 
+    session_key = "contacts_page"
+    trigger_key = "contactsChanged"
+    pagination = CustomPaginator(contacts, 20, request, session_key)
+
     selected_contact_id = user.contacts_contact
     try:
         selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
@@ -38,10 +38,13 @@ def _get_contacts_context(request):
 
     return {
         "page": "contacts",
-        "contacts": contacts,
+        "contacts": pagination.get_object_list(),
         "selected_contact": selected_contact,
         "selected_folder": selected_folder,
         "google": google_enabled,
+        "pagination": pagination,
+        "session_key": session_key,
+        "trigger_key": trigger_key,
     }
 
 
@@ -56,40 +59,10 @@ def index(request):
 
     """
 
-    folders = get_folders_for_page(request, "contacts")
-
-    selected_folder = select_folder(request, "contacts")
-
-    if selected_folder:
-        contacts = Contact.objects.filter(user=request.user, folder=selected_folder)
-    else:
-        contacts = Contact.objects.filter(user=request.user, folder_id__isnull=True)
-
-    contacts = contacts.order_by("name")
-
-    selected_contact_id = request.user.contacts_contact
-
-    try:
-        selected_contact = Contact.objects.filter(pk=selected_contact_id).get()
-    except ObjectDoesNotExist:
-        selected_contact = None
-
-    if request.user.google_credentials:
-        google = True
-    else:
-        google = False
-
     context = {
-        "page": "contacts",
         "edit": False,
-        "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
-        "selected_folder": selected_folder,
-        "contacts": contacts,
-        "selected_contact": selected_contact,
-        "google": google,
-    }
+        "folders": get_folders_for_page(request, "contacts"),
+    } | _get_contacts_context(request)
 
     return render(request, "contacts/content.html", context)
 
@@ -105,6 +78,14 @@ def select(request, id):
 
     user = request.user
     user.contacts_contact = id
+
+    # Switch to the contact's folder
+    try:
+        contact = Contact.objects.get(pk=id, user=user)
+        user.contacts_folder = contact.folder_id or 0
+    except Contact.DoesNotExist:
+        pass
+
     user.save()
     return redirect("/contacts/")
 
@@ -167,8 +148,6 @@ def add(request):
         "add": True,
         "action": "/contacts/add",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "form": form,
         "phone_labels": ["Mobile", "Home", "Work", "Fax", "Other"],
     }
@@ -231,8 +210,6 @@ def edit(request, id):
         "add": False,
         "action": f"/contacts/{id}/edit",
         "folders": folders,
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
-        "valid_parent_folders": get_valid_parent_folders(request, "contacts"),
         "selected_folder": selected_folder,
         "contact": contact,
         "form": form,
@@ -361,23 +338,28 @@ def contacts_form_htmx(request, id=None):
                 saved_contact.google_id = google.add_contact(saved_contact)
                 saved_contact.save()
 
-            # Select the saved contact
+            # Select the saved contact and switch to its folder
             user.contacts_contact = saved_contact.id
+            user.contacts_folder = saved_contact.folder_id or 0
             user.save()
 
             return HttpResponse(
                 status=204,
                 headers={
                     "HX-Trigger": json.dumps(
-                        {"contactsChanged": "", "contactDetailChanged": ""}
+                        {
+                            "contactsChanged": "",
+                            "contactDetailChanged": "",
+                            "foldersChanged": "",
+                        }
                     )
                 },
             )
     else:
         if contact:
-            form = ContactForm(instance=contact)
+            form = ContactForm(instance=contact, use_required_attribute=False)
         else:
-            form = ContactForm()
+            form = ContactForm(use_required_attribute=False)
 
     context = {
         "page": "contacts",
@@ -385,7 +367,8 @@ def contacts_form_htmx(request, id=None):
         "contact": contact,
         "form": form,
         "action": f"/contacts/{id}/form-htmx" if id else "/contacts/form-htmx",
-        "folder_tree_flat": get_folders_tree_flat(request, "contacts"),
+        "folders": get_folders_for_page(request, "contacts"),
+        "selected_folder_id": user.contacts_folder,
     }
 
     return render(request, "contacts/modal-form.html", context)

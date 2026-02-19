@@ -1,43 +1,203 @@
+{% load phone_numbers %}
 <div class="card">
     <div class="card-title flex-center-space">
         <h1>{{ selected_contact.name }}</h1>
-        {% include "contacts/menu.html" %}
+        <div class="contact-toolbar">
+            <button type="button"
+                    class="copy-btn"
+                    data-copy-target="#contact-full-details"
+                    title="Copy all details">
+                <i class="icon-copy"></i>
+            </button>
+            {% if google %}
+                <button type="button"
+                        hx-post="{% url 'contacts-google-toggle-htmx' selected_contact.id %}"
+                        title="{% if selected_contact.google_id %}Remove from Google Contacts{% else %}Add to Google Contacts{% endif %}">
+                    {% if selected_contact.google_id %}
+                        <i class="icon-cloud-off"></i>
+                    {% else %}
+                        <i class="icon-cloud-upload"></i>
+                    {% endif %}
+                </button>
+            {% endif %}
+            <button type="button"
+                    hx-get="{% url 'contacts-form-htmx-edit' selected_contact.id %}"
+                    hx-target="#htmx-modal-container"
+                    title="Edit contact">
+                <i class="icon-pencil"></i>
+            </button>
+        </div>
     </div>
-    <div class="contact-item">
-        {{ selected_contact.name }}
-        {% if selected_contact.company %}
-            <br>
-            {{ selected_contact.company }}
-        {% endif %}
+    {# Hidden div for copying all contact details #}
+    {# djlint:off #}
+    <div id="contact-full-details" class="hidden">
+{% if selected_contact.company %}
+{{ selected_contact.name }}
+{{ selected_contact.company }}{% else %}
+{{ selected_contact.name }}{% endif %}
+{% if selected_contact.address %}{{ selected_contact.address }}{% endif %}{% if selected_contact.email %}
+{{ selected_contact.email }}{% endif %}{% if selected_contact.phone1 %}
+{{ selected_contact.phone1|phone_number }}{% if selected_contact.phone1_label %} - {{ selected_contact.phone1_label }}{% endif %}{% endif %}{% if selected_contact.phone2 %}
+{{ selected_contact.phone2|phone_number }}{% if selected_contact.phone2_label %} - {{ selected_contact.phone2_label }}{% endif %}{% endif %}{% if selected_contact.phone3 %}
+{{ selected_contact.phone3|phone_number }}{% if selected_contact.phone3_label %} - {{ selected_contact.phone3_label }}{% endif %}{% endif %}{% if selected_contact.website %}
+{{ selected_contact.website }}{% endif %}</div>
+    {# djlint:on #}
+    <div class="contact-tab-content">
+        {# Address Card #}
         {% if selected_contact.address %}
-            <br>
-            {{ selected_contact.address|linebreaks }}
+            {# djlint:off #}
+            <div id="contact-address-copy" class="hidden">{{ selected_contact.name }}
+{% if selected_contact.company %}{{ selected_contact.company }}
+{% endif %}{{ selected_contact.address }}</div>
+            {# djlint:on #}
+            <div class="contact-card">
+                <div class="contact-card-content-with-copy">
+                    <div class="contact-card-text-vertical">
+                        <span class="strong">{{ selected_contact.name }}</span>
+                        {% if selected_contact.company %}<span>{{ selected_contact.company }}</span>{% endif %}
+                        <span>{{ selected_contact.address|linebreaks }}</span>
+                    </div>
+                    <div class="contact-card-buttons">
+                        <button type="button"
+                                class="btn btn-sm action-btn copy-btn card-copy-btn-right"
+                                data-copy-target="#contact-address-copy"
+                                title="Copy address">
+                            <i class="icon-copy"></i>
+                        </button>
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ selected_contact.address|urlencode }}"
+                           target="_blank"
+                           class="btn btn-sm action-btn card-copy-btn-right"
+                           title="Open in Google Maps">
+                            <i class="icon-map-pin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         {% endif %}
+        {# Email Card #}
+        {% if selected_contact.email %}
+            <div class="contact-card">
+                <div class="contact-phone-list">
+                    <div class="contact-item contact-phone-item">
+                        <div class="contact-phone-text">
+                            <i class="icon-mail"></i>
+                            <a href="mailto:{{ selected_contact.email }}">{{ selected_contact.email }}</a>
+                        </div>
+                        <div class="contact-phone-buttons">
+                            <button type="button"
+                                    class="btn btn-sm action-btn copy-btn"
+                                    data-copy="{{ selected_contact.email }}"
+                                    title="Copy email">
+                                <i class="icon-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {# Phone Card #}
+        {% if selected_contact.phone1 or selected_contact.phone2 or selected_contact.phone3 %}
+            <div class="contact-card">
+                <div class="contact-phone-list">
+                    {% if selected_contact.phone1 %}
+                        <div class="contact-item contact-phone-item">
+                            <div class="contact-phone-text">
+                                <i class="icon-phone"></i>
+                                {{ selected_contact.phone1|phone_number }} - {{ selected_contact.phone1_label|lower }}
+                            </div>
+                            <div class="contact-phone-buttons">
+                                <button type="button"
+                                        class="btn btn-sm action-btn copy-btn"
+                                        data-copy="{{ selected_contact.phone1|phone_number }}"
+                                        title="Copy phone number">
+                                    <i class="icon-copy"></i>
+                                </button>
+                                <a href="tel:{{ selected_contact.phone1|phone_tel }}"
+                                   class="btn btn-sm action-btn contact-call-btn"
+                                   title="Call">
+                                    <i class="icon-phone-outgoing"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if selected_contact.phone2 %}
+                        <div class="contact-item contact-phone-item">
+                            <div class="contact-phone-text">
+                                <i class="icon-phone"></i>
+                                {{ selected_contact.phone2|phone_number }} - {{ selected_contact.phone2_label|lower }}
+                            </div>
+                            <div class="contact-phone-buttons">
+                                <button type="button"
+                                        class="btn btn-sm action-btn copy-btn"
+                                        data-copy="{{ selected_contact.phone2|phone_number }}"
+                                        title="Copy phone number">
+                                    <i class="icon-copy"></i>
+                                </button>
+                                <a href="tel:{{ selected_contact.phone2|phone_tel }}"
+                                   class="btn btn-sm action-btn contact-call-btn"
+                                   title="Call">
+                                    <i class="icon-phone-outgoing"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if selected_contact.phone3 %}
+                        <div class="contact-item contact-phone-item">
+                            <div class="contact-phone-text">
+                                <i class="icon-phone"></i>
+                                {{ selected_contact.phone3|phone_number }} - {{ selected_contact.phone3_label|lower }}
+                            </div>
+                            <div class="contact-phone-buttons">
+                                <button type="button"
+                                        class="btn btn-sm action-btn copy-btn"
+                                        data-copy="{{ selected_contact.phone3|phone_number }}"
+                                        title="Copy phone number">
+                                    <i class="icon-copy"></i>
+                                </button>
+                                <a href="tel:{{ selected_contact.phone3|phone_tel }}"
+                                   class="btn btn-sm action-btn contact-call-btn"
+                                   title="Call">
+                                    <i class="icon-phone-outgoing"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        {# Website Card #}
+        {% if selected_contact.website %}
+            <div class="contact-card">
+                <div class="contact-card-content-with-copy">
+                    <div class="contact-card-text">
+                        <i class="icon-globe"></i>
+                        <a href="{{ selected_contact.website }}"
+                           target="_blank"
+                           rel="noopener noreferrer">{{ selected_contact.website }}</a>
+                    </div>
+                    <button type="button"
+                            class="btn btn-sm action-btn copy-btn card-copy-btn-right"
+                            data-copy="{{ selected_contact.website }}"
+                            title="Copy website">
+                        <i class="icon-copy"></i>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+        {# Map Card #}
+        {% if selected_contact.map %}
+            <div class="contact-card">
+                <div class="contact-card-content-with-copy">
+                    <div class="contact-card-text">
+                        <i class="icon-map-pin"></i>
+                        <a href="{{ selected_contact.map }}"
+                           target="_blank"
+                           rel="noopener noreferrer">Map</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {# Notes #}
+        {% if selected_contact.notes %}<div class="contact-notes">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
     </div>
-    {% if selected_contact.phone1 %}
-        <div class="contact-item">{{ selected_contact.phone1 }} - {{ selected_contact.phone1_label|lower }}</div>
-    {% endif %}
-    {% if selected_contact.phone2 %}
-        <div class="contact-item">{{ selected_contact.phone2 }} - {{ selected_contact.phone2_label|lower }}</div>
-    {% endif %}
-    {% if selected_contact.phone3 %}
-        <div class="contact-item">{{ selected_contact.phone3 }} - {{ selected_contact.phone3_label|lower }}</div>
-    {% endif %}
-    {% if selected_contact.email != null %}<div class="contact-item">{{ selected_contact.email }}</div>{% endif %}
-    {% if selected_contact.website %}
-        <div class="contact-item">
-            <a href="{{ selected_contact.website }}">{{ selected_contact.website }}</a>
-        </div>
-    {% endif %}
-    {% if selected_contact.map %}
-        <div class="contact-item">
-            <a href="{{ selected_contact.map }}">Map</a>
-        </div>
-    {% endif %}
-    {% if selected_contact.notes %}<div class="contact-item">{{ selected_contact.notes|linebreaks }}</div>{% endif %}
-    {% if google and not selected_contact.google_id %}
-        <div class="contact-item">
-            <a href="{% url 'contacts-google-toggle' id=selected_contact.id %}">Add to Google Contacts</a>
-        </div>
-    {% endif %}
 </div>

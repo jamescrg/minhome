@@ -1,20 +1,11 @@
-{% extends 'registration/base.html' %}
-{% load crispy_forms_tags %}
-
-{% block title %}Sign Up{% endblock title %}
-
+{% extends "registration/base.html" %}
+{% block title %}
+    Sign Up
+{% endblock title %}
 {% block content %}
-
     <form class="account-form" method="post">
-
-      {% csrf_token %}
-
-      {{ form|crispy }}
-
-      <button class="btn btn-primary" type="submit">Sign Up</button>
-
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-primary" type="submit">Sign Up</button>
     </form>
-
-</div>
-
 {% endblock content %}

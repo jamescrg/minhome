@@ -8,7 +8,7 @@ from apps.finance import views as finance
 from apps.folders import views as folders
 from apps.home import views as home
 from apps.lab import views as lab
-from apps.notes import views as notes
+from apps.management.pagination import change_page
 from apps.search import views as search
 from apps.settings import views as settings
 from apps.tasks import views as tasks
@@ -16,6 +16,11 @@ from apps.weather import views as weather
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "pagination/change-page/<str:session_key>/<str:trigger_key>/<int:page>/",
+        change_page,
+        name="change-page",
+    ),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     # folders
@@ -45,11 +50,6 @@ urlpatterns = [
         "folders/<int:id>/<str:page>/delete",
         folders.delete_htmx,
         name="folder-delete-htmx",
-    ),
-    path(
-        "folders/<int:id>/<str:page>/toggle-expand",
-        folders.toggle_expand_htmx,
-        name="folder-toggle-expand",
     ),
     # home
     path("", home.index, name="home-index"),
@@ -183,20 +183,7 @@ urlpatterns = [
         name="contacts-google-toggle-htmx",
     ),
     # notes
-    path("notes/", notes.index, name="notes"),
-    path("notes/<int:id>", notes.select, name="notes-select"),
-    path("notes/add", notes.add, name="notes-add"),
-    path("notes/<int:id>/edit", notes.edit, name="notes-edit"),
-    path("notes/<int:id>/delete", notes.delete, name="notes-delete"),
-    # notes htmx
-    path("notes/list-htmx/", notes.notes_list_htmx, name="notes-list-htmx"),
-    path("notes/detail-htmx/", notes.note_detail_htmx, name="notes-detail-htmx"),
-    path("notes/<int:id>/select-htmx", notes.select_htmx, name="notes-select-htmx"),
-    path("notes/form-htmx", notes.notes_form_htmx, name="notes-form-htmx"),
-    path(
-        "notes/<int:id>/form-htmx", notes.notes_form_htmx, name="notes-form-htmx-edit"
-    ),
-    path("notes/<int:id>/delete-htmx", notes.delete_htmx, name="notes-delete-htmx"),
+    path("notes/", include("apps.notes.urls")),
     # weather
     path("weather/", weather.index, name="weather"),
     path("weather/zip", weather.zip, name="weather-zip"),
@@ -211,6 +198,34 @@ urlpatterns = [
     path("search/results", search.results, name="search-results"),
     # settings
     path("settings/", settings.index, name="settings"),
+    path("settings/homepage/", settings.homepage_index, name="settings-homepage"),
+    path("settings/google/", settings.google_index, name="settings-google"),
+    path("settings/session/", settings.session_index, name="settings-session"),
+    path(
+        "settings/encryption/",
+        settings.encryption_index,
+        name="settings-encryption",
+    ),
+    path(
+        "settings/encryption/save-salt",
+        settings.encryption_save_salt,
+        name="settings-encryption-save-salt",
+    ),
+    path(
+        "settings/encryption/clear-salt",
+        settings.encryption_clear_salt,
+        name="settings-encryption-clear-salt",
+    ),
+    path(
+        "settings/encryption/notes",
+        settings.encryption_notes_list,
+        name="settings-encryption-notes",
+    ),
+    path(
+        "settings/encryption/notes/update",
+        settings.encryption_notes_bulk_update,
+        name="settings-encryption-notes-update",
+    ),
     path("settings/google/login", settings.google_login, name="settings-google-login"),
     path("settings/google/store", settings.google_store, name="settings-google-store"),
     path(
