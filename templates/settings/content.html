@@ -21,6 +21,8 @@
                                 <span>
                                     {% if theme == "hojicha" %}
                                         Hojicha
+                                    {% elif theme == "auto" %}
+                                        Auto
                                     {% else %}
                                         Matcha
                                     {% endif %}
@@ -28,7 +30,7 @@
                                 <i class="icon-chevron-down"></i>
                             </button>
                             <ul class="dropdown-menu" x-ref="menu" x-show="open">
-                                <li {% if theme != "hojicha" %}class="active"{% endif %}>
+                                <li {% if theme == "matcha" or theme == "" %}class="active"{% endif %}>
                                     <a class="dropdown-item"
                                        href="#"
                                        @click.prevent="$el.closest('form').querySelector('[name=theme]').value='matcha'; $el.closest('form').submit();">Matcha</a>
@@ -37,6 +39,11 @@
                                     <a class="dropdown-item"
                                        href="#"
                                        @click.prevent="$el.closest('form').querySelector('[name=theme]').value='hojicha'; $el.closest('form').submit();">Hojicha</a>
+                                </li>
+                                <li {% if theme == "auto" %}class="active"{% endif %}>
+                                    <a class="dropdown-item"
+                                       href="#"
+                                       @click.prevent="$el.closest('form').querySelector('[name=theme]').value='auto'; $el.closest('form').submit();">Auto</a>
                                 </li>
                             </ul>
                         </div>
