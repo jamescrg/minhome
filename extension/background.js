@@ -24,7 +24,7 @@ api.browserAction.onClicked.addListener(function(tab) {
   api.windows.getCurrent(function(currentWindow) {
     // Calculate popup position on the right side of current window
     const popupWidth = 450;
-    const popupHeight = 550;
+    const popupHeight = 450;
     const left = Math.round(currentWindow.left + currentWindow.width - popupWidth - 20); // 20px margin from edge
     const top = Math.round(currentWindow.top + (currentWindow.height - popupHeight) / 2);
 
@@ -86,7 +86,7 @@ api.contextMenus.onClicked.addListener(function(info, tab) {
     api.windows.getCurrent(function(currentWindow) {
       // Calculate popup position on the right side of current window
       const popupWidth = 450;
-      const popupHeight = 550;
+      const popupHeight = 450;
       const left = Math.round(currentWindow.left + currentWindow.width - popupWidth - 20); // 20px margin from edge
       const top = Math.round(currentWindow.top + (currentWindow.height - popupHeight) / 2);
 
