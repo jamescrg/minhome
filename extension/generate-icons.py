@@ -2,88 +2,45 @@
 from PIL import Image, ImageDraw
 
 
-def draw_bookmark_plus(size):
-    # Create a new image with transparency
+def draw_house(size):
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    # Scale factor
-    scale = size / 16
+    s = size / 24  # Scale from 24x24 viewBox
+    color = "#3f6212"  # Matcha green matching favicon
+    width = max(2 * s, 1)
 
-    # Lime-600 color
-    lime_green = "#65A30D"
-
-    # Draw bookmark outline
-    # Simplified version - draw as a rectangle with cut bottom
-    bookmark_points = []
-
-    # Top left corner with rounding
-    bookmark_points.extend(
-        [
-            (4 * scale, 0 * scale),
-            (12 * scale, 0 * scale),
-            (14 * scale, 2 * scale),
-            (14 * scale, 15.5 * scale),
-            (8 * scale, 13.101 * scale),
-            (2 * scale, 15.5 * scale),
-            (2 * scale, 2 * scale),
-            (4 * scale, 0 * scale),
-        ]
-    )
-
-    # Draw filled bookmark
-    draw.polygon(bookmark_points, fill=lime_green)
-
-    # Draw inner cutout (to create outline effect)
-    inner_points = [
-        (4 * scale, 1 * scale),
-        (12 * scale, 1 * scale),
-        (13 * scale, 2 * scale),
-        (13 * scale, 14.566 * scale),
-        (8 * scale, 12.084 * scale),
-        (3 * scale, 14.566 * scale),
-        (3 * scale, 2 * scale),
-        (4 * scale, 1 * scale),
+    # House body: M3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9
+    body_points = [
+        (3 * s, 10 * s),
+        (3 * s, 19 * s),
+        (5 * s, 21 * s),
+        (19 * s, 21 * s),
+        (21 * s, 19 * s),
+        (21 * s, 10 * s),
     ]
+    draw.line(body_points, fill=color, width=round(width), joint="curve")
 
-    # Create a mask for the inner cutout
-    mask = Image.new("L", (size, size), 0)
-    mask_draw = ImageDraw.Draw(mask)
-    mask_draw.polygon(inner_points, fill=255)
+    # Roof: M3 10 l9-8 l9 8 (simplified from the arc path)
+    roof_points = [
+        (3 * s, 10 * s),
+        (12 * s, 3 * s),
+        (21 * s, 10 * s),
+    ]
+    draw.line(roof_points, fill=color, width=round(width), joint="curve")
 
-    # Apply the mask to create the outline effect
-    img_with_cutout = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    img_with_cutout.paste(img, (0, 0))
-    img_with_cutout.paste((0, 0, 0, 0), (0, 0), mask)
-
-    # Draw the plus sign
-    plus_width = 1 * scale
-    plus_center_x = 8 * scale
-    plus_center_y = 6.5 * scale
-    plus_size = 2 * scale
-
-    # Horizontal bar of plus
-    draw.rectangle(
-        [
-            (plus_center_x - plus_size, plus_center_y - plus_width / 2),
-            (plus_center_x + plus_size, plus_center_y + plus_width / 2),
-        ],
-        fill=lime_green,
-    )
-
-    # Vertical bar of plus
-    draw.rectangle(
-        [
-            (plus_center_x - plus_width / 2, plus_center_y - plus_size),
-            (plus_center_x + plus_width / 2, plus_center_y + plus_size),
-        ],
-        fill=lime_green,
-    )
+    # Door: M9 21v-8h6v8
+    door_points = [
+        (9 * s, 21 * s),
+        (9 * s, 13 * s),
+        (15 * s, 13 * s),
+        (15 * s, 21 * s),
+    ]
+    draw.line(door_points, fill=color, width=round(width), joint="curve")
 
     return img
 
 
-# Generate icons in different sizes
 sizes = [
     (16, "icon-16.png"),
     (32, "icon-32.png"),
@@ -92,7 +49,7 @@ sizes = [
 ]
 
 for size, filename in sizes:
-    icon = draw_bookmark_plus(size)
+    icon = draw_house(size)
     icon.save(filename, "PNG")
     print(f"Generated {filename} ({size}x{size})")
 
