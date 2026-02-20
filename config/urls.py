@@ -230,6 +230,16 @@ urlpatterns = [
     path("settings/google/", settings.google_index, name="settings-google"),
     path("settings/session/", settings.session_index, name="settings-session"),
     path(
+        "settings/notifications/",
+        settings.notifications_index,
+        name="settings-notifications",
+    ),
+    path(
+        "settings/notification-options/<str:option>/<str:value>",
+        settings.notification_options,
+        name="settings-notification-options",
+    ),
+    path(
         "settings/encryption/",
         settings.encryption_index,
         name="settings-encryption",

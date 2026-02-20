@@ -34,6 +34,7 @@ class Task(TimestampMixin, models.Model):
     completed_date = models.DateField(blank=True, null=True)
     due_date = models.DateField(blank=True, null=True)
     due_time = models.TimeField(blank=True, null=True)
+    reminder_sent_date = models.DateField(blank=True, null=True)
 
     # Recurrence fields
     is_recurring = models.BooleanField(default=False)
