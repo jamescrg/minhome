@@ -8,11 +8,19 @@
             Unsorted
         {% endif %}
     </h1>
-    <button class="square-button filter-button {% if filter_label == 'custom' %}toggle-active{% endif %}"
-            hx-get="{% url 'tasks-filter' %}"
-            hx-target="#htmx-modal-container">
-        <i class="icon-list-filter"></i>
-    </button>
+    <div style="display:flex;gap:0.5rem">
+        <button class="square-button filter-button"
+                hx-get="{% url 'tasks-due' %}"
+                hx-target="#main-content"
+                hx-swap="innerHTML">
+            <i class="icon-clock"></i>
+        </button>
+        <button class="square-button filter-button {% if filter_label == 'custom' %}toggle-active{% endif %}"
+                hx-get="{% url 'tasks-filter' %}"
+                hx-target="#htmx-modal-container">
+            <i class="icon-list-filter"></i>
+        </button>
+    </div>
 </div>
 {% include "tasks/taskform.html" %}
 <ul class="list-group tasks-list">
