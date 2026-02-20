@@ -28,9 +28,10 @@
         <li class="list-group-item tasks-row">
             <div class="tasks-checkbox">
                 <a href="#"
+                   onclick="event.preventDefault()"
                    hx-post="{% url 'tasks-status' task.id %}"
                    hx-target="#tasks-container"
-                   hx-swap="innerHTML">
+                   hx-swap="innerHTML scroll:none">
                     {% if task.status == 1 %}
                         <i class="icon-circle-check-big"></i>
                     {% else %}

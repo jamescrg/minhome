@@ -577,9 +577,12 @@ def delete_htmx(request, id):
 @login_required
 def clear_htmx(request):
     """Archive completed tasks via htmx and return updated list."""
+    tasks_folder_all = request.session.get("tasks_all", False)
     selected_folder = select_folder(request, "tasks")
 
-    if selected_folder:
+    if tasks_folder_all:
+        Task.objects.filter(user=request.user, status=1).update(archived=True)
+    elif selected_folder:
         Task.objects.filter(folder=selected_folder, status=1).update(archived=True)
     else:
         Task.objects.filter(user=request.user, folder__isnull=True, status=1).update(
@@ -593,9 +596,12 @@ def clear_htmx(request):
 @login_required
 def delete_completed_htmx(request):
     """Delete completed tasks via htmx and return updated list."""
+    tasks_folder_all = request.session.get("tasks_all", False)
     selected_folder = select_folder(request, "tasks")
 
-    if selected_folder:
+    if tasks_folder_all:
+        Task.objects.filter(user=request.user, status=1).delete()
+    elif selected_folder:
         Task.objects.filter(folder=selected_folder, status=1).delete()
     else:
         Task.objects.filter(user=request.user, folder__isnull=True, status=1).delete()
