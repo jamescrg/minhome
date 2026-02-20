@@ -311,7 +311,7 @@ li {
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background: var(--button-secondary-bg, var(--blue-50));
+  background: var(--button-secondary-background);
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
