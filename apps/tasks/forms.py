@@ -57,6 +57,7 @@ class TaskForm(forms.ModelForm):
                 self.fields["recurrence"].initial = self.instance.recurrence_type
 
     def __iter__(self):
+        skip = {"folder", "status", "archived"}
         for field in super().__iter__():
-            if field.name != "folder":
+            if field.name not in skip:
                 yield field

@@ -18,7 +18,7 @@
                   hx-target="#htmx-modal-container"
                   class="form-compact col3">
                 {% csrf_token %}
-                <div class="form-group span3">
+                <div class="form-group">
                     <label for="id_folder">Folder</label>
                     <div>
                         <select id="id_folder" name="folder">
@@ -31,6 +31,14 @@
                             {% endfor %}
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_status">Status</label>
+                    <div>{{ form.status }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="id_archived">Archived</label>
+                    <div>{{ form.archived }}</div>
                 </div>
                 {{ form }}
             </form>
