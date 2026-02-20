@@ -389,6 +389,16 @@ li {
   color: var(--link-hover);
 }
 
+.square-button.filter-button {
+  color: var(--violet-500);
+}
+
+.square-button.toggle-active {
+  background: var(--selected-background);
+  border: solid 1px var(--selected-border);
+  color: var(--selected-color);
+}
+
 
 
 /*------------------------------------------------
