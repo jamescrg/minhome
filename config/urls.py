@@ -143,6 +143,10 @@ urlpatterns = [
     path("tasks/<int:id>/complete/<str:origin>", tasks.status, name="tasks-complete"),
     path("tasks/clear", tasks.clear, name="tasks-clear"),
     # tasks htmx
+    path("tasks/filter", tasks.task_filter, name="tasks-filter"),
+    path(
+        "tasks/filter/default", tasks.task_filter_default, name="tasks-filter-default"
+    ),
     path("tasks/list/", tasks.task_list, name="tasks-list"),
     path("tasks/add-htmx", tasks.add_htmx, name="tasks-add-htmx"),
     path("tasks/<int:id>/form", tasks.task_form, name="tasks-form"),
