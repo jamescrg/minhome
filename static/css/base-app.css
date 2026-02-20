@@ -452,7 +452,7 @@ li {
   align-items: center;
   display: flex;
   gap: 1rem;
-  padding: 0 0 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .bulk-toolbar .toolbar-left {
