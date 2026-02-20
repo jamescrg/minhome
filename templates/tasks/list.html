@@ -1,21 +1,5 @@
 {% include "tasks/taskform.html" %}
 <ul class="list-group tasks-list">
-    <li class="list-group-item tasks-list-title">
-        {% if selected_folder %}
-            {% for ancestor in selected_folder.get_ancestors %}
-                <a href="#"
-                   hx-get="{% url 'folder-select-htmx' id=ancestor.id page='tasks' %}"
-                   hx-target="#main-content"
-                   hx-swap="innerHTML">{{ ancestor.name }}</a> /
-            {% endfor %}
-            <a href="#"
-               hx-get="{% url 'folder-select-htmx' id=selected_folder.id page='tasks' %}"
-               hx-target="#main-content"
-               hx-swap="innerHTML">{{ selected_folder.name }}</a>
-        {% else %}
-            Unsorted
-        {% endif %}
-    </li>
     {% for task in tasks %}
         <li class="list-group-item tasks-row">
             <div class="tasks-checkbox">
