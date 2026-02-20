@@ -28,11 +28,12 @@ def _get_task_list_context(request):
         ).order_by("status", "title")
 
     filter_data = request.session.get("tasks_filter", {})
+    filter_label = filter_data.get("filter_label", "")
     task_filter = TasksFilter(filter_data, queryset=queryset)
     tasks = task_filter.qs
 
-    # Default behavior: if no filter session data, exclude archived
-    if not filter_data:
+    # Default behavior: if no custom filter, exclude archived
+    if filter_label != "custom":
         tasks = tasks.filter(archived=False)
 
     session_key = "tasks_page"
@@ -47,7 +48,7 @@ def _get_task_list_context(request):
         "pagination": pagination,
         "session_key": session_key,
         "trigger_key": trigger_key,
-        "filter_label": "custom" if filter_data else "",
+        "filter_label": filter_label,
     }
 
 
@@ -323,6 +324,7 @@ def task_filter(request):
         filter_data = {
             k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"
         }
+        filter_data["filter_label"] = "custom"
         request.session["tasks_filter"] = filter_data
         return HttpResponse(status=204, headers={"HX-Trigger": "tasksChanged"})
 
