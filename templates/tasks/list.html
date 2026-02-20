@@ -30,8 +30,7 @@
             </div>
             <div class="tasks-content">
                 <div class="tasks-title">
-                    <a class="{% if task.status == 1 %}text-completed{% endif %}"
-                       href="#"
+                    <a href="#"
                        hx-get="{% url 'tasks-form' task.id %}"
                        hx-target="#htmx-modal-container">{{ task.title }}</a>
                 </div>
@@ -55,7 +54,11 @@
     <button class="btn btn-secondary"
             hx-post="{% url 'tasks-clear-htmx' %}"
             hx-target="#tasks-container"
-            hx-swap="innerHTML">
-        <i class="icon-archive"></i> Archive Completed Tasks
-    </button>
+            hx-swap="innerHTML">Archive</button>
+    <button class="btn btn-secondary"
+            hx-post="{% url 'tasks-delete-completed-htmx' %}"
+            hx-target="#tasks-container"
+            hx-swap="innerHTML"
+            hx-confirm="Are you sure you want to delete all completed tasks?">Delete</button>
+    <div class="archive-caption">Apply to completed tasks</div>
 </div>
