@@ -533,6 +533,26 @@ def status_htmx(request, id):
         task.completed_date = date.today()
     task.save()
 
+    # Generate next recurring instance on completion
+    if task.status == 1 and task.parent_task:
+        parent = task.parent_task
+        if parent.is_recurring and not parent.archived:
+            has_pending = Task.objects.filter(
+                parent_task=parent, status=0, archived=False
+            ).exists()
+            if not has_pending:
+                Task.objects.create(
+                    user=parent.user,
+                    folder=parent.folder,
+                    title=parent.title,
+                    status=0,
+                    due_date=date.today(),
+                    due_time=parent.due_time,
+                    parent_task=parent,
+                )
+                parent.last_generated = date.today()
+                parent.save(update_fields=["last_generated"])
+
     context = _get_task_list_context(request)
     return render(request, "tasks/list.html", context)
 

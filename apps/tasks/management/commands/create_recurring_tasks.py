@@ -21,6 +21,15 @@ class Command(BaseCommand):
 
         recurring_tasks = Task.objects.filter(is_recurring=True, archived=False)
 
+        # Clean up accumulated pending instances: keep only the most recent per parent
+        for template in recurring_tasks:
+            pending = Task.objects.filter(
+                parent_task=template, status=0, archived=False
+            ).order_by("-due_date")
+            stale_ids = list(pending.values_list("id", flat=True)[1:])
+            if stale_ids:
+                Task.objects.filter(id__in=stale_ids).delete()
+
         for template in recurring_tasks:
             if self.should_generate(template, today):
                 self.create_instance(template, today)
@@ -34,6 +43,9 @@ class Command(BaseCommand):
 
     def should_generate(self, template, today):
         """Check if a new instance should be generated today."""
+        if Task.objects.filter(parent_task=template, status=0, archived=False).exists():
+            return False
+
         last = template.last_generated
 
         if template.recurrence_type == "daily":
