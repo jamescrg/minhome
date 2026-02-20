@@ -21,9 +21,9 @@
                     <div>
                         <select name="show_archived" id="id_show_archived">
                             <option value="false"
-                                    {% if filter.form.show_archived.value != "true" %}selected{% endif %}>No</option>
+                                    {% if not filter.form.show_archived.value %}selected{% endif %}>No</option>
                             <option value="true"
-                                    {% if filter.form.show_archived.value == "true" %}selected{% endif %}>Yes</option>
+                                    {% if filter.form.show_archived.value %}selected{% endif %}>Yes</option>
                         </select>
                     </div>
                 </div>
