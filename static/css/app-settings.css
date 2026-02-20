@@ -12,7 +12,7 @@
 }
 
 .theme-select .btn i {
-  color: var(--color-muted);
+  color: inherit;
   font-size: 0.75rem;
 }
 
