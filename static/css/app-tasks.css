@@ -119,7 +119,7 @@
 }
 
 .archive .btn {
-  color: var(--color-muted);
+  color: var(--color-secondary);
 }
 
 .archive .btn i {
