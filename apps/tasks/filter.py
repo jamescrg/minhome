@@ -21,6 +21,11 @@ class TasksFilter(django_filters.FilterSet):
     completed_date = django_filters.DateFromToRangeFilter(
         widget=RangeWidget(attrs={"type": "date"}),
     )
+    created_at = django_filters.DateFromToRangeFilter(
+        field_name="created_at",
+        lookup_expr="date",
+        widget=RangeWidget(attrs={"type": "date"}),
+    )
     show_archived = django_filters.BooleanFilter(
         method="filter_archived",
         label="Show Archived",
@@ -28,7 +33,7 @@ class TasksFilter(django_filters.FilterSet):
 
     class Meta:
         model = Task
-        fields = ["status", "due_date", "completed_date"]
+        fields = ["status", "due_date", "completed_date", "created_at"]
 
     def filter_status(self, queryset, name, value):
         if value == "Pending":
