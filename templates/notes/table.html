@@ -20,9 +20,6 @@
                     <i class="icon-chevrons-up-down"></i>
                 </button>
             </th>
-            <th class="encrypted">
-                <i class="icon-lock"></i>
-            </th>
             <th class="created">
                 Created
                 <button class="btn-sort {% if 'created_at' in current_order %}active{% endif %}"
@@ -44,7 +41,7 @@
             {% include "notes/row.html" %}
         {% empty %}
             <tr>
-                <td colspan="6" class="empty-message">No notes found.</td>
+                <td colspan="5" class="empty-message">No notes found.</td>
             </tr>
         {% endfor %}
     </table>

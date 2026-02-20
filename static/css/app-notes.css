@@ -812,18 +812,10 @@ body:has(.dev-banner) .note-editor-layout {
   white-space: normal;
 }
 
-.notes-list .encrypted {
-  text-align: center;
-  width: 3rem;
-}
-
-.notes-list .encrypted i {
+.note-encrypted-indicator {
   color: var(--color-muted);
-  font-size: 0.9rem;
-}
-
-.notes-list th.encrypted i {
-  font-size: 1rem;
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
 }
 
 .notes-list .created {
