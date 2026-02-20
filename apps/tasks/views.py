@@ -39,10 +39,10 @@ def _get_task_list_context(request):
     if filter_label not in ("custom", "due"):
         tasks = tasks.filter(archived=False)
 
-    # Apply sort
+    # Apply sort — always push completed tasks to the bottom
     sort = filter_data.get("sort", "title")
     if sort in ("title", "-title", "due_date", "-due_date", "-created_at"):
-        tasks = tasks.order_by(sort)
+        tasks = tasks.order_by("status", sort)
 
     session_key = "tasks_page"
     trigger_key = "tasksChanged"
