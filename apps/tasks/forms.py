@@ -10,7 +10,7 @@ class TaskForm(forms.ModelForm):
     use_required_attribute = False
 
     RECURRENCE_CHOICES = [
-        ("", "No recurrence"),
+        ("", "None"),
         ("daily", "Daily"),
         ("weekly", "Weekly"),
         ("monthly", "Monthly"),
