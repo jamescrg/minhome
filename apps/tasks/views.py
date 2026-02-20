@@ -19,8 +19,13 @@ def _get_task_list_context(request):
     user = request.user
     folders = get_task_folders(request)
     selected_folder = select_folder(request, "tasks")
+    tasks_folder_all = request.session.get("tasks_all", False)
 
-    if selected_folder:
+    if tasks_folder_all:
+        queryset = Task.objects.filter(user=user, is_recurring=False).order_by(
+            "status", "title"
+        )
+    elif selected_folder:
         queryset = Task.objects.filter(
             folder=selected_folder, is_recurring=False
         ).order_by("status", "title")
@@ -51,6 +56,7 @@ def _get_task_list_context(request):
         "session_key": session_key,
         "trigger_key": trigger_key,
         "filter_label": filter_label,
+        "tasks_folder_all": tasks_folder_all,
     }
 
 
@@ -312,6 +318,16 @@ def remove_editor(request, folder_id, user_id):
 
 
 # HTMX Views
+
+
+@login_required
+def tasks_all(request):
+    """Select 'All' folder view and return updated tasks with folders OOB."""
+    request.session["tasks_all"] = True
+    request.user.tasks_folder = 0
+    request.user.save()
+    context = _get_task_list_context(request)
+    return render(request, "tasks/tasks-with-folders-oob.html", context)
 
 
 @login_required

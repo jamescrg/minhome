@@ -230,6 +230,8 @@ def _get_folder_context(request, page):
         context["favorites_folder_all"] = request.session.get("favorites_all", False)
     elif page == "notes":
         context["notes_folder_all"] = request.session.get("notes_all", False)
+    elif page == "tasks":
+        context["tasks_folder_all"] = request.session.get("tasks_all", False)
     return context
 
 
@@ -294,29 +296,11 @@ def select_htmx(request, id, page):
     user.save()
 
     if page == "tasks":
-        from apps.folders.folders import get_task_folders
-        from apps.tasks.models import Task
+        from apps.tasks.views import _get_task_list_context
 
-        folders = get_task_folders(request)
-        selected_folder = select_folder(request, page)
+        request.session.pop("tasks_all", None)
 
-        if selected_folder:
-            tasks = Task.objects.filter(
-                folder=selected_folder, is_recurring=False, archived=False
-            ).order_by("status", "title")
-        else:
-            tasks = Task.objects.filter(
-                user=user, folder__isnull=True, is_recurring=False, archived=False
-            ).order_by("status", "title")
-
-        context = {
-            "page": page,
-            "user": user,
-            "folders": folders,
-            "selected_folder": selected_folder,
-            "tasks": tasks,
-        }
-
+        context = _get_task_list_context(request)
         return render(request, "tasks/tasks-with-folders-oob.html", context)
 
     elif page == "favorites":
