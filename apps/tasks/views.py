@@ -22,17 +22,13 @@ def _get_task_list_context(request):
     tasks_folder_all = request.session.get("tasks_all", False)
 
     if tasks_folder_all:
-        queryset = Task.objects.filter(user=user, is_recurring=False).order_by(
-            "status", "title"
-        )
+        queryset = Task.objects.filter(user=user, is_recurring=False)
     elif selected_folder:
-        queryset = Task.objects.filter(
-            folder=selected_folder, is_recurring=False
-        ).order_by("status", "title")
+        queryset = Task.objects.filter(folder=selected_folder, is_recurring=False)
     else:
         queryset = Task.objects.filter(
             user=user, folder__isnull=True, is_recurring=False
-        ).order_by("status", "title")
+        )
 
     filter_data = request.session.get("tasks_filter", {})
     filter_label = filter_data.get("filter_label", "")
@@ -40,8 +36,13 @@ def _get_task_list_context(request):
     tasks = task_filter.qs
 
     # Default behavior: if no custom filter, exclude archived
-    if filter_label != "custom":
+    if filter_label not in ("custom", "due"):
         tasks = tasks.filter(archived=False)
+
+    # Apply sort
+    sort = filter_data.get("sort", "title")
+    if sort in ("title", "-title", "due_date", "-due_date", "-created_at"):
+        tasks = tasks.order_by(sort)
 
     session_key = "tasks_page"
     trigger_key = "tasksChanged"
@@ -340,9 +341,10 @@ def tasks_due(request):
     request.user.tasks_folder = 0
     request.user.save()
     request.session["tasks_filter"] = {
-        "filter_label": "custom",
+        "filter_label": "due",
         "status": "Pending",
         "due_date_max": date.today().strftime("%Y-%m-%d"),
+        "sort": "due_date",
     }
     context = _get_task_list_context(request)
     return render(request, "tasks/tasks-with-folders-oob.html", context)
@@ -368,7 +370,14 @@ def task_filter(request):
 
     filter_data = request.session.get("tasks_filter", {})
     task_filter = TasksFilter(filter_data)
-    return render(request, "tasks/filter.html", {"filter": task_filter})
+    return render(
+        request,
+        "tasks/filter.html",
+        {
+            "filter": task_filter,
+            "sort_value": filter_data.get("sort", ""),
+        },
+    )
 
 
 @login_required
