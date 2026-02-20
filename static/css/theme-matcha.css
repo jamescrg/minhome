@@ -30,6 +30,7 @@
   --color-primary: var(--stone-600);
   --color-secondary: var(--stone-500);
   --color-muted: var(--stone-400);
+  --color-faint: var(--stone-350);
   --color-strong: var(--stone-700);
 
   /* Links */
