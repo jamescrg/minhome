@@ -113,8 +113,12 @@
   }
 }
 
-.clear {
-  text-align: right;
+.archive {
+  text-align: center;
+}
+
+.archive i {
+  margin-right: 0.5rem;
 }
 
 /* ------------------------------------------------------------------------- */
