@@ -17,23 +17,6 @@
 /* task list */
 /* ------------------------------------------------------------------------- */
 
-.tasks-list-title {
-  font-weight: 600;
-}
-
-.list-group-item.tasks-list-title {
-  border-top: none;
-}
-
-.tasks-list-title a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.tasks-list-title a:hover {
-  text-decoration: underline;
-}
-
 .tasks-list {
   margin-bottom: 1.5rem;
 }
