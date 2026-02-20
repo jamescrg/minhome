@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "django.forms",
     "watson",
     "mathfilters",
+    "django_filters",
     "accounts",
     "apps.folders",
     "apps.home",

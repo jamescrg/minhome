@@ -7,6 +7,7 @@ from accounts.models import CustomUser
 from apps.folders.folders import get_folders_for_page, get_task_folders, select_folder
 from apps.folders.models import Folder
 from apps.management.pagination import CustomPaginator
+from apps.tasks.filter import TasksFilter
 from apps.tasks.forms import TaskForm
 from apps.tasks.models import Task
 
@@ -18,13 +19,21 @@ def _get_task_list_context(request):
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(
-            folder=selected_folder, is_recurring=False, archived=False
+        queryset = Task.objects.filter(
+            folder=selected_folder, is_recurring=False
         ).order_by("status", "title")
     else:
-        tasks = Task.objects.filter(
-            user=user, folder__isnull=True, is_recurring=False, archived=False
+        queryset = Task.objects.filter(
+            user=user, folder__isnull=True, is_recurring=False
         ).order_by("status", "title")
+
+    filter_data = request.session.get("tasks_filter", {})
+    task_filter = TasksFilter(filter_data, queryset=queryset)
+    tasks = task_filter.qs
+
+    # Default behavior: if no filter session data, exclude archived
+    if not filter_data:
+        tasks = tasks.filter(archived=False)
 
     session_key = "tasks_page"
     trigger_key = "tasksChanged"
@@ -38,6 +47,7 @@ def _get_task_list_context(request):
         "pagination": pagination,
         "session_key": session_key,
         "trigger_key": trigger_key,
+        "filter_label": "custom" if filter_data else "",
     }
 
 
@@ -304,6 +314,28 @@ def task_list(request):
     """Return task list partial for htmx."""
     context = _get_task_list_context(request)
     return render(request, "tasks/list.html", context)
+
+
+@login_required
+def task_filter(request):
+    """Display or apply task filter."""
+    if request.method == "POST":
+        filter_data = {
+            k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"
+        }
+        request.session["tasks_filter"] = filter_data
+        return HttpResponse(status=204, headers={"HX-Trigger": "tasksChanged"})
+
+    filter_data = request.session.get("tasks_filter", {})
+    task_filter = TasksFilter(filter_data)
+    return render(request, "tasks/filter.html", {"filter": task_filter})
+
+
+@login_required
+def task_filter_default(request):
+    """Clear task filter to defaults."""
+    request.session.pop("tasks_filter", None)
+    return HttpResponse(status=204, headers={"HX-Trigger": "tasksChanged"})
 
 
 @login_required
