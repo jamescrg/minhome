@@ -30,7 +30,8 @@
             </div>
             <div class="tasks-content">
                 <div class="tasks-title">
-                    <a href="#"
+                    <a class="{% if task.status == 1 %}text-completed{% endif %}"
+                       href="#"
                        hx-get="{% url 'tasks-form' task.id %}"
                        hx-target="#htmx-modal-container">{{ task.title }}</a>
                 </div>

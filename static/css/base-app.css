@@ -603,7 +603,6 @@ li {
 }
 
 .text-completed {
-  text-decoration: line-through;
   color: var(--color-muted);
 }
 
