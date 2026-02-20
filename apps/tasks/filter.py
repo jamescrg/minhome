@@ -26,6 +26,12 @@ class TasksFilter(django_filters.FilterSet):
         lookup_expr="date",
         widget=RangeWidget(attrs={"type": "date"}),
     )
+    recurring = django_filters.ChoiceFilter(
+        choices=(("Yes", "Yes"), ("No", "No")),
+        empty_label="All",
+        method="filter_recurring",
+        label="Recurring",
+    )
     show_archived = django_filters.BooleanFilter(
         method="filter_archived",
         label="Show Archived",
@@ -40,6 +46,13 @@ class TasksFilter(django_filters.FilterSet):
             return queryset.filter(status=0)
         elif value == "Completed":
             return queryset.filter(status=1)
+        return queryset
+
+    def filter_recurring(self, queryset, name, value):
+        if value == "Yes":
+            return queryset.filter(parent_task__isnull=False)
+        elif value == "No":
+            return queryset.filter(parent_task__isnull=True)
         return queryset
 
     def filter_archived(self, queryset, name, value):
