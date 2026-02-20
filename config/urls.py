@@ -154,6 +154,11 @@ urlpatterns = [
     path("tasks/<int:id>/delete-htmx", tasks.delete_htmx, name="tasks-delete-htmx"),
     path("tasks/clear-htmx", tasks.clear_htmx, name="tasks-clear-htmx"),
     path(
+        "tasks/delete-completed-htmx",
+        tasks.delete_completed_htmx,
+        name="tasks-delete-completed-htmx",
+    ),
+    path(
         "tasks/add-editor/<int:folder_id>/<int:user_id>",
         tasks.add_editor,
         name="folder-add-editor",

@@ -507,3 +507,17 @@ def clear_htmx(request):
 
     context = _get_task_list_context(request)
     return render(request, "tasks/list.html", context)
+
+
+@login_required
+def delete_completed_htmx(request):
+    """Delete completed tasks via htmx and return updated list."""
+    selected_folder = select_folder(request, "tasks")
+
+    if selected_folder:
+        Task.objects.filter(folder=selected_folder, status=1).delete()
+    else:
+        Task.objects.filter(user=request.user, folder__isnull=True, status=1).delete()
+
+    context = _get_task_list_context(request)
+    return render(request, "tasks/list.html", context)
