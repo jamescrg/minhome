@@ -17,6 +17,13 @@ class TaskForm(forms.ModelForm):
         ("yearly", "Yearly"),
     ]
 
+    status = forms.TypedChoiceField(
+        choices=[(0, "Pending"), (1, "Completed")],
+        coerce=int,
+        required=False,
+        label="Status",
+    )
+
     recurrence = forms.ChoiceField(
         choices=RECURRENCE_CHOICES,
         required=False,
@@ -30,6 +37,8 @@ class TaskForm(forms.ModelForm):
             "title",
             "due_date",
             "due_time",
+            "status",
+            "archived",
         )
         widgets = {
             "title": forms.TextInput(
