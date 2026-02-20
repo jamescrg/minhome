@@ -302,10 +302,10 @@ li {
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--button-primary-background);
+  background: var(--button-success-bg, var(--lime-100));
   border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--button-primary-color);
+  color: var(--button-success-color, var(--color-primary));
 }
 
 .btn-secondary,

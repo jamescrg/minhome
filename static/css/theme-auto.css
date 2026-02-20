@@ -32,13 +32,12 @@
     /* Buttons */
     --button-primary-background: var(--gb-faded-aqua);
     --button-primary-color: var(--gb-light);
-    --button-secondary-bg: var(--gb-bright-blue);
     --button-secondary-background: var(--gb-dark);
-    --button-secondary-color: var(--gb-dark1);
+    --button-secondary-color: var(--gb-light4);
     --button-secondary-muted: var(--gb-dark4);
-    --button-success-bg: var(--gb-faded-green);
+    --button-success-bg: var(--gb-dark);
     --button-success-color: var(--gb-bright-green);
-    --button-danger-bg: var(--gb-faded-red);
+    --button-danger-bg: var(--gb-dark);
     --button-danger-color: var(--gb-bright-red);
     --button-toolbar: var(--gb-light3);
 
