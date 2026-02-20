@@ -33,6 +33,7 @@
     --button-primary-color: var(--stone-100);
     --button-secondary-background: var(--stone-850);
     --button-secondary-color: var(--color-primary);
+    --button-secondary-muted: var(--stone-500);
     --button-toolbar: var(--stone-300);
 
     /* Shadows */
