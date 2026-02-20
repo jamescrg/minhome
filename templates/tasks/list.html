@@ -65,18 +65,20 @@
 {% include "pagination.html" %}
 {% if has_completed_tasks %}
     <div class="archive">
-        <button class="btn btn-secondary"
-                hx-post="{% url 'tasks-clear-htmx' %}"
-                hx-target="#tasks-container"
-                hx-swap="innerHTML">
-            <i class="icon-archive"></i> Archive
-        </button>
-        <button class="btn btn-secondary"
-                hx-post="{% url 'tasks-delete-completed-htmx' %}"
-                hx-target="#tasks-container"
-                hx-swap="innerHTML"
-                hx-confirm="Are you sure you want to delete all completed tasks?">
-            <i class="icon-trash-2"></i> Delete
-        </button>
+        <div class="archive-buttons">
+            <button class="btn btn-secondary"
+                    hx-post="{% url 'tasks-clear-htmx' %}"
+                    hx-target="#tasks-container"
+                    hx-swap="innerHTML">
+                <i class="icon-archive"></i> Archive
+            </button>
+            <button class="btn btn-secondary"
+                    hx-post="{% url 'tasks-delete-completed-htmx' %}"
+                    hx-target="#tasks-container"
+                    hx-swap="innerHTML"
+                    hx-confirm="Are you sure you want to delete all completed tasks?">
+                <i class="icon-trash-2"></i> Delete
+            </button>
+        </div>
     </div>
 {% endif %}

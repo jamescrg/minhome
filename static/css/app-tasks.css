@@ -126,11 +126,22 @@
 
 .archive {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
   margin-top: 1.5rem;
 }
 
+.archive-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
 .archive .btn {
+  background: inherit;
+  border-color: var(--border-medium);
   color: var(--button-secondary-muted, var(--color-secondary));
 }
 
