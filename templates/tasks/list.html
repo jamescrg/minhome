@@ -9,7 +9,7 @@
         {% endif %}
     </h1>
     <div style="display:flex;gap:0.5rem">
-        <button class="square-button filter-button"
+        <button class="square-button filter-button {% if filter_label == 'due' %}toggle-active{% endif %}"
                 hx-get="{% url 'tasks-due' %}"
                 hx-target="#main-content"
                 hx-swap="innerHTML">

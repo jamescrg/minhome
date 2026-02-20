@@ -31,7 +31,24 @@
                         </select>
                     </div>
                 </div>
-                <div>&nbsp;</div>
+                <div class="form-group">
+                    <label for="id_sort">Sort By</label>
+                    <div>
+                        <select name="sort" id="id_sort">
+                            <option value="title"
+                                    {% if sort_value != "-title" and sort_value != "-due_date" and sort_value != "-created_at" %}selected{% endif %}>
+                                Title (A-Z)
+                            </option>
+                            <option value="-title" {% if sort_value == "-title" %}selected{% endif %}>Title (Z-A)</option>
+                            <option value="-due_date"
+                                    {% if sort_value == "-due_date" %}selected{% endif %}>Date Due (Newest)</option>
+                            <option value="-created_at"
+                                    {% if sort_value == "-created_at" %}selected{% endif %}>
+                                Date Created (Newest)
+                            </option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="id_due_date_0">Due Date From</label>
                     <div>
