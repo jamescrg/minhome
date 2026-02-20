@@ -47,16 +47,19 @@ def _get_task_list_context(request):
     trigger_key = "tasksChanged"
     pagination = CustomPaginator(tasks, 20, request, session_key)
 
+    task_list = pagination.get_object_list()
+
     return {
         "page": "tasks",
         "folders": folders,
         "selected_folder": selected_folder,
-        "tasks": pagination.get_object_list(),
+        "tasks": task_list,
         "pagination": pagination,
         "session_key": session_key,
         "trigger_key": trigger_key,
         "filter_label": filter_label,
         "tasks_folder_all": tasks_folder_all,
+        "has_completed_tasks": any(t.status == 1 for t in task_list),
     }
 
 
