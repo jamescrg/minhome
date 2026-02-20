@@ -107,6 +107,11 @@ urlpatterns = [
     path("favorites/all/", favorites.favorites_all, name="favorites-all"),
     path("favorites/list/", favorites.favorites_list, name="favorites-list"),
     path(
+        "favorites/filter/keyword/",
+        favorites.favorites_filter_keyword,
+        name="favorites-filter-keyword",
+    ),
+    path(
         "favorites/order-by/<str:order>/",
         favorites.favorites_order_by,
         name="favorites-order-by",

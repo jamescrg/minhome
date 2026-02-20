@@ -8,14 +8,9 @@ urlpatterns = [
     # List views
     path("", views.notes_index, name="index"),
     path("list/", views.notes_list, name="list"),
+    path("all/", views.notes_all, name="all"),
     path("add/", views.notes_add, name="add"),
     path("order-by/<str:order>/", views.notes_order_by, name="order-by"),
-    path(
-        "filter/folder/<int:folder_id>/",
-        views.notes_filter_folder,
-        name="filter-folder",
-    ),
-    path("filter/folder/", views.notes_filter_folder_clear, name="filter-folder-clear"),
     path("filter/keyword/", views.notes_filter_keyword, name="filter-keyword"),
     path("bulk-delete/", views.notes_bulk_delete, name="bulk-delete"),
     path("bulk-move-folder/", views.notes_bulk_move_folder, name="bulk-move-folder"),

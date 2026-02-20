@@ -73,7 +73,7 @@
                         <div class="search-card-title">{{ note.title }}</div>
                     </div>
                     {% if note.folder %}
-                        <a href="{% url 'notes:filter-folder' note.folder_id %}"
+                        <a href="{% url 'folder-select' note.folder_id 'notes' %}"
                            class="search-card-folder">
                             <i class="icon-folder"></i> {{ note.folder.name }}
                         </a>

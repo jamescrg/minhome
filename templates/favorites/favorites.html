@@ -2,7 +2,7 @@
      hx-trigger="favoritesChanged from:body"
      hx-get="{% url 'favorites-list' %}"
      hx-target="#main-content">
-    <div class="card-title flex-center-space">
+    <div class="card-title flex-center-space" id="favorites-normal-toolbar">
         <h1>
             {% if favorites_folder_all %}
                 All
@@ -12,6 +12,16 @@
                 Unsorted
             {% endif %}
         </h1>
+        <input type="text"
+               id="favorites-keyword-input"
+               name="keyword"
+               placeholder="Filter by keyword"
+               value="{{ keyword }}"
+               class="filter-input keyword-input"
+               hx-get="{% url 'favorites-filter-keyword' %}"
+               hx-target="#favorites-container"
+               hx-trigger="keyup changed delay:500ms"
+               hx-include="this">
         <a class="square-button"
            id="favorites-add-btn"
            href="#"
@@ -19,38 +29,42 @@
            hx-target="#htmx-modal-container">
             <i class="icon-plus"></i>
         </a>
-        <div class="bulk-actions"
-             id="favorites-bulk-toolbar"
-             style="display: none">
+    </div>
+    <div class="bulk-toolbar"
+         id="favorites-bulk-toolbar"
+         style="display: none">
+        <div class="toolbar-left">
             <span class="bulk-count"></span>
-            <div class="dropdown" x-data="dropdown()">
-                <button class="btn btn-secondary"
-                        type="button"
-                        x-ref="button"
-                        @click="toggle()"
-                        :aria-expanded="open">
-                    <span>Move to Folder…</span>
-                    <i class="icon-chevron-down"></i>
-                </button>
-                <ul class="dropdown-menu" x-ref="menu" x-show="open">
-                    <li>
-                        <a class="dropdown-item fav-bulk-move-option"
-                           href="#"
-                           data-folder-id="null">No Folder</a>
-                    </li>
-                    {% for folder in folders %}
+            <div class="bulk-actions">
+                <div class="dropdown" x-data="dropdown()">
+                    <button class="btn btn-secondary"
+                            type="button"
+                            x-ref="button"
+                            @click="toggle()"
+                            :aria-expanded="open">
+                        <span>Move to Folder…</span>
+                        <i class="icon-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu" x-ref="menu" x-show="open">
                         <li>
                             <a class="dropdown-item fav-bulk-move-option"
                                href="#"
-                               data-folder-id="{{ folder.id }}">{{ folder.name }}</a>
+                               data-folder-id="null">No Folder</a>
                         </li>
-                    {% endfor %}
-                </ul>
+                        {% for folder in folders %}
+                            <li>
+                                <a class="dropdown-item fav-bulk-move-option"
+                                   href="#"
+                                   data-folder-id="{{ folder.id }}">{{ folder.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <button type="button" id="fav-bulk-delete-btn" class="btn btn-danger">
+                    <i class="icon-trash-2"></i> Delete
+                </button>
+                <button type="button" id="fav-bulk-cancel-btn" class="btn btn-secondary">Cancel</button>
             </div>
-            <button type="button" id="fav-bulk-delete-btn" class="btn btn-danger">
-                <i class="icon-trash-2"></i> Delete
-            </button>
-            <button type="button" id="fav-bulk-cancel-btn" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
     <div id="favorites-container">{% include "favorites/list.html" %}</div>
