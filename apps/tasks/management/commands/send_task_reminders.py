@@ -33,7 +33,7 @@ class Command(BaseCommand):
                 is_recurring=False,
                 user__email_reminders=True,
             )
-            .exclude(user__email="")
+            .exclude(user__notification_email="", user__email="")
             .exclude(reminder_sent_date=today)
             .select_related("user", "folder")
         )

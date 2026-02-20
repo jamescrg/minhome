@@ -62,7 +62,11 @@ def session_index(request):
 
 @login_required
 def notifications_index(request):
-    context = {"page": "settings", "subapp": "notifications"}
+    context = {
+        "page": "settings",
+        "subapp": "notifications",
+        "edit_email": request.GET.get("edit_email"),
+    }
     return render(request, "settings/notifications.html", context)
 
 
@@ -75,6 +79,29 @@ def notification_options(request, option, value):
     elif option == "sms_notifications":
         user.sms_notifications = val
     user.save()
+    return redirect("/settings/notifications/")
+
+
+@login_required
+def notification_email(request):
+    if request.method == "POST":
+        from django.core.exceptions import ValidationError
+        from django.core.validators import validate_email
+
+        email = request.POST.get("notification_email", "").strip()
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                context = {
+                    "page": "settings",
+                    "subapp": "notifications",
+                    "edit_email": True,
+                    "email_error": "Please enter a valid email address.",
+                }
+                return render(request, "settings/notifications.html", context)
+        request.user.notification_email = email
+        request.user.save(update_fields=["notification_email"])
     return redirect("/settings/notifications/")
 
 

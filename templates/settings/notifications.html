@@ -18,14 +18,23 @@
                 </td>
             </tr>
             <tr>
-                <td class="setting-label">SMS Notifications:</td>
+                <td class="setting-label">Send To:</td>
                 <td class="setting-control">
-                    {% if user.sms_notifications %}
+                    {% if user.notification_email and not edit_email %}
+                        <span>{{ user.notification_email }}</span>
                         <a class="btn btn-primary btn-slim"
-                           href="{% url 'settings-notification-options' option='sms_notifications' value='disable' %}">Disable</a>
+                           href="{% url 'settings-notifications' %}?edit_email=1">Edit</a>
                     {% else %}
-                        <a class="btn btn-primary btn-slim"
-                           href="{% url 'settings-notification-options' option='sms_notifications' value='enable' %}">Enable</a>
+                        <form method="post" action="{% url 'settings-notification-email' %}">
+                            {% csrf_token %}
+                            <input type="email"
+                                   name="notification_email"
+                                   value="{{ user.notification_email }}"
+                                   placeholder="{{ user.email }}"
+                                   style="width: 20rem">
+                            <button type="submit" class="btn btn-primary btn-slim">Save</button>
+                        </form>
+                        {% if email_error %}<p style="color: var(--urgent); margin: 0.25rem 0 0;">{{ email_error }}</p>{% endif %}
                     {% endif %}
                 </td>
             </tr>
