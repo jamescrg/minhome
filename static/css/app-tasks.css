@@ -97,6 +97,10 @@
 }
 
 @media (max-width: 576px) {
+  .tasks-add .form-control {
+    padding: 0.75rem;
+  }
+
   .tasks-content {
     flex-direction: column;
     align-items: flex-start;
