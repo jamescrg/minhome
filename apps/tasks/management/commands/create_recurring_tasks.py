@@ -19,7 +19,7 @@ class Command(BaseCommand):
         today = date.today()
         created_count = 0
 
-        recurring_tasks = Task.objects.filter(is_recurring=True)
+        recurring_tasks = Task.objects.filter(is_recurring=True, archived=False)
 
         for template in recurring_tasks:
             if self.should_generate(template, today):
