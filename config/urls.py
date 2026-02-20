@@ -144,6 +144,7 @@ urlpatterns = [
     path("tasks/clear", tasks.clear, name="tasks-clear"),
     # tasks htmx
     path("tasks/all/", tasks.tasks_all, name="tasks-all"),
+    path("tasks/due/", tasks.tasks_due, name="tasks-due"),
     path("tasks/filter", tasks.task_filter, name="tasks-filter"),
     path(
         "tasks/filter/default", tasks.task_filter_default, name="tasks-filter-default"

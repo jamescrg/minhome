@@ -331,6 +331,21 @@ def tasks_all(request):
 
 
 @login_required
+def tasks_due(request):
+    """Quick filter: show all pending tasks that are due or past due."""
+    request.session["tasks_all"] = True
+    request.user.tasks_folder = 0
+    request.user.save()
+    request.session["tasks_filter"] = {
+        "filter_label": "custom",
+        "status": "Pending",
+        "due_date_max": date.today().strftime("%Y-%m-%d"),
+    }
+    context = _get_task_list_context(request)
+    return render(request, "tasks/tasks-with-folders-oob.html", context)
+
+
+@login_required
 def task_list(request):
     """Return task list partial for htmx."""
     context = _get_task_list_context(request)
