@@ -17,6 +17,13 @@ class TaskForm(forms.ModelForm):
         ("yearly", "Yearly"),
     ]
 
+    archived = forms.TypedChoiceField(
+        choices=[(False, "No"), (True, "Yes")],
+        coerce=lambda x: x == "True",
+        required=False,
+        label="Archived",
+    )
+
     status = forms.TypedChoiceField(
         choices=[(0, "Pending"), (1, "Completed")],
         coerce=int,
