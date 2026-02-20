@@ -33,12 +33,12 @@
         }
 
         function updateSelectionUI() {
-            var addBtn = document.getElementById("favorites-add-btn");
+            var normalToolbar = document.getElementById("favorites-normal-toolbar");
             var bulkToolbar = document.getElementById("favorites-bulk-toolbar");
             if (!bulkToolbar) return;
 
             var hasSelection = selectedFavIds.size > 0;
-            if (addBtn) addBtn.style.display = hasSelection ? "none" : "";
+            if (normalToolbar) normalToolbar.style.display = hasSelection ? "none" : "";
             bulkToolbar.style.display = hasSelection ? "" : "none";
 
             var countEl = bulkToolbar.querySelector(".bulk-count");

@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% load cache_buster %}
 {% block content %}
-    <div id="notes"
-         {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}
-         hx-trigger="notesChanged from:body, foldersChanged from:body"
-         hx-get="{% url 'notes:list' %}"
-         hx-target="this">{% include "notes/list.html" %}</div>
+    <div class="row">
+        <div class="col-lg-9 order-lg-2" id="main-content">
+            <div id="notes"
+                 {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}>
+                {% include "notes/list.html" %}
+            </div>
+        </div>
+        <div class="col-lg-3 order-lg-1" id="sidebar">{% include "folders/list.html" %}</div>
+    </div>
     <script type="module">
     import { encrypt, decrypt, deriveKey, hasFreshKey, refreshKeyTimestamp, getStoredKey, storeKey, KEY_TTL_MS } from "{% static_v 'js/crypto.js' %}";
 
@@ -214,10 +218,6 @@
       const countEl = bulkToolbar.querySelector(".bulk-count");
       if (countEl) countEl.textContent = selectedNoteIds.size + " selected";
 
-      // Reset move folder dropdown
-      const moveSelect = document.getElementById("bulk-move-folder");
-      if (moveSelect) moveSelect.selectedIndex = 0;
-
       // Sync icons with selection state (after HTMX swaps)
       document.querySelectorAll(".note-select-checkbox").forEach(function(icon) {
         setIconChecked(icon, selectedNoteIds.has(icon.dataset.value));
@@ -233,8 +233,8 @@
       }
     }
 
-    // Event delegation for icon clicks
-    document.getElementById("notes").addEventListener("click", function(e) {
+    // Event delegation for icon clicks (bind to #main-content so it survives folder swaps)
+    document.getElementById("main-content").addEventListener("click", function(e) {
       if (e.target.id === "select-all-notes") {
         const willCheck = !isIconChecked(e.target);
         document.querySelectorAll(".note-select-checkbox").forEach(function(icon) {
@@ -255,7 +255,7 @@
 
     // Re-apply selection state after HTMX table swaps
     document.addEventListener("htmx:afterSettle", function(e) {
-      if (e.detail.target && (e.detail.target.id === "notes" || e.detail.target.id === "notes-table")) {
+      if (e.detail.target && (e.detail.target.id === "main-content" || e.detail.target.id === "notes" || e.detail.target.id === "notes-table")) {
         updateSelectionUI();
       }
     });
@@ -298,13 +298,15 @@
     });
 
     // Bulk move folder
-    document.addEventListener("change", async function(e) {
-      const select = e.target.closest("#bulk-move-folder");
-      if (!select) return;
+    document.addEventListener("click", async function(e) {
+      const option = e.target.closest(".notes-bulk-move-option");
+      if (!option) return;
+      e.preventDefault();
       const ids = Array.from(selectedNoteIds);
       if (!ids.length) return;
 
-      const folderId = select.value === "null" ? null : Number(select.value);
+      const raw = option.dataset.folderId;
+      const folderId = raw === "null" ? null : Number(raw);
       await fetch("{% url 'notes:bulk-move-folder' %}", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
