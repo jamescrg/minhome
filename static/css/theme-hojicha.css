@@ -31,6 +31,7 @@
   /* Buttons */
   --button-primary-background: var(--gb-orange);
   --button-primary-color: var(--gb-light);
+  --button-secondary-bg: var(--blue-950);
   --button-secondary-background: var(--gb-dark);
   --button-secondary-color: var(--gb-light4);
   --button-secondary-muted: var(--gb-dark4);
