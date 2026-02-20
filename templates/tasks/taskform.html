@@ -13,8 +13,9 @@
            placeholder="Add a new task"
            required>
     <script>
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 768 && !window._htmxSwapped) {
         document.getElementById('task-title-input').focus();
       }
+      window._htmxSwapped = true;
     </script>
 </form>
