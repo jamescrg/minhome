@@ -12,7 +12,32 @@
                   hx-post="{% url 'tasks-filter' %}"
                   hx-target="#htmx-modal-container">
                 {% csrf_token %}
-                {{ filter.form }}
+                <div class="form-group">
+                    <label for="id_status">Status</label>
+                    <div>{{ filter.form.status }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="id_show_archived">Show Archived</label>
+                    <div>{{ filter.form.show_archived }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="id_due_date_0">Due Date From</label>
+                    <div>
+                        <input type="date"
+                               name="due_date_min"
+                               id="id_due_date_0"
+                               value="{{ filter.form.due_date.value.0|default:'' }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_due_date_1">Due Date To</label>
+                    <div>
+                        <input type="date"
+                               name="due_date_max"
+                               id="id_due_date_1"
+                               value="{{ filter.form.due_date.value.1|default:'' }}">
+                    </div>
+                </div>
             </form>
         </div>
         <div class="modal-footer">
