@@ -240,6 +240,11 @@ urlpatterns = [
         name="settings-notification-options",
     ),
     path(
+        "settings/notification-email",
+        settings.notification_email,
+        name="settings-notification-email",
+    ),
+    path(
         "settings/encryption/",
         settings.encryption_index,
         name="settings-encryption",

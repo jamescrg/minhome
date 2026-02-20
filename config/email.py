@@ -19,7 +19,8 @@ def send_task_reminder_email(user, task, reminder_type):
     Returns:
         dict with 'success' boolean and optional 'error'
     """
-    if not user.email:
+    recipient = user.notification_email or user.email
+    if not recipient:
         return {"success": False, "error": "User has no email address"}
 
     subject_map = {
@@ -33,14 +34,14 @@ def send_task_reminder_email(user, task, reminder_type):
 
     try:
         send_mail(
-            subject, body, settings.SERVER_EMAIL, [user.email], fail_silently=False
+            subject, body, settings.SERVER_EMAIL, [recipient], fail_silently=False
         )
         logger.info(
-            f"Reminder sent to {user.email} for task {task.id} ({reminder_type})"
+            f"Reminder sent to {recipient} for task {task.id} ({reminder_type})"
         )
         return {"success": True}
     except Exception as e:
-        logger.error(f"Failed to send reminder to {user.email} for task {task.id}: {e}")
+        logger.error(f"Failed to send reminder to {recipient} for task {task.id}: {e}")
         return {"success": False, "error": str(e)}
 
 
