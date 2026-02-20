@@ -9,10 +9,10 @@
                 <td class="setting-label">Email Reminders:</td>
                 <td class="setting-control">
                     {% if user.email_reminders %}
-                        <a class="btn btn-primary btn-slim"
+                        <a class="btn btn-primary"
                            href="{% url 'settings-notification-options' option='email_reminders' value='disable' %}">Disable</a>
                     {% else %}
-                        <a class="btn btn-primary btn-slim"
+                        <a class="btn btn-primary"
                            href="{% url 'settings-notification-options' option='email_reminders' value='enable' %}">Enable</a>
                     {% endif %}
                 </td>
@@ -22,7 +22,8 @@
                 <td class="setting-control">
                     {% if user.notification_email and not edit_email %}
                         <span>{{ user.notification_email }}</span>
-                        <a class="btn btn-primary btn-slim"
+                        <a class="btn btn-primary"
+                           style="margin-left: 0.5rem"
                            href="{% url 'settings-notifications' %}?edit_email=1">Edit</a>
                     {% else %}
                         <form method="post" action="{% url 'settings-notification-email' %}">
@@ -32,7 +33,7 @@
                                    value="{{ user.notification_email }}"
                                    placeholder="{{ user.email }}"
                                    style="width: 20rem">
-                            <button type="submit" class="btn btn-primary btn-slim">Save</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </form>
                         {% if email_error %}<p style="color: var(--urgent); margin: 0.25rem 0 0;">{{ email_error }}</p>{% endif %}
                     {% endif %}
