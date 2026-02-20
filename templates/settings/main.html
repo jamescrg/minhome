@@ -18,6 +18,9 @@
                 <li {% if subapp == "securities" %}class="active"{% endif %}>
                     <a href="{% url 'settings-securities-symbols' %}">Securities</a>
                 </li>
+                <li {% if subapp == "notifications" %}class="active"{% endif %}>
+                    <a href="{% url 'settings-notifications' %}">Notifications</a>
+                </li>
                 <li {% if subapp == "encryption" %}class="active"{% endif %}>
                     <a href="{% url 'settings-encryption' %}">Encryption</a>
                 </li>

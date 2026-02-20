@@ -1,0 +1,34 @@
+{% extends "settings/main.html" %}
+{% block subcontent %}
+    <div class="card">
+        <div class="card-title">
+            <h1>Notifications</h1>
+        </div>
+        <table class="options">
+            <tr>
+                <td class="setting-label">Email Reminders:</td>
+                <td class="setting-control">
+                    {% if user.email_reminders %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-notification-options' option='email_reminders' value='disable' %}">Disable</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-notification-options' option='email_reminders' value='enable' %}">Enable</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="setting-label">SMS Notifications:</td>
+                <td class="setting-control">
+                    {% if user.sms_notifications %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-notification-options' option='sms_notifications' value='disable' %}">Disable</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-slim"
+                           href="{% url 'settings-notification-options' option='sms_notifications' value='enable' %}">Enable</a>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock subcontent %}

@@ -61,6 +61,24 @@ def session_index(request):
 
 
 @login_required
+def notifications_index(request):
+    context = {"page": "settings", "subapp": "notifications"}
+    return render(request, "settings/notifications.html", context)
+
+
+@login_required
+def notification_options(request, option, value):
+    user = request.user
+    val = True if value == "enable" else False
+    if option == "email_reminders":
+        user.email_reminders = val
+    elif option == "sms_notifications":
+        user.sms_notifications = val
+    user.save()
+    return redirect("/settings/notifications/")
+
+
+@login_required
 def google_login(request):
     """Direct the user to their login page to obtain an authorization code.
 
