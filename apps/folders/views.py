@@ -302,11 +302,11 @@ def select_htmx(request, id, page):
 
         if selected_folder:
             tasks = Task.objects.filter(
-                folder=selected_folder, is_recurring=False
+                folder=selected_folder, is_recurring=False, archived=False
             ).order_by("status", "title")
         else:
             tasks = Task.objects.filter(
-                user=user, folder__isnull=True, is_recurring=False
+                user=user, folder__isnull=True, is_recurring=False, archived=False
             ).order_by("status", "title")
 
         context = {

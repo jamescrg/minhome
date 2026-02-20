@@ -83,8 +83,10 @@ def test_edit_data(user, client, folder, task):
     assert found
 
 
-def test_clear(client, folder):
-    tasks = Task.objects.filter(folder=folder).update(status=1)
+def test_clear(client, tasks, folder):
+    # Select the folder so clear operates on it
+    client.get(f"/folders/{folder.id}/tasks")
+    Task.objects.filter(folder=folder).update(status=1)
     client.get("/tasks/clear")
-    tasks = Task.objects.filter(folder=folder)
-    assert not tasks
+    assert not Task.objects.filter(folder=folder, archived=False).exists()
+    assert Task.objects.filter(folder=folder, archived=True).exists()

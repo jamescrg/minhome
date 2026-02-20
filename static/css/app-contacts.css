@@ -80,7 +80,6 @@
 }
 
 .contact-card {
-  background-color: var(--background-light);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   line-height: 1.6;
@@ -193,7 +192,6 @@
 
 /* Notes Section */
 .contact-notes {
-  background-color: var(--background-light);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
   line-height: 1.6;
