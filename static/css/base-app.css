@@ -286,26 +286,26 @@ li {
 }
 
 .btn-danger {
-  background: var(--alert-danger-bg);
+  background: var(--button-danger-bg, var(--red-100));
   border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--color-primary);
+  color: var(--button-danger-color, var(--color-primary));
 }
 
 .btn-success {
-  background: var(--alert-success-bg);
+  background: var(--button-success-bg, var(--lime-100));
   border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--color-primary);
+  color: var(--button-success-color, var(--color-primary));
 }
 
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:focus {
-  background: var(--alert-success-bg);
+  background: var(--button-primary-background);
   border-color: var(--border-medium);
   box-shadow: none;
-  color: var(--color-primary);
+  color: var(--button-primary-color);
 }
 
 .btn-secondary,
@@ -315,6 +315,10 @@ li {
   border-color: var(--border-medium);
   box-shadow: none;
   color: var(--button-secondary-color);
+}
+
+.btn-secondary i {
+  color: inherit;
 }
 
 .btn-outline-primary,

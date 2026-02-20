@@ -29,12 +29,16 @@
   --link-hover: var(--gb-aqua);
 
   /* Buttons */
-  --button-primary-background: var(--gb-orange);
+  --button-primary-background: var(--gb-faded-aqua);
   --button-primary-color: var(--gb-light);
-  --button-secondary-bg: var(--blue-950);
+  --button-secondary-bg: var(--gb-bright-blue);
   --button-secondary-background: var(--gb-dark);
-  --button-secondary-color: var(--gb-light4);
+  --button-secondary-color: var(--gb-dark1);
   --button-secondary-muted: var(--gb-dark4);
+  --button-success-bg: var(--gb-faded-green);
+  --button-success-color: var(--gb-bright-green);
+  --button-danger-bg: var(--gb-faded-red);
+  --button-danger-color: var(--gb-bright-red);
   --button-toolbar: var(--gb-light3);
 
   /* Shadows */
