@@ -30,8 +30,8 @@
   /* Buttons */
   --button-primary-background: var(--hojicha-500);
   --button-primary-color: var(--stone-100);
-  --button-secondary-background: var(--stone-800);
-  --button-secondary-color: var(--stone-300);
+  --button-secondary-background: var(--stone-850);
+  --button-secondary-color: var(--color-primary);
   --button-toolbar: var(--stone-300);
 
   /* Shadows */

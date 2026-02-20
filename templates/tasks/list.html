@@ -37,9 +37,11 @@
     {% endfor %}
 </ul>
 {% include "pagination.html" %}
-<div class="clear">
-    <a href="#"
-       hx-post="{% url 'tasks-clear-htmx' %}"
-       hx-target="#tasks-container"
-       hx-swap="innerHTML">Archive Checked</a>
+<div class="archive">
+    <button class="btn btn-secondary"
+            hx-post="{% url 'tasks-clear-htmx' %}"
+            hx-target="#tasks-container"
+            hx-swap="innerHTML">
+        <i class="icon-archive"></i> Archive Completed Tasks
+    </button>
 </div>
