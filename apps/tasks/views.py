@@ -378,6 +378,7 @@ def task_form(request, id):
         # Check if this task was already recurring before the edit
         was_recurring = task.is_recurring
         parent_task = task.parent_task
+        old_status = task.status
 
         form = TaskForm(request.POST, instance=task, use_required_attribute=False)
         form.fields["folder"].queryset = folders
@@ -386,6 +387,12 @@ def task_form(request, id):
             task.user = user
             task.title = task.title[0].upper() + task.title[1:]
             recurrence = form.cleaned_data.get("recurrence")
+
+            # Update completed_date when status changes
+            if task.status == 1 and old_status != 1:
+                task.completed_date = date.today()
+            elif task.status != 1 and old_status == 1:
+                task.completed_date = None
 
             # If editing a recurring instance, sync changes to the template
             if parent_task:
