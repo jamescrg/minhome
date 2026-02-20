@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% load cache_buster %}
 {% block content %}
-    <div id="notes"
-         {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}
-         hx-trigger="notesChanged from:body, foldersChanged from:body"
-         hx-get="{% url 'notes:list' %}"
-         hx-target="this">{% include "notes/list.html" %}</div>
+    <div class="row">
+        <div class="col-lg-9 order-lg-2" id="main-content">
+            <div id="notes"
+                 {% if user.encryption_salt %}data-encryption-salt="{{ user.encryption_salt }}"{% endif %}>
+                {% include "notes/list.html" %}
+            </div>
+        </div>
+        <div class="col-lg-3 order-lg-1" id="sidebar">{% include "folders/list.html" %}</div>
+    </div>
     <script type="module">
     import { encrypt, decrypt, deriveKey, hasFreshKey, refreshKeyTimestamp, getStoredKey, storeKey, KEY_TTL_MS } from "{% static_v 'js/crypto.js' %}";
 

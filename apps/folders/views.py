@@ -31,6 +31,7 @@ def select(request, id, page):
     user = request.user
     setattr(user, page + "_folder", id)
     user.save()
+    request.session.pop(f"{page}_all", None)
     return _redirect_page(page)
 
 
@@ -227,6 +228,8 @@ def _get_folder_context(request, page):
     }
     if page == "favorites":
         context["favorites_folder_all"] = request.session.get("favorites_all", False)
+    elif page == "notes":
+        context["notes_folder_all"] = request.session.get("notes_all", False)
     return context
 
 
@@ -360,7 +363,12 @@ def select_htmx(request, id, page):
         return render(request, "contacts/contacts-with-folders-oob.html", context)
 
     elif page == "notes":
-        return redirect("notes:index")
+        from apps.notes.views import _get_notes_list_context
+
+        request.session.pop("notes_all", None)
+
+        context = _get_notes_list_context(request)
+        return render(request, "notes/notes-with-folders-oob.html", context)
 
     return _redirect_page(page)
 
