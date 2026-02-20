@@ -95,11 +95,30 @@
         <div class="toolbar-left">
             <span class="bulk-count"></span>
             <div class="bulk-actions">
-                <select id="bulk-move-folder" class="filter-input">
-                    <option value="" disabled selected>Move to Folder…</option>
-                    <option value="null">No Folder</option>
-                    {% for folder in folders %}<option value="{{ folder.id }}">{{ folder.name }}</option>{% endfor %}
-                </select>
+                <div class="dropdown" x-data="dropdown()">
+                    <button class="btn btn-secondary"
+                            type="button"
+                            x-ref="button"
+                            @click="toggle()"
+                            :aria-expanded="open">
+                        <span>Move to Folder…</span>
+                        <i class="icon-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu" x-ref="menu" x-show="open">
+                        <li>
+                            <a class="dropdown-item notes-bulk-move-option"
+                               href="#"
+                               data-folder-id="null">No Folder</a>
+                        </li>
+                        {% for folder in folders %}
+                            <li>
+                                <a class="dropdown-item notes-bulk-move-option"
+                                   href="#"
+                                   data-folder-id="{{ folder.id }}">{{ folder.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
                 <button type="button" id="bulk-encrypt-btn" class="btn btn-secondary">
                     <i class="icon-lock"></i> Encrypt
                 </button>

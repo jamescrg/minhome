@@ -214,10 +214,6 @@
       const countEl = bulkToolbar.querySelector(".bulk-count");
       if (countEl) countEl.textContent = selectedNoteIds.size + " selected";
 
-      // Reset move folder dropdown
-      const moveSelect = document.getElementById("bulk-move-folder");
-      if (moveSelect) moveSelect.selectedIndex = 0;
-
       // Sync icons with selection state (after HTMX swaps)
       document.querySelectorAll(".note-select-checkbox").forEach(function(icon) {
         setIconChecked(icon, selectedNoteIds.has(icon.dataset.value));
@@ -298,13 +294,15 @@
     });
 
     // Bulk move folder
-    document.addEventListener("change", async function(e) {
-      const select = e.target.closest("#bulk-move-folder");
-      if (!select) return;
+    document.addEventListener("click", async function(e) {
+      const option = e.target.closest(".notes-bulk-move-option");
+      if (!option) return;
+      e.preventDefault();
       const ids = Array.from(selectedNoteIds);
       if (!ids.length) return;
 
-      const folderId = select.value === "null" ? null : Number(select.value);
+      const raw = option.dataset.folderId;
+      const folderId = raw === "null" ? null : Number(raw);
       await fetch("{% url 'notes:bulk-move-folder' %}", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRFToken() },
