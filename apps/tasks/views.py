@@ -19,11 +19,11 @@ def _get_task_list_context(request):
 
     if selected_folder:
         tasks = Task.objects.filter(
-            folder=selected_folder, is_recurring=False
+            folder=selected_folder, is_recurring=False, archived=False
         ).order_by("status", "title")
     else:
         tasks = Task.objects.filter(
-            user=user, folder__isnull=True, is_recurring=False
+            user=user, folder__isnull=True, is_recurring=False, archived=False
         ).order_by("status", "title")
 
     session_key = "tasks_page"
@@ -265,21 +265,15 @@ def delete(request, id):
 
 @login_required
 def clear(request):
-    """Delete all completed tasks in the active folder.
-
-    Args:
-        folder_id (int): the folder where tasks should be deleted
-    """
-
+    """Archive all completed tasks in the active folder."""
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(folder=selected_folder, status=1)
+        Task.objects.filter(folder=selected_folder, status=1).update(archived=True)
     else:
-        tasks = Task.objects.filter(user=request.user, folder__isnull=True, status=1)
-
-    for task in tasks:
-        task.delete()
+        Task.objects.filter(user=request.user, folder__isnull=True, status=1).update(
+            archived=True
+        )
 
     return redirect("/tasks/")
 
@@ -469,16 +463,15 @@ def delete_htmx(request, id):
 
 @login_required
 def clear_htmx(request):
-    """Clear completed tasks via htmx and return updated list."""
+    """Archive completed tasks via htmx and return updated list."""
     selected_folder = select_folder(request, "tasks")
 
     if selected_folder:
-        tasks = Task.objects.filter(folder=selected_folder, status=1)
+        Task.objects.filter(folder=selected_folder, status=1).update(archived=True)
     else:
-        tasks = Task.objects.filter(user=request.user, folder__isnull=True, status=1)
-
-    for task in tasks:
-        task.delete()
+        Task.objects.filter(user=request.user, folder__isnull=True, status=1).update(
+            archived=True
+        )
 
     context = _get_task_list_context(request)
     return render(request, "tasks/list.html", context)

@@ -7,9 +7,9 @@
             <div class="tasks-checkbox">
                 <a href="{% if origin %}{% url 'tasks-complete' task.id origin %}{% else %}{% url 'tasks-complete' task.id %}{% endif %}">
                     {% if task.status == 1 %}
-                        <i class="icon-square-check"></i>
+                        <i class="icon-circle-check-big"></i>
                     {% else %}
-                        <i class="icon-square"></i>
+                        <i class="icon-circle"></i>
                     {% endif %}
                 </a>
             </div>
