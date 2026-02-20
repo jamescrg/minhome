@@ -30,6 +30,10 @@ def _get_favorites_list_context(request):
     else:
         favorites = Favorite.objects.filter(user=user, folder_id__isnull=True)
 
+    keyword = request.session.get("favorites_keyword", "")
+    if keyword:
+        favorites = favorites.filter(name__icontains=keyword)
+
     order_by = request.session.get("favorites_order", "name")
     bare_field = order_by.lstrip("-")
     if bare_field not in FAVORITES_ALLOWED_ORDER_FIELDS:
@@ -51,6 +55,7 @@ def _get_favorites_list_context(request):
         "session_key": session_key,
         "trigger_key": trigger_key,
         "current_order": bare_field,
+        "keyword": keyword,
     }
 
 
@@ -237,6 +242,23 @@ def favorites_list(request):
     """Return favorites card partial for htmx."""
     context = _get_favorites_list_context(request)
     return render(request, "favorites/favorites.html", context)
+
+
+@login_required
+def favorites_filter_keyword(request):
+    """Filter favorites by keyword."""
+    keyword = request.GET.get("keyword", "").strip()
+
+    if keyword:
+        request.session["favorites_keyword"] = keyword
+    else:
+        request.session.pop("favorites_keyword", None)
+
+    request.session["favorites_page"] = 1
+    request.session.modified = True
+
+    context = _get_favorites_list_context(request)
+    return render(request, "favorites/list.html", context)
 
 
 @login_required
