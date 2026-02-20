@@ -42,7 +42,9 @@
                     </div>
                 {% endif %}
             </div>
-            {% if task.parent_task %}
+            {% if task.completed_date %}
+                <div class="tasks-completed">Done: {{ task.completed_date|date:"M j" }}</div>
+            {% elif task.parent_task %}
                 <div class="tasks-recurring">
                     <i class="icon-refresh-cw"></i>
                 </div>

@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
@@ -84,8 +86,10 @@ def status(request, id, origin="tasks"):
     task = get_object_or_404(Task, pk=id)
     if task.status == 1:
         task.status = 0
+        task.completed_date = None
     else:
         task.status = 1
+        task.completed_date = date.today()
     task.save()
     return redirect(origin)
 
@@ -480,7 +484,12 @@ def task_form(request, id):
 def status_htmx(request, id):
     """Toggle task status via htmx and return updated list."""
     task = get_object_or_404(Task, pk=id)
-    task.status = 0 if task.status == 1 else 1
+    if task.status == 1:
+        task.status = 0
+        task.completed_date = None
+    else:
+        task.status = 1
+        task.completed_date = date.today()
     task.save()
 
     context = _get_task_list_context(request)

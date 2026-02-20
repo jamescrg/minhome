@@ -89,6 +89,13 @@
   margin-left: 0.75rem;
 }
 
+.tasks-completed {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin-left: 0.75rem;
+  white-space: nowrap;
+}
+
 @media (max-width: 576px) {
   .tasks-content {
     flex-direction: column;
