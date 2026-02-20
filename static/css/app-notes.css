@@ -2,128 +2,6 @@
    Notes List View Styles
    ============================================================================= */
 
-/* Section Container */
-.section {
-  background: var(--background-section);
-  border-radius: var(--radius-md);
-  box-shadow: 0 0.0625rem 0.2rem var(--shadow-color);
-  margin-bottom: 1.5rem;
-  padding: 1.25rem 1rem 1.5rem;
-}
-
-/* Toolbar */
-
-.filter-tools > button:first-child {
-  color: var(--link);
-}
-
-/* Filter Tools */
-.filter-tools {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-}
-
-/* Select / Dropdown Button */
-.select-btn {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  overflow: hidden;
-}
-
-.filter-dropdown-button {
-  width: 15rem;
-}
-
-.filter-tools .dropdown-menu {
-  min-width: 15rem;
-}
-
-
-/* Folder Dropdown Actions */
-.dropdown-item-row {
-  align-items: center;
-  display: flex;
-}
-
-.dropdown-item-row .dropdown-item {
-  flex: 1;
-}
-
-.dropdown-item-kebab {
-  align-items: center;
-  background: none;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--color-muted);
-  cursor: pointer;
-  display: flex;
-  font-size: 0.9rem;
-  padding: 0.25rem 0.375rem;
-}
-
-.dropdown-item-kebab:hover {
-  background: var(--border-medium);
-  color: var(--color-primary);
-}
-
-.dropdown-submenu {
-  background: var(--background-section);
-  border: solid 1px var(--border-medium);
-  border-radius: var(--radius-md);
-  box-shadow: 0 0.125rem 0.375rem var(--shadow-color);
-  list-style: none;
-  margin: 0.125rem 0.5rem 0.25rem;
-  padding: 0;
-}
-
-.dropdown-submenu li > a {
-  align-items: center;
-  display: flex;
-  gap: 0.375rem;
-}
-
-.dropdown-submenu li > a i {
-  font-size: 0.85rem;
-}
-
-.dropdown-divider {
-  border-top: solid 1px var(--border-medium);
-}
-
-/* Badge */
-.app-badge {
-  background-color: var(--label-gray);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
-  color: var(--color-primary);
-  display: inline-block;
-  font-size: 0.8125rem;
-  font-weight: normal;
-  padding: 0.25rem 0.625rem;
-  white-space: nowrap;
-}
-
-.app-badge-lg {
-  font-size: 0.95rem;
-  padding: 0.375rem 0.625rem;
-}
-
-@media (width <= 1000px) {
-  .filter-tools {
-    gap: 0.75rem;
-  }
-
-  .filter-dropdown-button {
-    min-width: 7.5rem;
-    width: auto;
-  }
-
-}
-
 /* =============================================================================
    Notes Editor Styles
    ============================================================================= */
@@ -801,10 +679,6 @@ body:has(.dev-banner) .note-editor-layout {
 
 .notes-list {
   min-width: 40rem;
-}
-
-.notes-list .folder {
-  width: 10rem;
 }
 
 .notes-list .title {

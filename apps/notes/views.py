@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
-from apps.folders.folders import get_folders_for_page
+from apps.folders.folders import get_folders_for_page, select_folder
 from apps.management.pagination import CustomPaginator
 
 from .forms import NoteForm
@@ -18,40 +18,39 @@ SIDEBAR_SORT_OPTIONS = [
     ("title", "Title (A-Z)"),
 ]
 
+NOTES_ALLOWED_ORDER_FIELDS = {"title", "created_at", "updated_at"}
 
-def get_notes_data(request):
-    """Get notes data with filters applied from session."""
-    filter_data = request.session.get("notes_filter", {})
 
-    queryset = Note.objects.filter(user=request.user)
+def _get_notes_list_context(request):
+    """Helper to build context for notes list partial."""
+    user = request.user
+    selected_folder = select_folder(request, "notes")
+    notes_folder_all = request.session.get("notes_all", False)
 
-    # Folder filter
-    folder_id = filter_data.get("folder_id")
-    selected_folder_id = None
-    selected_folder_name = ""
-    if folder_id:
-        try:
-            folder_id = int(folder_id)
-            queryset = queryset.filter(folder_id=folder_id)
-            selected_folder_id = folder_id
-            from apps.folders.models import Folder
+    queryset = Note.objects.filter(user=user)
 
-            folder = Folder.objects.filter(pk=folder_id).first()
-            if folder:
-                selected_folder_name = folder.name
-        except (ValueError, TypeError):
-            pass
+    if notes_folder_all:
+        pass  # show all notes
+    elif selected_folder:
+        queryset = queryset.filter(folder_id=selected_folder.id)
+    else:
+        queryset = queryset.filter(folder_id__isnull=True)
 
     # Keyword filter
+    filter_data = request.session.get("notes_filter", {})
     keyword = filter_data.get("keyword", "")
     if keyword:
         queryset = queryset.filter(title__icontains=keyword)
 
     # Ordering
     current_order = filter_data.get("order_by", "-updated_at")
+    bare_field = current_order.lstrip("-")
+    if bare_field not in NOTES_ALLOWED_ORDER_FIELDS:
+        current_order = "-updated_at"
+        bare_field = "updated_at"
     queryset = queryset.order_by(current_order)
 
-    # Folders for dropdown
+    # Folders for sidebar
     folders = get_folders_for_page(request, "notes")
 
     session_key = "notes_page"
@@ -59,12 +58,13 @@ def get_notes_data(request):
     pagination = CustomPaginator(queryset, 20, request, session_key)
 
     return {
+        "page": "notes",
         "notes": pagination.get_object_list(),
         "number_notes": queryset.count(),
-        "current_order": current_order.lstrip("-"),
+        "current_order": bare_field,
         "keyword": keyword,
-        "selected_folder_id": selected_folder_id,
-        "selected_folder_name": selected_folder_name,
+        "selected_folder": selected_folder,
+        "notes_folder_all": notes_folder_all,
         "folders": folders,
         "pagination": pagination,
         "session_key": session_key,
@@ -80,15 +80,25 @@ def get_notes_data(request):
 @login_required
 def notes_index(request):
     """Main notes list view."""
-    context = {"page": "notes"} | get_notes_data(request)
+    context = _get_notes_list_context(request)
     return render(request, "notes/main.html", context)
 
 
 @login_required
 def notes_list(request):
-    """HTMX partial for notes list."""
-    context = {"page": "notes"} | get_notes_data(request)
+    """HTMX partial for notes card (used by notesChanged)."""
+    context = _get_notes_list_context(request)
     return render(request, "notes/list.html", context)
+
+
+@login_required
+def notes_all(request):
+    """Select 'All' folder view and return updated notes with folders OOB."""
+    request.session["notes_all"] = True
+    request.user.notes_folder = 0
+    request.user.save()
+    context = _get_notes_list_context(request)
+    return render(request, "notes/notes-with-folders-oob.html", context)
 
 
 @login_required
@@ -140,32 +150,6 @@ def notes_order_by(request, order):
 
 
 @login_required
-def notes_filter_folder(request, folder_id):
-    """Filter notes by folder."""
-    filter_data = request.session.get("notes_filter", {})
-    filter_data["folder_id"] = folder_id
-    request.session["notes_filter"] = filter_data
-    request.session["notes_page"] = 1
-    request.session.modified = True
-
-    if request.headers.get("HX-Request"):
-        return redirect("notes:list")
-    return redirect("notes:index")
-
-
-@login_required
-def notes_filter_folder_clear(request):
-    """Clear folder filter."""
-    filter_data = request.session.get("notes_filter", {})
-    filter_data.pop("folder_id", None)
-    request.session["notes_filter"] = filter_data
-    request.session["notes_page"] = 1
-    request.session.modified = True
-
-    return redirect("notes:list")
-
-
-@login_required
 def notes_filter_keyword(request):
     """Filter notes by keyword."""
     filter_data = request.session.get("notes_filter", {})
@@ -180,7 +164,7 @@ def notes_filter_keyword(request):
     request.session["notes_page"] = 1
     request.session.modified = True
 
-    context = {"page": "notes"} | get_notes_data(request)
+    context = _get_notes_list_context(request)
     return render(request, "notes/table.html", context)
 
 

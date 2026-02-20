@@ -1,6 +1,6 @@
 <ul class="list-group folder-tree">
-    {% if page == "favorites" %}
-        <li class="list-group-item folder-item {% if favorites_folder_all %}active-item{% endif %}">
+    {% if page == "favorites" or page == "notes" %}
+        <li class="list-group-item folder-item {% if favorites_folder_all or notes_folder_all %}active-item{% endif %}">
             <div class="folder-row">
                 <div class="folder-content">
                     <span class="folder-icon">
@@ -8,7 +8,7 @@
                     </span>
                     <a class="folder-link"
                        href="#"
-                       hx-get="{% url 'favorites-all' %}"
+                       hx-get="{% if page == 'favorites' %}{% url 'favorites-all' %}{% else %}{% url 'notes:all' %}{% endif %}"
                        hx-target="#main-content"
                        hx-swap="innerHTML">All</a>
                 </div>
@@ -41,7 +41,7 @@
             </div>
         </li>
     {% endfor %}
-    <li class="list-group-item folder-item {% if not selected_folder and not favorites_folder_all %}active-item{% endif %}">
+    <li class="list-group-item folder-item {% if not selected_folder and not favorites_folder_all and not notes_folder_all %}active-item{% endif %}">
         <div class="folder-row">
             <div class="folder-content">
                 <span class="folder-icon">
