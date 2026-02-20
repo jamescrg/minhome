@@ -660,7 +660,7 @@ body:has(.dev-banner) .note-editor-layout {
 }
 
 .select-col i {
-  color: var(--color-muted);
+  color: var(--color-faint);
   cursor: pointer;
   font-size: 1.15rem;
 }

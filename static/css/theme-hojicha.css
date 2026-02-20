@@ -21,6 +21,7 @@
   --color-primary: var(--gb-light4);
   --color-secondary: var(--gb-light3);
   --color-muted: var(--gb-light4);
+  --color-faint: var(--gb-gray);
   --color-strong: var(--gb-light);
 
   /* Links */
