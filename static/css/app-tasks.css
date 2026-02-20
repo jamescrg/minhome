@@ -123,6 +123,10 @@
   flex-wrap: wrap;
 }
 
+.archive .btn i {
+  margin-right: 0.5rem;
+}
+
 .archive-caption {
   width: 100%;
   font-size: 0.8rem;
