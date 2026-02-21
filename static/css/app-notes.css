@@ -31,6 +31,8 @@
 .note-main {
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  max-width: 62rem;
 }
 
 /* =============================================================================
@@ -42,8 +44,6 @@
   border-bottom: 1px solid var(--border-medium);
   flex-shrink: 0;
   height: 3rem;
-  margin: 0 auto;
-  max-width: 62rem;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -129,8 +129,6 @@
    ============================================================================= */
 
 .note-page {
-  margin: 0 auto;
-  max-width: 62rem;
 }
 
 /* =============================================================================
