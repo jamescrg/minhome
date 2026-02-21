@@ -98,6 +98,61 @@
                     </div>
                     <button type="button" class="btn btn-danger" id="disable-btn">Disable Encryption</button>
                 </div>
+                <div id="change-section"
+                     style="margin-top:1.5rem;
+                            padding-top:1.5rem;
+                            border-top:1px solid var(--color-border)">
+                    <p class="card-text" style="margin-bottom:0.75rem">
+                        <strong>Change Passphrase</strong>
+                    </p>
+                    <div style="display:flex;flex-direction:column;gap:0.5rem;max-width:20rem">
+                        <div id="change-current-row" style="display:none">
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       id="change-current-passphrase"
+                                       class="form-control"
+                                       placeholder="Current passphrase"
+                                       autocomplete="off">
+                                <button type="button"
+                                        class="password-toggle"
+                                        tabindex="-1"
+                                        aria-label="Toggle visibility">
+                                    <i class="icon-eye-off"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="password-wrapper">
+                            <input type="password"
+                                   id="change-new-passphrase"
+                                   class="form-control"
+                                   placeholder="New passphrase"
+                                   autocomplete="off">
+                            <button type="button"
+                                    class="password-toggle"
+                                    tabindex="-1"
+                                    aria-label="Toggle visibility">
+                                <i class="icon-eye-off"></i>
+                            </button>
+                        </div>
+                        <div class="password-wrapper">
+                            <input type="password"
+                                   id="change-confirm-passphrase"
+                                   class="form-control"
+                                   placeholder="Confirm new passphrase"
+                                   autocomplete="off">
+                            <button type="button"
+                                    class="password-toggle"
+                                    tabindex="-1"
+                                    aria-label="Toggle visibility">
+                                <i class="icon-eye-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button"
+                            class="btn btn-primary"
+                            style="margin-top:0.75rem"
+                            id="change-btn">Change Passphrase</button>
+                </div>
             {% endif %}
             <div id="encryption-progress" style="display:none;margin-top:1rem">
                 <div style="display:flex;align-items:center;gap:0.75rem">
@@ -297,9 +352,14 @@
       }
     }
 
-    // Show passphrase input if key is not loaded (needed for bulk decrypt on disable)
+    // Show passphrase input if key is not loaded (needed for bulk decrypt on disable/change)
     if (passphraseRow && !keyIsLoaded) {
       passphraseRow.style.display = "";
+    }
+
+    const changeCurrentRow = document.getElementById("change-current-row");
+    if (changeCurrentRow && !hasStoredKey()) {
+      changeCurrentRow.style.display = "";
     }
 
     if (disableBtn) {
@@ -356,6 +416,102 @@
           if (e.key === "Enter") disableBtn.click();
         });
       }
+    }
+
+    // ── Change Passphrase ──
+    const changeBtn = document.getElementById("change-btn");
+    const changeCurrentInput = document.getElementById("change-current-passphrase");
+    const changeNewInput = document.getElementById("change-new-passphrase");
+    const changeConfirmInput = document.getElementById("change-confirm-passphrase");
+
+    if (changeBtn) {
+      changeBtn.addEventListener("click", async function() {
+        // 1. Get old key: use stored key (fresh or expired) if available
+        let oldKey;
+        if (hasStoredKey()) {
+          oldKey = await getStoredKey();
+        } else {
+          const currentPassphrase = changeCurrentInput ? changeCurrentInput.value : "";
+          if (!currentPassphrase) {
+            showMessage("Please enter your current passphrase.", true);
+            return;
+          }
+          try {
+            const salt = "{{ user.encryption_salt|escapejs }}";
+            oldKey = await deriveKey(currentPassphrase, salt);
+          } catch (e) {
+            showMessage("Error deriving key: " + e.message, true);
+            return;
+          }
+        }
+
+        // 2. Validate new passphrase
+        const newPassphrase = changeNewInput.value;
+        const confirmPassphrase = changeConfirmInput.value;
+        if (!newPassphrase) {
+          showMessage("New passphrase cannot be empty.", true);
+          return;
+        }
+        if (newPassphrase !== confirmPassphrase) {
+          showMessage("New passphrases do not match.", true);
+          return;
+        }
+
+        changeBtn.disabled = true;
+        disableBtn.disabled = true;
+        messageEl.textContent = "";
+
+        try {
+          // 3. Generate new salt and derive new key
+          showProgress("Generating new encryption key...");
+          const newSalt = generateSalt();
+          const newKey = await deriveKey(newPassphrase, newSalt);
+
+          // 4. Fetch all notes
+          showProgress("Fetching notes...");
+          const notes = await fetchNotes();
+          const toRekey = notes.filter(function(n) { return n.is_encrypted && n.content; });
+
+          // 5. Decrypt with old key, re-encrypt with new key
+          if (toRekey.length > 0) {
+            const updates = [];
+            for (let i = 0; i < toRekey.length; i++) {
+              showProgress("Re-encrypting note " + (i + 1) + " of " + toRekey.length + "...");
+              const plaintext = await decrypt(toRekey[i].content, oldKey);
+              const ciphertext = await encrypt(plaintext, newKey);
+              updates.push({ id: toRekey[i].id, content: ciphertext, is_encrypted: true });
+            }
+            showProgress("Saving re-encrypted notes...");
+            const ok = await saveNotes(updates);
+            if (!ok) throw new Error("Failed to save re-encrypted notes.");
+          }
+
+          // 6. Save new salt
+          showProgress("Saving new encryption settings...");
+          const resp = await fetch("{% url 'settings-encryption-save-salt' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/json" },
+            body: JSON.stringify({ salt: newSalt }),
+          });
+          if (!resp.ok) throw new Error("Failed to save new salt.");
+
+          // 7. Store new key
+          await storeKey(newKey);
+
+          hideProgress();
+          showMessage("Passphrase changed successfully.", false);
+          setTimeout(function() { location.reload(); }, 1000);
+        } catch (e) {
+          hideProgress();
+          showMessage("Error: " + e.message, true);
+          changeBtn.disabled = false;
+          disableBtn.disabled = false;
+        }
+      });
+
+      changeConfirmInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") changeBtn.click();
+      });
     }
     </script>
 {% endblock subcontent %}
