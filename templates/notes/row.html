@@ -5,13 +5,20 @@
         <i class="icon-square note-select-checkbox" data-value="{{ note.id }}"></i>
     </td>
     <td class="title">
-        <div class="dropdown" x-data="dropdown()">
-            <a href="#"
-               class="note-title-link"
-               x-ref="button"
-               @click.prevent="toggle()"
-               :aria-expanded="open">{{ note.title }}</a>
-            {% if note.is_encrypted %}<i class="icon-lock note-encrypted-indicator"></i>{% endif %}
+        <a href="{% url 'notes:note-view' note.id %}" class="note-title-link">{{ note.title }}</a>
+        {% if note.is_encrypted %}<i class="icon-lock note-encrypted-indicator"></i>{% endif %}
+    </td>
+    <td class="created">{{ note.created_at|date:"Y-m-d" }}</td>
+    <td class="updated">{{ note.updated_at|date:"Y-m-d" }}</td>
+    <td class="actions">
+        <div class="dropdown note-menu" x-data="dropdown()">
+            <button class="btn-icon menu-icon"
+                    type="button"
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open">
+                <i class="icon-ellipsis-vertical"></i>
+            </button>
             <ul class="dropdown-menu" x-ref="menu" x-show="open">
                 <li>
                     <a class="dropdown-item" href="{% url 'notes:note-view' note.id %}"><i class="icon-pencil-line"></i> Open</a>
@@ -44,6 +51,4 @@
             </ul>
         </div>
     </td>
-    <td class="created">{{ note.created_at|date:"Y-m-d" }}</td>
-    <td class="updated">{{ note.updated_at|date:"Y-m-d" }}</td>
 </tr>

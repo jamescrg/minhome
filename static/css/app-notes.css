@@ -443,6 +443,11 @@
   z-index: 1050;
 }
 
+.notes-list .actions {
+  text-align: center;
+  width: 2.5rem;
+}
+
 .notes-list .empty-message {
   color: var(--color-muted);
   font-style: italic;
