@@ -139,6 +139,7 @@
   background: var(--background-light);
   border-radius: 0;
   font-size: 1.1rem;
+  margin-bottom: 1.5rem;
   min-height: 32rem;
   padding: 2rem 3rem 3rem;
 }
