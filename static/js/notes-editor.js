@@ -1431,17 +1431,25 @@ function showInlinePassphraseDialog(salt) {
     overlay.className = "passphrase-dialog-overlay";
     overlay.innerHTML =
       '<div class="passphrase-dialog">' +
-        '<p>Enter your passphrase to encrypt this note:</p>' +
-        '<div class="password-wrapper">' +
-          '<input type="password" class="form-control" placeholder="Passphrase" autocomplete="off">' +
-          '<button type="button" class="password-toggle" aria-label="Toggle visibility">' +
-            '<i class="icon-eye-off"></i>' +
+        '<div class="passphrase-dialog-header">' +
+          '<h2>Encrypt Note</h2>' +
+          '<button type="button" class="confirm-modal-close dialog-cancel" aria-label="Close">' +
+            '<i class="icon-x"></i>' +
           '</button>' +
         '</div>' +
-        '<p class="unlock-error" id="dialog-error"></p>' +
+        '<div class="passphrase-dialog-body">' +
+          '<p>Enter your passphrase to encrypt this note:</p>' +
+          '<div class="password-wrapper">' +
+            '<input type="password" class="form-control" placeholder="Passphrase" autocomplete="off">' +
+            '<button type="button" class="password-toggle" aria-label="Toggle visibility">' +
+              '<i class="icon-eye-off"></i>' +
+            '</button>' +
+          '</div>' +
+          '<p class="unlock-error" id="dialog-error"></p>' +
+        '</div>' +
         '<div class="passphrase-dialog-actions">' +
-          '<button type="button" class="btn btn-secondary btn-slim dialog-cancel">Cancel</button>' +
-          '<button type="button" class="btn btn-primary btn-slim dialog-confirm">Unlock</button>' +
+          '<button type="button" class="btn btn-secondary dialog-cancel">Cancel</button>' +
+          '<button type="button" class="btn btn-primary dialog-confirm">Encrypt</button>' +
         '</div>' +
       '</div>';
 
