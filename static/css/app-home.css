@@ -59,6 +59,22 @@
   white-space: nowrap;
 }
 
+@media (max-width: 576px) {
+  .search-bar {
+    flex-direction: column;
+  }
+
+  .search-form,
+  .search-bar .dropdown {
+    width: 100%;
+  }
+
+  .search-engine-btn {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
 
 /*------------------------------------------------
  * favorites
