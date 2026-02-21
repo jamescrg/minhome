@@ -11,7 +11,7 @@
   --background-subnav-tab-active: var(--gb-dark1);
   --background-control: var(--gb-dark1);
   --background-section: var(--gb-dark1);
-  --background-light: var(--gb-dark);
+  --background-light: var(--gb-dark-soft);
 
   /* Borders */
   --border-medium: var(--gb-dark2);

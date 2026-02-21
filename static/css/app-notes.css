@@ -417,7 +417,7 @@
 }
 
 .notes-list .updated {
-  width: 8rem;
+  width: 7rem;
 }
 
 .notes-list td {
@@ -558,7 +558,7 @@
 }
 
 .shortcuts-table kbd {
-  background: var(--background-subnav);
+  background: var(--stone-350);
   border: 1px solid var(--border-medium);
   border-radius: 0.25rem;
   font-size: 0.8125rem;

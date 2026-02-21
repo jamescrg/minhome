@@ -154,6 +154,7 @@ async function initEditor() {
 }
 
 function startEditor(container, markdownContent) {
+  container.innerHTML = "";
   const initialContent = markdownToHtml(markdownContent);
 
   editor = new Editor({
