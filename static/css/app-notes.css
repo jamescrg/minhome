@@ -131,7 +131,6 @@
 .note-page {
   margin: 0 auto;
   max-width: 62rem;
-  padding: 0 1rem 1rem;
 }
 
 /* =============================================================================
@@ -140,9 +139,8 @@
 
 .note-canvas {
   background: var(--background-light);
-  border-radius: 0.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
   font-size: 1.1rem;
-  margin-top: 1.5rem;
   min-height: 32rem;
   padding: 2rem 3rem 3rem;
 }
