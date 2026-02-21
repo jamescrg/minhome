@@ -14,9 +14,7 @@
             {% if note.is_encrypted %}<i class="icon-lock note-encrypted-indicator"></i>{% endif %}
             <ul class="dropdown-menu" x-ref="menu" x-show="open">
                 <li>
-                    <a class="dropdown-item"
-                       href="{% url 'notes:note-view' note.id %}"
-                       target="_blank"><i class="icon-external-link"></i> Open</a>
+                    <a class="dropdown-item" href="{% url 'notes:note-view' note.id %}"><i class="icon-pencil-line"></i> Open</a>
                 </li>
                 <li>
                     <a class="dropdown-item"

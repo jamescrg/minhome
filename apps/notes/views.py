@@ -12,12 +12,6 @@ from apps.management.pagination import CustomPaginator
 from .forms import NoteForm
 from .models import Note
 
-SIDEBAR_SORT_OPTIONS = [
-    ("-updated_at", "Modified, new to old"),
-    ("-created_at", "Created, new to old"),
-    ("title", "Title (A-Z)"),
-]
-
 NOTES_ALLOWED_ORDER_FIELDS = {"title", "created_at", "updated_at"}
 
 
@@ -113,8 +107,7 @@ def notes_add(request):
 
             note_url = reverse("notes:note-view", args=[note.id])
             return HttpResponse(
-                f'<script>window.open("{note_url}", "_blank");'
-                "window.dispatchEvent(new CustomEvent('close-modal'));</script>",
+                f'<script>window.location.href = "{note_url}";</script>',
                 headers={"HX-Trigger": "notesChanged"},
             )
     else:
@@ -173,59 +166,15 @@ def notes_filter_keyword(request):
 # =============================================================================
 
 
-def get_sorted_notes(user, sort_order="-updated_at"):
-    """Get notes sorted by specified order."""
-    return Note.objects.filter(user=user).order_by(sort_order)[:20]
-
-
 @login_required
 def note_view(request, note_id):
-    """Standalone editor view for a note."""
+    """Editor view for a note."""
     note = get_object_or_404(Note, pk=note_id, user=request.user)
-
-    sort_order = request.session.get("notes_sidebar_sort", "-updated_at")
-    notes = get_sorted_notes(request.user, sort_order)
-
     context = {
+        "page": "notes",
         "note": note,
-        "notes": notes,
-        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
-        "current_sort": sort_order,
     }
     return render(request, "notes/editor.html", context)
-
-
-@login_required
-def note_content_partial(request, note_id):
-    """HTMX partial for switching notes in the editor."""
-    note = get_object_or_404(Note, pk=note_id, user=request.user)
-    return render(
-        request,
-        "notes/editor-content.html",
-        {"note": note},
-    )
-
-
-@login_required
-def sidebar_sort(request, note_id, sort_key):
-    """Change sidebar sort order and return updated sidebar list."""
-    note = get_object_or_404(Note, pk=note_id, user=request.user)
-
-    valid_keys = [key for key, _ in SIDEBAR_SORT_OPTIONS]
-    if sort_key not in valid_keys:
-        sort_key = "-updated_at"
-
-    request.session["notes_sidebar_sort"] = sort_key
-
-    notes = get_sorted_notes(request.user, sort_key)
-
-    context = {
-        "note": note,
-        "notes": notes,
-        "sidebar_sort_options": SIDEBAR_SORT_OPTIONS,
-        "current_sort": sort_key,
-    }
-    return render(request, "notes/sidebar-list.html", context)
 
 
 @login_required

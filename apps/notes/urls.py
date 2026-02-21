@@ -16,20 +16,10 @@ urlpatterns = [
     path("bulk-move-folder/", views.notes_bulk_move_folder, name="bulk-move-folder"),
     # Editor views
     path("<int:note_id>/", views.note_view, name="note-view"),
-    path(
-        "<int:note_id>/content-partial/",
-        views.note_content_partial,
-        name="note-content-partial",
-    ),
     path("<int:note_id>/edit/", views.note_edit, name="edit"),
     path("<int:note_id>/delete/", views.note_delete, name="delete"),
     path("<int:note_id>/autosave/", views.note_autosave, name="note-autosave"),
     path("<int:note_id>/title/", views.note_title, name="note-title"),
-    path(
-        "<int:note_id>/sidebar/sort/<str:sort_key>/",
-        views.sidebar_sort,
-        name="note-sidebar-sort",
-    ),
     path("shortcuts/", views.notes_shortcuts, name="notes-shortcuts"),
     path(
         "<int:note_id>/import-modal/",
