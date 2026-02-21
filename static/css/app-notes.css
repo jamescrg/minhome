@@ -42,6 +42,8 @@
   border-bottom: 1px solid var(--border-medium);
   flex-shrink: 0;
   height: 3rem;
+  margin: 0 auto;
+  max-width: 62rem;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -56,8 +58,6 @@
   display: flex;
   gap: 1rem;
   height: 100%;
-  margin: 0 auto;
-  max-width: 62rem;
   padding: 0 1.5rem;
 }
 
